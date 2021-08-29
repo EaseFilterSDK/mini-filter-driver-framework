@@ -10,3 +10,6 @@ Even to an experienced developer, developing file system filter driver is certai
 
 ## EaseFilter Mini Filter Driver Framework
 One might think that writing a file system filter would be a much easier task, since there are lots of starter samples available on internet, but the truth is to write a professional commercial file system filters in the real world is very hard.Sometime writing a file system filter driver is harder than a file system. EaseFilter Mini Filter Driver Framework can provide you a complete, modular environment for building active file system filter driver in your application. 
+
+## What Can You Do With EaseFilter Mini Filter Driver Framework
+
