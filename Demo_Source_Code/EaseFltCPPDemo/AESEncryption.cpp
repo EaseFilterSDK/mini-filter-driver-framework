@@ -26,6 +26,7 @@ WCHAR* testFolder = L"c:\\filterTest";
 WCHAR* testFile = L"c:\\filterTest\\testEncryptfile1.bin";
 WCHAR* copyFile = L"c:\\filterTest\\testEncryptfile1.copy.bin";
 
+#define AES_MAX_TAG_DATA_SIZE 914
 
 //Add clear text data to the file.
 unsigned char iv[] = {0xf0,0xf1,0xf2,0xf3,0xf4,0xf5,0xf6,0xf7,0xf8,0xf9,0xfa,0xfb,0xfc,0xfd,0xfe,0xff};// Initialization vector
@@ -558,29 +559,47 @@ EncryptionUnitTest()
 }
 
 BOOL 
-ProcessEncryptionRequest(
+EncryptionRequestHandler(
 	IN		PMESSAGE_SEND_DATA		pSendMessage,
 	IN OUT	PMESSAGE_REPLY_DATA		pReplyMessage )
 {
 	BOOL ret = TRUE;
 
-	if ( pSendMessage->MessageType == FILTER_REQUEST_ENCRYPTION_IV_AND_KEY )
+	if (	FILTER_REQUEST_ENCRYPTION_IV_AND_KEY == pSendMessage->FilterCommand
+		||	FILTER_REQUEST_ENCRYPTION_IV_AND_KEY_AND_TAGDATA == pSendMessage->FilterCommand )
     {
-        //this is encryption filter rule with boolean config "REQUEST_ENCRYPT_KEY_AND_IV_FROM_SERVICE" enabled.                        
+        //this is encryption filter rule with boolean config "REQUEST_ENCRYPT_KEY_IV_AND_TAGDATA_FROM_SERVICE" enabled.                        
         //the filter driver request the IV and key to open or create the encrypted file.                        
 
         //if you don't want to authorize the process to read the encrytped file,you can set the value as below:
         //pReplyMessage->ReturnStatus = STATUS_ACCESS_DENIED;
-        //pReplyMessage->FilterStatus = FILTER_COMPLETE_PRE_OPERATION;
+        //pReplyMessage->FilterStatus = FILTER_COMPLETE_PRE_OPERATION; 
 
-        //Here we return the test iv and key to the filter driver, you need to replace with you own iv and key in your code.
+		if( FILTER_REQUEST_ENCRYPTION_IV_AND_KEY_AND_TAGDATA == pSendMessage->FilterCommand	)
+		{
+			//this is new created file to request the encryption key and iv,
+			//you can set the custom tag data to the header of the encrypted file if you set the below value.
+						
+			wprintf(L"\nNew created file :%ws is requesting encryption key, iv and tag data\n",pSendMessage->FileName );
+
+			//make sure the tag data length is less than the AES_MAX_TAG_DATA_SIZE;
+			if( AES_MAX_TAG_DATA_SIZE > pSendMessage->FileNameLength )
+			{
+				//here we put the file name as the tag data for test purpose.
+
+				pReplyMessage->ReplyData.AESData.Data.TagDataLength = pSendMessage->FileNameLength;
+				memcpy(pReplyMessage->ReplyData.AESData.Data.TagData,pSendMessage->FileName,pSendMessage->FileNameLength);	
+			}
+		}
+
+        //Here we return the default test iv and key to the filter driver, you can replace it with your own iv and key.
 		pReplyMessage->ReplyData.AESData.Data.AccessFlag = ALLOW_MAX_RIGHT_ACCESS;
-        memcpy(pReplyMessage->ReplyData.AESData.Data.IV,iv,16);	  //replace with your own IV data
+        memcpy(pReplyMessage->ReplyData.AESData.Data.IV,iv,16); 
         pReplyMessage->ReplyData.AESData.Data.IVLength = 16;
         memcpy(pReplyMessage->ReplyData.AESData.Data.EncryptionKey,key,32);
         pReplyMessage->ReplyData.AESData.Data.EncryptionKeyLength = 32;
-
-		pReplyMessage->ReplyData.AESData.SizeOfData = sizeof(pReplyMessage->ReplyData.AESData.Data);
+		//the total return size
+		pReplyMessage->ReplyData.AESData.SizeOfData = sizeof(pReplyMessage->ReplyData.AESData.Data) + pReplyMessage->ReplyData.AESData.Data.TagDataLength ;
 
         pReplyMessage->ReturnStatus = STATUS_SUCCESS;
 

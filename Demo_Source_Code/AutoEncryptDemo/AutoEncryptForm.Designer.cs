@@ -42,11 +42,12 @@
             this.textBox_PassPhrase = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
             this.textBox_AuthorizedUsersForEncryptFolder = new System.Windows.Forms.TextBox();
+            this.checkBox_EnableUniqueEncryptionKey = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // button_Start
             // 
-            this.button_Start.Location = new System.Drawing.Point(38, 338);
+            this.button_Start.Location = new System.Drawing.Point(35, 363);
             this.button_Start.Name = "button_Start";
             this.button_Start.Size = new System.Drawing.Size(86, 23);
             this.button_Start.TabIndex = 0;
@@ -81,7 +82,7 @@
             // 
             // button_Stop
             // 
-            this.button_Stop.Location = new System.Drawing.Point(271, 338);
+            this.button_Stop.Location = new System.Drawing.Point(271, 363);
             this.button_Stop.Name = "button_Stop";
             this.button_Stop.Size = new System.Drawing.Size(87, 23);
             this.button_Stop.TabIndex = 5;
@@ -91,7 +92,7 @@
             // 
             // textBox_AuthorizedProcessesForDecryptFolder
             // 
-            this.textBox_AuthorizedProcessesForDecryptFolder.Location = new System.Drawing.Point(35, 302);
+            this.textBox_AuthorizedProcessesForDecryptFolder.Location = new System.Drawing.Point(35, 327);
             this.textBox_AuthorizedProcessesForDecryptFolder.Name = "textBox_AuthorizedProcessesForDecryptFolder";
             this.textBox_AuthorizedProcessesForDecryptFolder.Size = new System.Drawing.Size(320, 20);
             this.textBox_AuthorizedProcessesForDecryptFolder.TabIndex = 6;
@@ -102,13 +103,13 @@
             this.label4.AutoSize = true;
             this.label4.Location = new System.Drawing.Point(38, 72);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(189, 13);
+            this.label4.Size = new System.Drawing.Size(324, 13);
             this.label4.TabIndex = 9;
-            this.label4.Text = "Authorized Processes To Decrypt Files";
+            this.label4.Text = "Authorized Processes To Decrypt Files (* or empty for all processes)";
             // 
             // textBox_DecryptFolder
             // 
-            this.textBox_DecryptFolder.Location = new System.Drawing.Point(35, 251);
+            this.textBox_DecryptFolder.Location = new System.Drawing.Point(35, 276);
             this.textBox_DecryptFolder.Name = "textBox_DecryptFolder";
             this.textBox_DecryptFolder.Size = new System.Drawing.Size(320, 20);
             this.textBox_DecryptFolder.TabIndex = 8;
@@ -117,7 +118,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(35, 233);
+            this.label2.Location = new System.Drawing.Point(35, 258);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(323, 13);
             this.label2.TabIndex = 10;
@@ -126,7 +127,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(35, 286);
+            this.label3.Location = new System.Drawing.Point(35, 311);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(189, 13);
             this.label3.TabIndex = 11;
@@ -135,7 +136,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(38, 171);
+            this.label5.Location = new System.Drawing.Point(38, 196);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(258, 13);
             this.label5.TabIndex = 13;
@@ -143,7 +144,7 @@
             // 
             // textBox_PassPhrase
             // 
-            this.textBox_PassPhrase.Location = new System.Drawing.Point(38, 187);
+            this.textBox_PassPhrase.Location = new System.Drawing.Point(38, 212);
             this.textBox_PassPhrase.Name = "textBox_PassPhrase";
             this.textBox_PassPhrase.Size = new System.Drawing.Size(320, 20);
             this.textBox_PassPhrase.TabIndex = 12;
@@ -165,11 +166,23 @@
             this.textBox_AuthorizedUsersForEncryptFolder.Size = new System.Drawing.Size(320, 20);
             this.textBox_AuthorizedUsersForEncryptFolder.TabIndex = 14;
             // 
+            // checkBox_EnableUniqueEncryptionKey
+            // 
+            this.checkBox_EnableUniqueEncryptionKey.AutoSize = true;
+            this.checkBox_EnableUniqueEncryptionKey.Location = new System.Drawing.Point(35, 167);
+            this.checkBox_EnableUniqueEncryptionKey.Name = "checkBox_EnableUniqueEncryptionKey";
+            this.checkBox_EnableUniqueEncryptionKey.Size = new System.Drawing.Size(258, 17);
+            this.checkBox_EnableUniqueEncryptionKey.TabIndex = 16;
+            this.checkBox_EnableUniqueEncryptionKey.Text = "Enable unique encryption key per file from server ";
+            this.checkBox_EnableUniqueEncryptionKey.UseVisualStyleBackColor = true;
+            this.checkBox_EnableUniqueEncryptionKey.CheckedChanged += new System.EventHandler(this.checkBox_EnableUniqueEncryptionKey_CheckedChanged);
+            // 
             // AutoEncryptForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(402, 380);
+            this.ClientSize = new System.Drawing.Size(402, 410);
+            this.Controls.Add(this.checkBox_EnableUniqueEncryptionKey);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.textBox_AuthorizedUsersForEncryptFolder);
             this.Controls.Add(this.label5);
@@ -208,6 +221,7 @@
         private System.Windows.Forms.TextBox textBox_PassPhrase;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.TextBox textBox_AuthorizedUsersForEncryptFolder;
+        private System.Windows.Forms.CheckBox checkBox_EnableUniqueEncryptionKey;
     }
 }
 

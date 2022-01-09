@@ -44,7 +44,7 @@ namespace AutoFileCryptTool
 
         public Form_FileCrypt()
         {
-            GlobalConfig.filterType = FilterAPI.FilterType.ENCRYPTION_FILTER;
+            GlobalConfig.filterType = FilterAPI.FilterType.ENCRYPTION_FILTER|FilterAPI.FilterType.CONTROL_FILTER|FilterAPI.FilterType.PROCESS_FILTER;
 
             InitializeComponent();
 

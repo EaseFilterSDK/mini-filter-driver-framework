@@ -204,6 +204,16 @@ int _tmain(int argc, _TCHAR* argv[])
 		case 'c': filterType = FILE_SYSTEM_CONTROL; //start control filter		
 		case 'm':
 		{
+			//To monitor filter:
+			//you can register the file changed events to get the notification when the file was created, renamed, deleted, written and changed.
+			//you only can register the post I/O to get the notification after the I/O was processed by the file system.
+
+			//To control Filter:
+			//You can allow or deny the file I/O by setting the access flags in the filter rule.
+			//You can register the pre-I/O to get the callback in user mode application before the I/O goes down to the file system,
+			//in your callback function you can allow or deny the I/O.
+			//You can register the post I/O to get the callback in user mode application after the I/O was returned from the file system,
+			//in your callback function you can modify the returned I/O data.
 
 			if( !IsDriverServiceRunning())
 			{
@@ -228,6 +238,7 @@ int _tmain(int argc, _TCHAR* argv[])
 				filterFolder = argv[2];
 			}
 			
+			//To get the I/O callback registration class, you can check the IOCallbackClass for your reference.
 			if( argc >= 4 )
 			{
 				ioRegistration = std::stoul (argv[3],nullptr,16);
@@ -288,15 +299,7 @@ int _tmain(int argc, _TCHAR* argv[])
 
 			//prevent the current process from being terminated.
 			//AddProtectedProcessId(GetCurrentProcessId());
-
-			//exclude current process IO from filter driver.
-			AddExcludedProcessId(GetCurrentProcessId());
-
-			//Register the volume event notification, get current all attached volume information,
-			//get notifcation when the filter driver attached the volume,
-			//get notification when the filter detached the volume
-			SetVolumeControlFlag(GET_ATTACHED_VOLUME_INFO|VOLUME_ATTACHED_NOTIFICATION|VOLUME_DETACHED_NOTIFICATION);		
-
+			
 			system("pause");
 
 			//the process can be termiated now.
@@ -349,9 +352,6 @@ int _tmain(int argc, _TCHAR* argv[])
 				return 1;
 			}
 
-			//prevent the current process from being terminated.
-			//AddProtectedProcessId(GetCurrentProcessId());
-
 			// Initialization 16 bytes vector
 			unsigned char iv[] = {0xf0,0xf1,0xf2,0xf3,0xf4,0xf5,0xf6,0xf7,0xf8,0xf9,0xfa,0xfb,0xfc,0xfd,0xfe,0xff};
 			//256 bit,32bytes encrytpion key
@@ -362,9 +362,6 @@ int _tmain(int argc, _TCHAR* argv[])
 
 			_tprintf(_T("\n\nStart Encryption for folder %s,\r\nAll new created files in this folder will be encrypted by filter driver. When filter driver is stopped, the encrypted files can't be read. \n\n Press any key to stop the filter driver.\n"),filterFolder);
 			system("pause");
-
-			//the process can be termiated now.
-			//RemoveProtectedProcessId(GetCurrentProcessId());
 
 			Disconnect();
 

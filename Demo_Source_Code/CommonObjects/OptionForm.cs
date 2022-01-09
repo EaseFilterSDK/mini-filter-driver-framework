@@ -180,7 +180,7 @@ namespace EaseFilter.CommonObjects
 
                         monitorFileEvents = uint.Parse(value);
 
-                        foreach (FilterAPI.MonitorFileEvents monitorFileEvent in Enum.GetValues(typeof(FilterAPI.MonitorFileEvents)))
+                        foreach (FilterAPI.FileChangedEvents monitorFileEvent in Enum.GetValues(typeof(FilterAPI.FileChangedEvents)))
                         {
 
                             string item = monitorFileEvent.ToString();
@@ -606,6 +606,9 @@ namespace EaseFilter.CommonObjects
             registryCallbackClass = 0;
             filterType = 0;
             processControlFlag = 0;
+            filterDesiredAccess = 0;
+            filterDisposition = 0;
+            filterCreateOptions = 0;
 
             foreach (ListViewItem item in listView1.CheckedItems)
             {

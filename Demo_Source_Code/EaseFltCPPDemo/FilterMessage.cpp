@@ -22,6 +22,53 @@
 
 #define PrintMessage	wprintf //ToDebugger
 
+//the IO callback IRP name.
+WCHAR* IOCommandName[] = {
+    L"IOPreFileCreate",
+    L"IOPostFileCreate",
+    L"IOPreFileRead",
+    L"IOPostFileRead",
+    L"IOPreFileWrite",
+    L"IOPostFileWrite",
+    L"IOPreQueryFileSize",
+    L"IOPostQueryFileSize",
+    L"IOPreQueryFileBasicInfo",
+    L"IOPostQueryFileBasicInfo",
+    L"IOPreQueryFileStandardInfo",
+    L"IOPostQueryFileStandardInfo",
+    L"IOPreQueryFileNetworkInfo",
+    L"IOPostQueryFileNetworkInfo",
+    L"IOPreQueryFileId",
+    L"IOPostQueryFileId",
+    L"IOPreQueryFileInfo",
+    L"IOPostQueryFileInfo",
+    L"IOPreSetFileSize",
+    L"IOPostSetFileSize",
+    L"IOPreSetFileBasicInfo",
+    L"IOPostSetFileBasicInfo",
+    L"IOPreSetFileStandardInfo",
+    L"IOPostSetFileStandardInfo",
+    L"IOPreSetFileNetworkInfo",
+    L"IOPostSetFileNetworkInfo",
+    L"IOPreMoveOrRenameFile",
+    L"IOPostMoveOrRenameFile",
+    L"IOPreDeleteFile",
+    L"IOPostDeleteFile",
+    L"IOPreSetFileInfo",
+    L"IOPostSetFileInfo",
+    L"IOPreQueryDirectoryFile",
+    L"IOPostQueryDirectoryFile",
+    L"IOPreQueryFileSecurity",
+    L"IOPostQueryFileSecurity",
+    L"IOPreSetFileSecurity",
+    L"IOPostSetFileSecurity",
+    L"IOPreFileHandleClose",
+    L"IOPostFileHandleClose",
+    L"IOPreFileClose",
+    L"IOPostFileClose",      
+};
+
+
 //
 //Here displays the I/O information from filter driver for monitor filter driver and control filter driver
 //For every I/O callback data, you always can get this information:
@@ -44,15 +91,6 @@ DisplayFilterMessageInfo( IN	PMESSAGE_SEND_DATA pSendMessage )
 
 	__try
 	{
-		
-		BOOL ret = LookupAccountSid( NULL,
-									pSendMessage->Sid,
-									userName,
-									(LPDWORD)&userNameSize,
-									domainName,
-									(LPDWORD)&domainNameSize,
-									&snu); 
-	
 		if( pSendMessage->Status > STATUS_ERROR )
 		{
 			ChangeColour(FOREGROUND_RED);
@@ -63,28 +101,100 @@ DisplayFilterMessageInfo( IN	PMESSAGE_SEND_DATA pSendMessage )
 		}
 
 		VOLUME_INFO* pVolumeInfo = (VOLUME_INFO*)pSendMessage->DataBuffer;
-		if(FILTER_SEND_ATTACHED_VOLUME_INFO == pSendMessage->MessageType)
+		if(FILTER_SEND_ATTACHED_VOLUME_INFO == pSendMessage->FilterCommand)
 		{
-			PrintMessage( L"FILTER_SEND_ATTACHED_VOLUME_INFO\n VolumeName:%ws\nVolumeDosName:%ws\nvolume file system type:0x%0x\nDeviceCharacteristics:0x%0x\n\n"
+			PrintMessage( L"FILTER_SEND_ATTACHED_VOLUME_INFO\nVolumeName:%ws\nVolumeDosName:%ws\nvolume file system type:0x%0x\nDeviceCharacteristics:0x%0x\n\n"
 			,pVolumeInfo->VolumeName, pVolumeInfo->VolumeDosName, pVolumeInfo->VolumeFilesystemType, pVolumeInfo->DeviceCharacteristics);
 			return;
 		}
-		else if(FILTER_SEND_DETACHED_VOLUME_INFO == pSendMessage->MessageType)
+		else if(FILTER_SEND_DETACHED_VOLUME_INFO == pSendMessage->FilterCommand)
 		{
 			PrintMessage( L"FILTER_SEND_DETACHED_VOLUME_INFO\nVolumeName:%ws\n VolumeDosName:%ws\nvolume file system type:0x%0x\nDeviceCharacteristics:0x%0x\n\n"
 			,pVolumeInfo->VolumeName, pVolumeInfo->VolumeDosName, pVolumeInfo->VolumeFilesystemType, pVolumeInfo->DeviceCharacteristics);
 			return;
 		}
-
-		
-		PrintMessage( L"\nId# %d MessageType:0X%0x UserName:%ws\\%ws\nProcessId:%d ThreadId:%d Return Status:%0x\nFileSize:%I64d Attributes:%0x FileName:%ws\n"
-			,pSendMessage->MessageId,pSendMessage->MessageType,domainName,userName
-			,pSendMessage->ProcessId,pSendMessage->ThreadId,pSendMessage->Status
-			,pSendMessage->FileSize,pSendMessage->FileAttributes,pSendMessage->FileName);
-
-
-		ChangeColour(FOREGROUND_RED|FOREGROUND_GREEN|FOREGROUND_BLUE);
+		else if (FILTER_SEND_DENIED_VOLUME_DISMOUNT_EVENT == pSendMessage->FilterCommand)
+        {
+            PrintMessage( L"FILTER_SEND_DENIED_VOLUME_DISMOUNT_EVENT\nVolumeName:%ws\n VolumeDosName:%ws\nvolume file system type:0x%0x\nDeviceCharacteristics:0x%0x\n\n"
+			,pVolumeInfo->VolumeName, pVolumeInfo->VolumeDosName, pVolumeInfo->VolumeFilesystemType, pVolumeInfo->DeviceCharacteristics);
+			return;
+        }       
+        else if (FILTER_SEND_DENIED_USB_READ_EVENT == pSendMessage->FilterCommand)
+        {
+            PrintMessage( L"Reading data from USB was blocked.\n\n");
+			return;
+        }
+        else if (FILTER_SEND_DENIED_USB_WRITE_EVENT == pSendMessage->FilterCommand)
+        {
+            PrintMessage( L"Writting data to USB was blocked.\n\n");
+			return;
+        }
+       
+		if(pSendMessage->SidLength > 0 )
+		{
+			BOOL ret = LookupAccountSid( NULL,
+								pSendMessage->Sid,
+								userName,
+								(LPDWORD)&userNameSize,
+								domainName,
+								(LPDWORD)&domainNameSize,
+								&snu); 
+		}				
 	
+		if(FILTER_SEND_FILE_CHANGED_EVENT == pSendMessage->FilterCommand)
+		{
+			 if ((pSendMessage->InfoClass & FILE_WAS_CREATED ) > 0)
+            {
+                PrintMessage( L"New file %ws was created.\n",pSendMessage->FileName);
+            }
+
+            if ((pSendMessage->InfoClass & FILE_WAS_WRITTEN ) > 0)
+            {
+                PrintMessage( L"File %ws was written.\n",pSendMessage->FileName);
+            }
+
+            if ((pSendMessage->InfoClass & FILE_WAS_DELETED ) > 0)
+            {
+                PrintMessage( L"File %ws was deleted.\n",pSendMessage->FileName);
+            }
+
+            if ((pSendMessage->InfoClass & FILE_INFO_CHANGED ) > 0)
+            {
+				PrintMessage( L"File %ws information was changed.\n",pSendMessage->FileName);
+            }
+
+            if ((pSendMessage->InfoClass & FILE_WAS_RENAMED ) > 0)
+            {
+                if (pSendMessage->DataBufferLength > 0)
+                {
+                    PrintMessage( L"Rename file %ws to newname %ws\n"
+					,pSendMessage->FileName,pSendMessage->DataBuffer);
+                }
+
+            }
+
+            if ((pSendMessage->InfoClass & FILE_SECURITY_CHANGED ) > 0)
+            {
+               PrintMessage( L"File %ws security was changed.\n",pSendMessage->FileName);
+            }
+
+			return;
+		}
+		else if (FILTER_SEND_DENIED_FILE_IO_EVENT == pSendMessage->FilterCommand)
+        {
+			//if the global boolean config flag ENABLE_SEND_DENIED_EVENT was enabled and the I/O was blocked by filter driver, the denied message will be sent to here.
+			PrintMessage( L"IO type:0x%0x to file %ws was blocked by the filter driver with the access flag in filter rule setting.\n",pSendMessage->MessageType, pSendMessage->FileName);
+			return;
+        }
+		else if (FILTER_SEND_DENIED_PROCESS_TERMINATED_EVENT == pSendMessage->FilterCommand)
+        {
+            PrintMessage(L"Teminate the process was blocked by the filter driver.");
+			return;
+        }
+
+		ULONG commandNameIndex = pSendMessage->FilterCommand - IOPreFileCreate;
+		WCHAR* ioName = IOCommandName[commandNameIndex];		
+
 		switch( pSendMessage->MessageType )
 		{			
 			case PRE_CREATE:
@@ -93,57 +203,133 @@ DisplayFilterMessageInfo( IN	PMESSAGE_SEND_DATA pSendMessage )
 				//for Disposition,ShareAccess,DesiredAccess,CreateOptions Please reference Winddows API CreateFile
 				//http://msdn.microsoft.com/en-us/library/aa363858%28v=vs.85%29.aspx
 
-				PrintMessage( L"CreateRequest DesiredAccess=%d Disposition=%d ShareAccess=%d CreateOptions=0x%0x CreateStatus = %d fileName:%ws\n"
-					,pSendMessage->DesiredAccess,pSendMessage->Disposition,pSendMessage->ShareAccess,pSendMessage->CreateOptions,pSendMessage->CreateStatus,pSendMessage->FileName);
+				WCHAR* deleteOnCloseInfo = L"";
+				if ((pSendMessage->CreateOptions & FILE_DELETE_ON_CLOSE) > 0)
+				{
+					//the file will be deleted after the file handle was closed.
+					deleteOnCloseInfo = L",the file will be deleted on handle closed.";
+				}
 
-			
 				//SendMessage->CreateStatus is create status,it is only valid in post create,the possible value is:
-				//FILE_SUPERSEDED = 0x00000000,
-				//FILE_OPENED = 0x00000001,
-				//FILE_CREATED = 0x00000002,
-				//FILE_OVERWRITTEN = 0x00000003,
-				//FILE_EXISTS = 0x00000004,
-				//FILE_DOES_NOT_EXIST = 0x00000005,
-				
+				WCHAR* createStatus[] = { L"FILE_SUPERSEDED",L"FILE_OPENED",L"FILE_CREATED",L"FILE_OVERWRITTEN",L"FILE_EXISTS",L"FILE_DOES_NOT_EXIST"};
+				WCHAR*	createStatusName = L"";
 
-				////here demo how to open the file which was opening by user for read or write
-				//HANDLE  hFile = INVALID_HANDLE_VALUE;
+				if(POST_CREATE == pSendMessage->MessageType && pSendMessage->CreateStatus < 6)
+				{					
+					createStatusName = createStatus[pSendMessage->CreateStatus];
+				}
 
-				////open the same file handle,it will bypass the share check.
-				//ret = GetFileHandleInFilter(pSendMessage->FileName,GENERIC_READ|GENERIC_WRITE,&hFile);
-
-				//if(!ret)
-				//{
-				//	PrintLastErrorMessage(L"GetFileHandleInFilter failed.");
-				//	break;
-				//}
-				//else
-				//{
-				//	PrintMessage( L"Get File Hanle:%p\n"
-				//	,hFile);
-
-				//}
-
-				//if( INVALID_HANDLE_VALUE != hFile)
-				//{
-				//	CloseHandle(hFile);
-				//}
+				PrintMessage( L"\nId#%d IOName:%ws UserName:%ws\\%ws \nFileName:%ws\nProcessId:%d ThreadId:%d Return Status:%0x\nFileSize:%I64d Attributes:%0x %ws %ws\n"
+								,pSendMessage->MessageId,ioName,domainName,userName,pSendMessage->FileName
+								,pSendMessage->ProcessId,pSendMessage->ThreadId,pSendMessage->Status
+								,pSendMessage->FileSize,pSendMessage->FileAttributes,deleteOnCloseInfo,createStatusName);
 			   
 			   break;
   			}
 
 			case PRE_QUERY_INFORMATION:
-			case POST_QUERY_INFORMATION:
+			case POST_QUERY_INFORMATION:				
 			case PRE_SET_INFORMATION:
 			case POST_SET_INFORMATION:
-			{
+			{		
 				 //FltQueryInformationFile API,http://msdn.microsoft.com/en-us/library/windows/hardware/ff543439%28v=vs.85%29.aspx
 				 //FltSetInformationFile API,http://msdn.microsoft.com/en-us/library/windows/hardware/ff544516%28v=VS.85%29.aspx
-				PrintMessage( L"Query/Set information request FileInformationClass = %d oldName:%ws newname:%ws\n"
-					,pSendMessage->InfoClass,pSendMessage->FileName,pSendMessage->DataBuffer);
 
-				 //for POST_QUERY_INFORMATION request, the pSendMessage->DataBuffer contains the data which return from the file system.
+				 //for POST_QUERY_INFORMATION request, the pSendMessage->DataBuffer contains the data which returned from the file system.
 				 //for PRE_SET_INFORMATION request, the pSendMessage->DataBuffer contains the data which will write down to the file system.
+
+				switch(pSendMessage->FilterCommand)
+				{
+				case IOPreQueryFileSize:
+				case IOPostQueryFileSize:
+				case IOPreSetFileSize:
+				case IOPostSetFileSize:
+					{
+						//Query or set file information with class FileEndOfFileInformation
+						ULONGLONG fileSize = *((ULONGLONG*)pSendMessage->DataBuffer);
+						PrintMessage( L"\nId#%d IOName:%ws UserName:%ws\\%ws  \nFileName:%ws\nProcessId:%d ThreadId:%d Return Status:%0x\nFileEndOfFileInformation=%d file size:%d\n"
+								,pSendMessage->MessageId,ioName,domainName,userName,pSendMessage->FileName
+								,pSendMessage->ProcessId,pSendMessage->ThreadId,pSendMessage->Status
+								,pSendMessage->InfoClass,fileSize);
+						break;
+					}
+				case IOPreQueryFileBasicInfo:
+				case IOPostQueryFileBasicInfo:
+				case IOPreSetFileBasicInfo:
+				case IOPostSetFileBasicInfo:
+					{
+						//Query or set file information with class FileBasicInformation
+						FILE_BASIC_INFORMATION fileBasicInfo = *((FILE_BASIC_INFORMATION*)pSendMessage->DataBuffer);
+						PrintMessage( L"\nId#%d IOName:%ws UserName:%ws\\%ws  \nFileName:%ws\nProcessId:%d ThreadId:%d Return Status:%0x\nFileBasicInformation=%d creationTime:%I64d lastWriteTime:%I64d attribute:0x%0x\n"
+								,pSendMessage->MessageId,ioName,domainName,userName,pSendMessage->FileName
+								,pSendMessage->ProcessId,pSendMessage->ThreadId,pSendMessage->Status
+								,pSendMessage->InfoClass,fileBasicInfo.CreationTime,fileBasicInfo.LastWriteTime,fileBasicInfo.FileAttributes);
+
+						break;
+					}
+				case IOPreSetFileStandardInfo:
+				case IOPostSetFileStandardInfo:
+				case IOPreQueryFileStandardInfo:
+				case IOPostQueryFileStandardInfo:
+					{
+						//Query or set file information with class FileStandardInformation
+						FILE_STANDARD_INFORMATION fileStandardInfo = *((FILE_STANDARD_INFORMATION*)pSendMessage->DataBuffer);
+						PrintMessage( L"\nId#%d IOName:%ws UserName:%ws\\%ws  \nFileName:%ws\nProcessId:%d ThreadId:%d Return Status:%0x\nFileStandardInformation=%d AllocationSize:%I64d fileSize:%I64d\n"
+								,pSendMessage->MessageId,ioName,domainName,userName,pSendMessage->FileName
+								,pSendMessage->ProcessId,pSendMessage->ThreadId,pSendMessage->Status
+								,pSendMessage->InfoClass,fileStandardInfo.AllocationSize,fileStandardInfo.EndOfFile);
+
+						break;
+					}
+				case IOPreQueryFileNetworkInfo:
+				case IOPostQueryFileNetworkInfo:
+				case IOPreSetFileNetworkInfo:
+				case IOPostSetFileNetworkInfo:
+					{
+						//Query or set file information with class FileNetworkInformation
+						FILE_NETWORK_OPEN_INFORMATION fileNetworkInfo = *((FILE_NETWORK_OPEN_INFORMATION*)pSendMessage->DataBuffer);
+						PrintMessage( L"\nId#%d IOName:%ws UserName:%ws\\%ws  \nFileName:%ws\nProcessId:%d ThreadId:%d Return Status:%0x\nFileNetworkInformation=%d creationTime:%I64d lastWriteTime:%I64d attribute:0x%0,AllocationSize:%I64d fileSize:%I64d\n"
+							,pSendMessage->MessageId,ioName,domainName,userName,pSendMessage->FileName
+							,pSendMessage->ProcessId,pSendMessage->ThreadId,pSendMessage->Status
+							,pSendMessage->InfoClass,fileNetworkInfo.CreationTime,fileNetworkInfo.LastWriteTime,fileNetworkInfo.FileAttributes,fileNetworkInfo.AllocationSize,fileNetworkInfo.EndOfFile);
+
+						break;
+					}
+				case IOPreMoveOrRenameFile:
+				case IOPostMoveOrRenameFile:
+					{
+						//Set file information with class FileRenameInformation
+						ULONG newFileNameLength = pSendMessage->DataBufferLength;
+						WCHAR* newFileName = (WCHAR*)pSendMessage->DataBuffer;
+
+						PrintMessage( L"\nId#%d IOName:%ws UserName:%ws\\%ws  \nFileName:%ws\nProcessId:%d ThreadId:%d Return Status:%0x\nFile was renamed to %ws\n"
+							,pSendMessage->MessageId,ioName,domainName,userName,pSendMessage->FileName
+							,pSendMessage->ProcessId,pSendMessage->ThreadId,pSendMessage->Status,newFileName);
+
+						break;
+					}
+
+				case IOPreDeleteFile:
+				case IOPostDeleteFile:
+					{
+						//Set file information with class FileDispositionInformation
+						PrintMessage( L"\nId#%d IOName:%ws UserName:%ws\\%ws  \nFileName:%ws\nProcessId:%d ThreadId:%d Return Status:%0x\nFile was deleted.\n"
+							,pSendMessage->MessageId,ioName,domainName,userName,pSendMessage->FileName
+							,pSendMessage->ProcessId,pSendMessage->ThreadId,pSendMessage->Status);
+
+						break;
+					}
+				default:
+					{
+						//Set the other file information class
+						PrintMessage( L"\nId#%d IOName:%ws UserName:%ws\\%ws  \nFileName:%ws\nProcessId:%d ThreadId:%d Return Status:%0x\nFileInformation Class = %d\n"
+							,pSendMessage->MessageId,ioName,domainName,userName,pSendMessage->FileName
+							,pSendMessage->ProcessId,pSendMessage->ThreadId,pSendMessage->Status,pSendMessage->InfoClass);
+
+						break;
+					}
+
+				}
 				 
 				 break;
 			}
@@ -155,7 +341,10 @@ DisplayFilterMessageInfo( IN	PMESSAGE_SEND_DATA pSendMessage )
 			{
 				 //FltQuerySecurityObject API,http://msdn.microsoft.com/en-us/library/windows/hardware/ff543441%28v=vs.85%29.aspx
 				 //FltSetSecurityObject API,http://msdn.microsoft.com/en-us/library/ff544538
-				 PrintMessage( L"Query/Set information request SecurityInformation  = %d \n",pSendMessage->InfoClass);
+
+				PrintMessage( L"\nId#%d IOName:%ws UserName:%ws\\%ws  \nFileName:%ws\nProcessId:%d ThreadId:%d Return Status:%0x\nSecurityInformation Class = %d\n"
+							,pSendMessage->MessageId,ioName,domainName,userName,pSendMessage->FileName
+							,pSendMessage->ProcessId,pSendMessage->ThreadId,pSendMessage->Status,pSendMessage->InfoClass);
 
 			/*	LPWSTR strDacl;
 				ULONG length = 0;
@@ -179,10 +368,12 @@ DisplayFilterMessageInfo( IN	PMESSAGE_SEND_DATA pSendMessage )
 			case POST_DIRECTORY:
 			{
 				//FltQueryDirectoryFile API,http://msdn.microsoft.com/en-us/library/windows/hardware/ff543433%28v=vs.85%29.aspx
-				PrintMessage( L"Browse directory request, DataBuffer:%0x FileInformationClass  = %d \n"	,pSendMessage->DataBuffer,pSendMessage->InfoClass);
-
 				//for POST_DIRECTORY request, the pSendMessage->DataBuffer contains the data which return from the file system.
 
+				PrintMessage( L"\nId#%d IOName:%ws UserName:%ws\\%ws  \nFileName:%ws\nProcessId:%d ThreadId:%d Return Status:%0x\n FileInformationClass Class = %d\n DirectoryBuffer:%s\n"
+							,pSendMessage->MessageId,ioName,domainName,userName,pSendMessage->FileName
+							,pSendMessage->ProcessId,pSendMessage->ThreadId,pSendMessage->Status,pSendMessage->InfoClass,pSendMessage->DataBuffer);
+				
 				 break;
 			}
 
@@ -196,14 +387,18 @@ DisplayFilterMessageInfo( IN	PMESSAGE_SEND_DATA pSendMessage )
 			case POST_PAGING_IO_READ:
 			{
 				 //FltReadFile API,http://msdn.microsoft.com/en-us/library/windows/hardware/ff544286%28v=vs.85%29.aspx
-				PrintMessage( L"Id#:%d Read requst, Offset = %I64d Length = %d returnLength = %d  \n"
-				   ,pSendMessage->MessageId,pSendMessage->Offset,pSendMessage->Length,pSendMessage->DataBufferLength);
-			   
+
+				PrintMessage( L"\nId#%d IOName:%ws UserName:%ws\\%ws  \nFileName:%ws\nProcessId:%d ThreadId:%d Return Status:%0x\n Offset = %I64d Length = %d returnLength = %d\n"
+							,pSendMessage->MessageId,ioName,domainName,userName,pSendMessage->FileName
+							,pSendMessage->ProcessId,pSendMessage->ThreadId,pSendMessage->Status
+							,pSendMessage->Offset,pSendMessage->Length,pSendMessage->DataBufferLength);
+
+			   //If you want to get the read data, you need to enable ENABLE_SEND_DATA_BUFFER flag in global boolean config setting.
 			   //display the read data return from file system.
 			   //printf("data:%s",pSendMessage->DataBuffer);    //it is ansi code characters
 			   //wprintf("data:%ws",pSendMessage->DataBuffer);	//it is unicode characters
 
-				//for post read request, the pSendMessage->DataBuffer contains the data which return from the file system.
+			   //for post read request, the pSendMessage->DataBuffer contains the data which return from the file system.
 
 			   break;
 			}
@@ -218,9 +413,13 @@ DisplayFilterMessageInfo( IN	PMESSAGE_SEND_DATA pSendMessage )
 			case POST_PAGING_IO_WRITE:
 			{
 				 //FltWriteFile API,http://msdn.microsoft.com/en-us/library/windows/hardware/ff544610%28v=vs.85%29.aspx
-				PrintMessage( L"WRITE requst, Offset = %I64d Length = %d returnLength = %d \n"
-				   ,pSendMessage->Offset,pSendMessage->Length,pSendMessage->DataBufferLength);
-				
+
+				PrintMessage( L"\nId#%d IOName:%ws UserName:%ws\\%ws  \nFileName:%ws\nProcessId:%d ThreadId:%d Return Status:%0x\n Offset = %I64d Length = %d returnLength = %d\n"
+							,pSendMessage->MessageId,ioName,domainName,userName,pSendMessage->FileName
+							,pSendMessage->ProcessId,pSendMessage->ThreadId,pSendMessage->Status
+							,pSendMessage->Offset,pSendMessage->Length,pSendMessage->DataBufferLength);
+
+			   //If you want to get the write data, you need to enable ENABLE_SEND_DATA_BUFFER flag in global boolean config setting.
 			   //display the write data to file system.
 			   //printf("data:%s",pSendMessage->DataBuffer);    //it is ansi code characters
 			   //wprintf("data:%ws",pSendMessage->DataBuffer);	//it is unicode characters
@@ -232,12 +431,14 @@ DisplayFilterMessageInfo( IN	PMESSAGE_SEND_DATA pSendMessage )
 
 			default: break;
 		}
+		
 
 	}
-	__except( EXCEPTION_EXECUTE_HANDLER  )
+	__finally
 	{
-		PrintErrorMessage( L"DisplayFilterMessageInfo failed.",GetLastError());     
+		ChangeColour(FOREGROUND_RED|FOREGROUND_GREEN|FOREGROUND_BLUE);  
 	}
+
 
 return ;
 

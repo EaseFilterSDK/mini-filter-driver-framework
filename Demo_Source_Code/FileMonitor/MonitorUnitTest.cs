@@ -148,44 +148,45 @@ namespace FileMonitor
         /// <summary>
         /// Fires this event when a file's information was changed after the file handle closed
         /// </summary>
-        public void NotifyFileWasChanged(object sender, FileChangeEventArgs e)
+        public void NotifyFileWasChanged(object sender, FileChangedEventArgs e)
         {
             if (string.Compare(unitTestMonitorTestFile, e.FileName, true) == 0)
             {
-                if ((e.eventType & FilterAPI.MonitorFileEvents.NotifyFileWasCreated) > 0)
+                if ((e.eventType & FilterAPI.FileChangedEvents.NotifyFileWasCreated) > 0)
                 {
                     isTestMonitorFileCreated = true;
                 }
 
-                if ((e.eventType & FilterAPI.MonitorFileEvents.NotifyFileWasWritten) > 0)
+                if ((e.eventType & FilterAPI.FileChangedEvents.NotifyFileWasWritten) > 0)
                 {
                     isTestMonitorFileWritten = true;
                 }
 
-                if ((e.eventType & FilterAPI.MonitorFileEvents.NotifyFileWasRenamed) > 0)
+                if ((e.eventType & FilterAPI.FileChangedEvents.NotifyFileWasRenamed) > 0)
                 {
                     isTestMonitorFileReanmed = true;
                 }
 
-                if ((e.eventType & FilterAPI.MonitorFileEvents.NotifyFileWasDeleted) > 0)
+                if ((e.eventType & FilterAPI.FileChangedEvents.NotifyFileWasDeleted) > 0)
                 {
                     isTestMonitorFileDeleted = true;
                 }
 
-                if ((e.eventType & FilterAPI.MonitorFileEvents.NotifyFileInfoWasChanged) > 0)
+                if ((e.eventType & FilterAPI.FileChangedEvents.NotifyFileInfoWasChanged) > 0)
                 {
                     isTestMonitorFileInfoChanged = true;
                 }
 
-                if ((e.eventType & FilterAPI.MonitorFileEvents.NotifyFileSecurityWasChanged) > 0)
+                if ((e.eventType & FilterAPI.FileChangedEvents.NotifyFileSecurityWasChanged) > 0)
                 {
                     isTestMonitorFileSecurityChanged = true;
                 }
 
-                if ((e.eventType & FilterAPI.MonitorFileEvents.NotifyFileWasRead) > 0)
+                if ((e.eventType & FilterAPI.FileChangedEvents.NotifyFileWasRead) > 0)
                 {
                     isTestMonitorFileRead = true;
                 }
+
             }
         }
      
@@ -203,11 +204,11 @@ namespace FileMonitor
 
             FileFilter monitorFilterRule = new FileFilter(unitTestMonitorTestFolder + "\\*");
             monitorFilterRule.AccessFlags = (FilterAPI.AccessFlag)FilterAPI.ALLOW_MAX_RIGHT_ACCESS;
-            monitorFilterRule.FileChangeEventFilter = (FilterAPI.MonitorFileEvents.NotifyFileWasCreated | FilterAPI.MonitorFileEvents.NotifyFileWasDeleted | FilterAPI.MonitorFileEvents.NotifyFileInfoWasChanged
-                | FilterAPI.MonitorFileEvents.NotifyFileWasRenamed | FilterAPI.MonitorFileEvents.NotifyFileWasWritten | FilterAPI.MonitorFileEvents.NotifyFileWasRead | FilterAPI.MonitorFileEvents.NotifyFileSecurityWasChanged);
+            monitorFilterRule.FileChangeEventFilter = (FilterAPI.FileChangedEvents.NotifyFileWasCreated | FilterAPI.FileChangedEvents.NotifyFileWasDeleted | FilterAPI.FileChangedEvents.NotifyFileInfoWasChanged
+                | FilterAPI.FileChangedEvents.NotifyFileWasRenamed | FilterAPI.FileChangedEvents.NotifyFileWasWritten |FilterAPI.FileChangedEvents.NotifyFileSecurityWasChanged|FilterAPI.FileChangedEvents.NotifyFileWasRead);
 
 
-            //register the events
+            //register the file changed event handler
             monitorFilterRule.NotifyFileWasChanged += NotifyFileWasChanged;
 
             try

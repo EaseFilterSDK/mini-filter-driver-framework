@@ -281,6 +281,13 @@ namespace FileProtector
             encryptForm.ShowDialog();
         }
 
+        private void decryptFileWithOffsetToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            DecryptedFileForm decryptForm = new DecryptedFileForm();
+            decryptForm.ShowDialog();
+        }
+
+
         private void getEncryptedFileIVTagToolStripMenuItem_Click(object sender, EventArgs e)
         {
             InputForm inputForm = new InputForm("Input file name", "Plase input file name", "");
@@ -353,6 +360,6 @@ namespace FileProtector
         {
             System.Diagnostics.Process.Start("http://www.easefilter.com/programming.htm");
         }
-
+       
     }
 }

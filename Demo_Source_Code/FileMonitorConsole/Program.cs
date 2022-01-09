@@ -39,7 +39,7 @@ namespace FileMonitorConsole
                 FileFilter fileMonitorFilter = new FileFilter(watchPath);
 
                 //Filter the file change event to monitor all file change events.
-                fileMonitorFilter.FileChangeEventFilter = (FilterAPI.MonitorFileEvents)FilterAPI.NotifyAllFileEvents;
+                fileMonitorFilter.FileChangeEventFilter = (FilterAPI.FileChangedEvents)FilterAPI.NotifyAllFileEvents;
 
                 //register the file change callback events.
                 fileMonitorFilter.NotifyFileWasChanged += NotifyFileChanged;
@@ -77,7 +77,7 @@ namespace FileMonitorConsole
         /// <summary>
         /// Fires this event when the file was changed.
         /// </summary>
-        static void NotifyFileChanged(object sender, FileChangeEventArgs e)
+        static void NotifyFileChanged(object sender, FileChangedEventArgs e)
         {
             Console.WriteLine("NotifyFileChanged:" + e.FileName + ",eventType:" + e.eventType.ToString() + ",userName:" + e.UserName + ",processName:" + e.ProcessName);
         }

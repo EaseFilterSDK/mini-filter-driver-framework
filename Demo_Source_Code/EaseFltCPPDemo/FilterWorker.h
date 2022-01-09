@@ -12,7 +12,7 @@ MessageCallback(
    IN OUT	PMESSAGE_REPLY_DATA pReplyMessage);
 
 void 
-SendConfigInfoToFilter(ULONG FilterType,WCHAR* FilterFolder,ULONG IoRegistration 
+SendConfigInfoToFilter(ULONG FilterType,WCHAR* FilterFolder,ULONGLONG IoRegistration 
 	,ULONG AccessFlag,UCHAR* encryptionKey = NULL,ULONG keyLength = 0,UCHAR* iv =NULL,ULONG ivLength =  0);
 
 #endif

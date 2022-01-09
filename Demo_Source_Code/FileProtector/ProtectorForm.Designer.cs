@@ -88,7 +88,8 @@ namespace FileProtector
             this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
             this.toolStripButton_UnitTest = new System.Windows.Forms.ToolStripButton();
             this.toolStripButton_Help = new System.Windows.Forms.ToolStripButton();
-            this.listView_Info = new FastListView();
+            this.decryptFileWithOffsetToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.listView_Info = new FileProtector.FastListView();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -117,6 +118,7 @@ namespace FileProtector
             this.toolsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.encryptFileWithToolStripMenuItem,
             this.decryptFileToolStripMenuItem,
+            this.decryptFileWithOffsetToolStripMenuItem,
             this.getEncryptedFileIVTagToolStripMenuItem});
             this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
             this.toolsToolStripMenuItem.Size = new System.Drawing.Size(47, 20);
@@ -125,22 +127,22 @@ namespace FileProtector
             // encryptFileWithToolStripMenuItem
             // 
             this.encryptFileWithToolStripMenuItem.Name = "encryptFileWithToolStripMenuItem";
-            this.encryptFileWithToolStripMenuItem.Size = new System.Drawing.Size(193, 22);
+            this.encryptFileWithToolStripMenuItem.Size = new System.Drawing.Size(223, 22);
             this.encryptFileWithToolStripMenuItem.Text = "Encrypt file with API";
             this.encryptFileWithToolStripMenuItem.Click += new System.EventHandler(this.encryptFileWithToolStripMenuItem_Click);
             // 
             // decryptFileToolStripMenuItem
             // 
             this.decryptFileToolStripMenuItem.Name = "decryptFileToolStripMenuItem";
-            this.decryptFileToolStripMenuItem.Size = new System.Drawing.Size(193, 22);
+            this.decryptFileToolStripMenuItem.Size = new System.Drawing.Size(223, 22);
             this.decryptFileToolStripMenuItem.Text = "Decrypt file with API";
             this.decryptFileToolStripMenuItem.Click += new System.EventHandler(this.decryptFileToolStripMenuItem_Click);
             // 
             // getEncryptedFileIVTagToolStripMenuItem
             // 
             this.getEncryptedFileIVTagToolStripMenuItem.Name = "getEncryptedFileIVTagToolStripMenuItem";
-            this.getEncryptedFileIVTagToolStripMenuItem.Size = new System.Drawing.Size(193, 22);
-            this.getEncryptedFileIVTagToolStripMenuItem.Text = "Check Encrypt File Tag";
+            this.getEncryptedFileIVTagToolStripMenuItem.Size = new System.Drawing.Size(223, 22);
+            this.getEncryptedFileIVTagToolStripMenuItem.Text = "Check Encrypt File Tag Data ";
             this.getEncryptedFileIVTagToolStripMenuItem.Click += new System.EventHandler(this.getEncryptedFileIVTagToolStripMenuItem_Click);
             // 
             // exitToolStripMenuItem
@@ -253,6 +255,13 @@ namespace FileProtector
             this.toolStripButton_Help.Text = "Programming Help";
             this.toolStripButton_Help.Click += new System.EventHandler(this.toolStripButton_Help_Click);
             // 
+            // decryptFileWithOffsetToolStripMenuItem
+            // 
+            this.decryptFileWithOffsetToolStripMenuItem.Name = "decryptFileWithOffsetToolStripMenuItem";
+            this.decryptFileWithOffsetToolStripMenuItem.Size = new System.Drawing.Size(223, 22);
+            this.decryptFileWithOffsetToolStripMenuItem.Text = "Decrypt file with offset";
+            this.decryptFileWithOffsetToolStripMenuItem.Click += new System.EventHandler(this.decryptFileWithOffsetToolStripMenuItem_Click);
+            // 
             // listView_Info
             // 
             this.listView_Info.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -311,6 +320,7 @@ namespace FileProtector
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
         private System.Windows.Forms.ToolStripButton toolStripButton_UnitTest;
         private System.Windows.Forms.ToolStripButton toolStripButton_Help;
+        private ToolStripMenuItem decryptFileWithOffsetToolStripMenuItem;
     }
 }
 

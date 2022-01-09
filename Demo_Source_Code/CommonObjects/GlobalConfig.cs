@@ -154,8 +154,11 @@ namespace EaseFilter.CommonObjects
                 enableNotification = ConfigSetting.Get("enableNotification", enableNotification);
                 eventLevel = (EventLevel)ConfigSetting.Get("eventLevel", (uint)eventLevel);
 
-                masterPassword = ConfigSetting.Get("masterPassword", masterPassword);
-                masterPassword = Utils.AESEncryptDecryptStr(masterPassword, Utils.EncryptType.Decryption);
+                string savedMasterPassword = ConfigSetting.Get("masterPassword", "");
+                if (savedMasterPassword.Length > 0)
+                {
+                    masterPassword = Utils.AESEncryptDecryptStr(savedMasterPassword, Utils.EncryptType.Decryption);
+                }
 
                 includedUsers = ConfigSetting.Get("includedUsers", includedUsers);
                 excludedUsers = ConfigSetting.Get("excludedUsers", excludedUsers);

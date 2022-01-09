@@ -128,7 +128,7 @@ namespace EaseFilter.FilterControl
         /// <summary>
         /// register the file events, trigger the notifcation when the events were happened after the file was closed 
         /// </summary>
-        FilterAPI.MonitorFileEvents registerFileEvents = 0;
+        FilterAPI.FileChangedEvents registerFileEvents = 0;
 
         /// <summary>
         /// register the monitor notification of the IOs, this is 16bytes integer,
@@ -233,15 +233,15 @@ namespace EaseFilter.FilterControl
         /// <summary>
         /// Fires this event when the file was changed after the file handle closed
         /// </summary>
-        public event EventHandler<FileChangeEventArgs> NotifyFileWasChanged;
+        public event EventHandler<FileChangedEventArgs> NotifyFileWasChanged;
 
         #region monitor filter property
 
         /// <summary>
-        ///  Register the file events, trigger the notifcation when the events were happened after the file was closed. 
+        ///  Register the file events, trigger the notifcation when the events were happened after the file handle was closed. 
         ///  it is only enabled for monitor filter driver
         /// </summary>
-        public FilterAPI.MonitorFileEvents FileChangeEventFilter
+        public FilterAPI.FileChangedEvents FileChangeEventFilter
         {
             get { return registerFileEvents; }
             set { registerFileEvents = value; }
@@ -317,11 +317,11 @@ namespace EaseFilter.FilterControl
 
             try
             {
-                if (messageSend.MessageType == (uint)FilterAPI.FilterCommand.FILTER_SEND_FILE_CHANGED_EVENT)
+                if (messageSend.FilterCommand == (uint)FilterAPI.FilterCommand.FILTER_SEND_FILE_CHANGED_EVENT)
                 {                    
                     if (null != NotifyFileWasChanged)
                     {
-                        FileChangeEventArgs fileChangeEventArgs = new FileChangeEventArgs(messageSend);
+                        FileChangedEventArgs fileChangeEventArgs = new FileChangedEventArgs(messageSend);
                         NotifyFileWasChanged(this, fileChangeEventArgs);
                     }
                 }

@@ -1283,7 +1283,10 @@ FilterUnitTest()
 	{
 		PrintLastErrorMessage(L"Set filter type failed.");
 		return;
-	}
+	}	
+	
+	Sleep(5000);
+	
 	
 	IncludeExcludeProcessNameTest();
 

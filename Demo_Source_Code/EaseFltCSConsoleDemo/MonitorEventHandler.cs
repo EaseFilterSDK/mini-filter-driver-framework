@@ -288,7 +288,7 @@ namespace EaseFltCSConsoleDemo
         /// <summary>
         /// Fires this event when a file was changed after the file handle closed
         /// </summary>
-        public void NotifyFileWasChanged(object sender, FileChangeEventArgs e)
+        public void NotifyFileWasChanged(object sender, FileChangedEventArgs e)
         {
             DisplayEventMessage(e);
             //do your job here.

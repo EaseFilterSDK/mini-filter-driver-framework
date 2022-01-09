@@ -79,6 +79,8 @@ namespace ProcessMon
         {
             filterControl.ClearFilters();
 
+            GlobalConfig.Load();
+
             if (GlobalConfig.ProcessFilterRules.Count == 0)
             {
                 MessageBoxHelper.PrepToCenterMessageBoxOnForm(this);
@@ -90,10 +92,11 @@ namespace ProcessMon
                 ProcessFilter processFilter = filterRule.ToProcessFilter();
                 
                 processFilter.OnProcessCreation += processHandler.OnProcessCreation;
+                processFilter.OnProcessPreTermination += processHandler.OnProcessPreTermination;
                 processFilter.NotifyProcessWasBlocked += processHandler.NotifyProcessWasBlocked;
                 processFilter.NotifyProcessTerminated += processHandler.NotifyProcessTerminated;
                 processFilter.NotifyThreadCreation += processHandler.NotifyThreadCreation;
-                processFilter.NotifyProcessTerminated += processHandler.NotifyProcessTerminated;
+                processFilter.NotifyThreadTerminated += processHandler.NotifyThreadTerminated;
                 processFilter.NotifyProcessHandleInfo += processHandler.NotifyProcessHandleInfo;
                 processFilter.NotifyThreadHandleInfo += processHandler.NotifyThreadHandleInfo;
 

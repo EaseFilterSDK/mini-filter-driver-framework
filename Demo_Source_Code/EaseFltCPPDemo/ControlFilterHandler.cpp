@@ -24,10 +24,12 @@
 #define PrintMessage	wprintf //ToDebugger
 
 BOOL 
-ProcessControlFilter( IN	PMESSAGE_SEND_DATA pSendMessage,IN OUT	PMESSAGE_REPLY_DATA pReplyMessage )
+IOControlHandler( IN	PMESSAGE_SEND_DATA pSendMessage,IN OUT	PMESSAGE_REPLY_DATA pReplyMessage )
 {
 	BOOL ret = TRUE;
 
+	//if you want to block the I/O, you need to return STATUS_ACCESS_DENIED and complete the I/O in pre I/O operation.
+	//you can modify the I/O data in pre or post I/O operation.
 
 	try
 	{
@@ -36,12 +38,22 @@ ProcessControlFilter( IN	PMESSAGE_SEND_DATA pSendMessage,IN OUT	PMESSAGE_REPLY_D
 		{
 		
 		case PRE_CREATE:
-			{
-				//
-				//For reparse file/folder open.
-				//
+			{	
+				if ((pSendMessage->CreateOptions & FILE_DELETE_ON_CLOSE) > 0)
+				{
+					//the file will be deleted after the file handle was closed.
+					//you can block the create request with below setting:
+					
+					//pReplyMessage->FilterStatus = FILTER_COMPLETE_PRE_OPERATION;
+					//pReplyMessage->ReturnStatus = STATUS_ACCESS_DENIED;
+
+				}
+
 				if( IsTestFile(pSendMessage->FileName,pSendMessage->FileNameLength) )
 				{
+					//
+					//For reparse file/folder open test.
+					//
 				   PrintMessage(L"File:%ws will be redirected to new file:%ws open",pSendMessage->FileName,GetTestReparseFileName());
 
 				   //the file name must be unicode string, file name length must be less than MAX_PATH.
@@ -123,14 +135,44 @@ ProcessControlFilter( IN	PMESSAGE_SEND_DATA pSendMessage,IN OUT	PMESSAGE_REPLY_D
 
 		case PRE_SET_INFORMATION:
 			{
-				
+				switch(pSendMessage->FilterCommand)
+				{
+				case IOPreMoveOrRenameFile:
+					{
+						//File will be moved or renamed here.
+						ULONG newFileNameLength = pSendMessage->DataBufferLength;
+						WCHAR* newFileName = (WCHAR*)pSendMessage->DataBuffer;
+						PrintMessage( L"FileInformation Class FileRenameInformation = %d change to new file name:%ws\n"	,pSendMessage->InfoClass,newFileName);
 
-				//
-				//Change the information before write down to the file system.
-				//
+						//you can block the rename request with below setting:
+					
+						//pReplyMessage->FilterStatus = FILTER_COMPLETE_PRE_OPERATION;
+						//pReplyMessage->ReturnStatus = STATUS_ACCESS_DENIED;
+
+						break;
+					}
+
+				case IOPreDeleteFile:
+					{
+						//File will be deleted.
+						PrintMessage( L"FileInformation Class FileDispositionInformation = %d, the file is going to be deleted\n"	,pSendMessage->InfoClass);
+
+						//you can block the delete request with below setting:
+					
+						//pReplyMessage->FilterStatus = FILTER_COMPLETE_PRE_OPERATION;
+						//pReplyMessage->ReturnStatus = STATUS_ACCESS_DENIED;
+
+						break;
+					}
+				default:break;
+				}
+						
 				
 				if( IsTestFile(pSendMessage->FileName,pSendMessage->FileNameLength) )
 				{
+					//
+					//Change the information before write down to the file system test.
+					//
 					
 					if( pSendMessage->InfoClass == FileBasicInformation )
 					{
@@ -321,8 +363,7 @@ ProcessControlFilter( IN	PMESSAGE_SEND_DATA pSendMessage,IN OUT	PMESSAGE_REPLY_D
 
 			case PRE_FASTIO_WRITE:
 			case PRE_CACHE_WRITE:
-			case PRE_NOCACHE_WRITE:
-			case PRE_PAGING_IO_WRITE:
+			case PRE_NOCACHE_WRITE:			
 			{
 				//
 				//Modiy the write data buffer before it goes down to the file system.
@@ -358,7 +399,7 @@ ProcessControlFilter( IN	PMESSAGE_SEND_DATA pSendMessage,IN OUT	PMESSAGE_REPLY_D
 	}
 	catch(...)
 	{
-		PrintErrorMessage( L"ProcessControlFilter exception.",GetLastError());     
+		PrintErrorMessage( L"IOControlHandler exception.",GetLastError());     
 		ret = FALSE;
 	}
 

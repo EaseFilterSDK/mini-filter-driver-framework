@@ -30,15 +30,12 @@ using EaseFilter.CommonObjects;
 
 namespace FileProtector
 {
-    public partial class EncryptedFileForm : Form
+    public partial class DecryptedFileForm : Form
     {
-        Utils.EncryptType encryptType = Utils.EncryptType.Encryption;
 
-        public EncryptedFileForm(string formName, Utils.EncryptType encryptType)
+        public DecryptedFileForm()
         {
             InitializeComponent();
-            this.Text = formName;
-            this.encryptType = encryptType;
         }
 
         private void button_Start_Click(object sender, EventArgs e)
@@ -46,7 +43,8 @@ namespace FileProtector
 
             string passPhrase = textBox_PassPhrase.Text.Trim();
             string fileName = textBox_FileName.Text.Trim();
-            string targetFileName = textBox_TargetFileName.Text.Trim();
+            long offset = long.Parse(textBox_Offset.Text.Trim());
+            int decryptionLength = int.Parse(textBox_DecryptionLength.Text.Trim());
             string lastError = string.Empty;
             bool retVal = false;
 
@@ -65,57 +63,26 @@ namespace FileProtector
             }
 
             byte[] key = Utils.GetKeyByPassPhrase(passPhrase,32);
-            byte[] iv = Utils.GetRandomIV();
+            byte[] decryptedBuffer = new byte[decryptionLength];
+            int bytesDecrypted = 0;
 
-            if (encryptType == Utils.EncryptType.Encryption)
-            {
-                if (fileName.Equals(targetFileName, StringComparison.CurrentCulture))
-                {
-                    retVal = FilterAPI.AESEncryptFileWithTag(fileName, (uint)key.Length, key, (uint)iv.Length, iv, (uint)iv.Length, iv);
-                }
-                else
-                {
-                    FilterAPI.AESEncryptFileToFile(fileName, targetFileName, (uint)key.Length, key, (uint)iv.Length, iv, true);
-                    retVal = FilterAPI.AESEncryptFileToFileWithTag(fileName, targetFileName, (uint)key.Length, key, (uint)iv.Length, iv, (uint)iv.Length, iv);
-                }
-            }
-            else
-            {
-                uint ivLength = (uint)iv.Length;
-                retVal = FilterAPI.GetAESTagData(fileName, ref ivLength, iv);
-
-                if (!retVal)
-                {
-                    MessageBoxHelper.PrepToCenterMessageBoxOnForm(this);
-                    MessageBox.Show("Decrypt file failed with error " + FilterAPI.GetLastErrorMessage(), "Decryption", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return;
-                }
-
-                if (fileName.Equals(targetFileName, StringComparison.CurrentCulture))
-                {
-                    retVal = FilterAPI.AESDecryptFile(fileName, (uint)key.Length, key, (uint)iv.Length, iv);
-                }
-                else
-                {
-                    retVal = FilterAPI.AESDecryptFileToFile(fileName, targetFileName, (uint)key.Length, key, (uint)iv.Length, iv);
-                }
-
-            }
-
-
+            retVal = FilterAPI.AESDecryptBytes(fileName, (uint)key.Length, key, 0, null, offset, decryptionLength, decryptedBuffer, ref bytesDecrypted);
             if (!retVal)
             {
                 string errorMessage = FilterAPI.GetLastErrorMessage();
 
                 MessageBoxHelper.PrepToCenterMessageBoxOnForm(this);
-                MessageBox.Show(encryptType.ToString() + " file " + fileName + " failed with error:" + errorMessage, encryptType.ToString(), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Decrypt file " + fileName + " at offset " + offset.ToString() + " failed with error:" + errorMessage, "decryption offset", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
                 return;
             }
             else
             {
+                Array.Resize(ref decryptedBuffer, bytesDecrypted);
+
+                string decryptedText = Encoding.ASCII.GetString(decryptedBuffer);
                 MessageBoxHelper.PrepToCenterMessageBoxOnForm(this);
-                MessageBox.Show(encryptType.ToString() + " file " + fileName + " succeeded.", encryptType.ToString(), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(decryptedText, "Decrypted data", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
 
         }
@@ -139,7 +106,6 @@ namespace FileProtector
             if (openFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 textBox_FileName.Text = openFileDialog.FileName;
-                textBox_TargetFileName.Text = openFileDialog.FileName;
             }
         }
     }

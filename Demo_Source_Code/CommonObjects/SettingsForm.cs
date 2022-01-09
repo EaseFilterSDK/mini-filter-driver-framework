@@ -40,6 +40,22 @@ namespace EaseFilter.CommonObjects
         {
             try
             {
+                if (GlobalConfig.filterType == FilterAPI.FilterType.MONITOR_FILTER)
+                {
+                    //disable some non monitor settings
+                    label_protector1.Visible = false;
+                    textBox_ProtectedPID.Visible = false;
+                    button_InfoProtectPid.Visible = false;
+                    button_SelectProtectPID.Visible = false;
+
+                    checkBox_BlockFormatting.Visible = false;
+                    checkBox_BlockUSBRead.Visible = false;
+                    checkBox_BlockUSBWrite.Visible = false;
+                    button_InfoBlockVolumeFormatting.Visible = false;
+                    button_InfoBlockUSBWrite.Visible = false;
+                    button_InfoBlockUSBRead.Visible = false;
+                }
+
                 textBox_MaximumFilterMessage.Text = GlobalConfig.MaximumFilterMessages.ToString();
                 textBox_TransactionLog.Text = GlobalConfig.FilterMessageLogName;
                 checkBox_TransactionLog.Checked = GlobalConfig.EnableLogTransaction;

@@ -15,6 +15,6 @@ VOID
 EncryptionUnitTest();
 
 BOOL 
-ProcessEncryptionRequest( IN	PMESSAGE_SEND_DATA pSendMessage,IN OUT	PMESSAGE_REPLY_DATA pReplyMessage );
+EncryptionRequestHandler( IN	PMESSAGE_SEND_DATA pSendMessage,IN OUT	PMESSAGE_REPLY_DATA pReplyMessage );
 
 #endif

@@ -421,7 +421,7 @@ namespace EaseFilter.CommonObjects
             {
                 FileFilter fileFilter = new FileFilter(IncludeFileFilterMask);
                 fileFilter.AccessFlags = (FilterAPI.AccessFlag)AccessFlag;
-                fileFilter.FileChangeEventFilter = (FilterAPI.MonitorFileEvents)RegisterMonitorFileEvents;
+                fileFilter.FileChangeEventFilter = (FilterAPI.FileChangedEvents)RegisterMonitorFileEvents;
                 fileFilter.ControlFileIOEventFilter = RegisterControlFileIOEvents;
                 fileFilter.MonitorFileIOEventFilter = RegisterMonitorFileIOEvents;
                 fileFilter.IsResident = IsResident;
@@ -604,7 +604,7 @@ namespace EaseFilter.CommonObjects
                         case FilterAPI.EncryptionMethod.ENCRYPT_FILE_WITH_KEY_AND_IV_FROM_SERVICE:
                             {
                                 //with this setting, to open or create encrypted file, it will request the encryption key and iv from the user mode callback service.
-                                fileFilter.EnableEncryptKeyandIVFromService = true;
+                                fileFilter.EnableEncryptionKeyFromService = true;
                                 break;
                             }
                     }

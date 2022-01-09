@@ -22,6 +22,151 @@ using System.IO;
 
 namespace EaseFilter.FilterControl
 {
+    public class ProcessFilter : FileFilter
+    {
+        private string processNameFilterMask = string.Empty;
+
+        public event EventHandler<ProcessEventArgs> OnProcessCreation;
+        public event EventHandler<ProcessEventArgs> OnProcessPreTermination;
+        public event EventHandler<ProcessEventArgs> NotifyProcessWasBlocked;
+        public event EventHandler<ProcessEventArgs> NotifyProcessTerminated;
+        public event EventHandler<ProcessEventArgs> NotifyThreadCreation;
+        public event EventHandler<ProcessEventArgs> NotifyThreadTerminated;
+        public event EventHandler<ProcessEventArgs> NotifyProcessHandleInfo;
+        public event EventHandler<ProcessEventArgs> NotifyThreadHandleInfo;
+
+        Dictionary<string, uint> fileAccessRights = new Dictionary<string, uint>();
+        /// <summary>
+        /// the process name filter mask, i.e. "notepad.exe","c:\\windows\\*.exe" 
+        /// </summary>
+        public string ProcessNameFilterMask { get { return processNameFilterMask; } set { processNameFilterMask = value; } }
+
+        /// <summary>
+        /// The control flag to the processes which match the processNameFilterMask
+        /// </summary>
+        public uint ControlFlag { get; set; }
+
+        /// <summary>
+        /// Using the process Id to monitor or control the file access rights instead of the process name if it is not 0.
+        /// </summary>
+        public uint ProcessId { get; set; }
+
+        /// <summary>
+        /// The file access rights to the processes,the key is the FileFilterMask, the value is the access flag.
+        /// i.e. <c:\myfolder\*,ALLOW_MAX_RIGHT_ACCESS>
+        /// </summary>
+        public Dictionary<string, uint> FileAccessRights
+        {
+            get { return fileAccessRights; }
+            set { fileAccessRights = value; }
+        }
+
+        public ProcessFilter(string processNameFilterMask)
+            : base(processNameFilterMask)
+        {
+            ProcessNameFilterMask = processNameFilterMask;
+            this.FilterType = FilterAPI.FilterType.PROCESS_FILTER;
+        }
+
+        public override void SendNotification(FilterAPI.MessageSendData messageSend)
+        {
+
+            ProcessEventArgs processEventArgs = new ProcessEventArgs(messageSend);
+            if (messageSend.FilterCommand == (uint)FilterAPI.FilterCommand.FILTER_SEND_DENIED_PROCESS_EVENT)
+            {
+                if (null != NotifyProcessWasBlocked)
+                {
+                    processEventArgs.EventName = "ProcessCreationWasBlocked";
+                    NotifyProcessWasBlocked(this, processEventArgs);
+                }
+            }
+            else if (messageSend.FilterCommand == (uint)FilterAPI.FilterCommand.FILTER_SEND_PROCESS_TERMINATION_INFO)
+            {
+                if (null != NotifyProcessTerminated)
+                {
+                    processEventArgs.EventName = "NotifyProcessTerminated";
+                    NotifyProcessTerminated(this, processEventArgs);
+                }
+            }
+            else if (messageSend.FilterCommand == (uint)FilterAPI.FilterCommand.FILTER_SEND_THREAD_CREATION_INFO)
+            {
+                if (null != NotifyThreadCreation)
+                {
+                    processEventArgs.EventName = "NotifyThreadCreation";
+                    NotifyThreadCreation(this, processEventArgs);
+                }
+            }
+            else if (messageSend.FilterCommand == (uint)FilterAPI.FilterCommand.FILTER_SEND_THREAD_TERMINATION_INFO)
+            {
+                if (null != NotifyThreadTerminated)
+                {
+                    processEventArgs.EventName = "NotifyThreadTerminated";
+                    NotifyThreadTerminated(this, processEventArgs);
+                }
+            }
+            else if (messageSend.FilterCommand == (uint)FilterAPI.FilterCommand.FILTER_SEND_PROCESS_HANDLE_INFO)
+            {
+                if (null != NotifyProcessHandleInfo)
+                {
+                    processEventArgs.EventName = "NotifyProcessHandleInfo";
+                    NotifyProcessHandleInfo(this, processEventArgs);
+                }
+            }
+            else if (messageSend.FilterCommand == (uint)(uint)FilterAPI.FilterCommand.FILTER_SEND_THREAD_HANDLE_INFO)
+            {
+                if (null != NotifyThreadHandleInfo)
+                {
+                    processEventArgs.EventName = "NotifyThreadHandleInfo";
+                    NotifyThreadHandleInfo(this, processEventArgs);
+                }
+            }
+            else
+            {
+                base.SendNotification(messageSend);
+            }
+
+        }
+
+        public override bool FireControlEvents(FilterAPI.MessageSendData messageSend, ref FilterAPI.MessageReplyData messageReply)
+        {
+            if (messageSend.MessageType == (uint)FilterAPI.FilterCommand.FILTER_SEND_PROCESS_CREATION_INFO)
+            {
+                if (null != OnProcessCreation)
+                {
+                    ProcessEventArgs processEventArgs = new ProcessEventArgs(messageSend);
+                    processEventArgs.EventName = "OnProcessCreation";
+
+                    OnProcessCreation(this, processEventArgs);
+
+                    //you can block the process creation if return status is not success status.
+                    messageReply.ReturnStatus = (uint)processEventArgs.ReturnStatus;
+
+                }
+            }
+            else if (messageSend.MessageType == (uint)FilterAPI.FilterCommand.FILTER_SEND_PRE_TERMINATE_PROCESS_INFO)
+            {
+                if (null != OnProcessPreTermination)
+                {
+                    ProcessEventArgs processEventArgs = new ProcessEventArgs(messageSend);
+                    processEventArgs.EventName = "OnProcessPreTermination";
+
+                    OnProcessPreTermination(this, processEventArgs);
+
+                    //you can block the process creation if return status is not success status.
+                    messageReply.ReturnStatus = (uint)processEventArgs.ReturnStatus;
+
+                }
+            }
+            else
+            {
+                base.FireControlEvents(messageSend, ref messageReply);
+            }
+
+
+            return true;
+        }
+
+    }
     public class ProcessEventArgs : FileIOEventArgs
     {
         public ProcessEventArgs(FilterAPI.MessageSendData messageSend)
@@ -111,134 +256,5 @@ namespace EaseFilter.FilterControl
     }
 
 
-    public class ProcessFilter : FileFilter
-    {
-        private string processNameFilterMask = string.Empty;
-
-        public event EventHandler<ProcessEventArgs> OnProcessCreation;
-        public event EventHandler<ProcessEventArgs> NotifyProcessWasBlocked;
-        public event EventHandler<ProcessEventArgs> NotifyProcessTerminated;
-        public event EventHandler<ProcessEventArgs> NotifyThreadCreation;
-        public event EventHandler<ProcessEventArgs> NotifyThreadTerminated;
-        public event EventHandler<ProcessEventArgs> NotifyProcessHandleInfo;
-        public event EventHandler<ProcessEventArgs> NotifyThreadHandleInfo;
-
-        Dictionary<string, uint> fileAccessRights = new Dictionary<string, uint>();
-        /// <summary>
-        /// the process name filter mask, i.e. "notepad.exe","c:\\windows\\*.exe" 
-        /// </summary>
-        public string ProcessNameFilterMask { get { return processNameFilterMask; } set { processNameFilterMask = value; } }
-
-        /// <summary>
-        /// The control flag to the processes which match the processNameFilterMask
-        /// </summary>
-        public uint ControlFlag { get; set; }
-
-        /// <summary>
-        /// Using the process Id to monitor or control the file access rights instead of the process name if it is not 0.
-        /// </summary>
-        public uint ProcessId { get; set; }
-
-        /// <summary>
-        /// The file access rights to the processes,the key is the FileFilterMask, the value is the access flag.
-        /// i.e. <c:\myfolder\*,ALLOW_MAX_RIGHT_ACCESS>
-        /// </summary>
-        public Dictionary<string, uint> FileAccessRights
-        {
-            get { return fileAccessRights; }
-            set { fileAccessRights = value; }
-        }
-
-        public ProcessFilter(string processNameFilterMask)
-            : base(processNameFilterMask)
-        {
-            ProcessNameFilterMask = processNameFilterMask;
-            this.FilterType = FilterAPI.FilterType.PROCESS_FILTER;
-        }
-
-        public override void SendNotification(FilterAPI.MessageSendData messageSend)
-        {
-
-            ProcessEventArgs processEventArgs = new ProcessEventArgs(messageSend);
-            if (messageSend.FilterCommand == (uint)FilterAPI.FilterCommand.FILTER_SEND_DENIED_PROCESS_EVENT)
-            {
-                if (null != NotifyProcessWasBlocked)
-                {
-                    processEventArgs.EventName = "ProcessCreationWasBlocked";
-                    NotifyProcessWasBlocked(this, processEventArgs);
-                }
-            }
-            else if (messageSend.FilterCommand == (uint)FilterAPI.FilterCommand.FILTER_SEND_PROCESS_TERMINATION_INFO)
-            {
-                if (null != NotifyProcessTerminated)
-                {
-                    processEventArgs.EventName = "NotifyProcessTerminated";
-                    NotifyProcessTerminated(this, processEventArgs);
-                }
-            }
-            else if (messageSend.FilterCommand == (uint)FilterAPI.FilterCommand.FILTER_SEND_THREAD_CREATION_INFO)
-            {
-                if (null != NotifyThreadCreation)
-                {
-                    processEventArgs.EventName = "NotifyThreadCreation";
-                    NotifyThreadCreation(this, processEventArgs);
-                }
-            }
-            else if (messageSend.FilterCommand == (uint)FilterAPI.FilterCommand.FILTER_SEND_THREAD_TERMINATION_INFO)
-            {
-                if (null != NotifyThreadTerminated)
-                {
-                    processEventArgs.EventName = "NotifyThreadTerminated";
-                    NotifyThreadTerminated(this, processEventArgs);
-                }
-            }
-            else if (messageSend.FilterCommand == (uint)FilterAPI.FilterCommand.FILTER_SEND_PROCESS_HANDLE_INFO)
-            {
-                if (null != NotifyProcessHandleInfo)
-                {
-                    processEventArgs.EventName = "NotifyProcessHandleInfo";
-                    NotifyProcessHandleInfo(this, processEventArgs);
-                }
-            }
-            else if (messageSend.FilterCommand == (uint)(uint)FilterAPI.FilterCommand.FILTER_SEND_THREAD_HANDLE_INFO)
-            {                
-                if (null != NotifyThreadHandleInfo)
-                {
-                    processEventArgs.EventName = "NotifyThreadHandleInfo";
-                    NotifyThreadHandleInfo(this, processEventArgs);
-                }
-            }
-            else
-            {               
-                base.SendNotification(messageSend);
-            }
-
-        }
-
-        public override bool FireControlEvents(FilterAPI.MessageSendData messageSend, ref FilterAPI.MessageReplyData messageReply)
-        {
-            if (messageSend.MessageType == (uint)FilterAPI.FilterCommand.FILTER_SEND_PROCESS_CREATION_INFO)
-            {                
-                if( null != OnProcessCreation)
-                {
-                    ProcessEventArgs processEventArgs = new ProcessEventArgs(messageSend);
-                    processEventArgs.EventName = "OnProcessCreation";
-
-                    OnProcessCreation(this, processEventArgs);
-
-                    //you can block the process creation if return status is not success status.
-                    messageReply.ReturnStatus = (uint)processEventArgs.ReturnStatus;
-                  
-                }
-            }
-            else
-            {
-                base.FireControlEvents(messageSend, ref messageReply);
-            }
-
-
-           return true;
-        }
-
-    }
+    
 }

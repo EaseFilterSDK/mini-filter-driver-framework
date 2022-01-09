@@ -275,6 +275,21 @@ namespace ProcessMon
         }
 
         /// <summary>
+        /// Fires this event before the processs was terminiated.
+        /// </summary>
+        public void OnProcessPreTermination(object sender, ProcessEventArgs e)
+        {
+            DisplayEventMessage(e);
+            //do your job here.
+
+            //test block the process terminiation.
+            //if (e.ImageFileName.IndexOf("cmd.exe") >= 0)
+            //{
+            //    e.ReturnStatus = NtStatus.Status.AccessDenied;
+            //}
+        }
+
+        /// <summary>
         /// Fires this event when the process creation was blocked by the setting,
         /// if the control flag 'ENABLE_SEND_PROCESS_DENIED_EVENT' was set.
         /// </summary>

@@ -53,10 +53,9 @@
             this.checkBox_DisableDir = new System.Windows.Forms.CheckBox();
             this.checkBox_OutputMessageToConsole = new System.Windows.Forms.CheckBox();
             this.label12 = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
             this.button_SelectProtectPID = new System.Windows.Forms.Button();
             this.textBox_ProtectedPID = new System.Windows.Forms.TextBox();
-            this.label2 = new System.Windows.Forms.Label();
+            this.label_protector1 = new System.Windows.Forms.Label();
             this.button_EditFilterRule = new System.Windows.Forms.Button();
             this.button_DeleteFilter = new System.Windows.Forms.Button();
             this.button_AddFilter = new System.Windows.Forms.Button();
@@ -101,10 +100,9 @@
             this.groupBox1.Controls.Add(this.checkBox_DisableDir);
             this.groupBox1.Controls.Add(this.checkBox_OutputMessageToConsole);
             this.groupBox1.Controls.Add(this.label12);
-            this.groupBox1.Controls.Add(this.label4);
             this.groupBox1.Controls.Add(this.button_SelectProtectPID);
             this.groupBox1.Controls.Add(this.textBox_ProtectedPID);
-            this.groupBox1.Controls.Add(this.label2);
+            this.groupBox1.Controls.Add(this.label_protector1);
             this.groupBox1.Controls.Add(this.button_EditFilterRule);
             this.groupBox1.Controls.Add(this.button_DeleteFilter);
             this.groupBox1.Controls.Add(this.button_AddFilter);
@@ -197,7 +195,7 @@
             // button_InfoBlockVolumeFormatting
             // 
             this.button_InfoBlockVolumeFormatting.Image = global::EaseFilter.CommonObjects.Properties.Resources.about;
-            this.button_InfoBlockVolumeFormatting.Location = new System.Drawing.Point(550, 248);
+            this.button_InfoBlockVolumeFormatting.Location = new System.Drawing.Point(550, 275);
             this.button_InfoBlockVolumeFormatting.Name = "button_InfoBlockVolumeFormatting";
             this.button_InfoBlockVolumeFormatting.Size = new System.Drawing.Size(26, 20);
             this.button_InfoBlockVolumeFormatting.TabIndex = 124;
@@ -207,7 +205,7 @@
             // button_InfoVolumeDetach
             // 
             this.button_InfoVolumeDetach.Image = global::EaseFilter.CommonObjects.Properties.Resources.about;
-            this.button_InfoVolumeDetach.Location = new System.Drawing.Point(550, 274);
+            this.button_InfoVolumeDetach.Location = new System.Drawing.Point(550, 247);
             this.button_InfoVolumeDetach.Name = "button_InfoVolumeDetach";
             this.button_InfoVolumeDetach.Size = new System.Drawing.Size(26, 20);
             this.button_InfoVolumeDetach.TabIndex = 123;
@@ -267,7 +265,7 @@
             // button_InfoSendBuffer
             // 
             this.button_InfoSendBuffer.Image = global::EaseFilter.CommonObjects.Properties.Resources.about;
-            this.button_InfoSendBuffer.Location = new System.Drawing.Point(550, 219);
+            this.button_InfoSendBuffer.Location = new System.Drawing.Point(548, 219);
             this.button_InfoSendBuffer.Name = "button_InfoSendBuffer";
             this.button_InfoSendBuffer.Size = new System.Drawing.Size(26, 20);
             this.button_InfoSendBuffer.TabIndex = 73;
@@ -277,7 +275,7 @@
             // checkBox_CallbackVolumeDetached
             // 
             this.checkBox_CallbackVolumeDetached.AutoSize = true;
-            this.checkBox_CallbackVolumeDetached.Location = new System.Drawing.Point(341, 274);
+            this.checkBox_CallbackVolumeDetached.Location = new System.Drawing.Point(341, 247);
             this.checkBox_CallbackVolumeDetached.Name = "checkBox_CallbackVolumeDetached";
             this.checkBox_CallbackVolumeDetached.Size = new System.Drawing.Size(189, 17);
             this.checkBox_CallbackVolumeDetached.TabIndex = 72;
@@ -297,7 +295,7 @@
             // checkBox_BlockFormatting
             // 
             this.checkBox_BlockFormatting.AutoSize = true;
-            this.checkBox_BlockFormatting.Location = new System.Drawing.Point(341, 248);
+            this.checkBox_BlockFormatting.Location = new System.Drawing.Point(341, 275);
             this.checkBox_BlockFormatting.Name = "checkBox_BlockFormatting";
             this.checkBox_BlockFormatting.Size = new System.Drawing.Size(167, 17);
             this.checkBox_BlockFormatting.TabIndex = 70;
@@ -356,16 +354,6 @@
             this.label12.TabIndex = 61;
             this.label12.Text = "(The maximum message items to display in the console)";
             // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label4.Location = new System.Drawing.Point(205, 44);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(171, 12);
-            this.label4.TabIndex = 57;
-            this.label4.Text = "(prevent the processes being termiated.)";
-            // 
             // button_SelectProtectPID
             // 
             this.button_SelectProtectPID.Location = new System.Drawing.Point(548, 20);
@@ -384,14 +372,14 @@
             this.textBox_ProtectedPID.Size = new System.Drawing.Size(324, 20);
             this.textBox_ProtectedPID.TabIndex = 55;
             // 
-            // label2
+            // label_protector1
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(10, 20);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(114, 13);
-            this.label2.TabIndex = 54;
-            this.label2.Text = "Add protect process Id";
+            this.label_protector1.AutoSize = true;
+            this.label_protector1.Location = new System.Drawing.Point(10, 20);
+            this.label_protector1.Name = "label_protector1";
+            this.label_protector1.Size = new System.Drawing.Size(114, 13);
+            this.label_protector1.TabIndex = 54;
+            this.label_protector1.Text = "Add protect process Id";
             // 
             // button_EditFilterRule
             // 
@@ -568,9 +556,8 @@
         private System.Windows.Forms.Button button_EditFilterRule;
         private System.Windows.Forms.Button button_SelectProtectPID;
         private System.Windows.Forms.TextBox textBox_ProtectedPID;
-        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label label_protector1;
         private System.Windows.Forms.Label label12;
-        private System.Windows.Forms.Label label4;
         private System.Windows.Forms.CheckBox checkBox_OutputMessageToConsole;
         private System.Windows.Forms.CheckBox checkBox_DisableDir;
         private System.Windows.Forms.CheckBox checkBox_SendBuffer;

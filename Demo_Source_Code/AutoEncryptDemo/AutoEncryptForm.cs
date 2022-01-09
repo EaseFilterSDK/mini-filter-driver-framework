@@ -42,7 +42,7 @@ namespace AutoEncryptDemo
 
             string passPhrase = textBox_PassPhrase.Text.Trim();
 
-            string licenseKey = "7ECF8-58DEE-755D3-C186E-C32CF-6C696";
+            string licenseKey = GlobalConfig.licenseKey;
             GlobalConfig.filterType = FilterAPI.FilterType.CONTROL_FILTER | FilterAPI.FilterType.ENCRYPTION_FILTER| FilterAPI.FilterType.PROCESS_FILTER;
 
             bool ret = false;
@@ -66,12 +66,21 @@ namespace AutoEncryptDemo
                 
                 //enable the encryption for the filter rule.
                 fileFilter.EnableEncryption = true;
+
+                fileFilter.EnableEncryptionKeyFromService = checkBox_EnableUniqueEncryptionKey.Checked;
+
+                fileFilter.OnFilterRequestEncryptKey += OnFilterRequestEncryptKey;
                 
                 //get the 256bits encryption key with the passphrase
                 fileFilter.EncryptionKey = Utils.GetKeyByPassPhrase(passPhrase, 32);
 
                 //disable the decyrption right, read the raw encrypted data for all except the authorized processes or users.
                 fileFilter.EnableReadEncryptedData = false;
+
+                if (textBox_AuthorizedProcessesForEncryptFolder.Text.Trim().Length == 0)
+                {
+                    authorizedProcessesForEncryptFolder = "*";
+                }
 
                 string[] processNames = authorizedProcessesForEncryptFolder.Split(new char[] { ';' });
                 if (processNames.Length > 0)
@@ -119,6 +128,8 @@ namespace AutoEncryptDemo
                 //enable the encryption for the filter rule.
                 decryptFileFilter.EnableEncryption = true;
 
+                decryptFileFilter.OnFilterRequestEncryptKey += OnFilterRequestEncryptKey;
+
                 //get the 256bits encryption key with the passphrase
                 decryptFileFilter.EncryptionKey = Utils.GetKeyByPassPhrase(passPhrase, 32);
 
@@ -163,6 +174,34 @@ namespace AutoEncryptDemo
             }
         }
 
+        /// <summary>
+        /// Fires this event when the encrypted file requests the encryption key.
+        /// </summary>
+        public void OnFilterRequestEncryptKey(object sender, EncryptEventArgs e)
+        {
+            //if you want to block this file access, you can return accessdenied status.
+            //e.ReturnStatus = NtStatus.Status.AccessDenied;
+
+            e.ReturnStatus = NtStatus.Status.Success;
+
+            if (e.IsNewCreatedFile)
+            {
+                //for the new created file, you can add your custom tag data to the header of the encyrpted file.
+                //here we just add the file name as the tag data.
+                e.EncryptionTag = UnicodeEncoding.Unicode.GetBytes(e.FileName);
+            }
+            else
+            {
+                //here is the tag data if you set custom tag data when the new created file requested the key.
+                byte[] tagData = e.EncryptionTag;
+            }
+
+            //here is the encyrption key for the encrypted file, you can set it with your own key.
+            e.EncryptionKey = Utils.GetKeyByPassPhrase(GlobalConfig.MasterPassword, 32);
+            e.IV = Utils.GetIVByPassPhrase(GlobalConfig.MasterPassword);
+
+        }
+
         private void button_Stop_Click(object sender, EventArgs e)
         {
             button_Stop.Enabled = false;
@@ -184,5 +223,19 @@ namespace AutoEncryptDemo
             GlobalConfig.Stop();
             filterControl.StopFilter();
         }
+
+        private void checkBox_EnableUniqueEncryptionKey_CheckedChanged(object sender, EventArgs e)
+        {
+            if (checkBox_EnableUniqueEncryptionKey.Checked)
+            {
+                textBox_PassPhrase.Enabled = false;
+            }
+            else
+            {
+                textBox_PassPhrase.Enabled = true;
+            }
+        }
+
+       
     }
 }

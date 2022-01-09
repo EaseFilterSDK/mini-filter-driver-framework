@@ -13,7 +13,7 @@
 
 //Purchase a license key with the link: http://www.EaseFilter.com/Order.htm
 //Email us to request a trial key: info@EaseFilter.com //free email is not accepted.
-#define	registerKey "********************************************"
+#define	registerKey "***********************************"
 
 #define MESSAGE_SEND_VERIFICATION_NUMBER	0xFF000001
 #define	INET_ADDR_STR_LEN					22
@@ -223,28 +223,225 @@ typedef enum _FilterCommand
 	/// send the volume information when it was detached
 	/// </summary>
 	FILTER_SEND_DETACHED_VOLUME_INFO = 0x0001000f,
-	/// <summary>
+    /// <summary>
     /// send the event when the file IO was blocked by the config setting.
+	// if the flag ENABLE_SEND_DENIED_EVENT was enabled in global boolean setting.
     /// </summary>
     FILTER_SEND_DENIED_FILE_IO_EVENT = 0x00010010,
     /// <summary>
     /// send the event when the volume dismount was blocked by the config setting.
+	// if the flag ENABLE_SEND_DENIED_EVENT was enabled in global boolean setting.
     /// </summary>
     FILTER_SEND_DENIED_VOLUME_DISMOUNT_EVENT = 0x00010011,
     /// <summary>
     /// send the event when the process creation was blocked by the config setting.
+	// if the flag ENABLE_SEND_DENIED_EVENT was enabled in global boolean setting.
     /// </summary>
     FILTER_SEND_DENIED_PROCESS_EVENT = 0x00010012,
     /// <summary>
     /// send the event when the registry access was blocked by the config setting.
+	// if the flag ENABLE_SEND_DENIED_EVENT was enabled in global boolean setting.
     /// </summary>
     FILTER_SEND_DENIED_REGISTRY_ACCESS_EVENT = 0x00010013,
-    /// <summary>
+	/// <summary>
     /// send the event when the protected process was terminiated ungratefully.
+	// if the flag ENABLE_SEND_DENIED_EVENT was enabled in global boolean setting.
     /// </summary>
     FILTER_SEND_DENIED_PROCESS_TERMINATED_EVENT = 0x00010014,
-
+	/// <summary>
+    /// send the event when the read from USB was blocked if the flag BLOCK_USB_READ was enabled in volume control flag.
+	// if the flag ENABLE_SEND_DENIED_EVENT was enabled in global boolean setting.
+    /// </summary>
+    FILTER_SEND_DENIED_USB_READ_EVENT = 0x00010015,
+	/// <summary>
+    /// send the event when the write to USB was blocked if the flag BLOCK_USB_WRITE was enabled in volume control flag.
+	// if the flag ENABLE_SEND_DENIED_EVENT was enabled in global boolean setting.
+    /// </summary>
+    FILTER_SEND_DENIED_USB_WRITE_EVENT = 0x00010016,
+	/// <summary>
+    /// send process information before the process is going to be terminated.
+    /// </summary>
+    FILTER_SEND_PRE_TERMINATE_PROCESS_INFO = 0x00010017,
+	
 }FilterCommand;
+
+//the IO name of the IO operation.
+typedef enum _IOName
+{
+    /// <summary>
+    /// Fires this event before the file create IO was going down to the file system.
+    /// </summary>
+    IOPreFileCreate = 0x00020001,
+    /// <summary>
+    /// Fires this event after the file create IO was returned from the file system.
+    /// </summary>
+    IOPostFileCreate,
+    /// <summary>
+    /// Fires this event before the file read IO was going down to the file system.
+    /// </summary>
+    IOPreFileRead,
+    /// <summary>
+    /// Fires this event after the file read IO was returned from the file system.
+    /// </summary>
+    IOPostFileRead,
+    /// <summary>
+    /// Fires this event before the file write IO was going down to the file system.
+    /// </summary>
+    IOPreFileWrite,
+    /// <summary>
+    /// Fires this event after the file write IO was returned from the file system.
+    /// </summary>
+    IOPostFileWrite,
+    /// <summary>
+    /// Fires this event before the query file size IO was going down to the file system.
+    /// </summary>
+    IOPreQueryFileSize,
+    /// <summary>
+    /// Fires this event after the query file size IO was returned from the file system.
+    /// </summary>
+    IOPostQueryFileSize,
+    /// <summary>
+    /// Fires this event before the query file basic info IO was going down to the file system.
+    /// </summary>
+    IOPreQueryFileBasicInfo,
+    /// <summary>
+    /// Fires this event after the query file basic info IO was returned from the file system.
+    /// </summary>
+    IOPostQueryFileBasicInfo,
+    /// <summary>
+    /// Fires this event before the query file standard info IO was going to the file system.
+    /// </summary>
+    IOPreQueryFileStandardInfo,
+    /// <summary>
+    /// Fires this event after the query file standard info IO was returned from the file system.
+    /// </summary>
+    IOPostQueryFileStandardInfo,
+    /// <summary>
+    /// Fires this event before the query file network info IO was going down to the file system.
+    /// </summary>
+    IOPreQueryFileNetworkInfo,
+    /// <summary>
+    /// Fires this event after the query file network info IO was returned from the file system.
+    /// </summary>
+    IOPostQueryFileNetworkInfo,
+    /// <summary>
+    /// Fires this event before the query file Id IO was going down to the file system.
+    /// </summary>
+    IOPreQueryFileId,
+    /// <summary>
+    /// Fires this event after the query file Id IO was returned from the file system.
+    /// </summary>
+    IOPostQueryFileId,
+    /// <summary>
+    /// Fires this event before the query file info IO was going down to the file system
+    /// if the query file information class is not 'QueryFileSize','QueryFileBasicInfo'
+    /// ,'QueryFileStandardInfo','QueryFileNetworkInfo' or 'QueryFileId'.
+    /// </summary>
+    IOPreQueryFileInfo,
+    /// <summary>
+    /// Fires this event after the query file info IO was returned from the file system.
+    /// </summary>
+    IOPostQueryFileInfo,
+    /// <summary>
+    /// Fires this event before the set file size IO was going down to the file system.
+    /// </summary>         
+    IOPreSetFileSize,
+    /// <summary>
+    /// Fires this event after the set file size IO was returned from the file system.
+    /// </summary>
+    IOPostSetFileSize,
+    /// <summary>
+    /// Fires this event before the set file basic info IO was going down to the file system.
+    /// </summary>
+    IOPreSetFileBasicInfo,
+    /// <summary>
+    /// Fires this event after the set file basic info IO was returned from the file system.
+    /// </summary>
+    IOPostSetFileBasicInfo,
+    /// <summary>
+    /// Fires this event before the set file standard info IO was going down to the file system.
+    /// </summary>
+    IOPreSetFileStandardInfo,
+    /// <summary>
+    /// Fires this event after the set file standard info IO was returned from the file system.
+    /// </summary>
+    IOPostSetFileStandardInfo,
+    /// <summary>
+    /// Fires this event before the set file network info was going down to the file system.
+    /// </summary>
+    IOPreSetFileNetworkInfo,
+    /// <summary>
+    /// Fires this event after the set file network info was returned from the file system.
+    /// </summary>
+    IOPostSetFileNetworkInfo,
+    /// <summary>
+    /// Fires this event before the file move or rename IO was going down to the file system.
+    /// </summary>
+    IOPreMoveOrRenameFile,
+    /// <summary>
+    /// Fires this event after the file move or rename IO was returned from the file system.
+    /// </summary>
+    IOPostMoveOrRenameFile,
+    /// <summary>
+    /// Fires this event before the file delete IO was going down to the file system.
+    /// </summary>
+    IOPreDeleteFile,
+    /// <summary>
+    /// Fires this event after the file delete IO was returned from the file system.
+    /// </summary>
+    IOPostDeleteFile,
+    /// <summary>
+    /// Fires this event before the set file info IO was going down to the file system
+    /// if the information class is not 'SetFileSize','SetFileBasicInfo'
+    /// ,'SetFileStandardInfo','SetFileNetworkInfo'.
+    /// </summary>
+    IOPreSetFileInfo,
+    /// <summary>
+    /// Fires this event after the set file info IO was returned from the file system.
+    /// </summary>
+    IOPostSetFileInfo,
+    /// <summary>
+    /// Fires this event before the query directory file info was going down to the file system.
+    /// </summary>
+    IOPreQueryDirectoryFile,
+    /// <summary>
+    /// Fires this event after the query directory file info was returned from the file system.
+    /// </summary>
+    IOPostQueryDirectoryFile,
+    /// <summary>
+    /// Fires this event before the query file security IO was going down to the file system.
+    /// </summary>
+    IOPreQueryFileSecurity,
+    /// <summary>
+    /// Fires this event after the query file security IO was returned from the file system.
+    /// </summary>
+    IOPostQueryFileSecurity,
+    /// <summary>
+    /// Fires this event before the set file security IO was going down to the file system.
+    /// </summary>
+    IOPreSetFileSecurity,
+    /// <summary>
+    /// Fires thiis event after the set file security IO was returned from the file system.
+    /// </summary>
+    IOPostSetFileSecurity,
+    /// <summary>
+    /// Fire this event before the file handle close IO was going down to the file system.
+    /// </summary>
+    IOPreFileHandleClose,
+    /// <summary>
+    /// Fires this event after the file handle close IO was returned from the file system.
+    /// </summary>
+    IOPostFileHandleClose,
+    /// <summary>
+    /// Fires this event before the file close IO was going down to the file system.
+    /// </summary>
+    IOPreFileClose,
+    /// <summary>
+    /// Fires this event after the file close IO was returned from the file system.
+    /// </summary>
+    IOPostFileClose,      
+
+}IOName;
 
  /// <summary>
 /// The volume control flag.
@@ -267,6 +464,15 @@ typedef enum  _VolumeControlFlag
     ///Prevent the attched volumes from being formatted or dismounted.
     /// </summary>
     BLOCK_VOLUME_DISMOUNT			= 0x00000008,
+	/// <summary>
+    ///Block the read from the USB disk.
+    /// </summary>
+    BLOCK_USB_READ = 0x00000010,
+    /// <summary>
+    ///Block the write to the USB disk
+    /// </summary>
+    BLOCK_USB_WRITE = 0x00000020,
+
                                   
 }VolumeControlFlag;
 
@@ -312,6 +518,11 @@ typedef enum  _ProcessControlFlag
     /// deny the new process creation if the flag is on
     /// </summary>
     DENY_NEW_PROCESS_CREATION = 0x00000001,
+	/// <summary>
+    /// send the callback reqeust before the process is going to be terminated.
+	/// you can block the process termination in the callback function.
+    /// </summary>
+    PROCESS_PRE_TERMINATION_REQUEST = 0x00000002,
     /// <summary>
     /// Get a notification when a new process is being created.
     /// </summary>
@@ -417,77 +628,166 @@ typedef enum  _RegCallbackClass
     Reg_Pre_Flush_Key = 0x40000000,
     Reg_Post_Flush_Key = 0x80000000,
 
+	//high field for reg callback class
+	#define    Reg_Pre_Load_Key  (ULONGLONG)0x100000000
+	#define    Reg_Post_Load_Key  (ULONGLONG)0x200000000
+	#define    Reg_Pre_UnLoad_Key  (ULONGLONG)0x400000000
+	#define    Reg_Post_UnLoad_Key  (ULONGLONG)0x800000000
+	#define    Reg_Pre_Query_Key_Security  (ULONGLONG)0x1000000000
+	#define	   Reg_Post_Query_Key_Security  (ULONGLONG)0x2000000000
+	#define    Reg_Pre_Set_Key_Security  (ULONGLONG)0x4000000000
+	#define    Reg_Post_Set_Key_Security  (ULONGLONG)0x8000000000
+		//
+		// per-object context cleanup
+		//
+	#define    Reg_Callback_Object_Context_Cleanup  (ULONGLONG)0x10000000000
+		//
+		// new in Vista SP2 
+		//
+	#define    Reg_Pre_Restore_Key  (ULONGLONG)0x20000000000
+	#define    Reg_Post_Restore_Key  (ULONGLONG)0x40000000000
+	#define    Reg_Pre_Save_Key  (ULONGLONG)0x80000000000
+	#define    Reg_Post_Save_Key  (ULONGLONG)0x100000000000
+	#define    Reg_Pre_Replace_Key  (ULONGLONG)0x200000000000
+	#define    Reg_Post_Replace_Key  (ULONGLONG)0x400000000000
+
+	//
+	//new in Windows 10
+	//
+	#define    Reg_Pre_Query_KeyName  (ULONGLONG)0x800000000000
+	#define    Reg_Post_Query_KeyName  (ULONGLONG)0x1000000000000
+
+	#define    Max_Reg_Callback_Class  (ULONGLONG)0xFFFFFFFFFFFFFFFF
+
+
 }RegCallbackClass;
 
-//high field for reg callback class
-#define    Reg_Pre_Load_Key  (ULONGLONG)0x100000000
-#define    Reg_Post_Load_Key  (ULONGLONG)0x200000000
-#define    Reg_Pre_UnLoad_Key  (ULONGLONG)0x400000000
-#define    Reg_Post_UnLoad_Key  (ULONGLONG)0x800000000
-#define    Reg_Pre_Query_Key_Security  (ULONGLONG)0x1000000000
-#define	   Reg_Post_Query_Key_Security  (ULONGLONG)0x2000000000
-#define    Reg_Pre_Set_Key_Security  (ULONGLONG)0x4000000000
-#define    Reg_Post_Set_Key_Security  (ULONGLONG)0x8000000000
-    //
-    // per-object context cleanup
-    //
-#define    Reg_Callback_Object_Context_Cleanup  (ULONGLONG)0x10000000000
-    //
-    // new in Vista SP2 
-    //
-#define    Reg_Pre_Restore_Key  (ULONGLONG)0x20000000000
-#define    Reg_Post_Restore_Key  (ULONGLONG)0x40000000000
-#define    Reg_Pre_Save_Key  (ULONGLONG)0x80000000000
-#define    Reg_Post_Save_Key  (ULONGLONG)0x100000000000
-#define    Reg_Pre_Replace_Key  (ULONGLONG)0x200000000000
-#define    Reg_Post_Replace_Key  (ULONGLONG)0x400000000000
-
-//
-//new in Windows 10
-//
-#define    Reg_Pre_Query_KeyName  (ULONGLONG)0x800000000000
-#define    Reg_Post_Query_KeyName  (ULONGLONG)0x1000000000000
-
-#define    Max_Reg_Callback_Class  (ULONGLONG)0xFFFFFFFFFFFFFFFF
-
-//the I/O types of the monitor or control filter can intercept.
-typedef enum _MessageType
+//the I/O types of the monitor or control filter can intercept if you register the class.
+//the monitor IO only can register the post IO, it meant you can get the notification after the IO was completed.
+//the control IO can register both pre IO before the IO was processed by the file system and post IO after the IO 
+//was processed by the file system, the driver will wait for the response of the callback function.
+typedef  enum _IOCallbackClass
 {
-	
+	//this is the IRP_MJ_CREATE which requests to open a handle 
 	PRE_CREATE							= 0x00000001,
 	POST_CREATE							= 0x00000002,
+
+	//this is the filter only intercept the IO when the file was created.
+	#define PRE_NEW_FILE_CREATED  (ULONGLONG)0x0000000100000000
+	#define POST_NEW_FILE_CREATED  (ULONGLONG)0x0000000200000000
+
+	//this is the fast I/O read,return true when the data is in cache,
+	//if the data is not in cache, a new IRP cache read request will be generated.
 	PRE_FASTIO_READ						= 0x00000004,
 	POST_FASTIO_READ					= 0x00000008,
+
+	//this is the IRP_MJ_READ cache read, the data will be read from the cache, 
+	//if the data is not in cache, a paging read request will be generated.
 	PRE_CACHE_READ						= 0x00000010,
 	POST_CACHE_READ						= 0x00000020,
+
+	//this is the IRP_MJ_READ no cache read, the data read will be bypassed the cache manager.
 	PRE_NOCACHE_READ					= 0x00000040,
 	POST_NOCACHE_READ					= 0x00000080,
+
+	//this is the IRP_MJ_READ paging read, the data will be read from the disk to the cache.
 	PRE_PAGING_IO_READ					= 0x00000100,
 	POST_PAGING_IO_READ					= 0x00000200,
+
+	//this is the fast I/O write,the data was written to the cache if the request is satisfied immediately,
+	//or a IRP cache write will be generated.
 	PRE_FASTIO_WRITE					= 0x00000400,
 	POST_FASTIO_WRITE					= 0x00000800,
+
+	//this is the IRP_MJ_WRITE I/O cache write,the data was written to the cache, the IRP paging write will be gernerated after the cache write.
 	PRE_CACHE_WRITE						= 0x00001000,
 	POST_CACHE_WRITE					= 0x00002000,
+
+	//this is the IRP_MJ_WRITE no cache write, the data read will be written to the disk directly and bypass the cache manager.
 	PRE_NOCACHE_WRITE					= 0x00004000,
 	POST_NOCACHE_WRITE					= 0x00008000,
+
+	//this is the IRP_MJ_WRITE paging write, the data will be written from the cache to the disk.
 	PRE_PAGING_IO_WRITE					= 0x00010000,
 	POST_PAGING_IO_WRITE				= 0x00020000,
+
+	//this the IRP_QUERY_INFORMATION to query the file information. 
+	//if you register this class, the filter driver will intercept all requests to query information.
+	//if you want to only filter speecific query,i.e. only file size, you can register the below specific class.
 	PRE_QUERY_INFORMATION				= 0x00040000,
 	POST_QUERY_INFORMATION				= 0x00080000,
+
+	//this the IRP_QUERY_INFORMATION  with specific info class to query file size
+	#define PRE_QUERY_FILE_SIZE  (ULONGLONG)0x0000000400000000
+	#define POST_QUERY_FILE_SIZE  (ULONGLONG)0x0000000800000000
+
+	//this the IRP_QUERY_INFORMATION  with specific info class to query file basic information
+	#define PRE_QUERY_FILE_BASIC_INFO  (ULONGLONG)0x0000001000000000
+	#define POST_QUERY_FILE_BASIC_INFO  (ULONGLONG)0x0000002000000000
+
+	//this the IRP_QUERY_INFORMATION  with specific info class to query file standard information
+	#define PRE_QUERY_FILE_STANDARD_INFO  (ULONGLONG)0x0000004000000000
+	#define POST_QUERY_FILE_STANDARD_INFO  (ULONGLONG)0x0000008000000000
+
+	//this the IRP_QUERY_INFORMATION  with specific info class to query file network information
+	#define PRE_QUERY_FILE_NETWORK_INFO  (ULONGLONG)0x0000010000000000
+	#define POST_QUERY_FILE_NETWORK_INFO  (ULONGLONG)0x0000020000000000
+
+	//this the IRP_QUERY_INFORMATION  with specific info class to query file Id
+	#define PRE_QUERY_FILE_ID  (ULONGLONG)0x0000040000000000
+	#define POST_QUERY_FILE_ID  (ULONGLONG)0x0000080000000000
+
+	//this the IRP_SET_INFORMATION to set the file information.
+	//if you register this class,the filter driver will intercept all requests to set the file information.
+	//if you want to only intercept specific set information, you can register below specific class.
 	PRE_SET_INFORMATION					= 0x00100000,
 	POST_SET_INFORMATION				= 0x00200000,
+
+	//this the IRP_SET_INFORMATION with specific info class to set file size
+	#define PRE_SET_FILE_SIZE  (ULONGLONG)0x0000400000000000
+	#define POST_SET_FILE_SIZE  (ULONGLONG)0x0000800000000000
+
+	//this the IRP_SET_INFORMATION with specific info class to set file basic information
+	#define PRE_SET_FILE_BASIC_INFO  (ULONGLONG)0x0001000000000000
+	#define POST_SET_FILE_BASIC_INFO  (ULONGLONG)0x0002000000000000
+
+	//this the IRP_SET_INFORMATION with specific info class to set file standard information
+	#define PRE_SET_FILE_STANDARD_INFO  (ULONGLONG)0x0004000000000000
+	#define POST_SET_FILE_STANDARD_INFO  (ULONGLONG)0x0008000000000000
+
+	//this the IRP_SET_INFORMATION with specific info class to set file network information
+	#define PRE_SET_FILE_NETWORK_INFO  (ULONGLONG)0x0010000000000000
+	#define POST_SET_FILE_NETWORK_INFO  (ULONGLONG)0x0020000000000000
+
+	//this the IRP_SET_INFORMATION with specific info class to rename the file
+	#define PRE_RENAME_FILE   (ULONGLONG)0x0040000000000000
+	#define POST_RENAME_FILE  (ULONGLONG)0x0080000000000000
+
+	//this the IRP_SET_INFORMATION with specific info class to delete the file
+	#define PRE_DELETE_FILE  (ULONGLONG)0x0100000000000000
+	#define POST_DELETE_FILE  (ULONGLONG)0x0200000000000000
+
+	//this the IRP_MJ_DIRECTORY_CONTROL to query the file directory information.
 	PRE_DIRECTORY						= 0x00400000,
 	POST_DIRECTORY						= 0x00800000,
+
+	//this the IRP_MJ_QUERY_SECURITY to query the file security information.
 	PRE_QUERY_SECURITY					= 0x01000000,	
 	POST_QUERY_SECURITY					= 0x02000000,
+
+	//this the IRP_MJ_SET_SECURITY to set the file security information.
 	PRE_SET_SECURITY					= 0x04000000,
 	POST_SET_SECURITY					= 0x08000000,
+
+	//this the IRP_MJ_CLEANUP to close the file handle.
 	PRE_CLEANUP							= 0x10000000,
 	POST_CLEANUP						= 0x20000000,
+
+	//this the IRP_MJ_CLOSE to close the file I/O.
 	PRE_CLOSE							= 0x40000000,
 	POST_CLOSE							= 0x80000000UL, 
 
-}MessageType;
+}IOCallbackClass;
 
 //the flags of the access control to the file.
 typedef enum _AccessFlag
@@ -667,6 +967,25 @@ typedef enum _BooleanConfig
 	/// or the monitor event will wait till the service picks up the events.
 	/// </summary>
 	ENABLE_MONITOR_EVENT_BUFFER = 0x00000800,
+		/// <summary>
+	/// if it is true, it will send the event when it was blocked by the config setting.
+	/// </summary>
+	ENABLE_SEND_DENIED_EVENT = 0x00001000,
+	/// <summary>
+	/// if it is true, and the write access is false,the write will return success 
+	/// with zero data being written to the file, and send the write data to the user mode.
+	//  this flag is for custom usage.
+	/// </summary>
+	ENABLE_WRITE_WITH_ZERO_DATA_AND_SEND_DATA = 0x00002000,
+	/// <summary>
+	/// if it is true, the portable massive storage will be treated as USB.
+	//	this is for the volume control flag for BLOCK_USB_READ,BLOCK_USB_WRITE
+	/// </summary>
+	ENABLE_REMOVABLE_MEDIA_AS_USB = 0x00004000,
+	/// <summary>
+	/// if it is true, it will block the encrypted file to be renamed to different folder.
+	/// </summary>
+	DISABLE_RENAME_ENCRYPTED_FILE = 0x00008000,
 
 } BooleanConfig;
 
@@ -1175,7 +1494,9 @@ extern "C" __declspec(dllexport)
 BOOL 
 AddCreateFilterToFilterRule(WCHAR* filterMask, ULONG filterByDesiredAccess, ULONG filterByDisposition,ULONG filterByCreateOptions);
 
+
 /// <summary>
+///obsolete API,use RegisterFileChangedEventsToFilterRule instead.
 /// Register the file I/O event types for the filter rule, get the notification when the I/O was triggered
 /// after the file handle was closed.
 /// </summary>
@@ -1186,13 +1507,23 @@ BOOL
 RegisterEventTypeToFilterRule(WCHAR* filterMask, ULONG eventType);
 
 /// <summary>
+/// Register the file changed events for the filter rule, get the notification when the I/O was triggered
+/// after the file handle was closed.
+/// </summary>
+/// <param name="filterMask">the file filter mask of the filter rule</param>
+/// <param name="eventType">the I/O event types,reference the FileEventType enumeration.</param>
+extern "C" __declspec(dllexport) 
+BOOL 
+RegisterFileChangedEventsToFilterRule(WCHAR* filterMask, ULONG eventType);
+
+/// <summary>
 /// Register the callback I/O for monitor filter driver to the filter rule.
 /// </summary>
 /// <param name="filterMask">the file filter mask of the filter rule</param>
 /// <param name="registerIO">the specific I/Os you want to monitor</param>
 extern "C" __declspec(dllexport) 
 BOOL 
-RegisterMoinitorIOToFilterRule(WCHAR* filterMask, ULONG registerIO);
+RegisterMonitorIOToFilterRule(WCHAR* filterMask, ULONGLONG registerIO);
 
 /// <summary>
 /// Register the callback I/O for control filter driver to the filter rule, you can change, block and pass the I/O
@@ -1202,7 +1533,7 @@ RegisterMoinitorIOToFilterRule(WCHAR* filterMask, ULONG registerIO);
 /// <param name="registerIO">the specific I/Os you want to monitor or control</param>
 extern "C" __declspec(dllexport) 
 BOOL 
-RegisterControlIOToFilterRule(WCHAR* filterMask, ULONG registerIO);
+RegisterControlIOToFilterRule(WCHAR* filterMask, ULONGLONG registerIO);
 
 /// <summary>
 /// Set the access rigths to the specific process
@@ -1522,7 +1853,7 @@ AddRegistryFilterRule(
 extern "C" __declspec(dllexport) 
 BOOL
 AddRegistryFilterRuleByProcessName(
-	ULONG		prcoessNameLength,
+	ULONG		processNameLength,
 	WCHAR*		processName, 
 	ULONG		accessFlag,
 	ULONGLONG	regCallbackClass,

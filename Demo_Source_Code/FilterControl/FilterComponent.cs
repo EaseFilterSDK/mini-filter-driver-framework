@@ -20,113 +20,106 @@ using System.Text;
 using System.IO;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Runtime.InteropServices;
 
 namespace EaseFilter.FilterControl
 {
 
-    public class Filter
+    public partial class FilterControl 
     {
-        public FilterAPI.FilterType FilterType;
-        public uint FilterId;
-
-        public virtual void SendNotification(FilterAPI.MessageSendData messageSend)
-        {
-        }
-
-        public virtual bool ReplyMessage(FilterAPI.MessageSendData messageSend, IntPtr replyDataPtr)
-        {
-            return true;
-        }
-    }
-
-     public class FilterControl
-    {
+        //The FilterControl is the component to communicate with the filter driver.
+        //With this control, you can start or stop the filter service, setup the global configuration setting, and handle the filter callback request.
+        //To start the file I/O, process and registry monitoring and protection, you need to add the filter rule to the FilterControl.
+        //To monitor or control the file I/O, you can add the file filter rule which includes the monitor filter, control filter and encryption filter to the FilterControl.
+        //To monitor or control the process operation, you can add the process filter rule to the FilterControl.
+        //To monitor or control the registry access, you can add the registry filter rule to the FilterControl.
 
         delegate Boolean FilterDelegate(IntPtr sendData, IntPtr replyData);
         delegate void DisconnectDelegate();
-         GCHandle gchFilter;
-         GCHandle gchDisconnect;
-        
-         bool isFilterStarted = false;
-         uint globalFilterId = 1;
+        GCHandle gchFilter;
+        GCHandle gchDisconnect;
 
-         int filterConnectionThreads = 5;
-         int connectionTimeout = 10;
-         string licenseKey = string.Empty;
-         FilterAPI.FilterType filterType = FilterAPI.FilterType.MONITOR_FILTER;
+        bool isFilterStarted = false;
+        uint globalFilterId = 1;
 
-         Dictionary<uint, Filter> filterRuleList = new Dictionary<uint, Filter>();
-         List<uint> protectedProcessIdList = new List<uint>();
-         List<uint> includeProcessIdList = new List<uint>();
-         List<uint> excludeProcessIdList = new List<uint>();
+        int filterConnectionThreads = 5;
+        int connectionTimeout = 10;
+        string licenseKey = string.Empty;
+        FilterAPI.FilterType filterType = FilterAPI.FilterType.MONITOR_FILTER;
 
-         public FilterControl()
-         {
-         }
+        Dictionary<uint, Filter> filterRuleList = new Dictionary<uint, Filter>();
+        List<uint> protectedProcessIdList = new List<uint>();
+        List<uint> includeProcessIdList = new List<uint>();
+        List<uint> excludeProcessIdList = new List<uint>();
+
+        public FilterControl()
+        {
+        }
+
 
         /// <summary>
         /// The global boolean config setting
         /// </summary>
-         public uint BooleanConfig { get; set; }
+        public uint BooleanConfig { get; set; }
         /// <summary>
         /// The volume control flag, reference FilterAPI.VolumeControlFlag
         /// </summary>
-         public uint VolumeControlFlag { get; set; }
+        public uint VolumeControlFlag { get; set; }
         /// <summary>
         /// The global registered callback IO
         /// </summary>
-         public uint RegisterCallbackIo { get; set; }
+        public uint RegisterCallbackIo { get; set; }
         /// <summary>
         /// The protected process Id list, prevent the processes from being terminiated.
         /// </summary>
-         public List<uint> ProtectedProcessIdList 
+        public List<uint> ProtectedProcessIdList
         {
-            get { return protectedProcessIdList;}
-            set { protectedProcessIdList = value; } 
+            get { return protectedProcessIdList; }
+            set { protectedProcessIdList = value; }
         }
         /// <summary>
         /// The global include process Id list, only IO from the process in the list will be managed by the filter driver.
         /// </summary>
-         public List<uint> IncludeProcessIdList 
+        public List<uint> IncludeProcessIdList
         {
-            get { return includeProcessIdList; } 
-            set{ includeProcessIdList = value;} 
+            get { return includeProcessIdList; }
+            set { includeProcessIdList = value; }
         }
         /// <summary>
         /// The global exclude process Id list, skip all the IOs from the exclude process id list.
         /// </summary>
-         public List<uint> ExcludeProcessIdList 
+        public List<uint> ExcludeProcessIdList
         {
             get { return excludeProcessIdList; }
-            set { excludeProcessIdList = value; } 
-        }      
-       
+            set { excludeProcessIdList = value; }
+        }
+
 
         /// <summary>
         /// Fires this event when the filter driver attached to a new volume or you get attached volume information.
         /// </summary>
-         public event EventHandler<VolumeInfoEventArgs> NotifyFilterAttachToVolume;
+        public event EventHandler<VolumeInfoEventArgs> NotifyFilterAttachToVolume;
         /// <summary>
         /// fires this event when a volume detached from a filter driver.
         /// </summary>
-         public event EventHandler<VolumeInfoEventArgs> NotifyFilterDetachFromVolume;
+        public event EventHandler<VolumeInfoEventArgs> NotifyFilterDetachFromVolume;
         /// <summary>
         /// fires this event when the file IO was blocked by the access flag control setting when the SendDeniedFileIOEvent was true.
         /// </summary>
-         public event EventHandler<DeniedFileIOEventArgs> NotifiyFileIOWasBlocked;
-         /// <summary>
-         /// fires this event when the read from USB was blocked.
-         /// </summary>
-         public event EventHandler<DeniedUSBReadEventArgs> NotifyUSBReadWasBlocked;
-         /// <summary>
-         /// fires this event when the write to USB was blocked.
-         /// </summary>
-         public event EventHandler<DeniedUSBWriteEventArgs> NotifyUSBWriteWasBlocked;
-         /// <summary>
-         /// fires this event when the process was terminated ungratefully was blocked.
-         /// </summary>
-         public event EventHandler<DeniedProcessTerminatedEventArgs> NotifiyProcessTerminatedWasBlocked;
+        public event EventHandler<DeniedFileIOEventArgs> NotifiyFileIOWasBlocked;
+        /// <summary>
+        /// fires this event when the read from USB was blocked.
+        /// </summary>
+        public event EventHandler<DeniedUSBReadEventArgs> NotifyUSBReadWasBlocked;
+        /// <summary>
+        /// fires this event when the write to USB was blocked.
+        /// </summary>
+        public event EventHandler<DeniedUSBWriteEventArgs> NotifyUSBWriteWasBlocked;
+        /// <summary>
+        /// fires this event when the process was terminated ungratefully was blocked.
+        /// </summary>
+        public event EventHandler<DeniedProcessTerminatedEventArgs> NotifiyProcessTerminatedWasBlocked;
 
         /// <summary>
         /// Start the filter driver service.
@@ -136,12 +129,12 @@ namespace EaseFilter.FilterControl
         /// <param name="licenseKey"></param>
         /// <param name="lastError"></param>
         /// <returns></returns>
-         public bool StartFilter(FilterAPI.FilterType _filterType, int _filterConnectionThreads, int _connectionTimeout, string _licenseKey, ref string lastError)
+        public bool StartFilter(FilterAPI.FilterType _filterType, int _filterConnectionThreads, int _connectionTimeout, string _licenseKey, ref string lastError)
         {
 
-           bool ret = true;
-           FilterDelegate filterCallback = new FilterDelegate(FilterRequestHandler);
-           DisconnectDelegate disconnectCallback =  new DisconnectDelegate(DisconnectCallback);
+            bool ret = true;
+            FilterDelegate filterCallback = new FilterDelegate(FilterRequestHandler);
+            DisconnectDelegate disconnectCallback = new DisconnectDelegate(DisconnectCallback);
 
             try
             {
@@ -150,14 +143,14 @@ namespace EaseFilter.FilterControl
                 connectionTimeout = _connectionTimeout;
                 licenseKey = _licenseKey;
 
-                if (Utils.IsDriverChanged() )
+                if (Utils.IsDriverChanged())
                 {
                     //uninstall or install driver needs the Admin permission.
                     FilterAPI.UnInstallDriver();
 
                     //wait for 3 seconds for the uninstallation completed.
-                    System.Threading.Thread.Sleep(3000);                 
-                 }
+                    System.Threading.Thread.Sleep(3000);
+                }
 
                 if (!FilterAPI.IsDriverServiceRunning())
                 {
@@ -215,7 +208,7 @@ namespace EaseFilter.FilterControl
         /// <summary>
         ///The filter driver service is started if it is true.
         /// </summary>
-         public bool IsFilterStarted
+        public bool IsFilterStarted
         {
             get { return isFilterStarted; }
         }
@@ -223,7 +216,7 @@ namespace EaseFilter.FilterControl
         /// <summary>
         /// Stop the filter driver service.
         /// </summary>
-         public void StopFilter()
+        public void StopFilter()
         {
             if (isFilterStarted)
             {
@@ -240,7 +233,7 @@ namespace EaseFilter.FilterControl
         /// Add the filter rule to the filter driver.
         /// </summary>
         /// <param name="filter"></param>
-         public void AddFilter(Filter filter)
+        public void AddFilter(Filter filter)
         {
             lock (filterRuleList)
             {
@@ -258,7 +251,7 @@ namespace EaseFilter.FilterControl
         ///Remove the filter rule from the filter driver.
         /// </summary>
         /// <param name="filter"></param>
-         public void RemoveFilter(Filter filter)
+        public void RemoveFilter(Filter filter)
         {
             lock (filterRuleList)
             {
@@ -272,7 +265,7 @@ namespace EaseFilter.FilterControl
         /// <summary>
         /// Clear all registered filters
         /// </summary>
-         public void ClearFilters()
+        public void ClearFilters()
         {
             lock (filterRuleList)
             {
@@ -285,7 +278,7 @@ namespace EaseFilter.FilterControl
         /// </summary>
         /// <param name="lastError"></param>
         /// <returns></returns>
-         public bool InstallDriver(ref string lastError)
+        public bool InstallDriver(ref string lastError)
         {
             if (!FilterAPI.InstallDriver())
             {
@@ -301,7 +294,7 @@ namespace EaseFilter.FilterControl
         /// </summary>
         /// <param name="lastError"></param>
         /// <returns></returns>
-         public bool UnInstallDriver(ref string lastError)
+        public bool UnInstallDriver(ref string lastError)
         {
             if (!FilterAPI.UnInstallDriver())
             {
@@ -312,7 +305,7 @@ namespace EaseFilter.FilterControl
             return true;
         }
 
-         public bool SendConfigSettingsToFilter(ref string lastError)
+        public bool SendConfigSettingsToFilter(ref string lastError)
         {
             try
             {
@@ -436,7 +429,7 @@ namespace EaseFilter.FilterControl
                                     ulong registerControlIOToFilter = processFilter.ControlFileIOEventFilter;
 
                                     if (!FilterAPI.AddFileCallbackIOToProcessByName((uint)processFilter.ProcessNameFilterMask.Length * 2,
-                                        processFilter.ProcessNameFilterMask,(uint)fileNameMask.Length * 2, fileNameMask.Trim(),registerMonitorIOToFilter,registerControlIOToFilter,processFilter.FilterId))
+                                        processFilter.ProcessNameFilterMask, (uint)fileNameMask.Length * 2, fileNameMask.Trim(), registerMonitorIOToFilter, registerControlIOToFilter, processFilter.FilterId))
                                     {
                                         lastError = "AddFileControlToProcessByName failed:" + FilterAPI.GetLastErrorMessage();
                                         return false;
@@ -454,7 +447,7 @@ namespace EaseFilter.FilterControl
 
                         if (!FilterAPI.AddRegistryFilterRule((uint)registryFilter.ProcessNameFilterMask.Length * 2, registryFilter.ProcessNameFilterMask, registryFilter.ProcessId,
                             (uint)registryFilter.UserName.Length * 2, registryFilter.UserName, (uint)registryFilter.RegistryKeyNameFilterMask.Length * 2, registryFilter.RegistryKeyNameFilterMask,
-                                registryFilter.ControlFlag, registryFilter.RegCallbackClass, registryFilter.IsExcludeFilter,registryFilter.FilterId))
+                                registryFilter.ControlFlag, registryFilter.RegCallbackClass, registryFilter.IsExcludeFilter, registryFilter.FilterId))
                         {
                             lastError = "AddRegistryFilterRule failed:" + FilterAPI.GetLastErrorMessage();
                             return false;
@@ -475,13 +468,13 @@ namespace EaseFilter.FilterControl
                             return false;
                         }
 
-                        if (fileFilter.FileChangeEventFilter > 0 && !FilterAPI.RegisterEventTypeToFilterRule(fileFilter.IncludeFileFilterMask, (uint)fileFilter.FileChangeEventFilter))
+                        if (fileFilter.FileChangeEventFilter > 0 && !FilterAPI.RegisterFileChangedEventsToFilterRule(fileFilter.IncludeFileFilterMask, (uint)fileFilter.FileChangeEventFilter))
                         {
                             lastError = "Register file event type:" + fileFilter.FileChangeEventFilter + " failed:" + FilterAPI.GetLastErrorMessage();
                             return false;
                         }
 
-                        if (fileFilter.MonitorFileIOEventFilter > 0 && !FilterAPI.RegisterMoinitorIOToFilterRule(fileFilter.IncludeFileFilterMask, fileFilter.MonitorFileIOEventFilter))
+                        if (fileFilter.MonitorFileIOEventFilter > 0 && !FilterAPI.RegisterMonitorIOToFilterRule(fileFilter.IncludeFileFilterMask, fileFilter.MonitorFileIOEventFilter))
                         {
                             lastError = "Register monitor IO:" + fileFilter.MonitorFileIOEventFilter.ToString("X") + " failed:" + FilterAPI.GetLastErrorMessage();
                             return false;
@@ -538,6 +531,7 @@ namespace EaseFilter.FilterControl
                                     }
                                 }
                             }
+
                         }
 
                         if (fileFilter.BooleanConfig > 0 && !FilterAPI.AddBooleanConfigToFilterRule(fileFilter.IncludeFileFilterMask, fileFilter.BooleanConfig))
@@ -710,7 +704,7 @@ namespace EaseFilter.FilterControl
         /// <param name="sendDataPtr"></param>
         /// <param name="replyDataPtr"></param>
         /// <returns></returns>
-         Boolean FilterRequestHandler(IntPtr sendDataPtr, IntPtr replyDataPtr)
+        Boolean FilterRequestHandler(IntPtr sendDataPtr, IntPtr replyDataPtr)
         {
             Boolean ret = true;
 
@@ -808,13 +802,13 @@ namespace EaseFilter.FilterControl
             catch (Exception ex)
             {
                 //EventManager.WriteMessage(134, "FilterCallback", EventLevel.Error, "filter callback exception." + ex.Message);
-                Utils.ToDebugger("filter callback exception." + ex.Message );
+                Utils.ToDebugger("filter callback exception." + ex.Message);
                 return false;
             }
 
         }
 
-         void DisconnectCallback()
+        void DisconnectCallback()
         {
             return;
         }

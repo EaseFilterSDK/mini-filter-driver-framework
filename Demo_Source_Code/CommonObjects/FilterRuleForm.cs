@@ -38,10 +38,10 @@ namespace EaseFilter.CommonObjects
             //set the default value for the new filter rule.
             filterRule.IncludeFileFilterMask = "c:\\test\\*";
             filterRule.EncryptMethod = (int)FilterAPI.EncryptionMethod.ENCRYPT_FILE_WITH_SAME_KEY_AND_UNIQUE_IV;
-            filterRule.RegisterMonitorFileEvents = (uint)(FilterAPI.MonitorFileEvents.NotifyFileWasCreated | FilterAPI.MonitorFileEvents.NotifyFileWasDeleted | FilterAPI.MonitorFileEvents.NotifyFileInfoWasChanged
-                | FilterAPI.MonitorFileEvents.NotifyFileWasRenamed | FilterAPI.MonitorFileEvents.NotifyFileWasWritten |FilterAPI.MonitorFileEvents.NotifyFileSecurityWasChanged);
+            filterRule.RegisterMonitorFileEvents = (uint)(FilterAPI.FileChangedEvents.NotifyFileWasCreated | FilterAPI.FileChangedEvents.NotifyFileWasDeleted | FilterAPI.FileChangedEvents.NotifyFileInfoWasChanged
+                | FilterAPI.FileChangedEvents.NotifyFileWasRenamed | FilterAPI.FileChangedEvents.NotifyFileWasWritten | FilterAPI.FileChangedEvents.NotifyFileSecurityWasChanged | FilterAPI.FileChangedEvents.NotifyFileWasRead);
 
-            filterRule.RegisterMonitorFileIOEvents = 0x28A8AAAAAAAAAAA;
+            filterRule.RegisterMonitorFileIOEvents = 0x0;
             filterRule.RegisterControlFileIOEvents = 0x0;
             filterRule.AccessFlag = (uint)FilterAPI.ALLOW_MAX_RIGHT_ACCESS;
             filterRule.EnableMonitorEventBuffer = true;

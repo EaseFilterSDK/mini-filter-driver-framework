@@ -22,60 +22,6 @@ using System.Text;
 
 namespace EaseFilter.FilterControl
 {
-    public class EncryptEventArgs : FileIOEventArgs
-    {
-        public EncryptEventArgs(FilterAPI.MessageSendData messageSend)
-            : base(messageSend)
-        {
-            if (messageSend.DataBufferLength > 0)
-            {
-                EncryptionTag = new byte[messageSend.DataBufferLength];
-                Array.Copy(messageSend.DataBuffer, EncryptionTag, messageSend.DataBufferLength);
-
-
-            }
-        }
-
-        /// <summary>
-        /// The access control flag of the encrypted file
-        /// </summary>
-        public uint AccessFlags { get; set; }
-        /// <summary>
-        /// The encryption iv of the encrypted file
-        /// </summary>
-        public byte[] IV { get; set; }
-        /// <summary>
-        /// The encryption key of the encrypted file
-        /// </summary>
-        public byte[] EncryptionKey { get; set; }
-        /// <summary>
-        /// The tag data which attached to the encrypted file.
-        /// </summary>
-        public byte[] EncryptionTag { get; set; }
-
-        string description = string.Empty;
-        /// <summary>
-        /// The description of the event args
-        /// </summary>
-        public override string Description
-        {
-            get
-            {
-                if( description.Length > 0)
-                {
-                    return description;
-                }
-                else
-                {
-                    return "Request encryption key and iv for file:" + FileName;
-                }
-            }
-
-            set { description = value; }
-
-        }
-    }
-
     partial class FileFilter
     {
         /// <summary>
@@ -84,7 +30,7 @@ namespace EaseFilter.FilterControl
         public event EventHandler<EncryptEventArgs> OnFilterRequestEncryptKey;
 
         /// <summary>
-        /// enable the encryption feature when the encryption key was set.
+        /// if the encryption was enabled, this is the encryption key will be used for the encrytped file.
         /// </summary>
         byte[] encryptionKey = null;
 
@@ -94,7 +40,7 @@ namespace EaseFilter.FilterControl
         string encryptionPassPhrase = string.Empty;
 
         /// <summary>
-        /// enable the encryption with the same IV.
+        /// enable the encryption with the same IV if it is not empty.
         /// </summary>
         byte[] encryptionIV = null;
 
@@ -185,11 +131,34 @@ namespace EaseFilter.FilterControl
             {
                 if (value)
                 {
-                    accessFlags &= ~(uint)FilterAPI.AccessFlag.DISABLE_ENCRYPT_DATA_ON_READ;                    
+                    accessFlags &= ~(uint)FilterAPI.AccessFlag.DISABLE_ENCRYPT_DATA_ON_READ;
                 }
                 else
                 {
                     accessFlags |= (uint)FilterAPI.AccessFlag.DISABLE_ENCRYPT_DATA_ON_READ;
+                }
+            }
+        }
+
+        /// <summary>
+        /// if the encryption feature was enabled and this value is true, every new encrypted file 
+        /// requires the encryption key, iv and tag data from the user mode service.
+        /// </summary>
+        public bool EnableEncryptionKeyFromService
+        {
+            get
+            {
+                return ((booleanConfig & (uint)FilterAPI.BooleanConfig.REQUEST_ENCRYPT_KEY_IV_AND_TAGDATA_FROM_SERVICE) > 0);
+            }
+            set
+            {
+                if (value)
+                {
+                    booleanConfig |= (uint)FilterAPI.BooleanConfig.REQUEST_ENCRYPT_KEY_IV_AND_TAGDATA_FROM_SERVICE;
+                }
+                else
+                {
+                    booleanConfig &= ~(uint)FilterAPI.BooleanConfig.REQUEST_ENCRYPT_KEY_IV_AND_TAGDATA_FROM_SERVICE;
                 }
             }
         }
@@ -210,7 +179,7 @@ namespace EaseFilter.FilterControl
         public string EncryptionPassPhrase
         {
             get { return encryptionPassPhrase; }
-            set 
+            set
             {
                 encryptionPassPhrase = value;
                 encryptionKey = Utils.GetKeyByPassPhrase(value, 32);
@@ -224,31 +193,8 @@ namespace EaseFilter.FilterControl
         {
             get { return encryptionIV; }
             set { encryptionIV = value; }
-        }
+        }      
 
-        /// <summary>
-        /// if it is true, the filter driver will request the encryption key and iv from the callback deletegate for every file.
-        /// </summary>
-        public bool EnableEncryptKeyandIVFromService
-        {
-            get
-            {
-                return (booleanConfig & (uint)FilterAPI.BooleanConfig.REQUEST_ENCRYPT_KEY_AND_IV_FROM_SERVICE) > 0;
-            }
-
-            set
-            {
-                if (value)
-                {
-                    booleanConfig |= (uint)FilterAPI.BooleanConfig.REQUEST_ENCRYPT_KEY_AND_IV_FROM_SERVICE;
-                }
-                else
-                {
-                    booleanConfig &= ~(uint)FilterAPI.BooleanConfig.REQUEST_ENCRYPT_KEY_AND_IV_FROM_SERVICE;
-                }
-            }
-        }
-     
         public bool RequestEncryptionKey(FilterAPI.MessageSendData messageSend, ref FilterAPI.MessageReplyData messageReply)
         {
             bool retVal = true;
@@ -272,6 +218,13 @@ namespace EaseFilter.FilterControl
                     bw.Write(fileEncryptArgs.EncryptionKey.Length);
                     bw.Write(fileEncryptArgs.EncryptionKey);
 
+                    int encryptionTagDataLength = fileEncryptArgs.EncryptionTag.Length;
+                    bw.Write(encryptionTagDataLength);
+                    if (encryptionTagDataLength > 0)
+                    {
+                        bw.Write(fileEncryptArgs.EncryptionTag);
+                    }
+
                     byte[] dataBuffer = ms.ToArray();
                     messageReply.DataBufferLength = (uint)dataBuffer.Length;
                     Array.Copy(dataBuffer, messageReply.DataBuffer, dataBuffer.Length);
@@ -287,4 +240,113 @@ namespace EaseFilter.FilterControl
             return retVal;
         }
     }
+
+    public class EncryptEventArgs : FileIOEventArgs
+    {
+        public EncryptEventArgs(FilterAPI.MessageSendData messageSend)
+            : base(messageSend)
+        {
+            if (messageSend.DataBufferLength > 0)
+            {
+                EncryptionTag = new byte[messageSend.DataBufferLength];
+                Array.Copy(messageSend.DataBuffer, EncryptionTag, messageSend.DataBufferLength);
+            }
+
+            if (messageSend.FilterCommand == (uint)FilterAPI.FilterCommand.FILTER_REQUEST_ENCRYPTION_IV_AND_KEY_AND_TAGDATA)
+            {
+                //when a new created file, it requests the encryption key, iv and tag data.
+                isNewCreatedFile = true;
+            }
+
+            // this is encrypted file requests the encryption key, iv
+            //messageSend.FilterCommand == (uint)FilterAPI.FilterCommand.FILTER_REQUEST_ENCRYPTION_IV_AND_KEY
+        }
+
+        /// <summary>
+        /// The maximum encryption tag data length.
+        /// </summary>
+        private int AES_MAX_TAG_DATA_SIZE = 914;
+
+        /// <summary>
+        /// This is new created file when the filter command is FILTER_REQUEST_ENCRYPTION_IV_AND_KEY_AND_TAGDATA
+        /// </summary>
+        private bool isNewCreatedFile = false;
+
+        /// <summary>
+        /// The access control flag of the encrypted file
+        /// </summary>
+        public uint AccessFlags { get; set; }
+        /// <summary>
+        /// The encryption iv of the encrypted file
+        /// </summary>
+        public byte[] IV { get; set; }
+        /// <summary>
+        /// The encryption key of the encrypted file
+        /// </summary>
+        public byte[] EncryptionKey { get; set; }
+
+        private byte[] encryptionTagData = null;
+        /// <summary>
+        /// The tag data which was embedded to the header of the encrypted file.
+        /// </summary>
+        public byte[] EncryptionTag 
+        {
+            get
+            {
+                if (null == encryptionTagData)
+                {
+                    encryptionTagData = new byte[0];
+                }
+
+                return encryptionTagData;
+            } 
+            set
+            {
+                if (value.Length > AES_MAX_TAG_DATA_SIZE)
+                {
+                    throw new Exception("The encryption tag data length " + value.Length + " is over the maximum length " + AES_MAX_TAG_DATA_SIZE);
+                }
+                else
+                {
+                    encryptionTagData = value;
+                }
+               
+            }
+             
+        }
+
+        /// <summary>
+        /// it means it is new created file when it is true.
+        /// </summary>
+        public bool IsNewCreatedFile
+        {
+            get { return isNewCreatedFile; }
+            set { isNewCreatedFile = value; }
+        }
+
+
+        string description = string.Empty;
+        /// <summary>
+        /// The description of the event args
+        /// </summary>
+        public override string Description
+        {
+            get
+            {
+                if( description.Length > 0)
+                {
+                    return description;
+                }
+                else
+                {
+                    return "Request encryption key and iv for file:" + FileName;
+                }
+            }
+
+            set { description = value; }
+
+        }
+    }
+
+    
 }

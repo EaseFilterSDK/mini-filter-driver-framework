@@ -1,5 +1,12 @@
 EaseFilter File System Filter Driver SDK ReadMe
 
+What can yo do with EaseFilter SDK?
+1. The File Monitor Filter Driver allows you to monitor the file I/O activities, get the notification when the file was changed.
+2. The File Control Filter Driver allows you to control the file access, modify the file I/O data.
+3. The File Encryption Filter Driver allows you to encrypt or decrypt the files transparently.
+4. The Process Filter Driver allows you to get the notification when the process was created or terminated, prevent untrusted process from being launching.
+5. The Registry Filter Driver allows you to monitor the registry access, block the registry change by the unauthorized processes.
+
 How to use EaseFilter SDK?
 
 The EaseFilter SDK includes two components (EaseFlt.sys and FilterAPI.dll), The EaseFlt.sys and FilterAPI.dll are different for 32bit and 64bit windows system. EaseFlt.sys is the file system filter driver which implements all the functionalities in the file system level. FilterAPI.dll is a wrapper DLL which exports the API to the user mode applications. 

@@ -23,6 +23,983 @@ using System.IO;
 
 namespace EaseFilter.FilterControl
 {
+    public class RegistryFilter : Filter
+    {
+
+        private string processNameFilterMask = string.Empty;
+        private string userName = string.Empty;
+        private string registryKeyNameFilterMask = string.Empty;
+
+        /// <summary>
+        /// Control the registry access for the process with this process Id. 
+        /// </summary>
+        public uint ProcessId { get; set; }
+
+        /// <summary>
+        /// Control the registry access for the process with this process name if the process Id is 0, or it will skip it. 
+        /// </summary>
+        public string ProcessNameFilterMask { get { return processNameFilterMask; } set { processNameFilterMask = value; } }
+
+        /// <summary>
+        /// Control the registry access for the process with this user name
+        /// </summary>
+        public string UserName { get { return userName; } set { userName = value; } }
+
+        /// <summary>
+        /// Filter the registry access based on the key name filter mask if it was set
+        /// </summary>
+        public string RegistryKeyNameFilterMask { get { return registryKeyNameFilterMask; } set { registryKeyNameFilterMask = value; } }
+
+        /// <summary>
+        /// The the flag to control how to access the registry for the matched process or user
+        /// </summary>
+        public uint ControlFlag { get; set; }
+
+        /// <summary>
+        /// Register the callback when the registry access notification was triggered
+        /// </summary>
+        public ulong RegCallbackClass { get; set; }
+
+        /// <summary>
+        /// If it is true, the registry access from the matched process or user will be excluded.
+        /// </summary>
+        public bool IsExcludeFilter { get; set; }
+
+
+        /// <summary>
+        ///Fires this notification event after the registry request was returned.. 
+        /// </summary>
+        /// 
+        public event EventHandler<RegistryEventArgs> NotifyRegWasBlocked;
+        public event EventHandler<RegistryEventArgs> NotifyDeleteKey;
+        public event EventHandler<RegistryEventArgs> NotifySetValueKey;
+        public event EventHandler<RegistryEventArgs> NotifyDeleteValueKey;
+        public event EventHandler<RegistryEventArgs> NotifySetInformationKey;
+        public event EventHandler<RegistryEventArgs> NotifyRenameKey;
+        public event EventHandler<RegistryEventArgs> NotifyEnumerateKey;
+        public event EventHandler<RegistryEventArgs> NotifyEnumerateValueKey;
+        public event EventHandler<RegistryEventArgs> NotifyQueryKey;
+        public event EventHandler<RegistryEventArgs> NotifyQueryValueKey;
+        public event EventHandler<RegistryEventArgs> NotifyQueryMultipleValueKey;
+        public event EventHandler<RegistryEventArgs> NotifyCreateKey;
+        public event EventHandler<RegistryEventArgs> NotifyOpenKey;
+        public event EventHandler<RegistryEventArgs> NotifyKeyHandleClose;
+        public event EventHandler<RegistryEventArgs> NotifyCreateKeyEx;
+        public event EventHandler<RegistryEventArgs> NotifyOpenKeyEx;
+        public event EventHandler<RegistryEventArgs> NotifyFlushKey;
+        public event EventHandler<RegistryEventArgs> NotifyLoadKey;
+        public event EventHandler<RegistryEventArgs> NotifyUnLoadKey;
+        public event EventHandler<RegistryEventArgs> NotifyQueryKeySecurity;
+        public event EventHandler<RegistryEventArgs> NotifySetKeySecurity;
+        public event EventHandler<RegistryEventArgs> NotifyRestoreKey;
+        public event EventHandler<RegistryEventArgs> NotifySaveKey;
+        public event EventHandler<RegistryEventArgs> NotifyReplaceKey;
+        public event EventHandler<RegistryEventArgs> NotifyQueryKeyName;
+
+        /// <summary>
+        /// Fire the control event before the registry request was going to the registry handler.
+        /// </summary>
+        public event EventHandler<RegistryEventArgs> OnPreDeleteKey;
+        public event EventHandler<RegistryEventArgs> OnPreSetValueKey;
+        public event EventHandler<RegistryEventArgs> OnPreDeleteValueKey;
+        public event EventHandler<RegistryEventArgs> OnPreSetInformationKey;
+        public event EventHandler<RegistryEventArgs> OnPreRenameKey;
+        public event EventHandler<RegistryEventArgs> OnPreEnumerateKey;
+        public event EventHandler<RegistryEventArgs> OnPreEnumerateValueKey;
+        public event EventHandler<RegistryEventArgs> OnPreQueryKey;
+        public event EventHandler<RegistryEventArgs> OnPreQueryValueKey;
+        public event EventHandler<RegistryEventArgs> OnPreQueryMultipleValueKey;
+        public event EventHandler<RegistryEventArgs> OnPreCreateKey;
+        public event EventHandler<RegistryEventArgs> OnPreOpenKey;
+        public event EventHandler<RegistryEventArgs> OnPreKeyHandleClose;
+        public event EventHandler<RegistryEventArgs> OnPreCreateKeyEx;
+        public event EventHandler<RegistryEventArgs> OnPreOpenKeyEx;
+        public event EventHandler<RegistryEventArgs> OnPreFlushKey;
+        public event EventHandler<RegistryEventArgs> OnPreLoadKey;
+        public event EventHandler<RegistryEventArgs> OnPreUnLoadKey;
+        public event EventHandler<RegistryEventArgs> OnPreQueryKeySecurity;
+        public event EventHandler<RegistryEventArgs> OnPreSetKeySecurity;
+        public event EventHandler<RegistryEventArgs> OnPreRestoreKey;
+        public event EventHandler<RegistryEventArgs> OnPreSaveKey;
+        public event EventHandler<RegistryEventArgs> OnPreReplaceKey;
+        public event EventHandler<RegistryEventArgs> OnPreQueryKeyName;
+
+        public RegistryFilter()
+        {
+            this.FilterType = FilterAPI.FilterType.REGISTRY_FILTER;
+        }
+
+        public override void SendNotification(FilterAPI.MessageSendData messageSend)
+        {
+            try
+            {
+                RegistryEventArgs registryEventArgs = new RegistryEventArgs(messageSend);
+
+                if (messageSend.FilterCommand == (uint)FilterAPI.FilterCommand.FILTER_SEND_DENIED_REGISTRY_ACCESS_EVENT)
+                {
+                    if (null != NotifyRegWasBlocked)
+                    {
+                        registryEventArgs.EventName = "NotifyRegWasBlocked";
+                        NotifyRegWasBlocked(this, registryEventArgs);
+                    }
+
+                    return;
+                }
+
+                switch (registryEventArgs.RegCallbackClass)
+                {
+
+                    case FilterAPI.RegCallbackClass.Reg_Post_Delete_Key:
+                        {
+                            if (null != NotifyDeleteKey)
+                            {
+                                registryEventArgs.EventName = "NotifyDeleteKey";
+                                NotifyDeleteKey(this, registryEventArgs);
+                            }
+
+                            break;
+                        }
+
+                    case FilterAPI.RegCallbackClass.Reg_Post_Set_Value_Key:
+                        {
+                            if (null != NotifySetValueKey)
+                            {
+                                registryEventArgs.EventName = "NotifySetValueKey";
+                                NotifySetValueKey(this, registryEventArgs);
+                            }
+
+                            break;
+                        }
+
+                    case FilterAPI.RegCallbackClass.Reg_Post_Delete_Value_Key:
+                        {
+                            if (null != NotifyDeleteValueKey)
+                            {
+                                registryEventArgs.EventName = "NotifyDeleteValueKey";
+                                NotifyDeleteValueKey(this, registryEventArgs);
+                            }
+
+                            break;
+                        }
+
+                    case FilterAPI.RegCallbackClass.Reg_Post_SetInformation_Key:
+                        {
+                            if (null != NotifySetInformationKey)
+                            {
+                                registryEventArgs.EventName = "NotifySetInformationKey";
+                                NotifySetInformationKey(this, registryEventArgs);
+                            }
+
+                            break;
+                        }
+
+                    case FilterAPI.RegCallbackClass.Reg_Post_Rename_Key:
+                        {
+                            if (null != NotifyRenameKey)
+                            {
+                                registryEventArgs.EventName = "NotifyRenameKey";
+                                NotifyRenameKey(this, registryEventArgs);
+                            }
+
+                            break;
+                        }
+
+                    case FilterAPI.RegCallbackClass.Reg_Post_Enumerate_Key:
+                        {
+                            if (null != NotifyEnumerateKey)
+                            {
+                                registryEventArgs.EventName = "NotifyEnumerateKey";
+                                NotifyEnumerateKey(this, registryEventArgs);
+                            }
+
+                            break;
+                        }
+
+                    case FilterAPI.RegCallbackClass.Reg_Post_Enumerate_Value_Key:
+                        {
+                            if (null != NotifyEnumerateValueKey)
+                            {
+                                registryEventArgs.EventName = "NotifyEnumerateValueKey";
+                                NotifyEnumerateValueKey(this, registryEventArgs);
+                            }
+
+                            break;
+                        }
+
+                    case FilterAPI.RegCallbackClass.Reg_Post_Query_Key:
+                        {
+                            if (null != NotifyQueryKey)
+                            {
+                                registryEventArgs.EventName = "NotifyQueryKey";
+                                NotifyQueryKey(this, registryEventArgs);
+                            }
+
+                            break;
+                        }
+
+                    case FilterAPI.RegCallbackClass.Reg_Post_Query_Value_Key:
+                        {
+                            if (null != NotifyQueryValueKey)
+                            {
+                                registryEventArgs.EventName = "NotifyQueryValueKey";
+                                NotifyQueryValueKey(this, registryEventArgs);
+                            }
+
+                            break;
+                        }
+
+                    case FilterAPI.RegCallbackClass.Reg_Post_Query_Multiple_Value_Key:
+                        {
+                            if (null != NotifyQueryMultipleValueKey)
+                            {
+                                registryEventArgs.EventName = "NotifyQueryMultipleValueKey";
+                                NotifyQueryMultipleValueKey(this, registryEventArgs);
+                            }
+
+                            break;
+                        }
+
+                    case FilterAPI.RegCallbackClass.Reg_Post_Create_Key:
+                        {
+                            if (null != NotifyCreateKey)
+                            {
+                                registryEventArgs.EventName = "NotifyCreateKey";
+                                NotifyCreateKey(this, registryEventArgs);
+                            }
+
+                            break;
+                        }
+
+                    case FilterAPI.RegCallbackClass.Reg_Post_Open_Key:
+                        {
+                            if (null != NotifyOpenKey)
+                            {
+                                registryEventArgs.EventName = "NotifyOpenKey";
+                                NotifyOpenKey(this, registryEventArgs);
+                            }
+
+                            break;
+                        }
+
+                    case FilterAPI.RegCallbackClass.Reg_Post_Key_Handle_Close:
+                        {
+                            if (null != NotifyKeyHandleClose)
+                            {
+                                registryEventArgs.EventName = "NotifyKeyHandleClose";
+                                NotifyKeyHandleClose(this, registryEventArgs);
+                            }
+
+                            break;
+                        }
+
+                    case FilterAPI.RegCallbackClass.Reg_Post_Create_KeyEx:
+                        {
+                            if (null != NotifyCreateKeyEx)
+                            {
+                                registryEventArgs.EventName = "NotifyCreateKeyEx";
+                                NotifyCreateKeyEx(this, registryEventArgs);
+                            }
+
+                            break;
+                        }
+
+                    case FilterAPI.RegCallbackClass.Reg_Post_Open_KeyEx:
+                        {
+                            if (null != NotifyOpenKeyEx)
+                            {
+                                registryEventArgs.EventName = "NotifyOpenKeyEx";
+                                NotifyOpenKeyEx(this, registryEventArgs);
+                            }
+
+                            break;
+                        }
+
+                    case FilterAPI.RegCallbackClass.Reg_Post_Flush_Key:
+                        {
+                            if (null != NotifyFlushKey)
+                            {
+                                registryEventArgs.EventName = "NotifyFlushKey";
+                                NotifyFlushKey(this, registryEventArgs);
+                            }
+
+                            break;
+                        }
+
+                    case FilterAPI.RegCallbackClass.Reg_Post_Load_Key:
+                        {
+                            if (null != NotifyLoadKey)
+                            {
+                                registryEventArgs.EventName = "NotifyLoadKey";
+                                NotifyLoadKey(this, registryEventArgs);
+                            }
+
+                            break;
+                        }
+
+                    case FilterAPI.RegCallbackClass.Reg_Post_UnLoad_Key:
+                        {
+                            if (null != NotifyUnLoadKey)
+                            {
+                                registryEventArgs.EventName = "NotifyUnLoadKey";
+                                NotifyUnLoadKey(this, registryEventArgs);
+                            }
+
+                            break;
+                        }
+
+                    case FilterAPI.RegCallbackClass.Reg_Post_Query_Key_Security:
+                        {
+                            if (null != NotifyQueryKeySecurity)
+                            {
+                                registryEventArgs.EventName = "NotifyQueryKeySecurity";
+                                NotifyQueryKeySecurity(this, registryEventArgs);
+                            }
+
+                            break;
+                        }
+
+                    case FilterAPI.RegCallbackClass.Reg_Post_Set_Key_Security:
+                        {
+                            if (null != NotifySetKeySecurity)
+                            {
+                                registryEventArgs.EventName = "NotifySetKeySecurity";
+                                NotifySetKeySecurity(this, registryEventArgs);
+                            }
+
+                            break;
+                        }
+
+
+                    case FilterAPI.RegCallbackClass.Reg_Post_Restore_Key:
+                        {
+                            if (null != NotifyRestoreKey)
+                            {
+                                registryEventArgs.EventName = "NotifyRestoreKey";
+                                NotifyRestoreKey(this, registryEventArgs);
+                            }
+
+                            break;
+                        }
+
+                    case FilterAPI.RegCallbackClass.Reg_Post_Save_Key:
+                        {
+                            if (null != NotifySaveKey)
+                            {
+                                registryEventArgs.EventName = "NotifySaveKey";
+                                NotifySaveKey(this, registryEventArgs);
+                            }
+
+                            break;
+                        }
+
+                    case FilterAPI.RegCallbackClass.Reg_Post_Replace_Key:
+                        {
+                            if (null != NotifyReplaceKey)
+                            {
+                                registryEventArgs.EventName = "NotifyReplaceKey";
+                                NotifyReplaceKey(this, registryEventArgs);
+                            }
+
+                            break;
+                        }
+
+                    case FilterAPI.RegCallbackClass.Reg_Post_Query_KeyName:
+                        {
+                            if (null != NotifyQueryKeyName)
+                            {
+                                registryEventArgs.EventName = "NotifyQueryKeyName";
+                                NotifyQueryKeyName(this, registryEventArgs);
+                            }
+
+                            break;
+                        }
+
+                    default: break;
+                }
+            }
+            catch
+            {
+            }
+        }
+
+
+        public override bool ReplyMessage(FilterAPI.MessageSendData messageSend, IntPtr replyDataPtr)
+        {
+            bool retVal = true;
+
+            try
+            {
+                FilterAPI.MessageReplyData messageReply = (FilterAPI.MessageReplyData)Marshal.PtrToStructure(replyDataPtr, typeof(FilterAPI.MessageReplyData));
+
+                RegistryEventArgs registryEventArgs = new RegistryEventArgs(messageSend);
+
+                switch (registryEventArgs.RegCallbackClass)
+                {
+                    case FilterAPI.RegCallbackClass.Reg_Pre_Delete_Key:
+                        {
+                            if (null != OnPreDeleteKey)
+                            {
+                                registryEventArgs.EventName = "OnPreDeleteKey";
+
+                                OnPreDeleteKey(this, registryEventArgs);
+                                if (registryEventArgs.ReturnStatus != NtStatus.Status.Success)
+                                {
+                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION;
+                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
+                                }
+                                else if (registryEventArgs.IsDataModified)
+                                {
+                                    Array.Copy(registryEventArgs.ReturnDataBuffer, messageReply.DataBuffer, registryEventArgs.ReturnDataBuffer.Length);
+                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION | (uint)FilterAPI.FilterStatus.FILTER_DATA_BUFFER_IS_UPDATED;
+                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
+                                }
+                            }
+
+                            break;
+                        }
+
+                    case FilterAPI.RegCallbackClass.Reg_Pre_Set_Value_Key:
+                        {
+                            if (null != OnPreSetValueKey)
+                            {
+                                registryEventArgs.EventName = "OnPreSetValueKey";
+
+                                OnPreSetValueKey(this, registryEventArgs);
+                                if (registryEventArgs.ReturnStatus != NtStatus.Status.Success)
+                                {
+                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION;
+                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
+                                }
+                                else if (registryEventArgs.IsDataModified)
+                                {
+                                    Array.Copy(registryEventArgs.ReturnDataBuffer, messageReply.DataBuffer, registryEventArgs.ReturnDataBuffer.Length);
+                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION | (uint)FilterAPI.FilterStatus.FILTER_DATA_BUFFER_IS_UPDATED;
+                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
+                                }
+                            }
+
+                            break;
+                        }
+
+                    case FilterAPI.RegCallbackClass.Reg_Pre_Delete_Value_Key:
+                        {
+                            if (null != OnPreDeleteValueKey)
+                            {
+                                registryEventArgs.EventName = "OnPreDeleteValueKey";
+
+                                OnPreDeleteValueKey(this, registryEventArgs);
+                                if (registryEventArgs.ReturnStatus != NtStatus.Status.Success)
+                                {
+                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION;
+                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
+                                }
+                                else if (registryEventArgs.IsDataModified)
+                                {
+                                    Array.Copy(registryEventArgs.ReturnDataBuffer, messageReply.DataBuffer, registryEventArgs.ReturnDataBuffer.Length);
+                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION | (uint)FilterAPI.FilterStatus.FILTER_DATA_BUFFER_IS_UPDATED;
+                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
+                                }
+                            }
+
+                            break;
+                        }
+
+                    case FilterAPI.RegCallbackClass.Reg_Pre_SetInformation_Key:
+                        {
+                            if (null != OnPreSetInformationKey)
+                            {
+                                registryEventArgs.EventName = "OnPreSetInformationKey";
+
+                                OnPreSetInformationKey(this, registryEventArgs);
+                                if (registryEventArgs.ReturnStatus != NtStatus.Status.Success)
+                                {
+                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION;
+                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
+                                }
+                                else if (registryEventArgs.IsDataModified)
+                                {
+                                    Array.Copy(registryEventArgs.ReturnDataBuffer, messageReply.DataBuffer, registryEventArgs.ReturnDataBuffer.Length);
+                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION | (uint)FilterAPI.FilterStatus.FILTER_DATA_BUFFER_IS_UPDATED;
+                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
+                                }
+                            }
+
+                            break;
+                        }
+
+                    case FilterAPI.RegCallbackClass.Reg_Pre_Rename_Key:
+                        {
+                            if (null != OnPreRenameKey)
+                            {
+                                registryEventArgs.EventName = "OnPreRenameKey";
+
+                                OnPreRenameKey(this, registryEventArgs);
+                                if (registryEventArgs.ReturnStatus != NtStatus.Status.Success)
+                                {
+                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION;
+                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
+                                }
+                                else if (registryEventArgs.IsDataModified)
+                                {
+                                    Array.Copy(registryEventArgs.ReturnDataBuffer, messageReply.DataBuffer, registryEventArgs.ReturnDataBuffer.Length);
+                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION | (uint)FilterAPI.FilterStatus.FILTER_DATA_BUFFER_IS_UPDATED;
+                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
+                                }
+                            }
+
+                            break;
+                        }
+
+                    case FilterAPI.RegCallbackClass.Reg_Pre_Enumerate_Key:
+                        {
+                            if (null != OnPreEnumerateKey)
+                            {
+                                registryEventArgs.EventName = "OnPreEnumerateKey";
+
+                                OnPreEnumerateKey(this, registryEventArgs);
+                                if (registryEventArgs.ReturnStatus != NtStatus.Status.Success)
+                                {
+                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION;
+                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
+                                }
+                                else if (registryEventArgs.IsDataModified)
+                                {
+                                    Array.Copy(registryEventArgs.ReturnDataBuffer, messageReply.DataBuffer, registryEventArgs.ReturnDataBuffer.Length);
+                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION | (uint)FilterAPI.FilterStatus.FILTER_DATA_BUFFER_IS_UPDATED;
+                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
+                                }
+                            }
+
+                            break;
+                        }
+
+                    case FilterAPI.RegCallbackClass.Reg_Pre_Enumerate_Value_Key:
+                        {
+                            if (null != OnPreEnumerateValueKey)
+                            {
+                                registryEventArgs.EventName = "OnPreEnumerateValueKey";
+
+                                OnPreEnumerateValueKey(this, registryEventArgs);
+                                if (registryEventArgs.ReturnStatus != NtStatus.Status.Success)
+                                {
+                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION;
+                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
+                                }
+                                else if (registryEventArgs.IsDataModified)
+                                {
+                                    Array.Copy(registryEventArgs.ReturnDataBuffer, messageReply.DataBuffer, registryEventArgs.ReturnDataBuffer.Length);
+                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION | (uint)FilterAPI.FilterStatus.FILTER_DATA_BUFFER_IS_UPDATED;
+                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
+                                }
+                            }
+
+                            break;
+                        }
+
+                    case FilterAPI.RegCallbackClass.Reg_Pre_Query_Key:
+                        {
+                            if (null != OnPreQueryKey)
+                            {
+                                registryEventArgs.EventName = "OnPreQueryKey";
+
+                                OnPreQueryKey(this, registryEventArgs);
+                                if (registryEventArgs.ReturnStatus != NtStatus.Status.Success)
+                                {
+                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION;
+                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
+                                }
+                                else if (registryEventArgs.IsDataModified)
+                                {
+                                    Array.Copy(registryEventArgs.ReturnDataBuffer, messageReply.DataBuffer, registryEventArgs.ReturnDataBuffer.Length);
+                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION | (uint)FilterAPI.FilterStatus.FILTER_DATA_BUFFER_IS_UPDATED;
+                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
+                                }
+                            }
+
+                            break;
+                        }
+
+                    case FilterAPI.RegCallbackClass.Reg_Pre_Query_Value_Key:
+                        {
+                            if (null != OnPreQueryValueKey)
+                            {
+                                registryEventArgs.EventName = "OnPreQueryValueKey";
+
+                                OnPreQueryValueKey(this, registryEventArgs);
+                                if (registryEventArgs.ReturnStatus != NtStatus.Status.Success)
+                                {
+                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION;
+                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
+                                }
+                                else if (registryEventArgs.IsDataModified)
+                                {
+                                    Array.Copy(registryEventArgs.ReturnDataBuffer, messageReply.DataBuffer, registryEventArgs.ReturnDataBuffer.Length);
+                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION | (uint)FilterAPI.FilterStatus.FILTER_DATA_BUFFER_IS_UPDATED;
+                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
+                                }
+                            }
+
+                            break;
+                        }
+
+                    case FilterAPI.RegCallbackClass.Reg_Pre_Query_Multiple_Value_Key:
+                        {
+                            if (null != OnPreQueryMultipleValueKey)
+                            {
+                                registryEventArgs.EventName = "OnPreQueryMultipleValueKey";
+
+                                OnPreQueryMultipleValueKey(this, registryEventArgs);
+                                if (registryEventArgs.ReturnStatus != NtStatus.Status.Success)
+                                {
+                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION;
+                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
+                                }
+                                else if (registryEventArgs.IsDataModified)
+                                {
+                                    Array.Copy(registryEventArgs.ReturnDataBuffer, messageReply.DataBuffer, registryEventArgs.ReturnDataBuffer.Length);
+                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION | (uint)FilterAPI.FilterStatus.FILTER_DATA_BUFFER_IS_UPDATED;
+                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
+                                }
+                            }
+
+                            break;
+                        }
+
+                    case FilterAPI.RegCallbackClass.Reg_Pre_Create_Key:
+                        {
+                            if (null != OnPreCreateKey)
+                            {
+                                registryEventArgs.EventName = "OnPreCreateKey";
+
+                                OnPreCreateKey(this, registryEventArgs);
+                                if (registryEventArgs.ReturnStatus != NtStatus.Status.Success)
+                                {
+                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION;
+                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
+                                }
+                                else if (registryEventArgs.IsDataModified)
+                                {
+                                    Array.Copy(registryEventArgs.ReturnDataBuffer, messageReply.DataBuffer, registryEventArgs.ReturnDataBuffer.Length);
+                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION | (uint)FilterAPI.FilterStatus.FILTER_DATA_BUFFER_IS_UPDATED;
+                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
+                                }
+                            }
+
+                            break;
+                        }
+
+                    case FilterAPI.RegCallbackClass.Reg_Pre_Open_Key:
+                        {
+                            if (null != OnPreOpenKey)
+                            {
+                                registryEventArgs.EventName = "OnPreOpenKey";
+
+                                OnPreOpenKey(this, registryEventArgs);
+                                if (registryEventArgs.ReturnStatus != NtStatus.Status.Success)
+                                {
+                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION;
+                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
+                                }
+                                else if (registryEventArgs.IsDataModified)
+                                {
+                                    Array.Copy(registryEventArgs.ReturnDataBuffer, messageReply.DataBuffer, registryEventArgs.ReturnDataBuffer.Length);
+                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION | (uint)FilterAPI.FilterStatus.FILTER_DATA_BUFFER_IS_UPDATED;
+                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
+                                }
+                            }
+
+                            break;
+                        }
+
+                    case FilterAPI.RegCallbackClass.Reg_Pre_Key_Handle_Close:
+                        {
+                            if (null != OnPreKeyHandleClose)
+                            {
+                                registryEventArgs.EventName = "OnPreKeyHandleClose";
+
+                                OnPreKeyHandleClose(this, registryEventArgs);
+                                if (registryEventArgs.ReturnStatus != NtStatus.Status.Success)
+                                {
+                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION;
+                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
+                                }
+                                else if (registryEventArgs.IsDataModified)
+                                {
+                                    Array.Copy(registryEventArgs.ReturnDataBuffer, messageReply.DataBuffer, registryEventArgs.ReturnDataBuffer.Length);
+                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION | (uint)FilterAPI.FilterStatus.FILTER_DATA_BUFFER_IS_UPDATED;
+                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
+                                }
+                            }
+
+                            break;
+                        }
+
+                    case FilterAPI.RegCallbackClass.Reg_Pre_Create_KeyEx:
+                        {
+                            if (null != OnPreCreateKeyEx)
+                            {
+                                registryEventArgs.EventName = "OnPreCreateKeyEx";
+
+                                OnPreCreateKeyEx(this, registryEventArgs);
+                                if (registryEventArgs.ReturnStatus != NtStatus.Status.Success)
+                                {
+                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION;
+                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
+                                }
+                                else if (registryEventArgs.IsDataModified)
+                                {
+                                    Array.Copy(registryEventArgs.ReturnDataBuffer, messageReply.DataBuffer, registryEventArgs.ReturnDataBuffer.Length);
+                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION | (uint)FilterAPI.FilterStatus.FILTER_DATA_BUFFER_IS_UPDATED;
+                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
+                                }
+                            }
+
+                            break;
+                        }
+
+                    case FilterAPI.RegCallbackClass.Reg_Pre_Open_KeyEx:
+                        {
+                            if (null != OnPreOpenKeyEx)
+                            {
+                                registryEventArgs.EventName = "OnPreOpenKeyEx";
+
+                                OnPreOpenKeyEx(this, registryEventArgs);
+                                if (registryEventArgs.ReturnStatus != NtStatus.Status.Success)
+                                {
+                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION;
+                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
+                                }
+                                else if (registryEventArgs.IsDataModified)
+                                {
+                                    Array.Copy(registryEventArgs.ReturnDataBuffer, messageReply.DataBuffer, registryEventArgs.ReturnDataBuffer.Length);
+                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION | (uint)FilterAPI.FilterStatus.FILTER_DATA_BUFFER_IS_UPDATED;
+                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
+                                }
+                            }
+
+                            break;
+                        }
+
+                    case FilterAPI.RegCallbackClass.Reg_Pre_Flush_Key:
+                        {
+                            if (null != OnPreFlushKey)
+                            {
+                                registryEventArgs.EventName = "OnPreFlushKey";
+
+                                OnPreFlushKey(this, registryEventArgs);
+                                if (registryEventArgs.ReturnStatus != NtStatus.Status.Success)
+                                {
+                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION;
+                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
+                                }
+                                else if (registryEventArgs.IsDataModified)
+                                {
+                                    Array.Copy(registryEventArgs.ReturnDataBuffer, messageReply.DataBuffer, registryEventArgs.ReturnDataBuffer.Length);
+                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION | (uint)FilterAPI.FilterStatus.FILTER_DATA_BUFFER_IS_UPDATED;
+                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
+                                }
+                            }
+
+                            break;
+                        }
+
+                    case FilterAPI.RegCallbackClass.Reg_Pre_Load_Key:
+                        {
+                            if (null != OnPreLoadKey)
+                            {
+                                registryEventArgs.EventName = "OnPreLoadKey";
+
+                                OnPreLoadKey(this, registryEventArgs);
+                                if (registryEventArgs.ReturnStatus != NtStatus.Status.Success)
+                                {
+                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION;
+                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
+                                }
+                                else if (registryEventArgs.IsDataModified)
+                                {
+                                    Array.Copy(registryEventArgs.ReturnDataBuffer, messageReply.DataBuffer, registryEventArgs.ReturnDataBuffer.Length);
+                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION | (uint)FilterAPI.FilterStatus.FILTER_DATA_BUFFER_IS_UPDATED;
+                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
+                                }
+                            }
+
+                            break;
+                        }
+
+                    case FilterAPI.RegCallbackClass.Reg_Pre_UnLoad_Key:
+                        {
+                            if (null != OnPreUnLoadKey)
+                            {
+                                registryEventArgs.EventName = "OnPreUnLoadKey";
+
+                                OnPreLoadKey(this, registryEventArgs);
+                                if (registryEventArgs.ReturnStatus != NtStatus.Status.Success)
+                                {
+                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION;
+                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
+                                }
+                                else if (registryEventArgs.IsDataModified)
+                                {
+                                    Array.Copy(registryEventArgs.ReturnDataBuffer, messageReply.DataBuffer, registryEventArgs.ReturnDataBuffer.Length);
+                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION | (uint)FilterAPI.FilterStatus.FILTER_DATA_BUFFER_IS_UPDATED;
+                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
+                                }
+                            }
+
+                            break;
+                        }
+
+                    case FilterAPI.RegCallbackClass.Reg_Pre_Query_Key_Security:
+                        {
+                            if (null != OnPreQueryKeySecurity)
+                            {
+                                registryEventArgs.EventName = "OnPreQueryKeySecurity";
+
+                                OnPreQueryKeySecurity(this, registryEventArgs);
+                                if (registryEventArgs.ReturnStatus != NtStatus.Status.Success)
+                                {
+                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION;
+                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
+                                }
+                                else if (registryEventArgs.IsDataModified)
+                                {
+                                    Array.Copy(registryEventArgs.ReturnDataBuffer, messageReply.DataBuffer, registryEventArgs.ReturnDataBuffer.Length);
+                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION | (uint)FilterAPI.FilterStatus.FILTER_DATA_BUFFER_IS_UPDATED;
+                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
+                                }
+                            }
+
+                            break;
+                        }
+
+                    case FilterAPI.RegCallbackClass.Reg_Pre_Set_Key_Security:
+                        {
+                            if (null != OnPreSetKeySecurity)
+                            {
+                                registryEventArgs.EventName = "OnPreSetKeySecurity";
+
+                                OnPreSetKeySecurity(this, registryEventArgs);
+                                if (registryEventArgs.ReturnStatus != NtStatus.Status.Success)
+                                {
+                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION;
+                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
+                                }
+                                else if (registryEventArgs.IsDataModified)
+                                {
+                                    Array.Copy(registryEventArgs.ReturnDataBuffer, messageReply.DataBuffer, registryEventArgs.ReturnDataBuffer.Length);
+                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION | (uint)FilterAPI.FilterStatus.FILTER_DATA_BUFFER_IS_UPDATED;
+                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
+                                }
+                            }
+
+                            break;
+                        }
+
+                    case FilterAPI.RegCallbackClass.Reg_Pre_Restore_Key:
+                        {
+                            if (null != OnPreRestoreKey)
+                            {
+                                registryEventArgs.EventName = "OnPreRestoreKey";
+
+                                OnPreRestoreKey(this, registryEventArgs);
+                                if (registryEventArgs.ReturnStatus != NtStatus.Status.Success)
+                                {
+                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION;
+                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
+                                }
+                                else if (registryEventArgs.IsDataModified)
+                                {
+                                    Array.Copy(registryEventArgs.ReturnDataBuffer, messageReply.DataBuffer, registryEventArgs.ReturnDataBuffer.Length);
+                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION | (uint)FilterAPI.FilterStatus.FILTER_DATA_BUFFER_IS_UPDATED;
+                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
+                                }
+                            }
+
+                            break;
+                        }
+
+                    case FilterAPI.RegCallbackClass.Reg_Pre_Save_Key:
+                        {
+                            if (null != OnPreSaveKey)
+                            {
+                                registryEventArgs.EventName = "OnPreSaveKey";
+
+                                OnPreSaveKey(this, registryEventArgs);
+                                if (registryEventArgs.ReturnStatus != NtStatus.Status.Success)
+                                {
+                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION;
+                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
+                                }
+                                else if (registryEventArgs.IsDataModified)
+                                {
+                                    Array.Copy(registryEventArgs.ReturnDataBuffer, messageReply.DataBuffer, registryEventArgs.ReturnDataBuffer.Length);
+                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION | (uint)FilterAPI.FilterStatus.FILTER_DATA_BUFFER_IS_UPDATED;
+                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
+                                }
+                            }
+
+                            break;
+                        }
+
+                    case FilterAPI.RegCallbackClass.Reg_Pre_Replace_Key:
+                        {
+                            if (null != OnPreReplaceKey)
+                            {
+                                registryEventArgs.EventName = "OnPreReplaceKey";
+
+                                OnPreReplaceKey(this, registryEventArgs);
+                                if (registryEventArgs.ReturnStatus != NtStatus.Status.Success)
+                                {
+                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION;
+                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
+                                }
+                                else if (registryEventArgs.IsDataModified)
+                                {
+                                    Array.Copy(registryEventArgs.ReturnDataBuffer, messageReply.DataBuffer, registryEventArgs.ReturnDataBuffer.Length);
+                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION | (uint)FilterAPI.FilterStatus.FILTER_DATA_BUFFER_IS_UPDATED;
+                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
+                                }
+                            }
+
+                            break;
+                        }
+
+                    case FilterAPI.RegCallbackClass.Reg_Pre_Query_KeyName:
+                        {
+                            if (null != OnPreQueryKeyName)
+                            {
+                                registryEventArgs.EventName = "OnPreQueryKeyName";
+
+                                OnPreQueryKeyName(this, registryEventArgs);
+                                if (registryEventArgs.ReturnStatus != NtStatus.Status.Success)
+                                {
+                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION;
+                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
+                                }
+                                else if (registryEventArgs.IsDataModified)
+                                {
+                                    Array.Copy(registryEventArgs.ReturnDataBuffer, messageReply.DataBuffer, registryEventArgs.ReturnDataBuffer.Length);
+                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION | (uint)FilterAPI.FilterStatus.FILTER_DATA_BUFFER_IS_UPDATED;
+                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
+                                }
+                            }
+
+                            break;
+                        }
+
+                    default: break;
+                }
+
+                Marshal.StructureToPtr(messageReply, replyDataPtr, true);
+            }
+            catch
+            {
+            }
+
+            return retVal;
+        }
+    }
+
     public enum VALUE_DATA_TYPE : uint
     {
         REG_NONE = 0,
@@ -619,980 +1596,5 @@ namespace EaseFilter.FilterControl
 
     }
 
-    public class RegistryFilter:Filter
-    {
-
-        private string processNameFilterMask = string.Empty;
-        private string userName = string.Empty;
-        private string registryKeyNameFilterMask = string.Empty;
-
-        /// <summary>
-        /// Control the registry access for the process with this process Id. 
-        /// </summary>
-        public uint ProcessId{ get; set;}
-
-        /// <summary>
-        /// Control the registry access for the process with this process name if the process Id is 0, or it will skip it. 
-        /// </summary>
-        public string ProcessNameFilterMask { get { return processNameFilterMask; } set { processNameFilterMask = value; } }
-
-        /// <summary>
-        /// Control the registry access for the process with this user name
-        /// </summary>
-        public string UserName { get { return userName; } set { userName = value; } }
-
-        /// <summary>
-        /// Filter the registry access based on the key name filter mask if it was set
-        /// </summary>
-        public string RegistryKeyNameFilterMask { get { return registryKeyNameFilterMask; } set { registryKeyNameFilterMask = value; } }
-
-        /// <summary>
-        /// The the flag to control how to access the registry for the matched process or user
-        /// </summary>
-        public uint ControlFlag{ get; set;}
-
-        /// <summary>
-        /// Register the callback when the registry access notification was triggered
-        /// </summary>
-        public ulong RegCallbackClass{ get; set;}
-
-        /// <summary>
-        /// If it is true, the registry access from the matched process or user will be excluded.
-        /// </summary>
-        public bool IsExcludeFilter { get; set; }
-
-
-        /// <summary>
-        ///Fires this notification event after the registry request was returned.. 
-        /// </summary>
-        /// 
-        public event EventHandler<RegistryEventArgs> NotifyRegWasBlocked;
-        public event EventHandler<RegistryEventArgs> NotifyDeleteKey;
-        public event EventHandler<RegistryEventArgs> NotifySetValueKey;
-        public event EventHandler<RegistryEventArgs> NotifyDeleteValueKey;
-        public event EventHandler<RegistryEventArgs> NotifySetInformationKey;
-        public event EventHandler<RegistryEventArgs> NotifyRenameKey;
-        public event EventHandler<RegistryEventArgs> NotifyEnumerateKey;
-        public event EventHandler<RegistryEventArgs> NotifyEnumerateValueKey;
-        public event EventHandler<RegistryEventArgs> NotifyQueryKey;
-        public event EventHandler<RegistryEventArgs> NotifyQueryValueKey;
-        public event EventHandler<RegistryEventArgs> NotifyQueryMultipleValueKey;
-        public event EventHandler<RegistryEventArgs> NotifyCreateKey;
-        public event EventHandler<RegistryEventArgs> NotifyOpenKey;
-        public event EventHandler<RegistryEventArgs> NotifyKeyHandleClose;
-        public event EventHandler<RegistryEventArgs> NotifyCreateKeyEx;
-        public event EventHandler<RegistryEventArgs> NotifyOpenKeyEx;
-        public event EventHandler<RegistryEventArgs> NotifyFlushKey;
-        public event EventHandler<RegistryEventArgs> NotifyLoadKey;
-        public event EventHandler<RegistryEventArgs> NotifyUnLoadKey;
-        public event EventHandler<RegistryEventArgs> NotifyQueryKeySecurity;
-        public event EventHandler<RegistryEventArgs> NotifySetKeySecurity;
-        public event EventHandler<RegistryEventArgs> NotifyRestoreKey;
-        public event EventHandler<RegistryEventArgs> NotifySaveKey;
-        public event EventHandler<RegistryEventArgs> NotifyReplaceKey;
-        public event EventHandler<RegistryEventArgs> NotifyQueryKeyName;
-
-        /// <summary>
-        /// Fire the control event before the registry request was going to the registry handler.
-        /// </summary>
-        public event EventHandler<RegistryEventArgs> OnPreDeleteKey;
-        public event EventHandler<RegistryEventArgs> OnPreSetValueKey;
-        public event EventHandler<RegistryEventArgs> OnPreDeleteValueKey;
-        public event EventHandler<RegistryEventArgs> OnPreSetInformationKey;
-        public event EventHandler<RegistryEventArgs> OnPreRenameKey;
-        public event EventHandler<RegistryEventArgs> OnPreEnumerateKey;
-        public event EventHandler<RegistryEventArgs> OnPreEnumerateValueKey;
-        public event EventHandler<RegistryEventArgs> OnPreQueryKey;
-        public event EventHandler<RegistryEventArgs> OnPreQueryValueKey;
-        public event EventHandler<RegistryEventArgs> OnPreQueryMultipleValueKey;
-        public event EventHandler<RegistryEventArgs> OnPreCreateKey;
-        public event EventHandler<RegistryEventArgs> OnPreOpenKey;
-        public event EventHandler<RegistryEventArgs> OnPreKeyHandleClose;
-        public event EventHandler<RegistryEventArgs> OnPreCreateKeyEx;
-        public event EventHandler<RegistryEventArgs> OnPreOpenKeyEx;
-        public event EventHandler<RegistryEventArgs> OnPreFlushKey;
-        public event EventHandler<RegistryEventArgs> OnPreLoadKey;
-        public event EventHandler<RegistryEventArgs> OnPreUnLoadKey;
-        public event EventHandler<RegistryEventArgs> OnPreQueryKeySecurity;
-        public event EventHandler<RegistryEventArgs> OnPreSetKeySecurity;
-        public event EventHandler<RegistryEventArgs> OnPreRestoreKey;
-        public event EventHandler<RegistryEventArgs> OnPreSaveKey;
-        public event EventHandler<RegistryEventArgs> OnPreReplaceKey;
-        public event EventHandler<RegistryEventArgs> OnPreQueryKeyName;
-
-        public RegistryFilter()
-        {
-            this.FilterType = FilterAPI.FilterType.REGISTRY_FILTER;
-        }
-
-        public override void SendNotification(FilterAPI.MessageSendData messageSend)
-        {
-            try
-            {
-                RegistryEventArgs registryEventArgs = new RegistryEventArgs(messageSend);
-
-                if (messageSend.FilterCommand == (uint)FilterAPI.FilterCommand.FILTER_SEND_DENIED_REGISTRY_ACCESS_EVENT)
-                {
-                    if (null != NotifyRegWasBlocked)
-                    {
-                        registryEventArgs.EventName = "NotifyRegWasBlocked";
-                        NotifyRegWasBlocked(this, registryEventArgs);
-                    }
-
-                    return;
-                }
-
-                switch (registryEventArgs.RegCallbackClass)
-                {
-
-                    case FilterAPI.RegCallbackClass.Reg_Post_Delete_Key:
-                        {
-                            if (null != NotifyDeleteKey)
-                            {
-                                registryEventArgs.EventName = "NotifyDeleteKey";
-                                NotifyDeleteKey(this, registryEventArgs);
-                            }
-
-                            break;
-                        }
-
-                    case FilterAPI.RegCallbackClass.Reg_Post_Set_Value_Key:
-                        {
-                            if (null != NotifySetValueKey)
-                            {
-                                registryEventArgs.EventName = "NotifySetValueKey";
-                                NotifySetValueKey(this, registryEventArgs);
-                            }
-
-                            break;
-                        }
-
-                    case FilterAPI.RegCallbackClass.Reg_Post_Delete_Value_Key:
-                        {
-                            if (null != NotifyDeleteValueKey)
-                            {
-                                registryEventArgs.EventName = "NotifyDeleteValueKey";
-                                NotifyDeleteValueKey(this, registryEventArgs);
-                            }
-
-                            break;
-                        }
-
-                    case FilterAPI.RegCallbackClass.Reg_Post_SetInformation_Key:
-                        {
-                            if (null != NotifySetInformationKey)
-                            {
-                                registryEventArgs.EventName = "NotifySetInformationKey";
-                                NotifySetInformationKey(this, registryEventArgs);
-                            }
-
-                            break;
-                        }
-
-                    case FilterAPI.RegCallbackClass.Reg_Post_Rename_Key:
-                        {
-                            if (null != NotifyRenameKey)
-                            {
-                                registryEventArgs.EventName = "NotifyRenameKey";
-                                NotifyRenameKey(this, registryEventArgs);
-                            }
-
-                            break;
-                        }
-
-                    case FilterAPI.RegCallbackClass.Reg_Post_Enumerate_Key:
-                        {
-                            if (null != NotifyEnumerateKey)
-                            {
-                                registryEventArgs.EventName = "NotifyEnumerateKey";
-                                NotifyEnumerateKey(this, registryEventArgs);
-                            }
-
-                            break;
-                        }
-
-                    case FilterAPI.RegCallbackClass.Reg_Post_Enumerate_Value_Key:
-                        {
-                            if (null != NotifyEnumerateValueKey)
-                            {
-                                registryEventArgs.EventName = "NotifyEnumerateValueKey";
-                                NotifyEnumerateValueKey(this, registryEventArgs);
-                            }
-
-                            break;
-                        }
-
-                    case FilterAPI.RegCallbackClass.Reg_Post_Query_Key:
-                        {
-                            if (null != NotifyQueryKey)
-                            {
-                                registryEventArgs.EventName = "NotifyQueryKey";
-                                NotifyQueryKey(this, registryEventArgs);
-                            }
-
-                            break;
-                        }
-
-                    case FilterAPI.RegCallbackClass.Reg_Post_Query_Value_Key:
-                        {
-                            if (null != NotifyQueryValueKey)
-                            {
-                                registryEventArgs.EventName = "NotifyQueryValueKey";
-                                NotifyQueryValueKey(this, registryEventArgs);
-                            }
-
-                            break;
-                        }
-
-                    case FilterAPI.RegCallbackClass.Reg_Post_Query_Multiple_Value_Key:
-                        {
-                            if (null != NotifyQueryMultipleValueKey)
-                            {
-                                registryEventArgs.EventName = "NotifyQueryMultipleValueKey";
-                                NotifyQueryMultipleValueKey(this, registryEventArgs);
-                            }
-
-                            break;
-                        }
-
-                    case FilterAPI.RegCallbackClass.Reg_Post_Create_Key:
-                        {
-                            if (null != NotifyCreateKey)
-                            {
-                                registryEventArgs.EventName = "NotifyCreateKey";
-                                NotifyCreateKey(this, registryEventArgs);
-                            }
-
-                            break;
-                        }
-
-                    case FilterAPI.RegCallbackClass.Reg_Post_Open_Key:
-                        {
-                            if (null != NotifyOpenKey)
-                            {
-                                registryEventArgs.EventName = "NotifyOpenKey";
-                                NotifyOpenKey(this, registryEventArgs);
-                            }
-
-                            break;
-                        }
-
-                    case FilterAPI.RegCallbackClass.Reg_Post_Key_Handle_Close:
-                        {
-                            if (null != NotifyKeyHandleClose)
-                            {
-                                registryEventArgs.EventName = "NotifyKeyHandleClose";
-                                NotifyKeyHandleClose(this, registryEventArgs);
-                            }
-
-                            break;
-                        }
-
-                    case FilterAPI.RegCallbackClass.Reg_Post_Create_KeyEx:
-                        {
-                            if (null != NotifyCreateKeyEx)
-                            {
-                                registryEventArgs.EventName = "NotifyCreateKeyEx";
-                                NotifyCreateKeyEx(this, registryEventArgs);
-                            }
-
-                            break;
-                        }
-
-                    case FilterAPI.RegCallbackClass.Reg_Post_Open_KeyEx:
-                        {
-                            if (null != NotifyOpenKeyEx)
-                            {
-                                registryEventArgs.EventName = "NotifyOpenKeyEx";
-                                NotifyOpenKeyEx(this, registryEventArgs);
-                            }
-
-                            break;
-                        }
-
-                    case FilterAPI.RegCallbackClass.Reg_Post_Flush_Key:
-                        {
-                            if (null != NotifyFlushKey)
-                            {
-                                registryEventArgs.EventName = "NotifyFlushKey";
-                                NotifyFlushKey(this, registryEventArgs);
-                            }
-
-                            break;
-                        }
-
-                    case FilterAPI.RegCallbackClass.Reg_Post_Load_Key:
-                        {
-                            if (null != NotifyLoadKey)
-                            {
-                                registryEventArgs.EventName = "NotifyLoadKey";
-                                NotifyLoadKey(this, registryEventArgs);
-                            }
-
-                            break;
-                        }
-
-                    case FilterAPI.RegCallbackClass.Reg_Post_UnLoad_Key:
-                        {
-                            if (null != NotifyUnLoadKey)
-                            {
-                                registryEventArgs.EventName = "NotifyUnLoadKey";
-                                NotifyUnLoadKey(this, registryEventArgs);
-                            }
-
-                            break;
-                        }
-
-                    case FilterAPI.RegCallbackClass.Reg_Post_Query_Key_Security:
-                        {
-                            if (null != NotifyQueryKeySecurity)
-                            {
-                                registryEventArgs.EventName = "NotifyQueryKeySecurity";
-                                NotifyQueryKeySecurity(this, registryEventArgs);
-                            }
-
-                            break;
-                        }
-
-                    case FilterAPI.RegCallbackClass.Reg_Post_Set_Key_Security:
-                        {
-                            if (null != NotifySetKeySecurity)
-                            {
-                                registryEventArgs.EventName = "NotifySetKeySecurity";
-                                NotifySetKeySecurity(this, registryEventArgs);
-                            }
-
-                            break;
-                        }
-
-
-                    case FilterAPI.RegCallbackClass.Reg_Post_Restore_Key:
-                        {
-                            if (null != NotifyRestoreKey)
-                            {
-                                registryEventArgs.EventName = "NotifyRestoreKey";
-                                NotifyRestoreKey(this, registryEventArgs);
-                            }
-
-                            break;
-                        }
-
-                    case FilterAPI.RegCallbackClass.Reg_Post_Save_Key:
-                        {
-                            if (null != NotifySaveKey)
-                            {
-                                registryEventArgs.EventName = "NotifySaveKey";
-                                NotifySaveKey(this, registryEventArgs);
-                            }
-
-                            break;
-                        }
-
-                    case FilterAPI.RegCallbackClass.Reg_Post_Replace_Key:
-                        {
-                            if (null != NotifyReplaceKey)
-                            {
-                                registryEventArgs.EventName = "NotifyReplaceKey";
-                                NotifyReplaceKey(this, registryEventArgs);
-                            }
-
-                            break;
-                        }
-
-                    case FilterAPI.RegCallbackClass.Reg_Post_Query_KeyName:
-                        {
-                            if (null != NotifyQueryKeyName)
-                            {
-                                registryEventArgs.EventName = "NotifyQueryKeyName";
-                                NotifyQueryKeyName(this, registryEventArgs);
-                            }
-
-                            break;
-                        }
-
-                    default: break;
-                }
-            }
-            catch
-            {
-            }
-        }
-        
-
-        public override bool ReplyMessage(FilterAPI.MessageSendData messageSend, IntPtr replyDataPtr)
-        {
-            bool retVal = true;
-
-            try
-            {
-                FilterAPI.MessageReplyData messageReply = (FilterAPI.MessageReplyData)Marshal.PtrToStructure(replyDataPtr, typeof(FilterAPI.MessageReplyData));
-
-                RegistryEventArgs registryEventArgs = new RegistryEventArgs(messageSend);
-
-                switch (registryEventArgs.RegCallbackClass)
-                {
-                    case FilterAPI.RegCallbackClass.Reg_Pre_Delete_Key:
-                        {
-                            if (null != OnPreDeleteKey)
-                            {
-                                registryEventArgs.EventName = "OnPreDeleteKey";
-
-                                OnPreDeleteKey(this, registryEventArgs);
-                                if (registryEventArgs.ReturnStatus != NtStatus.Status.Success)
-                                {
-                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION;
-                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
-                                }
-                                else if (registryEventArgs.IsDataModified)
-                                {
-                                    Array.Copy(registryEventArgs.ReturnDataBuffer, messageReply.DataBuffer, registryEventArgs.ReturnDataBuffer.Length);
-                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION | (uint)FilterAPI.FilterStatus.FILTER_DATA_BUFFER_IS_UPDATED;
-                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
-                                }
-                            }
-
-                            break;
-                        }
-
-                    case FilterAPI.RegCallbackClass.Reg_Pre_Set_Value_Key:
-                        {
-                            if (null != OnPreSetValueKey)
-                            {
-                                registryEventArgs.EventName = "OnPreSetValueKey";
-
-                                OnPreSetValueKey(this, registryEventArgs);
-                                if (registryEventArgs.ReturnStatus != NtStatus.Status.Success)
-                                {
-                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION;
-                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
-                                }
-                                else if (registryEventArgs.IsDataModified)
-                                {
-                                    Array.Copy(registryEventArgs.ReturnDataBuffer, messageReply.DataBuffer, registryEventArgs.ReturnDataBuffer.Length);
-                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION | (uint)FilterAPI.FilterStatus.FILTER_DATA_BUFFER_IS_UPDATED;
-                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
-                                }
-                            }
-
-                            break;
-                        }
-
-                    case FilterAPI.RegCallbackClass.Reg_Pre_Delete_Value_Key:
-                        {
-                            if (null != OnPreDeleteValueKey)
-                            {
-                                registryEventArgs.EventName = "OnPreDeleteValueKey";
-
-                                OnPreDeleteValueKey(this, registryEventArgs);
-                                if (registryEventArgs.ReturnStatus != NtStatus.Status.Success)
-                                {
-                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION;
-                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
-                                }
-                                else if (registryEventArgs.IsDataModified)
-                                {
-                                    Array.Copy(registryEventArgs.ReturnDataBuffer, messageReply.DataBuffer, registryEventArgs.ReturnDataBuffer.Length);
-                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION | (uint)FilterAPI.FilterStatus.FILTER_DATA_BUFFER_IS_UPDATED;
-                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
-                                }
-                            }
-
-                            break;
-                        }
-
-                    case FilterAPI.RegCallbackClass.Reg_Pre_SetInformation_Key:
-                        {
-                            if (null != OnPreSetInformationKey)
-                            {
-                                registryEventArgs.EventName = "OnPreSetInformationKey";
-
-                                OnPreSetInformationKey(this, registryEventArgs);
-                                if (registryEventArgs.ReturnStatus != NtStatus.Status.Success)
-                                {
-                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION;
-                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
-                                }
-                                else if (registryEventArgs.IsDataModified)
-                                {
-                                    Array.Copy(registryEventArgs.ReturnDataBuffer, messageReply.DataBuffer, registryEventArgs.ReturnDataBuffer.Length);
-                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION | (uint)FilterAPI.FilterStatus.FILTER_DATA_BUFFER_IS_UPDATED;
-                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
-                                }
-                            }
-
-                            break;
-                        }
-
-                    case FilterAPI.RegCallbackClass.Reg_Pre_Rename_Key:
-                        {
-                            if (null != OnPreRenameKey)
-                            {
-                                registryEventArgs.EventName = "OnPreRenameKey";
-
-                                OnPreRenameKey(this, registryEventArgs);
-                                if (registryEventArgs.ReturnStatus != NtStatus.Status.Success)
-                                {
-                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION;
-                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
-                                }
-                                else if (registryEventArgs.IsDataModified)
-                                {
-                                    Array.Copy(registryEventArgs.ReturnDataBuffer, messageReply.DataBuffer, registryEventArgs.ReturnDataBuffer.Length);
-                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION | (uint)FilterAPI.FilterStatus.FILTER_DATA_BUFFER_IS_UPDATED;
-                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
-                                }
-                            }
-
-                            break;
-                        }
-
-                    case FilterAPI.RegCallbackClass.Reg_Pre_Enumerate_Key:
-                        {
-                            if (null != OnPreEnumerateKey)
-                            {
-                                registryEventArgs.EventName = "OnPreEnumerateKey";
-
-                                OnPreEnumerateKey(this, registryEventArgs);
-                                if (registryEventArgs.ReturnStatus != NtStatus.Status.Success)
-                                {
-                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION;
-                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
-                                }
-                                else if (registryEventArgs.IsDataModified)
-                                {
-                                    Array.Copy(registryEventArgs.ReturnDataBuffer, messageReply.DataBuffer, registryEventArgs.ReturnDataBuffer.Length);
-                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION | (uint)FilterAPI.FilterStatus.FILTER_DATA_BUFFER_IS_UPDATED;
-                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
-                                }
-                            }
-
-                            break;
-                        }
-
-                    case FilterAPI.RegCallbackClass.Reg_Pre_Enumerate_Value_Key:
-                        {
-                            if (null != OnPreEnumerateValueKey)
-                            {
-                                registryEventArgs.EventName = "OnPreEnumerateValueKey";
-
-                                OnPreEnumerateValueKey(this, registryEventArgs);
-                                if (registryEventArgs.ReturnStatus != NtStatus.Status.Success)
-                                {
-                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION;
-                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
-                                }
-                                else if (registryEventArgs.IsDataModified)
-                                {
-                                    Array.Copy(registryEventArgs.ReturnDataBuffer, messageReply.DataBuffer, registryEventArgs.ReturnDataBuffer.Length);
-                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION | (uint)FilterAPI.FilterStatus.FILTER_DATA_BUFFER_IS_UPDATED;
-                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
-                                }
-                            }
-
-                            break;
-                        }
-
-                    case FilterAPI.RegCallbackClass.Reg_Pre_Query_Key:
-                        {
-                            if (null != OnPreQueryKey)
-                            {
-                                registryEventArgs.EventName = "OnPreQueryKey";
-
-                                OnPreQueryKey(this, registryEventArgs);
-                                if (registryEventArgs.ReturnStatus != NtStatus.Status.Success)
-                                {
-                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION;
-                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
-                                }
-                                else if (registryEventArgs.IsDataModified)
-                                {
-                                    Array.Copy(registryEventArgs.ReturnDataBuffer, messageReply.DataBuffer, registryEventArgs.ReturnDataBuffer.Length);
-                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION | (uint)FilterAPI.FilterStatus.FILTER_DATA_BUFFER_IS_UPDATED;
-                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
-                                }
-                            }
-
-                            break;
-                        }
-
-                    case FilterAPI.RegCallbackClass.Reg_Pre_Query_Value_Key:
-                        {
-                            if (null != OnPreQueryValueKey)
-                            {
-                                registryEventArgs.EventName = "OnPreQueryValueKey";
-
-                                OnPreQueryValueKey(this, registryEventArgs);
-                                if (registryEventArgs.ReturnStatus != NtStatus.Status.Success)
-                                {
-                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION;
-                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
-                                }
-                                else if (registryEventArgs.IsDataModified)
-                                {
-                                    Array.Copy(registryEventArgs.ReturnDataBuffer, messageReply.DataBuffer, registryEventArgs.ReturnDataBuffer.Length);
-                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION | (uint)FilterAPI.FilterStatus.FILTER_DATA_BUFFER_IS_UPDATED;
-                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
-                                }
-                            }
-
-                            break;
-                        }
-
-                    case FilterAPI.RegCallbackClass.Reg_Pre_Query_Multiple_Value_Key:
-                        {
-                            if (null != OnPreQueryMultipleValueKey)
-                            {
-                                registryEventArgs.EventName = "OnPreQueryMultipleValueKey";
-
-                                OnPreQueryMultipleValueKey(this, registryEventArgs);
-                                if (registryEventArgs.ReturnStatus != NtStatus.Status.Success)
-                                {
-                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION;
-                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
-                                }
-                                else if (registryEventArgs.IsDataModified)
-                                {
-                                    Array.Copy(registryEventArgs.ReturnDataBuffer, messageReply.DataBuffer, registryEventArgs.ReturnDataBuffer.Length);
-                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION | (uint)FilterAPI.FilterStatus.FILTER_DATA_BUFFER_IS_UPDATED;
-                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
-                                }
-                            }
-
-                            break;
-                        }
-
-                    case FilterAPI.RegCallbackClass.Reg_Pre_Create_Key:
-                        {
-                            if (null != OnPreCreateKey)
-                            {
-                                registryEventArgs.EventName = "OnPreCreateKey";
-
-                                OnPreCreateKey(this, registryEventArgs);
-                                if (registryEventArgs.ReturnStatus != NtStatus.Status.Success)
-                                {
-                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION;
-                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
-                                }
-                                else if (registryEventArgs.IsDataModified)
-                                {
-                                    Array.Copy(registryEventArgs.ReturnDataBuffer, messageReply.DataBuffer, registryEventArgs.ReturnDataBuffer.Length);
-                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION | (uint)FilterAPI.FilterStatus.FILTER_DATA_BUFFER_IS_UPDATED;
-                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
-                                }
-                            }
-
-                            break;
-                        }
-
-                    case FilterAPI.RegCallbackClass.Reg_Pre_Open_Key:
-                        {
-                            if (null != OnPreOpenKey)
-                            {
-                                registryEventArgs.EventName = "OnPreOpenKey";
-
-                                OnPreOpenKey(this, registryEventArgs);
-                                if (registryEventArgs.ReturnStatus != NtStatus.Status.Success)
-                                {
-                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION;
-                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
-                                }
-                                else if (registryEventArgs.IsDataModified)
-                                {
-                                    Array.Copy(registryEventArgs.ReturnDataBuffer, messageReply.DataBuffer, registryEventArgs.ReturnDataBuffer.Length);
-                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION | (uint)FilterAPI.FilterStatus.FILTER_DATA_BUFFER_IS_UPDATED;
-                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
-                                }
-                            }
-
-                            break;
-                        }
-
-                    case FilterAPI.RegCallbackClass.Reg_Pre_Key_Handle_Close:
-                        {
-                            if (null != OnPreKeyHandleClose)
-                            {
-                                registryEventArgs.EventName = "OnPreKeyHandleClose";
-
-                                OnPreKeyHandleClose(this, registryEventArgs);
-                                if (registryEventArgs.ReturnStatus != NtStatus.Status.Success)
-                                {
-                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION;
-                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
-                                }
-                                else if (registryEventArgs.IsDataModified)
-                                {
-                                    Array.Copy(registryEventArgs.ReturnDataBuffer, messageReply.DataBuffer, registryEventArgs.ReturnDataBuffer.Length);
-                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION | (uint)FilterAPI.FilterStatus.FILTER_DATA_BUFFER_IS_UPDATED;
-                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
-                                }
-                            }
-
-                            break;
-                        }
-
-                    case FilterAPI.RegCallbackClass.Reg_Pre_Create_KeyEx:
-                        {
-                            if (null != OnPreCreateKeyEx)
-                            {
-                                registryEventArgs.EventName = "OnPreCreateKeyEx";
-
-                                OnPreCreateKeyEx(this, registryEventArgs);
-                                if (registryEventArgs.ReturnStatus != NtStatus.Status.Success)
-                                {
-                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION;
-                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
-                                }
-                                else if (registryEventArgs.IsDataModified)
-                                {
-                                    Array.Copy(registryEventArgs.ReturnDataBuffer, messageReply.DataBuffer, registryEventArgs.ReturnDataBuffer.Length);
-                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION | (uint)FilterAPI.FilterStatus.FILTER_DATA_BUFFER_IS_UPDATED;
-                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
-                                }
-                            }
-
-                            break;
-                        }
-
-                    case FilterAPI.RegCallbackClass.Reg_Pre_Open_KeyEx:
-                        {
-                            if (null != OnPreOpenKeyEx)
-                            {
-                                registryEventArgs.EventName = "OnPreOpenKeyEx";
-
-                                OnPreOpenKeyEx(this, registryEventArgs);
-                                if (registryEventArgs.ReturnStatus != NtStatus.Status.Success)
-                                {
-                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION;
-                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
-                                }
-                                else if (registryEventArgs.IsDataModified)
-                                {
-                                    Array.Copy(registryEventArgs.ReturnDataBuffer, messageReply.DataBuffer, registryEventArgs.ReturnDataBuffer.Length);
-                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION | (uint)FilterAPI.FilterStatus.FILTER_DATA_BUFFER_IS_UPDATED;
-                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
-                                }
-                            }
-
-                            break;
-                        }
-
-                    case FilterAPI.RegCallbackClass.Reg_Pre_Flush_Key:
-                        {
-                            if (null != OnPreFlushKey)
-                            {
-                                registryEventArgs.EventName = "OnPreFlushKey";
-
-                                OnPreFlushKey(this, registryEventArgs);
-                                if (registryEventArgs.ReturnStatus != NtStatus.Status.Success)
-                                {
-                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION;
-                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
-                                }
-                                else if (registryEventArgs.IsDataModified)
-                                {
-                                    Array.Copy(registryEventArgs.ReturnDataBuffer, messageReply.DataBuffer, registryEventArgs.ReturnDataBuffer.Length);
-                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION | (uint)FilterAPI.FilterStatus.FILTER_DATA_BUFFER_IS_UPDATED;
-                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
-                                }
-                            }
-
-                            break;
-                        }
-
-                    case FilterAPI.RegCallbackClass.Reg_Pre_Load_Key:
-                        {
-                            if (null != OnPreLoadKey)
-                            {
-                                registryEventArgs.EventName = "OnPreLoadKey";
-
-                                OnPreLoadKey(this, registryEventArgs);
-                                if (registryEventArgs.ReturnStatus != NtStatus.Status.Success)
-                                {
-                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION;
-                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
-                                }
-                                else if (registryEventArgs.IsDataModified)
-                                {
-                                    Array.Copy(registryEventArgs.ReturnDataBuffer, messageReply.DataBuffer, registryEventArgs.ReturnDataBuffer.Length);
-                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION | (uint)FilterAPI.FilterStatus.FILTER_DATA_BUFFER_IS_UPDATED;
-                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
-                                }
-                            }
-
-                            break;
-                        }
-
-                    case FilterAPI.RegCallbackClass.Reg_Pre_UnLoad_Key:
-                        {
-                            if (null != OnPreUnLoadKey)
-                            {
-                                registryEventArgs.EventName = "OnPreUnLoadKey";
-
-                                OnPreLoadKey(this, registryEventArgs);
-                                if (registryEventArgs.ReturnStatus != NtStatus.Status.Success)
-                                {
-                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION;
-                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
-                                }
-                                else if (registryEventArgs.IsDataModified)
-                                {
-                                    Array.Copy(registryEventArgs.ReturnDataBuffer, messageReply.DataBuffer, registryEventArgs.ReturnDataBuffer.Length);
-                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION | (uint)FilterAPI.FilterStatus.FILTER_DATA_BUFFER_IS_UPDATED;
-                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
-                                }
-                            }
-
-                            break;
-                        }
-
-                    case FilterAPI.RegCallbackClass.Reg_Pre_Query_Key_Security:
-                        {
-                            if (null != OnPreQueryKeySecurity)
-                            {
-                                registryEventArgs.EventName = "OnPreQueryKeySecurity";
-
-                                OnPreQueryKeySecurity(this, registryEventArgs);
-                                if (registryEventArgs.ReturnStatus != NtStatus.Status.Success)
-                                {
-                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION;
-                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
-                                }
-                                else if (registryEventArgs.IsDataModified)
-                                {
-                                    Array.Copy(registryEventArgs.ReturnDataBuffer, messageReply.DataBuffer, registryEventArgs.ReturnDataBuffer.Length);
-                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION | (uint)FilterAPI.FilterStatus.FILTER_DATA_BUFFER_IS_UPDATED;
-                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
-                                }
-                            }
-
-                            break;
-                        }
-
-                    case FilterAPI.RegCallbackClass.Reg_Pre_Set_Key_Security:
-                        {
-                            if (null != OnPreSetKeySecurity)
-                            {
-                                registryEventArgs.EventName = "OnPreSetKeySecurity";
-
-                                OnPreSetKeySecurity(this, registryEventArgs);
-                                if (registryEventArgs.ReturnStatus != NtStatus.Status.Success)
-                                {
-                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION;
-                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
-                                }
-                                else if (registryEventArgs.IsDataModified)
-                                {
-                                    Array.Copy(registryEventArgs.ReturnDataBuffer, messageReply.DataBuffer, registryEventArgs.ReturnDataBuffer.Length);
-                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION | (uint)FilterAPI.FilterStatus.FILTER_DATA_BUFFER_IS_UPDATED;
-                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
-                                }
-                            }
-
-                            break;
-                        }
-
-                    case FilterAPI.RegCallbackClass.Reg_Pre_Restore_Key:
-                        {
-                            if (null != OnPreRestoreKey)
-                            {
-                                registryEventArgs.EventName = "OnPreRestoreKey";
-
-                                OnPreRestoreKey(this, registryEventArgs);
-                                if (registryEventArgs.ReturnStatus != NtStatus.Status.Success)
-                                {
-                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION;
-                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
-                                }
-                                else if (registryEventArgs.IsDataModified)
-                                {
-                                    Array.Copy(registryEventArgs.ReturnDataBuffer, messageReply.DataBuffer, registryEventArgs.ReturnDataBuffer.Length);
-                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION | (uint)FilterAPI.FilterStatus.FILTER_DATA_BUFFER_IS_UPDATED;
-                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
-                                }
-                            }
-
-                            break;
-                        }
-
-                    case FilterAPI.RegCallbackClass.Reg_Pre_Save_Key:
-                        {
-                            if (null != OnPreSaveKey)
-                            {
-                                registryEventArgs.EventName = "OnPreSaveKey";
-
-                                OnPreSaveKey(this, registryEventArgs);
-                                if (registryEventArgs.ReturnStatus != NtStatus.Status.Success)
-                                {
-                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION;
-                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
-                                }
-                                else if (registryEventArgs.IsDataModified)
-                                {
-                                    Array.Copy(registryEventArgs.ReturnDataBuffer, messageReply.DataBuffer, registryEventArgs.ReturnDataBuffer.Length);
-                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION | (uint)FilterAPI.FilterStatus.FILTER_DATA_BUFFER_IS_UPDATED;
-                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
-                                }
-                            }
-
-                            break;
-                        }
-
-                    case FilterAPI.RegCallbackClass.Reg_Pre_Replace_Key:
-                        {
-                            if (null != OnPreReplaceKey)
-                            {
-                                registryEventArgs.EventName = "OnPreReplaceKey";
-
-                                OnPreReplaceKey(this, registryEventArgs);
-                                if (registryEventArgs.ReturnStatus != NtStatus.Status.Success)
-                                {
-                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION;
-                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
-                                }
-                                else if (registryEventArgs.IsDataModified)
-                                {
-                                    Array.Copy(registryEventArgs.ReturnDataBuffer, messageReply.DataBuffer, registryEventArgs.ReturnDataBuffer.Length);
-                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION | (uint)FilterAPI.FilterStatus.FILTER_DATA_BUFFER_IS_UPDATED;
-                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
-                                }
-                            }
-
-                            break;
-                        }
-
-                    case FilterAPI.RegCallbackClass.Reg_Pre_Query_KeyName:
-                        {
-                            if (null != OnPreQueryKeyName)
-                            {
-                                registryEventArgs.EventName = "OnPreQueryKeyName";
-
-                                OnPreQueryKeyName(this, registryEventArgs);
-                                if (registryEventArgs.ReturnStatus != NtStatus.Status.Success)
-                                {
-                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION;
-                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
-                                }
-                                else if (registryEventArgs.IsDataModified)
-                                {
-                                    Array.Copy(registryEventArgs.ReturnDataBuffer, messageReply.DataBuffer, registryEventArgs.ReturnDataBuffer.Length);
-                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION | (uint)FilterAPI.FilterStatus.FILTER_DATA_BUFFER_IS_UPDATED;
-                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
-                                }
-                            }
-
-                            break;
-                        }
-
-                    default: break;
-                }
-
-                Marshal.StructureToPtr(messageReply, replyDataPtr, true);
-            }
-            catch
-            {
-            }
-
-            return retVal;
-        }
-    }
+   
 }
