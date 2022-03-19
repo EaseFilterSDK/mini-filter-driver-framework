@@ -18,15 +18,12 @@
 #include "stdafx.h"
 #include "tools.h"
 #include "FilterAPI.h"
-#include "FilterWorker.h"
+#include "FilterControl.h"
 #include "UnitTest.h"
-#include "AESEncryption.h"
 
 WCHAR* testFolder = L"c:\\filterTest";
 WCHAR* testFile = L"c:\\filterTest\\testEncryptfile1.bin";
 WCHAR* copyFile = L"c:\\filterTest\\testEncryptfile1.copy.bin";
-
-#define AES_MAX_TAG_DATA_SIZE 914
 
 //Add clear text data to the file.
 unsigned char iv[] = {0xf0,0xf1,0xf2,0xf3,0xf4,0xf5,0xf6,0xf7,0xf8,0xf9,0xfa,0xfb,0xfc,0xfd,0xfe,0xff};// Initialization vector
@@ -431,25 +428,22 @@ EXIT:
 }
 
 VOID
-EncryptionUnitTest()
+EncryptionUnitTest(FilterControl* filterControl)
 {
+	WCHAR* filterMask = GetFilterMask();
 
-	//Reset the filter config setting.
-	ResetConfigData();
-
-	TCHAR* filterFolder = GetFilterMask();
-	ULONG ioRegistration = 0;
+	FileFilterRule fileFilter(filterMask);
+	//Test Remove ALLOW_OPEN_WITH_WRITE_ACCESS for current process 
 	ULONG accessFlag = ALLOW_MAX_RIGHT_ACCESS|ENABLE_FILE_ENCRYPTION_RULE;			
-			
-	ULONG filterType = FILE_SYSTEM_ENCRYPTION;	
 
-	// Initialization 16 bytes vector
-	unsigned char iv[] = {0xf0,0xf1,0xf2,0xf3,0xf4,0xf5,0xf6,0xf7,0xf8,0xf9,0xfa,0xfb,0xfc,0xfd,0xfe,0xff};
+	fileFilter.AccessFlag = accessFlag;
+	
 	//256 bit,32bytes encrytpion key
 	unsigned char key[] = {0x60,0x3d,0xeb,0x10,0x15,0xca,0x71,0xbe,0x2b,0x73,0xae,0xf0,0x85,0x7d,0x77,0x81,0x1f,0x35,0x2c,0x07,0x3b,0x61,0x08,0xd7,0x2d,0x98,0x10,0xa3,0x09,0x14,0xdf,0xf4};
 	
-	//this will enable encryption for all files in filterFolder.
-	SendConfigInfoToFilter(filterType,filterFolder,ioRegistration,accessFlag,key,sizeof(key),iv,sizeof(iv));	
+	fileFilter.set_EncryptionKey(key,sizeof(key));
+
+	filterControl->SendFileFilterRuleToFilter(&fileFilter);
 
 	DeleteFile(testFile);
 	DeleteFile(copyFile);
@@ -556,55 +550,4 @@ EncryptionUnitTest()
 	PrintPassedMessage(L"Encryption unit test passed.\n");
 	wprintf(L"\r\n");
 
-}
-
-BOOL 
-EncryptionRequestHandler(
-	IN		PMESSAGE_SEND_DATA		pSendMessage,
-	IN OUT	PMESSAGE_REPLY_DATA		pReplyMessage )
-{
-	BOOL ret = TRUE;
-
-	if (	FILTER_REQUEST_ENCRYPTION_IV_AND_KEY == pSendMessage->FilterCommand
-		||	FILTER_REQUEST_ENCRYPTION_IV_AND_KEY_AND_TAGDATA == pSendMessage->FilterCommand )
-    {
-        //this is encryption filter rule with boolean config "REQUEST_ENCRYPT_KEY_IV_AND_TAGDATA_FROM_SERVICE" enabled.                        
-        //the filter driver request the IV and key to open or create the encrypted file.                        
-
-        //if you don't want to authorize the process to read the encrytped file,you can set the value as below:
-        //pReplyMessage->ReturnStatus = STATUS_ACCESS_DENIED;
-        //pReplyMessage->FilterStatus = FILTER_COMPLETE_PRE_OPERATION; 
-
-		if( FILTER_REQUEST_ENCRYPTION_IV_AND_KEY_AND_TAGDATA == pSendMessage->FilterCommand	)
-		{
-			//this is new created file to request the encryption key and iv,
-			//you can set the custom tag data to the header of the encrypted file if you set the below value.
-						
-			wprintf(L"\nNew created file :%ws is requesting encryption key, iv and tag data\n",pSendMessage->FileName );
-
-			//make sure the tag data length is less than the AES_MAX_TAG_DATA_SIZE;
-			if( AES_MAX_TAG_DATA_SIZE > pSendMessage->FileNameLength )
-			{
-				//here we put the file name as the tag data for test purpose.
-
-				pReplyMessage->ReplyData.AESData.Data.TagDataLength = pSendMessage->FileNameLength;
-				memcpy(pReplyMessage->ReplyData.AESData.Data.TagData,pSendMessage->FileName,pSendMessage->FileNameLength);	
-			}
-		}
-
-        //Here we return the default test iv and key to the filter driver, you can replace it with your own iv and key.
-		pReplyMessage->ReplyData.AESData.Data.AccessFlag = ALLOW_MAX_RIGHT_ACCESS;
-        memcpy(pReplyMessage->ReplyData.AESData.Data.IV,iv,16); 
-        pReplyMessage->ReplyData.AESData.Data.IVLength = 16;
-        memcpy(pReplyMessage->ReplyData.AESData.Data.EncryptionKey,key,32);
-        pReplyMessage->ReplyData.AESData.Data.EncryptionKeyLength = 32;
-		//the total return size
-		pReplyMessage->ReplyData.AESData.SizeOfData = sizeof(pReplyMessage->ReplyData.AESData.Data) + pReplyMessage->ReplyData.AESData.Data.TagDataLength ;
-
-        pReplyMessage->ReturnStatus = STATUS_SUCCESS;
-
-
-    }
-
-	return ret;
 }

@@ -1308,7 +1308,7 @@ namespace EaseFilter.FilterControl
         uint filterByCreateOptions);
 
         /// <summary>
-        /// Set the access rigths to the specific process
+        /// Set the access rights to the specific process
         /// </summary>
         /// <param name="filterMask">the file filter mask of the filter rule</param>
         /// <param name="processName">the process name will be added the access rights, e.g. notepad.exe or c:\windows\*.exe</param>

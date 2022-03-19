@@ -18,6 +18,14 @@
 #include "stdafx.h"
 #include "Tools.h"
 
+#pragma pack(push,8) 
+#include <tlhelp32.h>
+#pragma pack(pop)
+
+#include <Psapi.h>
+#pragma comment(lib,"Psapi.lib")
+
+
 #define	MAX_ERROR_MESSAGE_SIZE	1024
 
 using namespace std;
@@ -137,4 +145,129 @@ PrintErrorMessage(
 	{
 		LocalFree( lpMsgBuf );
 	}
+}
+
+std::wstring
+GetFileTimeStr(LONGLONG fileTime )
+{
+    SYSTEMTIME stUTC, stLocal;
+    DWORD dwRet;
+
+	WCHAR buffer[100];
+	std::wstring timeStr;
+
+    // Convert the last-write time to local time.
+    FileTimeToSystemTime((FILETIME*)&fileTime, &stUTC);
+    SystemTimeToTzSpecificLocalTime(NULL, &stUTC, &stLocal);
+
+    // Build a string showing the date and time.
+    dwRet = StringCchPrintfW(buffer, sizeof(buffer)*2, 
+        L"%02d/%02d/%d  %02d:%02d",
+        stLocal.wMonth, stLocal.wDay, stLocal.wYear,
+        stLocal.wHour, stLocal.wMinute);
+
+    if( S_OK == dwRet )
+	{
+		timeStr.assign(buffer);
+	}
+
+	return timeStr;
+}
+
+BOOLEAN
+EnableDebugPrivileges()
+{
+    HANDLE Token;
+    HRESULT hResult = S_OK;
+    HANDLE procHandle = GetCurrentProcess();
+    BOOL result = OpenProcessToken(procHandle,
+        TOKEN_QUERY | TOKEN_ADJUST_PRIVILEGES,
+        &Token);
+
+	//wprintf(L"OpenProcessToken pid:%p result:%d .\n", procHandle,result);
+
+    if (result)
+    {
+        PRIVILEGE_SET privilegeSet;
+        privilegeSet.PrivilegeCount = 1;
+        privilegeSet.Control = PRIVILEGE_SET_ALL_NECESSARY;
+
+        result = LookupPrivilegeValue(NULL, SE_DEBUG_NAME,
+            &privilegeSet.Privilege[0].Luid);
+
+	//	wprintf(L"LookupPrivilegeValue result:%d .\n", result);
+
+        if (result)
+        {
+            TOKEN_PRIVILEGES tokenPrivileges;
+            tokenPrivileges.PrivilegeCount = 1;
+            tokenPrivileges.Privileges[0].Luid = privilegeSet.Privilege[0].Luid;
+            tokenPrivileges.Privileges[0].Attributes = SE_PRIVILEGE_ENABLED;
+
+            result = AdjustTokenPrivileges(Token, FALSE,
+                &tokenPrivileges, 0, NULL, NULL);
+
+            if (result)
+            {
+                result = PrivilegeCheck(Token, &privilegeSet, &result);
+              
+                if (!result)
+                {
+				//	wprintf(L"ERROR_PRIVILEGE_NOT_HELD SE_DEBUG_NAME result:%d .\n", result);
+                    SetLastError(ERROR_PRIVILEGE_NOT_HELD);
+                }
+
+				//wprintf(L"got SE_DEBUG_NAME result:%d .\n", result);
+            }
+        }
+
+        CloseHandle(Token);
+    }
+
+    if (!result)
+    {
+    }
+
+    return result;
+}
+
+
+BOOL
+GetProcessNameByPid(ULONG pid, WCHAR* processName, ULONG processNameLength )
+{
+	BOOL retVal = FALSE;
+	HANDLE h = NULL;
+
+__try
+{
+    h = OpenProcess
+    (
+        PROCESS_QUERY_INFORMATION | PROCESS_VM_READ,
+        FALSE,
+        pid
+    );
+
+    if (h) 
+    {
+	  	memset(processName,0,processNameLength);
+        if (GetModuleFileNameEx(h,NULL,processName, processNameLength) != 0)
+		{
+			retVal = TRUE;
+		}
+		else
+		{
+			//PrintErrorMessage(L"GetProcessImageFileNameW failed.", GetLastError());
+		}
+
+        CloseHandle(h);
+
+    }
+}
+__except( EXCEPTION_EXECUTE_HANDLER  )
+{
+	printf("\n\nGet processName for process Id:%d exception.\n\n", pid );
+}
+ 
+return retVal;
+
 }

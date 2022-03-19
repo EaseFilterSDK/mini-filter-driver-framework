@@ -30,9 +30,7 @@ namespace AutoEncryptDemo
 
         private void button_Start_Click(object sender, EventArgs e)
         {
-            button_Stop.Enabled = true;
-            button_Start.Enabled = false;
-
+        
             string encryptFolder = textBox_EncrptFolder.Text.Trim();
             string authorizedProcessesForEncryptFolder = textBox_AuthorizedProcessesForEncryptFolder.Text;
             string authorizedUsersForEncryptFolder = textBox_AuthorizedUsersForEncryptFolder.Text;
@@ -67,8 +65,9 @@ namespace AutoEncryptDemo
                 //enable the encryption for the filter rule.
                 fileFilter.EnableEncryption = true;
 
+                //if we enable the encryption key from service, you can authorize the encryption or decryption for every file
+                //in the callback function OnFilterRequestEncryptKey.
                 fileFilter.EnableEncryptionKeyFromService = checkBox_EnableUniqueEncryptionKey.Checked;
-
                 fileFilter.OnFilterRequestEncryptKey += OnFilterRequestEncryptKey;
                 
                 //get the 256bits encryption key with the passphrase
@@ -128,6 +127,9 @@ namespace AutoEncryptDemo
                 //enable the encryption for the filter rule.
                 decryptFileFilter.EnableEncryption = true;
 
+                //if we enable the encryption key from service, you can authorize the decryption for every file
+                //in the callback function OnFilterRequestEncryptKey.
+                decryptFileFilter.EnableEncryptionKeyFromService = checkBox_EnableUniqueEncryptionKey.Checked;
                 decryptFileFilter.OnFilterRequestEncryptKey += OnFilterRequestEncryptKey;
 
                 //get the 256bits encryption key with the passphrase
@@ -165,6 +167,10 @@ namespace AutoEncryptDemo
 
                 MessageBoxHelper.PrepToCenterMessageBoxOnForm(this);
                 MessageBox.Show("Start filter service succeeded.", "StartFilter", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                button_Stop.Enabled = true;
+                button_Start.Enabled = false;
+
             }
             catch (Exception ex)
             {
@@ -179,26 +185,40 @@ namespace AutoEncryptDemo
         /// </summary>
         public void OnFilterRequestEncryptKey(object sender, EncryptEventArgs e)
         {
-            //if you want to block this file access, you can return accessdenied status.
-            //e.ReturnStatus = NtStatus.Status.AccessDenied;
-
             e.ReturnStatus = NtStatus.Status.Success;
 
             if (e.IsNewCreatedFile)
             {
+                //if you want to block the new file creation, you can return accessdenied status.
+                //e.ReturnStatus = NtStatus.Status.AccessDenied;
+
+                //if you want to the file being created without encryption, return below status.
+                //e.ReturnStatus = NtStatus.Status.FileIsNoEncrypted;
+
                 //for the new created file, you can add your custom tag data to the header of the encyrpted file.
                 //here we just add the file name as the tag data.
                 e.EncryptionTag = UnicodeEncoding.Unicode.GetBytes(e.FileName);
             }
             else
             {
+                //this is the encrytped file open request, request the encryption key and iv.
+
+                //if you want to block encrypted file being opened, you can return accessdenied status.
+                //e.ReturnStatus = NtStatus.Status.AccessDenied;
+
+                //if you want to return the raws encrypted data for this encrypted file, return below status.
+                //e.ReturnStatus = NtStatus.Status.FileIsEncrypted;
+
                 //here is the tag data if you set custom tag data when the new created file requested the key.
                 byte[] tagData = e.EncryptionTag;
             }
 
-            //here is the encyrption key for the encrypted file, you can set it with your own key.
+            //here is the encryption key for the encrypted file, you can set it with your own key.
             e.EncryptionKey = Utils.GetKeyByPassPhrase(GlobalConfig.MasterPassword, 32);
-            e.IV = Utils.GetIVByPassPhrase(GlobalConfig.MasterPassword);
+           
+           //if you want to use your own iv for the encrypted file, set the value here, 
+           //or don't set the iv here, then the unique auto generated iv will be assigned to the file.
+           //e.IV = Utils.GetIVByPassPhrase(GlobalConfig.MasterPassword);
 
         }
 
@@ -228,11 +248,25 @@ namespace AutoEncryptDemo
         {
             if (checkBox_EnableUniqueEncryptionKey.Checked)
             {
+                //if get encryption key from service, then only the callback function will authorize the encryption or decryption.
                 textBox_PassPhrase.Enabled = false;
+                textBox_AuthorizedProcessesForEncryptFolder.Enabled = false;
+                textBox_AuthorizedUsersForEncryptFolder.Enabled = false;
             }
             else
             {
                 textBox_PassPhrase.Enabled = true;
+                textBox_AuthorizedProcessesForEncryptFolder.Enabled = true;
+                textBox_AuthorizedUsersForEncryptFolder.Enabled = true;
+            }
+        }
+
+        private void button_EncryptFolder_Click(object sender, EventArgs e)
+        {
+            FolderBrowserDialog folderDialog = new FolderBrowserDialog();
+            if (folderDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                textBox_EncrptFolder.Text = folderDialog.SelectedPath;
             }
         }
 

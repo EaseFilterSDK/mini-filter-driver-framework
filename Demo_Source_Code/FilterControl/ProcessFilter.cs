@@ -152,7 +152,7 @@ namespace EaseFilter.FilterControl
 
                     OnProcessPreTermination(this, processEventArgs);
 
-                    //you can block the process creation if return status is not success status.
+                    //you can block the process termination if return status is not success status.
                     messageReply.ReturnStatus = (uint)processEventArgs.ReturnStatus;
 
                 }

@@ -289,6 +289,8 @@ namespace EaseFilter.FilterControl
             OrdinalNotFound = 0xc0000138,
             EntryPointNotFound = 0xc0000139,
             ControlCExit = 0xc000013a,
+            FileIsNoEncrypted = 0xC0000291,
+            FileIsEncrypted = 0xC0000293,
             PortNotSet = 0xc0000353,
             DebuggerInactive = 0xc0000354,
             CallbackBypass = 0xc0000503,

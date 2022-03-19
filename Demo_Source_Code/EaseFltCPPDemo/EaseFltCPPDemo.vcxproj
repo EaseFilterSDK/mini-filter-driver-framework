@@ -21,14 +21,10 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{E9382993-43C9-4CEC-9D94-90DEF64FD214}</ProjectGuid>
     <RootNamespace>APIDemo</RootNamespace>
-    <SccProjectName>
-    </SccProjectName>
-    <SccAuxPath>
-    </SccAuxPath>
-    <SccLocalPath>
-    </SccLocalPath>
-    <SccProvider>
-    </SccProvider>
+    <SccProjectName>SAK</SccProjectName>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccProvider>SAK</SccProvider>
     <Keyword>Win32Proj</Keyword>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -200,14 +196,11 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="AESEncryption.cpp" />
-    <ClCompile Include="ControlFilterHandler.cpp" />
+    <ClCompile Include="EncryptionTest.cpp" />
     <ClCompile Include="CPlusPlusDemo.cpp" />
-    <ClCompile Include="ProcessFilterTest.cpp" />
-    <ClCompile Include="RegistryFilterTest.cpp" />
+    <ClCompile Include="FilterControl.cpp" />
     <ClCompile Include="UnitTest.cpp" />
     <ClCompile Include="FilterMessage.cpp" />
-    <ClCompile Include="FilterWorker.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -218,13 +211,15 @@
     <ClCompile Include="WindowsService.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="AESEncryption.h" />
-    <ClInclude Include="ControlFilterHandler.h" />
+    <ClInclude Include="EncryptionHandler.h" />
+    <ClInclude Include="FileControlHandler.h" />
+    <ClInclude Include="FilterRule.h" />
+    <ClInclude Include="FileMonitorHandler.h" />
     <ClInclude Include="FilterAPI.h" />
+    <ClInclude Include="FilterControl.h" />
     <ClInclude Include="FilterMessage.h" />
-    <ClInclude Include="FilterWorker.h" />
-    <ClInclude Include="ProcessFilterTest.h" />
-    <ClInclude Include="RegistryFilterTest.h" />
+    <ClInclude Include="ProcessFilterHandler.h" />
+    <ClInclude Include="RegistryFilterHandler.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />

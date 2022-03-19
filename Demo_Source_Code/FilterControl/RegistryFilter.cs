@@ -437,22 +437,10 @@ namespace EaseFilter.FilterControl
                 {
                     case FilterAPI.RegCallbackClass.Reg_Pre_Delete_Key:
                         {
+                            registryEventArgs.EventName = "OnPreDeleteKey";
                             if (null != OnPreDeleteKey)
-                            {
-                                registryEventArgs.EventName = "OnPreDeleteKey";
-
+                            {                                
                                 OnPreDeleteKey(this, registryEventArgs);
-                                if (registryEventArgs.ReturnStatus != NtStatus.Status.Success)
-                                {
-                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION;
-                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
-                                }
-                                else if (registryEventArgs.IsDataModified)
-                                {
-                                    Array.Copy(registryEventArgs.ReturnDataBuffer, messageReply.DataBuffer, registryEventArgs.ReturnDataBuffer.Length);
-                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION | (uint)FilterAPI.FilterStatus.FILTER_DATA_BUFFER_IS_UPDATED;
-                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
-                                }
                             }
 
                             break;
@@ -460,22 +448,10 @@ namespace EaseFilter.FilterControl
 
                     case FilterAPI.RegCallbackClass.Reg_Pre_Set_Value_Key:
                         {
+                            registryEventArgs.EventName = "OnPreSetValueKey";
                             if (null != OnPreSetValueKey)
-                            {
-                                registryEventArgs.EventName = "OnPreSetValueKey";
-
+                            {                                
                                 OnPreSetValueKey(this, registryEventArgs);
-                                if (registryEventArgs.ReturnStatus != NtStatus.Status.Success)
-                                {
-                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION;
-                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
-                                }
-                                else if (registryEventArgs.IsDataModified)
-                                {
-                                    Array.Copy(registryEventArgs.ReturnDataBuffer, messageReply.DataBuffer, registryEventArgs.ReturnDataBuffer.Length);
-                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION | (uint)FilterAPI.FilterStatus.FILTER_DATA_BUFFER_IS_UPDATED;
-                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
-                                }
                             }
 
                             break;
@@ -483,22 +459,10 @@ namespace EaseFilter.FilterControl
 
                     case FilterAPI.RegCallbackClass.Reg_Pre_Delete_Value_Key:
                         {
+                            registryEventArgs.EventName = "OnPreDeleteValueKey";
                             if (null != OnPreDeleteValueKey)
-                            {
-                                registryEventArgs.EventName = "OnPreDeleteValueKey";
-
+                            {                              
                                 OnPreDeleteValueKey(this, registryEventArgs);
-                                if (registryEventArgs.ReturnStatus != NtStatus.Status.Success)
-                                {
-                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION;
-                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
-                                }
-                                else if (registryEventArgs.IsDataModified)
-                                {
-                                    Array.Copy(registryEventArgs.ReturnDataBuffer, messageReply.DataBuffer, registryEventArgs.ReturnDataBuffer.Length);
-                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION | (uint)FilterAPI.FilterStatus.FILTER_DATA_BUFFER_IS_UPDATED;
-                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
-                                }
                             }
 
                             break;
@@ -506,22 +470,10 @@ namespace EaseFilter.FilterControl
 
                     case FilterAPI.RegCallbackClass.Reg_Pre_SetInformation_Key:
                         {
+                            registryEventArgs.EventName = "OnPreSetInformationKey";
                             if (null != OnPreSetInformationKey)
-                            {
-                                registryEventArgs.EventName = "OnPreSetInformationKey";
-
+                            {                                
                                 OnPreSetInformationKey(this, registryEventArgs);
-                                if (registryEventArgs.ReturnStatus != NtStatus.Status.Success)
-                                {
-                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION;
-                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
-                                }
-                                else if (registryEventArgs.IsDataModified)
-                                {
-                                    Array.Copy(registryEventArgs.ReturnDataBuffer, messageReply.DataBuffer, registryEventArgs.ReturnDataBuffer.Length);
-                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION | (uint)FilterAPI.FilterStatus.FILTER_DATA_BUFFER_IS_UPDATED;
-                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
-                                }
                             }
 
                             break;
@@ -529,22 +481,10 @@ namespace EaseFilter.FilterControl
 
                     case FilterAPI.RegCallbackClass.Reg_Pre_Rename_Key:
                         {
+                            registryEventArgs.EventName = "OnPreRenameKey";
                             if (null != OnPreRenameKey)
-                            {
-                                registryEventArgs.EventName = "OnPreRenameKey";
-
+                            {                                
                                 OnPreRenameKey(this, registryEventArgs);
-                                if (registryEventArgs.ReturnStatus != NtStatus.Status.Success)
-                                {
-                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION;
-                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
-                                }
-                                else if (registryEventArgs.IsDataModified)
-                                {
-                                    Array.Copy(registryEventArgs.ReturnDataBuffer, messageReply.DataBuffer, registryEventArgs.ReturnDataBuffer.Length);
-                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION | (uint)FilterAPI.FilterStatus.FILTER_DATA_BUFFER_IS_UPDATED;
-                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
-                                }
                             }
 
                             break;
@@ -552,22 +492,10 @@ namespace EaseFilter.FilterControl
 
                     case FilterAPI.RegCallbackClass.Reg_Pre_Enumerate_Key:
                         {
+                            registryEventArgs.EventName = "OnPreEnumerateKey";
                             if (null != OnPreEnumerateKey)
-                            {
-                                registryEventArgs.EventName = "OnPreEnumerateKey";
-
+                            {                                
                                 OnPreEnumerateKey(this, registryEventArgs);
-                                if (registryEventArgs.ReturnStatus != NtStatus.Status.Success)
-                                {
-                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION;
-                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
-                                }
-                                else if (registryEventArgs.IsDataModified)
-                                {
-                                    Array.Copy(registryEventArgs.ReturnDataBuffer, messageReply.DataBuffer, registryEventArgs.ReturnDataBuffer.Length);
-                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION | (uint)FilterAPI.FilterStatus.FILTER_DATA_BUFFER_IS_UPDATED;
-                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
-                                }
                             }
 
                             break;
@@ -575,22 +503,10 @@ namespace EaseFilter.FilterControl
 
                     case FilterAPI.RegCallbackClass.Reg_Pre_Enumerate_Value_Key:
                         {
+                            registryEventArgs.EventName = "OnPreEnumerateValueKey";
                             if (null != OnPreEnumerateValueKey)
-                            {
-                                registryEventArgs.EventName = "OnPreEnumerateValueKey";
-
+                            {                                
                                 OnPreEnumerateValueKey(this, registryEventArgs);
-                                if (registryEventArgs.ReturnStatus != NtStatus.Status.Success)
-                                {
-                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION;
-                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
-                                }
-                                else if (registryEventArgs.IsDataModified)
-                                {
-                                    Array.Copy(registryEventArgs.ReturnDataBuffer, messageReply.DataBuffer, registryEventArgs.ReturnDataBuffer.Length);
-                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION | (uint)FilterAPI.FilterStatus.FILTER_DATA_BUFFER_IS_UPDATED;
-                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
-                                }
                             }
 
                             break;
@@ -598,22 +514,10 @@ namespace EaseFilter.FilterControl
 
                     case FilterAPI.RegCallbackClass.Reg_Pre_Query_Key:
                         {
+                            registryEventArgs.EventName = "OnPreQueryKey";
                             if (null != OnPreQueryKey)
                             {
-                                registryEventArgs.EventName = "OnPreQueryKey";
-
                                 OnPreQueryKey(this, registryEventArgs);
-                                if (registryEventArgs.ReturnStatus != NtStatus.Status.Success)
-                                {
-                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION;
-                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
-                                }
-                                else if (registryEventArgs.IsDataModified)
-                                {
-                                    Array.Copy(registryEventArgs.ReturnDataBuffer, messageReply.DataBuffer, registryEventArgs.ReturnDataBuffer.Length);
-                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION | (uint)FilterAPI.FilterStatus.FILTER_DATA_BUFFER_IS_UPDATED;
-                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
-                                }
                             }
 
                             break;
@@ -621,22 +525,10 @@ namespace EaseFilter.FilterControl
 
                     case FilterAPI.RegCallbackClass.Reg_Pre_Query_Value_Key:
                         {
+                            registryEventArgs.EventName = "OnPreQueryValueKey";
                             if (null != OnPreQueryValueKey)
                             {
-                                registryEventArgs.EventName = "OnPreQueryValueKey";
-
                                 OnPreQueryValueKey(this, registryEventArgs);
-                                if (registryEventArgs.ReturnStatus != NtStatus.Status.Success)
-                                {
-                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION;
-                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
-                                }
-                                else if (registryEventArgs.IsDataModified)
-                                {
-                                    Array.Copy(registryEventArgs.ReturnDataBuffer, messageReply.DataBuffer, registryEventArgs.ReturnDataBuffer.Length);
-                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION | (uint)FilterAPI.FilterStatus.FILTER_DATA_BUFFER_IS_UPDATED;
-                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
-                                }
                             }
 
                             break;
@@ -644,22 +536,10 @@ namespace EaseFilter.FilterControl
 
                     case FilterAPI.RegCallbackClass.Reg_Pre_Query_Multiple_Value_Key:
                         {
+                            registryEventArgs.EventName = "OnPreQueryMultipleValueKey";
                             if (null != OnPreQueryMultipleValueKey)
                             {
-                                registryEventArgs.EventName = "OnPreQueryMultipleValueKey";
-
                                 OnPreQueryMultipleValueKey(this, registryEventArgs);
-                                if (registryEventArgs.ReturnStatus != NtStatus.Status.Success)
-                                {
-                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION;
-                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
-                                }
-                                else if (registryEventArgs.IsDataModified)
-                                {
-                                    Array.Copy(registryEventArgs.ReturnDataBuffer, messageReply.DataBuffer, registryEventArgs.ReturnDataBuffer.Length);
-                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION | (uint)FilterAPI.FilterStatus.FILTER_DATA_BUFFER_IS_UPDATED;
-                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
-                                }
                             }
 
                             break;
@@ -667,22 +547,10 @@ namespace EaseFilter.FilterControl
 
                     case FilterAPI.RegCallbackClass.Reg_Pre_Create_Key:
                         {
+                            registryEventArgs.EventName = "OnPreCreateKey";
                             if (null != OnPreCreateKey)
                             {
-                                registryEventArgs.EventName = "OnPreCreateKey";
-
                                 OnPreCreateKey(this, registryEventArgs);
-                                if (registryEventArgs.ReturnStatus != NtStatus.Status.Success)
-                                {
-                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION;
-                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
-                                }
-                                else if (registryEventArgs.IsDataModified)
-                                {
-                                    Array.Copy(registryEventArgs.ReturnDataBuffer, messageReply.DataBuffer, registryEventArgs.ReturnDataBuffer.Length);
-                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION | (uint)FilterAPI.FilterStatus.FILTER_DATA_BUFFER_IS_UPDATED;
-                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
-                                }
                             }
 
                             break;
@@ -690,22 +558,10 @@ namespace EaseFilter.FilterControl
 
                     case FilterAPI.RegCallbackClass.Reg_Pre_Open_Key:
                         {
+                            registryEventArgs.EventName = "OnPreOpenKey";
                             if (null != OnPreOpenKey)
                             {
-                                registryEventArgs.EventName = "OnPreOpenKey";
-
-                                OnPreOpenKey(this, registryEventArgs);
-                                if (registryEventArgs.ReturnStatus != NtStatus.Status.Success)
-                                {
-                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION;
-                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
-                                }
-                                else if (registryEventArgs.IsDataModified)
-                                {
-                                    Array.Copy(registryEventArgs.ReturnDataBuffer, messageReply.DataBuffer, registryEventArgs.ReturnDataBuffer.Length);
-                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION | (uint)FilterAPI.FilterStatus.FILTER_DATA_BUFFER_IS_UPDATED;
-                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
-                                }
+                                OnPreOpenKey(this, registryEventArgs);                               
                             }
 
                             break;
@@ -713,22 +569,10 @@ namespace EaseFilter.FilterControl
 
                     case FilterAPI.RegCallbackClass.Reg_Pre_Key_Handle_Close:
                         {
+                            registryEventArgs.EventName = "OnPreKeyHandleClose";
                             if (null != OnPreKeyHandleClose)
                             {
-                                registryEventArgs.EventName = "OnPreKeyHandleClose";
-
                                 OnPreKeyHandleClose(this, registryEventArgs);
-                                if (registryEventArgs.ReturnStatus != NtStatus.Status.Success)
-                                {
-                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION;
-                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
-                                }
-                                else if (registryEventArgs.IsDataModified)
-                                {
-                                    Array.Copy(registryEventArgs.ReturnDataBuffer, messageReply.DataBuffer, registryEventArgs.ReturnDataBuffer.Length);
-                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION | (uint)FilterAPI.FilterStatus.FILTER_DATA_BUFFER_IS_UPDATED;
-                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
-                                }
                             }
 
                             break;
@@ -736,22 +580,10 @@ namespace EaseFilter.FilterControl
 
                     case FilterAPI.RegCallbackClass.Reg_Pre_Create_KeyEx:
                         {
+                            registryEventArgs.EventName = "OnPreCreateKeyEx";
                             if (null != OnPreCreateKeyEx)
                             {
-                                registryEventArgs.EventName = "OnPreCreateKeyEx";
-
                                 OnPreCreateKeyEx(this, registryEventArgs);
-                                if (registryEventArgs.ReturnStatus != NtStatus.Status.Success)
-                                {
-                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION;
-                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
-                                }
-                                else if (registryEventArgs.IsDataModified)
-                                {
-                                    Array.Copy(registryEventArgs.ReturnDataBuffer, messageReply.DataBuffer, registryEventArgs.ReturnDataBuffer.Length);
-                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION | (uint)FilterAPI.FilterStatus.FILTER_DATA_BUFFER_IS_UPDATED;
-                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
-                                }
                             }
 
                             break;
@@ -759,22 +591,10 @@ namespace EaseFilter.FilterControl
 
                     case FilterAPI.RegCallbackClass.Reg_Pre_Open_KeyEx:
                         {
+                            registryEventArgs.EventName = "OnPreOpenKeyEx";
                             if (null != OnPreOpenKeyEx)
                             {
-                                registryEventArgs.EventName = "OnPreOpenKeyEx";
-
                                 OnPreOpenKeyEx(this, registryEventArgs);
-                                if (registryEventArgs.ReturnStatus != NtStatus.Status.Success)
-                                {
-                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION;
-                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
-                                }
-                                else if (registryEventArgs.IsDataModified)
-                                {
-                                    Array.Copy(registryEventArgs.ReturnDataBuffer, messageReply.DataBuffer, registryEventArgs.ReturnDataBuffer.Length);
-                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION | (uint)FilterAPI.FilterStatus.FILTER_DATA_BUFFER_IS_UPDATED;
-                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
-                                }
                             }
 
                             break;
@@ -782,22 +602,10 @@ namespace EaseFilter.FilterControl
 
                     case FilterAPI.RegCallbackClass.Reg_Pre_Flush_Key:
                         {
+                            registryEventArgs.EventName = "OnPreFlushKey";
                             if (null != OnPreFlushKey)
                             {
-                                registryEventArgs.EventName = "OnPreFlushKey";
-
                                 OnPreFlushKey(this, registryEventArgs);
-                                if (registryEventArgs.ReturnStatus != NtStatus.Status.Success)
-                                {
-                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION;
-                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
-                                }
-                                else if (registryEventArgs.IsDataModified)
-                                {
-                                    Array.Copy(registryEventArgs.ReturnDataBuffer, messageReply.DataBuffer, registryEventArgs.ReturnDataBuffer.Length);
-                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION | (uint)FilterAPI.FilterStatus.FILTER_DATA_BUFFER_IS_UPDATED;
-                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
-                                }
                             }
 
                             break;
@@ -805,22 +613,10 @@ namespace EaseFilter.FilterControl
 
                     case FilterAPI.RegCallbackClass.Reg_Pre_Load_Key:
                         {
+                            registryEventArgs.EventName = "OnPreLoadKey";
                             if (null != OnPreLoadKey)
                             {
-                                registryEventArgs.EventName = "OnPreLoadKey";
-
                                 OnPreLoadKey(this, registryEventArgs);
-                                if (registryEventArgs.ReturnStatus != NtStatus.Status.Success)
-                                {
-                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION;
-                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
-                                }
-                                else if (registryEventArgs.IsDataModified)
-                                {
-                                    Array.Copy(registryEventArgs.ReturnDataBuffer, messageReply.DataBuffer, registryEventArgs.ReturnDataBuffer.Length);
-                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION | (uint)FilterAPI.FilterStatus.FILTER_DATA_BUFFER_IS_UPDATED;
-                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
-                                }
                             }
 
                             break;
@@ -828,22 +624,10 @@ namespace EaseFilter.FilterControl
 
                     case FilterAPI.RegCallbackClass.Reg_Pre_UnLoad_Key:
                         {
+                            registryEventArgs.EventName = "OnPreUnLoadKey";
                             if (null != OnPreUnLoadKey)
                             {
-                                registryEventArgs.EventName = "OnPreUnLoadKey";
-
                                 OnPreLoadKey(this, registryEventArgs);
-                                if (registryEventArgs.ReturnStatus != NtStatus.Status.Success)
-                                {
-                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION;
-                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
-                                }
-                                else if (registryEventArgs.IsDataModified)
-                                {
-                                    Array.Copy(registryEventArgs.ReturnDataBuffer, messageReply.DataBuffer, registryEventArgs.ReturnDataBuffer.Length);
-                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION | (uint)FilterAPI.FilterStatus.FILTER_DATA_BUFFER_IS_UPDATED;
-                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
-                                }
                             }
 
                             break;
@@ -851,22 +635,10 @@ namespace EaseFilter.FilterControl
 
                     case FilterAPI.RegCallbackClass.Reg_Pre_Query_Key_Security:
                         {
+                            registryEventArgs.EventName = "OnPreQueryKeySecurity";
                             if (null != OnPreQueryKeySecurity)
                             {
-                                registryEventArgs.EventName = "OnPreQueryKeySecurity";
-
                                 OnPreQueryKeySecurity(this, registryEventArgs);
-                                if (registryEventArgs.ReturnStatus != NtStatus.Status.Success)
-                                {
-                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION;
-                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
-                                }
-                                else if (registryEventArgs.IsDataModified)
-                                {
-                                    Array.Copy(registryEventArgs.ReturnDataBuffer, messageReply.DataBuffer, registryEventArgs.ReturnDataBuffer.Length);
-                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION | (uint)FilterAPI.FilterStatus.FILTER_DATA_BUFFER_IS_UPDATED;
-                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
-                                }
                             }
 
                             break;
@@ -874,22 +646,10 @@ namespace EaseFilter.FilterControl
 
                     case FilterAPI.RegCallbackClass.Reg_Pre_Set_Key_Security:
                         {
+                            registryEventArgs.EventName = "OnPreSetKeySecurity";
                             if (null != OnPreSetKeySecurity)
                             {
-                                registryEventArgs.EventName = "OnPreSetKeySecurity";
-
                                 OnPreSetKeySecurity(this, registryEventArgs);
-                                if (registryEventArgs.ReturnStatus != NtStatus.Status.Success)
-                                {
-                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION;
-                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
-                                }
-                                else if (registryEventArgs.IsDataModified)
-                                {
-                                    Array.Copy(registryEventArgs.ReturnDataBuffer, messageReply.DataBuffer, registryEventArgs.ReturnDataBuffer.Length);
-                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION | (uint)FilterAPI.FilterStatus.FILTER_DATA_BUFFER_IS_UPDATED;
-                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
-                                }
                             }
 
                             break;
@@ -897,22 +657,10 @@ namespace EaseFilter.FilterControl
 
                     case FilterAPI.RegCallbackClass.Reg_Pre_Restore_Key:
                         {
+                            registryEventArgs.EventName = "OnPreRestoreKey";
                             if (null != OnPreRestoreKey)
                             {
-                                registryEventArgs.EventName = "OnPreRestoreKey";
-
                                 OnPreRestoreKey(this, registryEventArgs);
-                                if (registryEventArgs.ReturnStatus != NtStatus.Status.Success)
-                                {
-                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION;
-                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
-                                }
-                                else if (registryEventArgs.IsDataModified)
-                                {
-                                    Array.Copy(registryEventArgs.ReturnDataBuffer, messageReply.DataBuffer, registryEventArgs.ReturnDataBuffer.Length);
-                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION | (uint)FilterAPI.FilterStatus.FILTER_DATA_BUFFER_IS_UPDATED;
-                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
-                                }
                             }
 
                             break;
@@ -920,22 +668,10 @@ namespace EaseFilter.FilterControl
 
                     case FilterAPI.RegCallbackClass.Reg_Pre_Save_Key:
                         {
+                            registryEventArgs.EventName = "OnPreSaveKey";
                             if (null != OnPreSaveKey)
                             {
-                                registryEventArgs.EventName = "OnPreSaveKey";
-
                                 OnPreSaveKey(this, registryEventArgs);
-                                if (registryEventArgs.ReturnStatus != NtStatus.Status.Success)
-                                {
-                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION;
-                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
-                                }
-                                else if (registryEventArgs.IsDataModified)
-                                {
-                                    Array.Copy(registryEventArgs.ReturnDataBuffer, messageReply.DataBuffer, registryEventArgs.ReturnDataBuffer.Length);
-                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION | (uint)FilterAPI.FilterStatus.FILTER_DATA_BUFFER_IS_UPDATED;
-                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
-                                }
                             }
 
                             break;
@@ -943,51 +679,40 @@ namespace EaseFilter.FilterControl
 
                     case FilterAPI.RegCallbackClass.Reg_Pre_Replace_Key:
                         {
+                            registryEventArgs.EventName = "OnPreReplaceKey";
                             if (null != OnPreReplaceKey)
                             {
-                                registryEventArgs.EventName = "OnPreReplaceKey";
-
                                 OnPreReplaceKey(this, registryEventArgs);
-                                if (registryEventArgs.ReturnStatus != NtStatus.Status.Success)
-                                {
-                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION;
-                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
-                                }
-                                else if (registryEventArgs.IsDataModified)
-                                {
-                                    Array.Copy(registryEventArgs.ReturnDataBuffer, messageReply.DataBuffer, registryEventArgs.ReturnDataBuffer.Length);
-                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION | (uint)FilterAPI.FilterStatus.FILTER_DATA_BUFFER_IS_UPDATED;
-                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
-                                }
                             }
 
                             break;
+
                         }
 
                     case FilterAPI.RegCallbackClass.Reg_Pre_Query_KeyName:
                         {
+                            registryEventArgs.EventName = "OnPreQueryKeyName";
                             if (null != OnPreQueryKeyName)
                             {
-                                registryEventArgs.EventName = "OnPreQueryKeyName";
-
                                 OnPreQueryKeyName(this, registryEventArgs);
-                                if (registryEventArgs.ReturnStatus != NtStatus.Status.Success)
-                                {
-                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION;
-                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
-                                }
-                                else if (registryEventArgs.IsDataModified)
-                                {
-                                    Array.Copy(registryEventArgs.ReturnDataBuffer, messageReply.DataBuffer, registryEventArgs.ReturnDataBuffer.Length);
-                                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION | (uint)FilterAPI.FilterStatus.FILTER_DATA_BUFFER_IS_UPDATED;
-                                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
-                                }
                             }
 
                             break;
                         }
 
                     default: break;
+                }
+
+                if (registryEventArgs.ReturnStatus != NtStatus.Status.Success)
+                {
+                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION;
+                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
+                }
+                else if (registryEventArgs.IsDataModified)
+                {
+                    Array.Copy(registryEventArgs.ReturnDataBuffer, messageReply.DataBuffer, registryEventArgs.ReturnDataBuffer.Length);
+                    messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION | (uint)FilterAPI.FilterStatus.FILTER_DATA_BUFFER_IS_UPDATED;
+                    messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
                 }
 
                 Marshal.StructureToPtr(messageReply, replyDataPtr, true);
@@ -1575,7 +1300,7 @@ namespace EaseFilter.FilterControl
         /// </summary>
         public FilterAPI.RegCallbackClass RegCallbackClass { get; set; }
         /// <summary>
-        ///  The process ID of the process that created the new process.
+        ///  The Key Information class.
         /// </summary>
         public uint InfoClass { get; set; }
 

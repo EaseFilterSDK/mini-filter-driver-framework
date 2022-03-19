@@ -257,4 +257,11 @@
 	1. Fixed a license check error.
 5.1.5.1 ( 2021-11-28)
 	1. Added support for getting encryption key, iv and tag data from the user mode service.
+5.1.6.1 ( 2022-01-19)
+	1. Fixed the block pre_write callback I/O issue.
+	2. Added support for different return status for request encryption key from user mode.
+5.1.6.2 ( 2022-03-18)
+	1. Added support for getting encryption key only and tag data from the user mode service.
+	   Authorize the encryption or decryption in use mode callback function.
+
 	

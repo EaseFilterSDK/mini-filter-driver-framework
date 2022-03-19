@@ -207,14 +207,24 @@ namespace EaseFilter.FilterControl
 
                 OnFilterRequestEncryptKey(this, fileEncryptArgs);
 
+                messageReply.ReturnStatus = (uint)fileEncryptArgs.ReturnStatus;
+
                 if (fileEncryptArgs.ReturnStatus == NtStatus.Status.Success)
                 {
                     MemoryStream ms = new MemoryStream();
                     BinaryWriter bw = new BinaryWriter(ms);
+                    byte[] iv = new byte[16];
+                    int ivLength = 0;
+
+                    if (null != fileEncryptArgs.IV)
+                    {
+                        ivLength = fileEncryptArgs.IV.Length;
+                        Array.Copy(fileEncryptArgs.IV, iv, 16);
+                    }
 
                     bw.Write(fileEncryptArgs.AccessFlags);
-                    bw.Write(fileEncryptArgs.IV.Length);
-                    bw.Write(fileEncryptArgs.IV);
+                    bw.Write(ivLength);
+                    bw.Write(iv);
                     bw.Write(fileEncryptArgs.EncryptionKey.Length);
                     bw.Write(fileEncryptArgs.EncryptionKey);
 
@@ -229,11 +239,10 @@ namespace EaseFilter.FilterControl
                     messageReply.DataBufferLength = (uint)dataBuffer.Length;
                     Array.Copy(dataBuffer, messageReply.DataBuffer, dataBuffer.Length);
 
-                    messageReply.ReturnStatus = (uint)NtStatus.Status.Success;
                 }
                 else
                 {
-                    messageReply.ReturnStatus = (uint)NtStatus.Status.AccessDenied;
+
                 }
             }
 

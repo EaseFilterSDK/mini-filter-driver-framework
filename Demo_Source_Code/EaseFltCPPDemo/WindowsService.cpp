@@ -22,7 +22,8 @@
 #include "FilterAPI.h"
 #include "UnitTest.h"
 #include "WindowsService.h"
-#include "FilterWorker.h"
+#include "FilterControl.h"
+#include "FilterRule.h"
 
 #define SERVICE_NAME  _T("EaseFilter Service")
 
@@ -193,47 +194,45 @@ DWORD WINAPI ServiceWorkerThread (LPVOID lpParam)
 {
     OutputDebugString(_T("EaseFilter Service: ServiceWorkerThread: Entry"));
 
+	FilterControl* filterControl = FilterControl::GetSingleInstance();
+
     //  Periodically check if the service has been requested to stop
     while (WaitForSingleObject(g_ServiceStopEvent, 0) != WAIT_OBJECT_0)
     {        
-            BOOL ret = FALSE;
-			WCHAR* filterFolder = GetFilterMask();
-			ULONG ioRegistration = 0;
-			ULONG accessFlag = ALLOW_MAX_RIGHT_ACCESS;		
+            BOOL	ret = FALSE;
 			DWORD	threadCount = 5;
+			DWORD	connectionTimeout = 20;
 			ULONG	filterType = FILE_SYSTEM_MONITOR;
 
-			//Register the I/O request,which will be monitored or will be called back from filter.
-			for (int i = 0; i < MAX_REQUEST_TYPE; i++ )
-			{
-				//register all post request
-				if( (double)i/2 != i/2 )
-				{
-					ioRegistration |= 1<<i;
-				}
-			}     
+			ULONG allPostIO = POST_CREATE|POST_FASTIO_READ|POST_CACHE_READ|POST_NOCACHE_READ|POST_PAGING_IO_READ;
+				allPostIO |= POST_FASTIO_WRITE|POST_CACHE_WRITE|POST_NOCACHE_WRITE|POST_PAGING_IO_WRITE|POST_QUERY_INFORMATION;
+				allPostIO |= POST_SET_INFORMATION|POST_DIRECTORY|POST_QUERY_SECURITY|POST_SET_SECURITY|POST_CLEANUP|POST_CLOSE;
 
-			ret = SetRegistrationKey(registerKey);
-			if( !ret )
-			{
-				PrintLastErrorMessage( L"SetRegistrationKey failed.");
-				return 1;
-			}
+			WCHAR* fileFilterMask = GetFilterMask();
+			ULONG ioCallbackClass = allPostIO;
+			ULONG accessFlag = ALLOW_MAX_RIGHT_ACCESS;		
 
-			ret = RegisterMessageCallback(threadCount,MessageCallback,DisconnectCallback);
+			FileFilterRule fileFilterRule(fileFilterMask);
+			fileFilterRule.AccessFlag = accessFlag;
+			fileFilterRule.FileChangeEventFilter = FILE_WAS_CREATED|FILE_WAS_WRITTEN|FILE_WAS_RENAMED|FILE_WAS_DELETED;
+			fileFilterRule.MonitorFileIOEventFilter = ioCallbackClass;
 
-			if( !ret )
-			{
-				PrintLastErrorMessage( L"RegisterMessageCallback failed.");
-				return 1;
-			}
+			filterControl->AddFileFilter(fileFilterRule);
+			filterControl->StartFilter(filterType,threadCount,connectionTimeout,registerKey);
 
-			//this the demo how to use the control filter.
-			SendConfigInfoToFilter(filterType,filterFolder,ioRegistration,accessFlag);		
+			//prevent the current process from being terminated.
+			//AddProtectedProcessId(GetCurrentProcessId());
+			
+			system("pause");			
 
+			//the process can be termiated now.
+			//RemoveProtectedProcessId(GetCurrentProcessId());
+			
     }
 
-	Disconnect();
+	filterControl->StopFilter();
+	delete filterControl;	
+
     OutputDebugString(_T("EaseFilter Service: ServiceWorkerThread: Exit"));
 
     return ERROR_SUCCESS;

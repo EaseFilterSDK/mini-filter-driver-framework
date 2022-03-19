@@ -10,6 +10,7 @@
 
 #pragma once
 
+#include <strsafe.h>
 #include "FilterAPI.h"
 #include "WinDataStructures.h"
 
@@ -26,6 +27,16 @@ PrintMessage(WCHAR* message,WORD theColour);
 
 void
 PrintLastErrorMessage(WCHAR* message);
+
+BOOL
+GetProcessNameByPid(ULONG pid, WCHAR* processName, ULONG processNameLength );
+
+std::wstring
+GetFileTimeStr(LONGLONG fileTime );
+
+BOOLEAN
+EnableDebugPrivileges();
+
 //
 //To display message in WinDbg or DbgView application.
 //
@@ -38,5 +49,7 @@ void
 PrintErrorMessage( 
 	LPWSTR	message,
     DWORD   errorCode );
+
+
 
 

@@ -13,6 +13,11 @@
 // Defines for NTSTATUS
 typedef long NTSTATUS;
 
+#include "FilterControl.h"
+
+VOID
+EncryptionUnitTest(FilterControl* filterControl);
+
 void 
 FilterUnitTest();
 

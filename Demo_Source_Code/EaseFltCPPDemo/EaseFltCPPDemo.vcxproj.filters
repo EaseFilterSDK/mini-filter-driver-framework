@@ -15,19 +15,10 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="AESEncryption.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ControlFilterHandler.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="CPlusPlusDemo.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="FilterMessage.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="FilterWorker.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="stdafx.cpp">
@@ -42,27 +33,18 @@
     <ClCompile Include="UnitTest.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="RegistryFilterTest.cpp">
+    <ClCompile Include="FilterControl.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ProcessFilterTest.cpp">
+    <ClCompile Include="EncryptionTest.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="AESEncryption.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ControlFilterHandler.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="FilterAPI.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="FilterMessage.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="FilterWorker.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="resource.h">
@@ -86,10 +68,25 @@
     <ClInclude Include="WindowsService.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="RegistryFilterTest.h">
+    <ClInclude Include="FilterControl.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ProcessFilterTest.h">
+    <ClInclude Include="EncryptionHandler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FileControlHandler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FileMonitorHandler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ProcessFilterHandler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RegistryFilterHandler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FilterRule.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

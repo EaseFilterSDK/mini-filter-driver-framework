@@ -73,7 +73,7 @@ namespace FileProtector
         private static string unitTestCallbackBlockNewFile = unitTestCallbackFolder + "\\blockNewFileCreationFile.txt";
         private static string unitTestCallbackTestReparseFile = unitTestCallbackFolder + "\\reparseTestFile.txt";
         private static string unitTestCallbackReparseTargetFile = unitTestCallbackFolder + "\\reparseTargetFile.txt";
-        private static string unitTestCopyBeforeDeleteCallbackFile = "c:\\EaseFilterUnitTest\\callbackFolder\\unitTestCopyBeforeDeleteCallbackFile.txt";
+        private static string unitTestCallbackDeletionPreventionFile = "c:\\EaseFilterUnitTest\\callbackFolder\\deletionPreventionInCallbackUnitTestFile.txt";
         private static string unitTestCopyAfterDeleteCallbackFile = "c:\\EaseFilterUnitTest\\callbackFolder\\unitTestCopyAfterDeleteCallbackFile.txt";
 
 
@@ -149,9 +149,9 @@ namespace FileProtector
                 File.AppendAllText(unitTestCallbackFile, "This is unitTestCallbackFile test file.");
             }
 
-            if (!File.Exists(unitTestCopyBeforeDeleteCallbackFile))
+            if (!File.Exists(unitTestCallbackDeletionPreventionFile))
             {
-                File.AppendAllText(unitTestCopyBeforeDeleteCallbackFile, "This is unitTestCopyBeforeDeleteCallbackFile test file.");
+                File.AppendAllText(unitTestCallbackDeletionPreventionFile, "This is unitTestCopyBeforeDeleteCallbackFile test file.");
             }
         }
 
@@ -1023,15 +1023,16 @@ namespace FileProtector
         /// <param name="e"></param>
         public void OnPreDeleteFile(object sender, FileIOEventArgs e)
         {
+            e.ReturnStatus = NtStatus.Status.Success;
+
             if (string.Compare(unitTestCallbackFile, e.FileName, true) == 0)
             {
                 e.ReturnStatus = NtStatus.Status.AccessDenied;
             }
 
-            if (string.Compare(unitTestCopyBeforeDeleteCallbackFile, e.FileName, true) == 0)
+            if (string.Compare(unitTestCallbackDeletionPreventionFile, e.FileName, true) == 0)
             {
-                CopyFileBeforeDeltion(e.FileName);
-                e.ReturnStatus = NtStatus.Status.Success;
+                e.ReturnStatus = NtStatus.Status.AccessDenied;                
             }
 
         }
@@ -1128,7 +1129,7 @@ namespace FileProtector
             }
         }
 
-        private void CopyFileBeforeDeletionUnitTest()
+        private void DeletionCallbackUnitTest()
         {
 
             //
@@ -1141,44 +1142,51 @@ namespace FileProtector
             message = " Make a copy of the file before it was deleted." + Environment.NewLine;
             AppendText(message, Color.Gray);
 
-            FileFilter copyFileBeforeDeletionlFilter = new FileFilter(unitTestCallbackFolder + "\\*");
-            copyFileBeforeDeletionlFilter.ControlFileIOEventFilter = (ulong)(ControlFileIOEvents.OnPreFileCreate | ControlFileIOEvents.OnPreDeleteFile);
-            copyFileBeforeDeletionlFilter.OnPreDeleteFile += OnPreDeleteFile;
+            FileFilter deletionCallbackFilter = new FileFilter(unitTestCallbackFolder + "\\*");
+            deletionCallbackFilter.ControlFileIOEventFilter = (ulong)(ControlFileIOEvents.OnPreFileCreate | ControlFileIOEvents.OnPreDeleteFile);
+            deletionCallbackFilter.OnPreDeleteFile += OnPreDeleteFile;
 
 
             try
             {
                 filterControl.ClearFilters();
-                filterControl.AddFilter(copyFileBeforeDeletionlFilter);
+                filterControl.AddFilter(deletionCallbackFilter);
                 filterControl.SendConfigSettingsToFilter(ref lastError);
 
                 try
                 {
-                    File.Delete(unitTestCopyBeforeDeleteCallbackFile);
+                    File.Delete(unitTestCallbackDeletionPreventionFile);
 
-                    if (File.Exists(unitTestCopyAfterDeleteCallbackFile))
-                    {
-                        AppendText("Test copy file befoe deletion callback passed.", Color.Green);
-                        AppendText("The protected file was copied.", Color.Gray);
-                        AppendText("The protected file was deleted.", Color.Gray);
-                    }
-                    else
-                    {
-                        AppendText("Test copy file befoe deletion callback failed.", Color.Red);
-                        return;
-                    }
-
-                }
-                catch (Exception ex)
-                {
-                    AppendText("Test copy file befoe deletion callback exception:" + ex.Message, Color.Red);
+                    //the deletion should be blocked in callback function.
+                    AppendText("Test deletion prevention in callback failed.", Color.Red);
                     return;
+
                 }
+                catch
+                {
+                }
+
+                filterControl.ClearFilters();
+                filterControl.SendConfigSettingsToFilter(ref lastError);
+
+                try
+                {
+                    File.Delete(unitTestCallbackDeletionPreventionFile);
+
+                    //Now the file can be deleted.
+                    AppendText("Test deletion prevention in callback passed.", Color.Green);
+                    return;
+
+                }
+                catch
+                {
+                }
+
 
             }
             catch (Exception ex)
             {
-                AppendText("Test copy file befoe deletion callback exception:" + ex.Message, Color.Red);
+                AppendText("Test deletion prevention in callback exception:" + ex.Message, Color.Red);
             }
             finally
             {
@@ -1260,7 +1268,7 @@ namespace FileProtector
 
                 FileAccessControlUnitTest();
 
-                CopyFileBeforeDeletionUnitTest();
+                DeletionCallbackUnitTest();
 
                 ReparseFileOpenUnitTest();
 
@@ -1287,6 +1295,8 @@ namespace FileProtector
                     MessageBox.Show(lastError, "StartFilter", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
+
+                System.Threading.Thread.Sleep(3000);
 
                 StartFilterUnitTest();
 

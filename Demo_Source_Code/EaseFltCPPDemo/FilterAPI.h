@@ -13,7 +13,7 @@
 
 //Purchase a license key with the link: http://www.EaseFilter.com/Order.htm
 //Email us to request a trial key: info@EaseFilter.com //free email is not accepted.
-#define	registerKey "***********************************"
+#define	registerKey "**************************************************"
 
 #define MESSAGE_SEND_VERIFICATION_NUMBER	0xFF000001
 #define	INET_ADDR_STR_LEN					22
@@ -893,13 +893,17 @@ typedef enum _AccessFlag
     /// </summary>
     ALLOW_COPY_PROTECTED_FILES_OUT = 0x00800000,
     /// <summary>
-    /// Allow the file to be executed.
+    /// Allow the file to be mapped.
     /// </summary>
     ALLOW_FILE_MEMORY_MAPPED = 0x01000000,
 	/// <summary>
     /// if the encryption filter rule is enabled, it will encrypt unencrypted data on read when the flag value is 0.
     /// </summary>
     DISABLE_ENCRYPT_DATA_ON_READ = 0x02000000, 
+	/// <summary>
+	/// prevent the protected files from being copying out to the USB when the flag value is 0.
+	/// </summary>
+	ALLOW_COPY_PROTECTED_FILES_TO_USB = 0x04000000, 
 	/// <summary>
     /// If it is not exclude filter rule,the access flag can't be 0, at least you need to include this flag
     /// for filter driver with least access right to the file.
@@ -1536,7 +1540,7 @@ BOOL
 RegisterControlIOToFilterRule(WCHAR* filterMask, ULONGLONG registerIO);
 
 /// <summary>
-/// Set the access rigths to the specific process
+/// Set the access rights to the specific process
 /// </summary>
 /// <param name="filterMask">the file filter mask of the filter rule</param>
 /// <param name="processName">the process name will be added the access rights, e.g. notepad.exe or c:\windows\*.exe</param>
