@@ -222,6 +222,7 @@ namespace EaseFilter.FilterControl
         /// the access right of the process 
         /// </summary>
         Dictionary<string, uint> processNameAccessRightList = new Dictionary<string, uint>();
+        Dictionary<byte[], uint> trustedProcessList = new Dictionary<byte[], uint>();
         Dictionary<uint, uint> processIdAccessRightList = new Dictionary<uint, uint>();
 
         /// <summary>
@@ -291,12 +292,22 @@ namespace EaseFilter.FilterControl
 
 
         /// <summary>
-        /// set the access rights of the files for the process in the list
+        /// set the access rights of the files for the process name in the list
         /// </summary>
         public Dictionary<string, uint> ProcessNameAccessRightList
         {
             get { return processNameAccessRightList; }
             set { processNameAccessRightList = value; }
+        }
+
+        /// <summary>
+        /// Set the trusted process based on their sha256 hash.
+        /// You can allow only the trusted process to access your files.
+        /// </summary>
+        public Dictionary<byte[], uint> TrustedProcessList
+        {
+            get { return trustedProcessList; }
+            set { trustedProcessList = value; }
         }
 
         /// <summary>

@@ -14,10 +14,14 @@
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
-    <SccProjectName>SAK</SccProjectName>
-    <SccLocalPath>SAK</SccLocalPath>
-    <SccAuxPath>SAK</SccAuxPath>
-    <SccProvider>SAK</SccProvider>
+    <SccProjectName>
+    </SccProjectName>
+    <SccLocalPath>
+    </SccLocalPath>
+    <SccAuxPath>
+    </SccAuxPath>
+    <SccProvider>
+    </SccProvider>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -168,7 +172,7 @@
   <ItemGroup>
     <ProjectReference Include="..\CommonObjects\CommonObjects.csproj">
       <Project>{34CB783E-DDA2-4CE3-80BC-37B25AA33E5F}</Project>
-      <Name>CommonObjects %28FilterDemo\CommonObjects%29</Name>
+      <Name>CommonObjects</Name>
     </ProjectReference>
     <ProjectReference Include="..\FilterControl\FilterControl.csproj">
       <Project>{21540012-A296-45CE-8D35-3EA5A07B32A6}</Project>

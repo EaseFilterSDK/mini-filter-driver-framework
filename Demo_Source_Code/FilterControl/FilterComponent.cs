@@ -629,6 +629,19 @@ namespace EaseFilter.FilterControl
                             }
                         }
 
+                        foreach (KeyValuePair<byte[], uint> entry in fileFilter.TrustedProcessList)
+                        {
+                            byte[] processSha256 = entry.Key;
+                            uint accessFlags = entry.Value;
+
+                            if (!FilterAPI.AddTrustedProcessToFilterRule(fileFilter.IncludeFileFilterMask, processSha256, (uint)processSha256.Length, accessFlags))
+                            {
+                                lastError = "AddProcessSha256RightsToFilterRule " + fileFilter.IncludeFileFilterMask + ",accessFlags:" + accessFlags + " failed:" + FilterAPI.GetLastErrorMessage();
+                                return false;
+                            }
+                        }
+
+
                         foreach (KeyValuePair<uint, uint> entry in fileFilter.ProcessIdAccessRightList)
                         {
                             uint processId = entry.Key;

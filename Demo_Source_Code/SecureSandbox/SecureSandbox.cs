@@ -264,7 +264,7 @@ namespace SecureSandbox
             //by default the sandbox folder doesn't allow being read/write by processes, if the processes want to access the sandbox, it needs to add process rights.
             selectedFilterRule.AccessFlag = (uint)(FilterAPI.ALLOW_MAX_RIGHT_ACCESS|(uint)FilterAPI.AccessFlag.ENABLE_FILE_ENCRYPTION_RULE);
             //Not allow the explorer.exe to read the encrytped files, when you copy the encrypted files from exploer, the file can stay encrypted.
-            selectedFilterRule.ProcessRights = "explorer.exe!" + ((uint)FilterAPI.ALLOW_MAX_RIGHT_ACCESS &~(uint)(FilterAPI.AccessFlag.ALLOW_READ_ENCRYPTED_FILES)).ToString() + ";";
+            selectedFilterRule.ProcessNameRights = "explorer.exe!" + ((uint)FilterAPI.ALLOW_MAX_RIGHT_ACCESS &~(uint)(FilterAPI.AccessFlag.ALLOW_READ_ENCRYPTED_FILES)).ToString() + ";";
         }
 
         private void InitSandbox()
@@ -484,8 +484,8 @@ namespace SecureSandbox
 
             selectedProcessFilterRule.ProcessNameFilterMask = textBox_SandboxFolder.Text;          
 
-            ProcessFileAccessRights processFileAccessRigths = new ProcessFileAccessRights(selectedProcessFilterRule);
-            processFileAccessRigths.ShowDialog();
+            ProcessFileAccessRights processFileAccessRights = new ProcessFileAccessRights(selectedProcessFilterRule);
+            processFileAccessRights.ShowDialog();
         }
 
         private void button_ConfigProcessRights_Click(object sender, EventArgs e)

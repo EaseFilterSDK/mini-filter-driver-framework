@@ -72,7 +72,7 @@ namespace EaseFilter.FolderLocker
 
         private void InitAccessList()
         {
-            string[] processRights = filterRule.ProcessRights.Split(new char[] { ';' });
+            string[] processRights = filterRule.ProcessNameRights.Split(new char[] { ';' });
             if (processRights.Length > 0)
             {
                 foreach (string processRight in processRights)
@@ -301,13 +301,13 @@ namespace EaseFilter.FolderLocker
 
             if (processList.Count == 0)
             {
-                filterRule.ProcessRights = "";
+                filterRule.ProcessNameRights = "";
             }
             else
             {
                 foreach (KeyValuePair<string, uint> entry in processList)
                 {
-                    filterRule.ProcessRights = entry.Key + "!" + entry.Value + ";";
+                    filterRule.ProcessNameRights = entry.Key + "!" + entry.Value + ";";
                 }
             }          
             

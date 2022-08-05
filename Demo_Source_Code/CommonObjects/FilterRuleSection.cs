@@ -223,11 +223,23 @@ namespace EaseFilter.CommonObjects
         /// the format is "processName!accessFlags;", e.g. "notepad.exe!123456;"
         /// seperate the multiple items with ';'
         /// </summary>
-        [ConfigurationProperty("processRights", IsRequired = false)]
-        public string ProcessRights
+        [ConfigurationProperty("processNameRights", IsRequired = false)]
+        public string ProcessNameRights
         {
-            get { return (string)base["processRights"]; }
-            set { base["processRights"] = value; }
+            get { return (string)base["processNameRights"]; }
+            set { base["processNameRights"] = value; }
+        }
+
+        /// <summary>
+        /// The file access rights for the process which has the specific sha256 hash. Seperated with ";" for multiple processes
+        /// the format is "sha256hash!accessFlags;", e.g. "A10B....BC!123456;"
+        /// seperate the multiple items with ';'
+        /// </summary>
+        [ConfigurationProperty("trustedProcessRights", IsRequired = false)]
+        public string TrustedProcessRights
+        {
+            get { return (string)base["trustedProcessRights"]; }
+            set { base["trustedProcessRights"] = value; }
         }
 
         /// <summary>
@@ -403,7 +415,8 @@ namespace EaseFilter.CommonObjects
             dest.IsResident = IsResident;
             dest.RegisterMonitorFileIOEvents = RegisterMonitorFileIOEvents;
             dest.ProcessIdRights = ProcessIdRights;
-            dest.ProcessRights = ProcessRights;            
+            dest.ProcessNameRights = ProcessNameRights;
+            dest.TrustedProcessRights = TrustedProcessRights;  
             dest.ReparseFileFilterMask = ReparseFileFilterMask;
             dest.Type = Type;
             dest.UserRights = UserRights;
@@ -536,7 +549,7 @@ namespace EaseFilter.CommonObjects
                     }
                 }
 
-                string[] processNameRights = ProcessRights.Split(new char[] { ';' });
+                string[] processNameRights = ProcessNameRights.Split(new char[] { ';' });
                 if (processNameRights.Length > 0)
                 {
                     foreach (string processRight in processNameRights)
@@ -550,6 +563,21 @@ namespace EaseFilter.CommonObjects
                     }
                 }
 
+                string[] processSha256Rights = TrustedProcessRights.Split(new char[] { ';' });
+                if (processSha256Rights.Length > 0)
+                {
+                    foreach (string processRight in processSha256Rights)
+                    {
+                        if (processRight.Trim().Length > 0)
+                        {
+                            string processSha256Hex = processRight.Substring(0, processRight.IndexOf('!'));
+                            byte[] processSha256 = Utils.HexToByteArray(processSha256Hex);
+                            uint accessFlags = uint.Parse(processRight.Substring(processRight.IndexOf('!') + 1));
+                            fileFilter.TrustedProcessList.Add(processSha256, accessFlags);
+                        }
+                    }
+                }
+
                 string[] userRights = UserRights.Split(new char[] { ';' });
                 if (userRights.Length > 0)
                 {
@@ -559,7 +587,7 @@ namespace EaseFilter.CommonObjects
                         {
                             string userName = userRight.Substring(0, userRight.IndexOf('!'));
                             uint accessFlags = uint.Parse(userRight.Substring(userRight.IndexOf('!') + 1));
-                            fileFilter.ProcessNameAccessRightList.Add(userName, accessFlags);
+                            fileFilter.userAccessRightList.Add(userName, accessFlags);
                         }
                     }
                 }

@@ -206,7 +206,7 @@ namespace AutoFileCryptTool
             autoEncrytFilterRule.EncryptionPassPhrase = passPhrase;
             autoEncrytFilterRule.AccessFlag = (uint)FilterAPI.ALLOW_MAX_RIGHT_ACCESS | (uint)FilterAPI.AccessFlag.ENABLE_FILE_ENCRYPTION_RULE;
             autoEncrytFilterRule.EncryptMethod = (int)FilterAPI.EncryptionMethod.ENCRYPT_FILE_WITH_SAME_KEY_AND_UNIQUE_IV;
-            autoEncrytFilterRule.ProcessRights = blackListProcessRights;
+            autoEncrytFilterRule.ProcessNameRights = blackListProcessRights;
 
             GlobalConfig.AddFileFilterRule(autoEncrytFilterRule);
            
@@ -484,7 +484,7 @@ namespace AutoFileCryptTool
             EncryptOnReadFilterRule.AccessFlag = (uint)FilterAPI.ALLOW_MAX_RIGHT_ACCESS | (uint)FilterAPI.AccessFlag.ENABLE_FILE_ENCRYPTION_RULE;
             EncryptOnReadFilterRule.AccessFlag &= (uint)(~FilterAPI.AccessFlag.ALLOW_ENCRYPT_NEW_FILE); //disable new created file encryption
             EncryptOnReadFilterRule.EncryptMethod = (int)FilterAPI.EncryptionMethod.ENCRYPT_FILE_WITH_SAME_KEY_AND_UNIQUE_IV;
-            EncryptOnReadFilterRule.ProcessRights = blackListProcessRights;
+            EncryptOnReadFilterRule.ProcessNameRights = blackListProcessRights;
 
             GlobalConfig.AddFileFilterRule(EncryptOnReadFilterRule);
 

@@ -683,5 +683,50 @@ namespace EaseFilter.FilterControl
             return encryptedText;
         }
 
+        [System.Diagnostics.Contracts.Pure]
+        public static string ByteArrayToHex(byte[] value)
+        {
+            if (value == null)
+                throw new ArgumentNullException("value");
+
+            const string hexAlphabet = @"0123456789ABCDEF";
+
+            var chars = new char[checked(value.Length * 2)];
+            unchecked
+            {
+                for (int i = 0; i < value.Length; i++)
+                {
+                    chars[i * 2] = hexAlphabet[value[i] >> 4];
+                    chars[i * 2 + 1] = hexAlphabet[value[i] & 0xF];
+                }
+            }
+            return new string(chars);
+        }
+
+        [System.Diagnostics.Contracts.Pure]
+        public static byte[] HexToByteArray(string value)
+        {
+            if (value == null)
+                throw new ArgumentNullException("value");
+            if (value.Length % 2 != 0)
+                throw new ArgumentException("Hexadecimal value length must be even.", "value");
+
+            unchecked
+            {
+                byte[] result = new byte[value.Length / 2];
+                for (int i = 0; i < result.Length; i++)
+                {
+                    // 0(48) - 9(57) -> 0 - 9
+                    // A(65) - F(70) -> 10 - 15
+                    int b = value[i * 2]; // High 4 bits.
+                    int val = ((b - '0') + ((('9' - b) >> 31) & -7)) << 4;
+                    b = value[i * 2 + 1]; // Low 4 bits.
+                    val += (b - '0') + ((('9' - b) >> 31) & -7);
+                    result[i] = checked((byte)val);
+                }
+                return result;
+            }
+        }
+
     }
 }

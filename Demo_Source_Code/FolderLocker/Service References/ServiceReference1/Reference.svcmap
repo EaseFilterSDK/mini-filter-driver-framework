@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="58875016-d620-461a-ab44-092ec1c44187" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="bfd974e5-d1da-498c-ad9f-f3784d5cd345" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
   <ClientOptions>
     <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
     <EnableDataBinding>true</EnableDataBinding>
@@ -21,8 +21,8 @@
     <MetadataSource Address="http://encryptme.net/webapi.asmx" Protocol="http" SourceId="1" />
   </MetadataSources>
   <Metadata>
-    <MetadataFile FileName="webapi.wsdl" MetadataType="Wsdl" ID="75174c55-b1be-4991-8b1f-41d9a8e5252d" SourceId="1" SourceUrl="http://encryptme.net/webapi.asmx?wsdl" />
-    <MetadataFile FileName="webapi.disco" MetadataType="Disco" ID="b904d465-5192-4042-89e6-3a50b0716926" SourceId="1" SourceUrl="http://encryptme.net/webapi.asmx?disco" />
+    <MetadataFile FileName="webapi.disco" MetadataType="Disco" ID="77b7ab3f-0267-4035-9fb5-b5700d533d1d" SourceId="1" SourceUrl="https://encryptme.net/webapi.asmx?disco" />
+    <MetadataFile FileName="webapi.wsdl" MetadataType="Wsdl" ID="87fd09b0-60a9-4608-ade3-6c2f0e5c1683" SourceId="1" SourceUrl="https://encryptme.net/webapi.asmx?wsdl" />
   </Metadata>
   <Extensions>
     <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />

@@ -51,7 +51,7 @@ namespace SecureSandbox
 
             StartPosition = FormStartPosition.CenterParent;
 
-            string[] processRightList = filterRule.ProcessRights.ToLower().Split(new char[] { ';' });
+            string[] processRightList = filterRule.ProcessNameRights.ToLower().Split(new char[] { ';' });
             if (processRightList.Length > 0)
             {
                 foreach (string processRightStr in processRightList)
@@ -521,7 +521,7 @@ namespace SecureSandbox
 
         private void button_ApplyAll_Click(object sender, EventArgs e)
         {
-            currentFilterRule.ProcessRights = "";
+            currentFilterRule.ProcessNameRights = "";
             currentFilterRule.ProcessIdRights = "";
 
             foreach (ProcessRight processRight in processRights.Values )
@@ -532,7 +532,7 @@ namespace SecureSandbox
                 }
                 else
                 {
-                    currentFilterRule.ProcessRights += processRight.ProcessName + "!" + processRight.AccessFlag + ";";
+                    currentFilterRule.ProcessNameRights += processRight.ProcessName + "!" + processRight.AccessFlag + ";";
                 }
             }
         }

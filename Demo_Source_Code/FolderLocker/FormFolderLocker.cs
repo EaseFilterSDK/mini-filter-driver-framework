@@ -191,7 +191,7 @@ namespace EaseFilter.FolderLocker
                 System.Windows.Forms.ListViewItem item = listView_LockFolders.SelectedItems[0];
                 FileFilterRule filterRule = (FileFilterRule)item.Tag;
 
-                string[] processRights = filterRule.ProcessRights.Split(new char[] { ';' });
+                string[] processRights = filterRule.ProcessNameRights.Split(new char[] { ';' });
                 if (processRights.Length > 0)
                 {
                     foreach (string processRight in processRights)

@@ -13,7 +13,7 @@
 
 //Purchase a license key with the link: http://www.EaseFilter.com/Order.htm
 //Email us to request a trial key: info@EaseFilter.com //free email is not accepted.
-#define	registerKey "**************************************************"
+#define	registerKey "********************************************"
 
 #define MESSAGE_SEND_VERIFICATION_NUMBER	0xFF000001
 #define	INET_ADDR_STR_LEN					22

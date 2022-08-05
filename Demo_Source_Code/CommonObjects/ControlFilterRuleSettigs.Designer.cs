@@ -37,6 +37,10 @@
             this.textBox_ControlIO = new System.Windows.Forms.TextBox();
             this.button_RegisterControlIO = new System.Windows.Forms.Button();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.button_InfoTrustedProcessRights = new System.Windows.Forms.Button();
+            this.button_AddTrustedProcessRights = new System.Windows.Forms.Button();
+            this.textBox_TrustedProcessWithSha256AccessRights = new System.Windows.Forms.TextBox();
+            this.label3 = new System.Windows.Forms.Label();
             this.button_InfoProcessNameRights = new System.Windows.Forms.Button();
             this.button_InfoProcessIdRights = new System.Windows.Forms.Button();
             this.button_InfoUserRights = new System.Windows.Forms.Button();
@@ -51,6 +55,7 @@
             this.label23 = new System.Windows.Forms.Label();
             this.button_SaveControlSettings = new System.Windows.Forms.Button();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.checkBox_EnableSendDeniedEvent = new System.Windows.Forms.CheckBox();
             this.button_InfoEncryptKeyLenght = new System.Windows.Forms.Button();
             this.button_InfoEncryptNewFile = new System.Windows.Forms.Button();
             this.button_InfoCopyout = new System.Windows.Forms.Button();
@@ -84,7 +89,6 @@
             this.label_AccessFlags = new System.Windows.Forms.Label();
             this.textBox_FileAccessFlags = new System.Windows.Forms.TextBox();
             this.button_FileAccessFlags = new System.Windows.Forms.Button();
-            this.checkBox_EnableSendDeniedEvent = new System.Windows.Forms.CheckBox();
             this.groupBox1.SuspendLayout();
             this.groupBox_AccessControl.SuspendLayout();
             this.groupBox4.SuspendLayout();
@@ -98,7 +102,7 @@
             this.groupBox1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox1.Location = new System.Drawing.Point(0, 0);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(573, 560);
+            this.groupBox1.Size = new System.Drawing.Size(573, 594);
             this.groupBox1.TabIndex = 12;
             this.groupBox1.TabStop = false;
             // 
@@ -115,7 +119,7 @@
             this.groupBox_AccessControl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox_AccessControl.Location = new System.Drawing.Point(3, 16);
             this.groupBox_AccessControl.Name = "groupBox_AccessControl";
-            this.groupBox_AccessControl.Size = new System.Drawing.Size(567, 541);
+            this.groupBox_AccessControl.Size = new System.Drawing.Size(567, 575);
             this.groupBox_AccessControl.TabIndex = 24;
             this.groupBox_AccessControl.TabStop = false;
             // 
@@ -135,7 +139,7 @@
             this.groupBox4.Controls.Add(this.label17);
             this.groupBox4.Controls.Add(this.textBox_ControlIO);
             this.groupBox4.Controls.Add(this.button_RegisterControlIO);
-            this.groupBox4.Location = new System.Drawing.Point(6, 431);
+            this.groupBox4.Location = new System.Drawing.Point(6, 472);
             this.groupBox4.Name = "groupBox4";
             this.groupBox4.Size = new System.Drawing.Size(561, 71);
             this.groupBox4.TabIndex = 91;
@@ -182,6 +186,10 @@
             // 
             // groupBox3
             // 
+            this.groupBox3.Controls.Add(this.button_InfoTrustedProcessRights);
+            this.groupBox3.Controls.Add(this.button_AddTrustedProcessRights);
+            this.groupBox3.Controls.Add(this.textBox_TrustedProcessWithSha256AccessRights);
+            this.groupBox3.Controls.Add(this.label3);
             this.groupBox3.Controls.Add(this.button_InfoProcessNameRights);
             this.groupBox3.Controls.Add(this.button_InfoProcessIdRights);
             this.groupBox3.Controls.Add(this.button_InfoUserRights);
@@ -196,11 +204,47 @@
             this.groupBox3.Controls.Add(this.label23);
             this.groupBox3.Location = new System.Drawing.Point(9, 310);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(555, 116);
+            this.groupBox3.Size = new System.Drawing.Size(555, 156);
             this.groupBox3.TabIndex = 90;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Add or Remove Access Rights to Processes or Users (create whiltelist or blacklist" +
     ")";
+            // 
+            // button_InfoTrustedProcessRights
+            // 
+            this.button_InfoTrustedProcessRights.Image = global::EaseFilter.CommonObjects.Properties.Resources.about;
+            this.button_InfoTrustedProcessRights.Location = new System.Drawing.Point(521, 56);
+            this.button_InfoTrustedProcessRights.Name = "button_InfoTrustedProcessRights";
+            this.button_InfoTrustedProcessRights.Size = new System.Drawing.Size(28, 20);
+            this.button_InfoTrustedProcessRights.TabIndex = 130;
+            this.button_InfoTrustedProcessRights.UseVisualStyleBackColor = true;
+            this.button_InfoTrustedProcessRights.Click += new System.EventHandler(this.button_InfoTrustedProcessRights_Click);
+            // 
+            // button_AddTrustedProcessRights
+            // 
+            this.button_AddTrustedProcessRights.Location = new System.Drawing.Point(473, 55);
+            this.button_AddTrustedProcessRights.Name = "button_AddTrustedProcessRights";
+            this.button_AddTrustedProcessRights.Size = new System.Drawing.Size(41, 20);
+            this.button_AddTrustedProcessRights.TabIndex = 129;
+            this.button_AddTrustedProcessRights.Text = "Add";
+            this.button_AddTrustedProcessRights.UseVisualStyleBackColor = true;
+            this.button_AddTrustedProcessRights.Click += new System.EventHandler(this.button_AddTrustedProcessRights_Click);
+            // 
+            // textBox_TrustedProcessWithSha256AccessRights
+            // 
+            this.textBox_TrustedProcessWithSha256AccessRights.Location = new System.Drawing.Point(212, 56);
+            this.textBox_TrustedProcessWithSha256AccessRights.Name = "textBox_TrustedProcessWithSha256AccessRights";
+            this.textBox_TrustedProcessWithSha256AccessRights.Size = new System.Drawing.Size(242, 20);
+            this.textBox_TrustedProcessWithSha256AccessRights.TabIndex = 127;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(12, 55);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(111, 13);
+            this.label3.TabIndex = 128;
+            this.label3.Text = "Trusted process rights";
             // 
             // button_InfoProcessNameRights
             // 
@@ -215,7 +259,7 @@
             // button_InfoProcessIdRights
             // 
             this.button_InfoProcessIdRights.Image = global::EaseFilter.CommonObjects.Properties.Resources.about;
-            this.button_InfoProcessIdRights.Location = new System.Drawing.Point(521, 49);
+            this.button_InfoProcessIdRights.Location = new System.Drawing.Point(521, 88);
             this.button_InfoProcessIdRights.Name = "button_InfoProcessIdRights";
             this.button_InfoProcessIdRights.Size = new System.Drawing.Size(28, 20);
             this.button_InfoProcessIdRights.TabIndex = 125;
@@ -225,7 +269,7 @@
             // button_InfoUserRights
             // 
             this.button_InfoUserRights.Image = global::EaseFilter.CommonObjects.Properties.Resources.about;
-            this.button_InfoUserRights.Location = new System.Drawing.Point(521, 81);
+            this.button_InfoUserRights.Location = new System.Drawing.Point(521, 120);
             this.button_InfoUserRights.Name = "button_InfoUserRights";
             this.button_InfoUserRights.Size = new System.Drawing.Size(28, 20);
             this.button_InfoUserRights.TabIndex = 126;
@@ -234,7 +278,7 @@
             // 
             // textBox_UserRights
             // 
-            this.textBox_UserRights.Location = new System.Drawing.Point(212, 81);
+            this.textBox_UserRights.Location = new System.Drawing.Point(212, 120);
             this.textBox_UserRights.Name = "textBox_UserRights";
             this.textBox_UserRights.Size = new System.Drawing.Size(242, 20);
             this.textBox_UserRights.TabIndex = 80;
@@ -242,7 +286,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(12, 56);
+            this.label1.Location = new System.Drawing.Point(9, 91);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(96, 13);
             this.label1.TabIndex = 88;
@@ -260,7 +304,7 @@
             // 
             // textBox_ProcessIdRights
             // 
-            this.textBox_ProcessIdRights.Location = new System.Drawing.Point(212, 52);
+            this.textBox_ProcessIdRights.Location = new System.Drawing.Point(212, 91);
             this.textBox_ProcessIdRights.Name = "textBox_ProcessIdRights";
             this.textBox_ProcessIdRights.Size = new System.Drawing.Size(242, 20);
             this.textBox_ProcessIdRights.TabIndex = 87;
@@ -274,7 +318,7 @@
             // 
             // button_AddProcessIdRights
             // 
-            this.button_AddProcessIdRights.Location = new System.Drawing.Point(473, 51);
+            this.button_AddProcessIdRights.Location = new System.Drawing.Point(473, 90);
             this.button_AddProcessIdRights.Name = "button_AddProcessIdRights";
             this.button_AddProcessIdRights.Size = new System.Drawing.Size(41, 20);
             this.button_AddProcessIdRights.TabIndex = 89;
@@ -285,7 +329,7 @@
             // label22
             // 
             this.label22.AutoSize = true;
-            this.label22.Location = new System.Drawing.Point(12, 27);
+            this.label22.Location = new System.Drawing.Point(12, 22);
             this.label22.Name = "label22";
             this.label22.Size = new System.Drawing.Size(113, 13);
             this.label22.TabIndex = 78;
@@ -293,7 +337,7 @@
             // 
             // button_AddUserRights
             // 
-            this.button_AddUserRights.Location = new System.Drawing.Point(473, 81);
+            this.button_AddUserRights.Location = new System.Drawing.Point(473, 120);
             this.button_AddUserRights.Name = "button_AddUserRights";
             this.button_AddUserRights.Size = new System.Drawing.Size(41, 20);
             this.button_AddUserRights.TabIndex = 82;
@@ -304,7 +348,7 @@
             // label23
             // 
             this.label23.AutoSize = true;
-            this.label23.Location = new System.Drawing.Point(12, 85);
+            this.label23.Location = new System.Drawing.Point(12, 124);
             this.label23.Name = "label23";
             this.label23.Size = new System.Drawing.Size(62, 13);
             this.label23.TabIndex = 81;
@@ -313,7 +357,7 @@
             // button_SaveControlSettings
             // 
             this.button_SaveControlSettings.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.button_SaveControlSettings.Location = new System.Drawing.Point(390, 507);
+            this.button_SaveControlSettings.Location = new System.Drawing.Point(390, 548);
             this.button_SaveControlSettings.Margin = new System.Windows.Forms.Padding(2);
             this.button_SaveControlSettings.Name = "button_SaveControlSettings";
             this.button_SaveControlSettings.Size = new System.Drawing.Size(130, 22);
@@ -361,6 +405,17 @@
             this.groupBox2.TabIndex = 76;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Quick Access Control Flags Settings";
+            // 
+            // checkBox_EnableSendDeniedEvent
+            // 
+            this.checkBox_EnableSendDeniedEvent.AutoSize = true;
+            this.checkBox_EnableSendDeniedEvent.Location = new System.Drawing.Point(11, 241);
+            this.checkBox_EnableSendDeniedEvent.Name = "checkBox_EnableSendDeniedEvent";
+            this.checkBox_EnableSendDeniedEvent.Size = new System.Drawing.Size(414, 17);
+            this.checkBox_EnableSendDeniedEvent.TabIndex = 126;
+            this.checkBox_EnableSendDeniedEvent.Text = "Enable send denied file IO event which was blocked by the file access control fla" +
+    "g";
+            this.checkBox_EnableSendDeniedEvent.UseVisualStyleBackColor = true;
             // 
             // button_InfoEncryptKeyLenght
             // 
@@ -699,22 +754,11 @@
             this.button_FileAccessFlags.UseVisualStyleBackColor = true;
             this.button_FileAccessFlags.Click += new System.EventHandler(this.button_FileAccessFlags_Click);
             // 
-            // checkBox_SendDeniedEvent
-            // 
-            this.checkBox_EnableSendDeniedEvent.AutoSize = true;
-            this.checkBox_EnableSendDeniedEvent.Location = new System.Drawing.Point(11, 241);
-            this.checkBox_EnableSendDeniedEvent.Name = "checkBox_SendDeniedEvent";
-            this.checkBox_EnableSendDeniedEvent.Size = new System.Drawing.Size(414, 17);
-            this.checkBox_EnableSendDeniedEvent.TabIndex = 126;
-            this.checkBox_EnableSendDeniedEvent.Text = "Enable send denied file IO event which was blocked by the file access control fla" +
-    "g";
-            this.checkBox_EnableSendDeniedEvent.UseVisualStyleBackColor = true;
-            // 
             // ControlFilterRuleSettigs
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(573, 560);
+            this.ClientSize = new System.Drawing.Size(573, 594);
             this.Controls.Add(this.groupBox1);
             this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "ControlFilterRuleSettigs";
@@ -792,5 +836,9 @@
         private System.Windows.Forms.Button button_HideFileFilterMask;
         private System.Windows.Forms.Button button_InfoReparseFile;
         private System.Windows.Forms.CheckBox checkBox_EnableSendDeniedEvent;
+        private System.Windows.Forms.Button button_InfoTrustedProcessRights;
+        private System.Windows.Forms.Button button_AddTrustedProcessRights;
+        private System.Windows.Forms.TextBox textBox_TrustedProcessWithSha256AccessRights;
+        private System.Windows.Forms.Label label3;
     }
 }

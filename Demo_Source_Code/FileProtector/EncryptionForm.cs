@@ -71,12 +71,13 @@ namespace FileProtector
             {
                 if (fileName.Equals(targetFileName, StringComparison.CurrentCulture))
                 {
-                    retVal = FilterAPI.AESEncryptFileWithTag(fileName, (uint)key.Length, key, (uint)iv.Length, iv, (uint)iv.Length, iv);
+                    retVal = FilterAPI.AESEncryptFile(fileName, (uint)key.Length, key, (uint)iv.Length,iv, true);
+                    //retVal = FilterAPI.AESEncryptFileWithTag(fileName, (uint)key.Length, key, (uint)iv.Length, iv, (uint)iv.Length, iv);
                 }
                 else
                 {
                     FilterAPI.AESEncryptFileToFile(fileName, targetFileName, (uint)key.Length, key, (uint)iv.Length, iv, true);
-                    retVal = FilterAPI.AESEncryptFileToFileWithTag(fileName, targetFileName, (uint)key.Length, key, (uint)iv.Length, iv, (uint)iv.Length, iv);
+                    //retVal = FilterAPI.AESEncryptFileToFileWithTag(fileName, targetFileName, (uint)key.Length, key, (uint)iv.Length, iv, (uint)iv.Length, iv);
                 }
             }
             else

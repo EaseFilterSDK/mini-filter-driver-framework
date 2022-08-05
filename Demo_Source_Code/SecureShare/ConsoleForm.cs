@@ -116,7 +116,7 @@ namespace  SecureShare
                         {
                             //not allow to encrypt the new file
                             uint accessFlag = filterRuleShareFolder.AccessFlag | (uint)(FilterAPI.AccessFlag.ALLOW_READ_ENCRYPTED_FILES);
-                            filterRuleShareFolder.ProcessRights += ";" + authorizedUser + "!" + accessFlag.ToString();
+                            filterRuleShareFolder.ProcessNameRights += ";" + authorizedUser + "!" + accessFlag.ToString();
                         }
                     }
                 }
@@ -133,7 +133,7 @@ namespace  SecureShare
                     {
                         //can't read the encrypted files, not allow to encrypt the new file
                         uint accessFlag = filterRuleShareFolder.AccessFlag;
-                        filterRuleShareFolder.ProcessRights += ";" + unAuthorizedUser + "!" + accessFlag.ToString();
+                        filterRuleShareFolder.ProcessNameRights += ";" + unAuthorizedUser + "!" + accessFlag.ToString();
                     }
                 }
             }
@@ -165,7 +165,7 @@ namespace  SecureShare
                     {
                         if (authorizedUser.Trim().Length > 0)
                         {
-                            filterRuleProtectFolder.ProcessRights += ";" + authorizedUser + "!" + FilterAPI.ALLOW_MAX_RIGHT_ACCESS.ToString();
+                            filterRuleProtectFolder.ProcessNameRights += ";" + authorizedUser + "!" + FilterAPI.ALLOW_MAX_RIGHT_ACCESS.ToString();
                         }
                     }
                 }
@@ -181,7 +181,7 @@ namespace  SecureShare
                     {
                         //can't read the encrypted files
                         uint accessFlag = FilterAPI.ALLOW_MAX_RIGHT_ACCESS & (uint)(~FilterAPI.AccessFlag.ALLOW_READ_ENCRYPTED_FILES);
-                        filterRuleProtectFolder.ProcessRights += ";" + unAuthorizedUser + "!" + accessFlag.ToString();
+                        filterRuleProtectFolder.ProcessNameRights += ";" + unAuthorizedUser + "!" + accessFlag.ToString();
                     }
                 }
             }

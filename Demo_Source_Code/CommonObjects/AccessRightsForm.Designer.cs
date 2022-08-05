@@ -30,9 +30,14 @@
         {
             this.button_Add = new System.Windows.Forms.Button();
             this.groupBox_ProcessName = new System.Windows.Forms.GroupBox();
+            this.button_InfoProcessName = new System.Windows.Forms.Button();
             this.textBox_ProcessName = new System.Windows.Forms.TextBox();
             this.label_AccessFlags = new System.Windows.Forms.Label();
-            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.groupBox_AccessRights = new System.Windows.Forms.GroupBox();
+            this.button_InfoEncryptOnRead = new System.Windows.Forms.Button();
+            this.button_InfoDecryptFile = new System.Windows.Forms.Button();
+            this.button_InfoEncryptNewFile = new System.Windows.Forms.Button();
+            this.button_InfoCopyout = new System.Windows.Forms.Button();
             this.checkBox_AllowReadEncryptedFiles = new System.Windows.Forms.CheckBox();
             this.checkBox_AllowCopyout = new System.Windows.Forms.CheckBox();
             this.checkBox_AllowEncryptNewFile = new System.Windows.Forms.CheckBox();
@@ -49,28 +54,29 @@
             this.textBox_FileAccessFlags = new System.Windows.Forms.TextBox();
             this.button_FileAccessFlags = new System.Windows.Forms.Button();
             this.groupBox_UserName = new System.Windows.Forms.GroupBox();
+            this.button_InfoUserName = new System.Windows.Forms.Button();
             this.textBox_UserName = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.groupBox_ProcessId = new System.Windows.Forms.GroupBox();
             this.button_ProcessId = new System.Windows.Forms.Button();
             this.textBox_ProcessId = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
-            this.button_InfoEncryptOnRead = new System.Windows.Forms.Button();
-            this.button_InfoDecryptFile = new System.Windows.Forms.Button();
-            this.button_InfoEncryptNewFile = new System.Windows.Forms.Button();
-            this.button_InfoCopyout = new System.Windows.Forms.Button();
-            this.button_InfoProcessName = new System.Windows.Forms.Button();
-            this.button_InfoUserName = new System.Windows.Forms.Button();
+            this.groupBox_ProcessSha256 = new System.Windows.Forms.GroupBox();
+            this.button_GetProcessSha256 = new System.Windows.Forms.Button();
+            this.textBox_ProcessSha256 = new System.Windows.Forms.TextBox();
+            this.label4 = new System.Windows.Forms.Label();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.groupBox_ProcessName.SuspendLayout();
-            this.groupBox2.SuspendLayout();
+            this.groupBox_AccessRights.SuspendLayout();
             this.groupBox_UserName.SuspendLayout();
             this.groupBox_ProcessId.SuspendLayout();
+            this.groupBox_ProcessSha256.SuspendLayout();
             this.SuspendLayout();
             // 
             // button_Add
             // 
             this.button_Add.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.button_Add.Location = new System.Drawing.Point(479, 417);
+            this.button_Add.Location = new System.Drawing.Point(450, 186);
             this.button_Add.Name = "button_Add";
             this.button_Add.Size = new System.Drawing.Size(75, 23);
             this.button_Add.TabIndex = 25;
@@ -83,12 +89,22 @@
             this.groupBox_ProcessName.Controls.Add(this.button_InfoProcessName);
             this.groupBox_ProcessName.Controls.Add(this.textBox_ProcessName);
             this.groupBox_ProcessName.Controls.Add(this.label_AccessFlags);
-            this.groupBox_ProcessName.Location = new System.Drawing.Point(43, 19);
+            this.groupBox_ProcessName.Location = new System.Drawing.Point(25, 19);
             this.groupBox_ProcessName.Name = "groupBox_ProcessName";
             this.groupBox_ProcessName.Size = new System.Drawing.Size(535, 48);
             this.groupBox_ProcessName.TabIndex = 26;
             this.groupBox_ProcessName.TabStop = false;
             this.groupBox_ProcessName.Visible = false;
+            // 
+            // button_InfoProcessName
+            // 
+            this.button_InfoProcessName.Image = global::EaseFilter.CommonObjects.Properties.Resources.about;
+            this.button_InfoProcessName.Location = new System.Drawing.Point(461, 16);
+            this.button_InfoProcessName.Name = "button_InfoProcessName";
+            this.button_InfoProcessName.Size = new System.Drawing.Size(41, 20);
+            this.button_InfoProcessName.TabIndex = 114;
+            this.button_InfoProcessName.UseVisualStyleBackColor = true;
+            this.button_InfoProcessName.Click += new System.EventHandler(this.button_InfoProcessName_Click);
             // 
             // textBox_ProcessName
             // 
@@ -103,37 +119,79 @@
             this.label_AccessFlags.AutoSize = true;
             this.label_AccessFlags.Location = new System.Drawing.Point(9, 19);
             this.label_AccessFlags.Name = "label_AccessFlags";
-            this.label_AccessFlags.Size = new System.Drawing.Size(79, 13);
+            this.label_AccessFlags.Size = new System.Drawing.Size(77, 13);
             this.label_AccessFlags.TabIndex = 28;
-            this.label_AccessFlags.Text = "Process Name ";
+            this.label_AccessFlags.Text = "Process name ";
             // 
-            // groupBox2
+            // groupBox_AccessRights
             // 
-            this.groupBox2.Controls.Add(this.button_InfoEncryptOnRead);
-            this.groupBox2.Controls.Add(this.button_InfoDecryptFile);
-            this.groupBox2.Controls.Add(this.button_InfoEncryptNewFile);
-            this.groupBox2.Controls.Add(this.button_InfoCopyout);
-            this.groupBox2.Controls.Add(this.checkBox_AllowReadEncryptedFiles);
-            this.groupBox2.Controls.Add(this.checkBox_AllowCopyout);
-            this.groupBox2.Controls.Add(this.checkBox_AllowEncryptNewFile);
-            this.groupBox2.Controls.Add(this.checkBox_SetSecurity);
-            this.groupBox2.Controls.Add(this.checkBox_QueryInfo);
-            this.groupBox2.Controls.Add(this.checkBox_Read);
-            this.groupBox2.Controls.Add(this.checkBox_EnableEncryptionOnRead);
-            this.groupBox2.Controls.Add(this.checkBox_SetInfo);
-            this.groupBox2.Controls.Add(this.checkBox_Write);
-            this.groupBox2.Controls.Add(this.checkBox_AllowDelete);
-            this.groupBox2.Controls.Add(this.checkBox_AllowRename);
-            this.groupBox2.Controls.Add(this.checkBox_Creation);
-            this.groupBox2.Controls.Add(this.label2);
-            this.groupBox2.Controls.Add(this.textBox_FileAccessFlags);
-            this.groupBox2.Controls.Add(this.button_FileAccessFlags);
-            this.groupBox2.Location = new System.Drawing.Point(43, 188);
-            this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(535, 204);
-            this.groupBox2.TabIndex = 76;
-            this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "File Acess Rights";
+            this.groupBox_AccessRights.Controls.Add(this.groupBox1);
+            this.groupBox_AccessRights.Controls.Add(this.button_InfoEncryptOnRead);
+            this.groupBox_AccessRights.Controls.Add(this.button_InfoDecryptFile);
+            this.groupBox_AccessRights.Controls.Add(this.button_InfoEncryptNewFile);
+            this.groupBox_AccessRights.Controls.Add(this.button_InfoCopyout);
+            this.groupBox_AccessRights.Controls.Add(this.button_Add);
+            this.groupBox_AccessRights.Controls.Add(this.checkBox_AllowReadEncryptedFiles);
+            this.groupBox_AccessRights.Controls.Add(this.checkBox_AllowCopyout);
+            this.groupBox_AccessRights.Controls.Add(this.checkBox_AllowEncryptNewFile);
+            this.groupBox_AccessRights.Controls.Add(this.checkBox_SetSecurity);
+            this.groupBox_AccessRights.Controls.Add(this.checkBox_QueryInfo);
+            this.groupBox_AccessRights.Controls.Add(this.checkBox_Read);
+            this.groupBox_AccessRights.Controls.Add(this.checkBox_EnableEncryptionOnRead);
+            this.groupBox_AccessRights.Controls.Add(this.checkBox_SetInfo);
+            this.groupBox_AccessRights.Controls.Add(this.checkBox_Write);
+            this.groupBox_AccessRights.Controls.Add(this.checkBox_AllowDelete);
+            this.groupBox_AccessRights.Controls.Add(this.checkBox_AllowRename);
+            this.groupBox_AccessRights.Controls.Add(this.checkBox_Creation);
+            this.groupBox_AccessRights.Controls.Add(this.label2);
+            this.groupBox_AccessRights.Controls.Add(this.textBox_FileAccessFlags);
+            this.groupBox_AccessRights.Controls.Add(this.button_FileAccessFlags);
+            this.groupBox_AccessRights.Location = new System.Drawing.Point(25, 231);
+            this.groupBox_AccessRights.Name = "groupBox_AccessRights";
+            this.groupBox_AccessRights.Size = new System.Drawing.Size(535, 218);
+            this.groupBox_AccessRights.TabIndex = 76;
+            this.groupBox_AccessRights.TabStop = false;
+            this.groupBox_AccessRights.Text = "File Acess Rights";
+            // 
+            // button_InfoEncryptOnRead
+            // 
+            this.button_InfoEncryptOnRead.Image = global::EaseFilter.CommonObjects.Properties.Resources.about;
+            this.button_InfoEncryptOnRead.Location = new System.Drawing.Point(501, 147);
+            this.button_InfoEncryptOnRead.Name = "button_InfoEncryptOnRead";
+            this.button_InfoEncryptOnRead.Size = new System.Drawing.Size(28, 20);
+            this.button_InfoEncryptOnRead.TabIndex = 120;
+            this.button_InfoEncryptOnRead.UseVisualStyleBackColor = true;
+            this.button_InfoEncryptOnRead.Click += new System.EventHandler(this.button_InfoEncryptOnRead_Click);
+            // 
+            // button_InfoDecryptFile
+            // 
+            this.button_InfoDecryptFile.Image = global::EaseFilter.CommonObjects.Properties.Resources.about;
+            this.button_InfoDecryptFile.Location = new System.Drawing.Point(501, 124);
+            this.button_InfoDecryptFile.Name = "button_InfoDecryptFile";
+            this.button_InfoDecryptFile.Size = new System.Drawing.Size(28, 20);
+            this.button_InfoDecryptFile.TabIndex = 121;
+            this.button_InfoDecryptFile.UseVisualStyleBackColor = true;
+            this.button_InfoDecryptFile.Click += new System.EventHandler(this.button_InfoDecryptFile_Click);
+            // 
+            // button_InfoEncryptNewFile
+            // 
+            this.button_InfoEncryptNewFile.Image = global::EaseFilter.CommonObjects.Properties.Resources.about;
+            this.button_InfoEncryptNewFile.Location = new System.Drawing.Point(501, 98);
+            this.button_InfoEncryptNewFile.Name = "button_InfoEncryptNewFile";
+            this.button_InfoEncryptNewFile.Size = new System.Drawing.Size(28, 20);
+            this.button_InfoEncryptNewFile.TabIndex = 122;
+            this.button_InfoEncryptNewFile.UseVisualStyleBackColor = true;
+            this.button_InfoEncryptNewFile.Click += new System.EventHandler(this.button_InfoEncryptNewFile_Click);
+            // 
+            // button_InfoCopyout
+            // 
+            this.button_InfoCopyout.Image = global::EaseFilter.CommonObjects.Properties.Resources.about;
+            this.button_InfoCopyout.Location = new System.Drawing.Point(501, 75);
+            this.button_InfoCopyout.Name = "button_InfoCopyout";
+            this.button_InfoCopyout.Size = new System.Drawing.Size(28, 20);
+            this.button_InfoCopyout.TabIndex = 123;
+            this.button_InfoCopyout.UseVisualStyleBackColor = true;
+            this.button_InfoCopyout.Click += new System.EventHandler(this.button_InfoCopyout_Click);
             // 
             // checkBox_AllowReadEncryptedFiles
             // 
@@ -323,12 +381,22 @@
             this.groupBox_UserName.Controls.Add(this.button_InfoUserName);
             this.groupBox_UserName.Controls.Add(this.textBox_UserName);
             this.groupBox_UserName.Controls.Add(this.label1);
-            this.groupBox_UserName.Location = new System.Drawing.Point(43, 126);
+            this.groupBox_UserName.Location = new System.Drawing.Point(25, 171);
             this.groupBox_UserName.Name = "groupBox_UserName";
             this.groupBox_UserName.Size = new System.Drawing.Size(535, 46);
             this.groupBox_UserName.TabIndex = 30;
             this.groupBox_UserName.TabStop = false;
             this.groupBox_UserName.Visible = false;
+            // 
+            // button_InfoUserName
+            // 
+            this.button_InfoUserName.Image = global::EaseFilter.CommonObjects.Properties.Resources.about;
+            this.button_InfoUserName.Location = new System.Drawing.Point(461, 16);
+            this.button_InfoUserName.Name = "button_InfoUserName";
+            this.button_InfoUserName.Size = new System.Drawing.Size(41, 20);
+            this.button_InfoUserName.TabIndex = 115;
+            this.button_InfoUserName.UseVisualStyleBackColor = true;
+            this.button_InfoUserName.Click += new System.EventHandler(this.button_InfoUserName_Click);
             // 
             // textBox_UserName
             // 
@@ -343,16 +411,16 @@
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(9, 18);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(63, 13);
+            this.label1.Size = new System.Drawing.Size(61, 13);
             this.label1.TabIndex = 28;
-            this.label1.Text = "User Name ";
+            this.label1.Text = "User name ";
             // 
             // groupBox_ProcessId
             // 
             this.groupBox_ProcessId.Controls.Add(this.button_ProcessId);
             this.groupBox_ProcessId.Controls.Add(this.textBox_ProcessId);
             this.groupBox_ProcessId.Controls.Add(this.label3);
-            this.groupBox_ProcessId.Location = new System.Drawing.Point(43, 73);
+            this.groupBox_ProcessId.Location = new System.Drawing.Point(25, 118);
             this.groupBox_ProcessId.Name = "groupBox_ProcessId";
             this.groupBox_ProcessId.Size = new System.Drawing.Size(535, 48);
             this.groupBox_ProcessId.TabIndex = 29;
@@ -385,75 +453,61 @@
             this.label3.TabIndex = 28;
             this.label3.Text = "Process Id";
             // 
-            // button_InfoEncryptOnRead
+            // groupBox_ProcessSha256
             // 
-            this.button_InfoEncryptOnRead.Image = global::EaseFilter.CommonObjects.Properties.Resources.about;
-            this.button_InfoEncryptOnRead.Location = new System.Drawing.Point(501, 147);
-            this.button_InfoEncryptOnRead.Name = "button_InfoEncryptOnRead";
-            this.button_InfoEncryptOnRead.Size = new System.Drawing.Size(28, 20);
-            this.button_InfoEncryptOnRead.TabIndex = 120;
-            this.button_InfoEncryptOnRead.UseVisualStyleBackColor = true;
-            this.button_InfoEncryptOnRead.Click += new System.EventHandler(this.button_InfoEncryptOnRead_Click);
+            this.groupBox_ProcessSha256.Controls.Add(this.button_GetProcessSha256);
+            this.groupBox_ProcessSha256.Controls.Add(this.textBox_ProcessSha256);
+            this.groupBox_ProcessSha256.Controls.Add(this.label4);
+            this.groupBox_ProcessSha256.Location = new System.Drawing.Point(25, 70);
+            this.groupBox_ProcessSha256.Name = "groupBox_ProcessSha256";
+            this.groupBox_ProcessSha256.Size = new System.Drawing.Size(535, 48);
+            this.groupBox_ProcessSha256.TabIndex = 39;
+            this.groupBox_ProcessSha256.TabStop = false;
+            this.groupBox_ProcessSha256.Visible = false;
             // 
-            // button_InfoDecryptFile
+            // button_GetProcessSha256
             // 
-            this.button_InfoDecryptFile.Image = global::EaseFilter.CommonObjects.Properties.Resources.about;
-            this.button_InfoDecryptFile.Location = new System.Drawing.Point(501, 124);
-            this.button_InfoDecryptFile.Name = "button_InfoDecryptFile";
-            this.button_InfoDecryptFile.Size = new System.Drawing.Size(28, 20);
-            this.button_InfoDecryptFile.TabIndex = 121;
-            this.button_InfoDecryptFile.UseVisualStyleBackColor = true;
-            this.button_InfoDecryptFile.Click += new System.EventHandler(this.button_InfoDecryptFile_Click);
+            this.button_GetProcessSha256.Location = new System.Drawing.Point(461, 15);
+            this.button_GetProcessSha256.Name = "button_GetProcessSha256";
+            this.button_GetProcessSha256.Size = new System.Drawing.Size(50, 20);
+            this.button_GetProcessSha256.TabIndex = 38;
+            this.button_GetProcessSha256.Text = "...";
+            this.button_GetProcessSha256.UseVisualStyleBackColor = true;
+            this.button_GetProcessSha256.Click += new System.EventHandler(this.button_GetProcessSha256_Click);
             // 
-            // button_InfoEncryptNewFile
+            // textBox_ProcessSha256
             // 
-            this.button_InfoEncryptNewFile.Image = global::EaseFilter.CommonObjects.Properties.Resources.about;
-            this.button_InfoEncryptNewFile.Location = new System.Drawing.Point(501, 98);
-            this.button_InfoEncryptNewFile.Name = "button_InfoEncryptNewFile";
-            this.button_InfoEncryptNewFile.Size = new System.Drawing.Size(28, 20);
-            this.button_InfoEncryptNewFile.TabIndex = 122;
-            this.button_InfoEncryptNewFile.UseVisualStyleBackColor = true;
-            this.button_InfoEncryptNewFile.Click += new System.EventHandler(this.button_InfoEncryptNewFile_Click);
+            this.textBox_ProcessSha256.Location = new System.Drawing.Point(149, 16);
+            this.textBox_ProcessSha256.Name = "textBox_ProcessSha256";
+            this.textBox_ProcessSha256.Size = new System.Drawing.Size(298, 20);
+            this.textBox_ProcessSha256.TabIndex = 27;
             // 
-            // button_InfoCopyout
+            // label4
             // 
-            this.button_InfoCopyout.Image = global::EaseFilter.CommonObjects.Properties.Resources.about;
-            this.button_InfoCopyout.Location = new System.Drawing.Point(501, 75);
-            this.button_InfoCopyout.Name = "button_InfoCopyout";
-            this.button_InfoCopyout.Size = new System.Drawing.Size(28, 20);
-            this.button_InfoCopyout.TabIndex = 123;
-            this.button_InfoCopyout.UseVisualStyleBackColor = true;
-            this.button_InfoCopyout.Click += new System.EventHandler(this.button_InfoCopyout_Click);
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(9, 19);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(135, 13);
+            this.label4.TabIndex = 28;
+            this.label4.Text = "Executable binrary sha256 ";
             // 
-            // button_InfoProcessName
+            // groupBox1
             // 
-            this.button_InfoProcessName.Image = global::EaseFilter.CommonObjects.Properties.Resources.about;
-            this.button_InfoProcessName.Location = new System.Drawing.Point(461, 16);
-            this.button_InfoProcessName.Name = "button_InfoProcessName";
-            this.button_InfoProcessName.Size = new System.Drawing.Size(41, 20);
-            this.button_InfoProcessName.TabIndex = 114;
-            this.button_InfoProcessName.UseVisualStyleBackColor = true;
-            this.button_InfoProcessName.Click += new System.EventHandler(this.button_InfoProcessName_Click);
-            // 
-            // button_InfoUserName
-            // 
-            this.button_InfoUserName.Image = global::EaseFilter.CommonObjects.Properties.Resources.about;
-            this.button_InfoUserName.Location = new System.Drawing.Point(461, 16);
-            this.button_InfoUserName.Name = "button_InfoUserName";
-            this.button_InfoUserName.Size = new System.Drawing.Size(41, 20);
-            this.button_InfoUserName.TabIndex = 115;
-            this.button_InfoUserName.UseVisualStyleBackColor = true;
-            this.button_InfoUserName.Click += new System.EventHandler(this.button_InfoUserName_Click);
+            this.groupBox1.Location = new System.Drawing.Point(9, 170);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(516, 10);
+            this.groupBox1.TabIndex = 124;
+            this.groupBox1.TabStop = false;
             // 
             // Form_AccessRights
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(590, 461);
+            this.Controls.Add(this.groupBox_ProcessSha256);
             this.Controls.Add(this.groupBox_ProcessId);
             this.Controls.Add(this.groupBox_UserName);
-            this.Controls.Add(this.groupBox2);
-            this.Controls.Add(this.button_Add);
+            this.Controls.Add(this.groupBox_AccessRights);
             this.Controls.Add(this.groupBox_ProcessName);
             this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "Form_AccessRights";
@@ -461,12 +515,14 @@
             this.Text = "Add Access Rights";
             this.groupBox_ProcessName.ResumeLayout(false);
             this.groupBox_ProcessName.PerformLayout();
-            this.groupBox2.ResumeLayout(false);
-            this.groupBox2.PerformLayout();
+            this.groupBox_AccessRights.ResumeLayout(false);
+            this.groupBox_AccessRights.PerformLayout();
             this.groupBox_UserName.ResumeLayout(false);
             this.groupBox_UserName.PerformLayout();
             this.groupBox_ProcessId.ResumeLayout(false);
             this.groupBox_ProcessId.PerformLayout();
+            this.groupBox_ProcessSha256.ResumeLayout(false);
+            this.groupBox_ProcessSha256.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -477,7 +533,7 @@
         private System.Windows.Forms.GroupBox groupBox_ProcessName;
         private System.Windows.Forms.TextBox textBox_ProcessName;
         private System.Windows.Forms.Label label_AccessFlags;
-        private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.GroupBox groupBox_AccessRights;
         private System.Windows.Forms.GroupBox groupBox_UserName;
         private System.Windows.Forms.TextBox textBox_UserName;
         private System.Windows.Forms.Label label1;
@@ -506,5 +562,10 @@
         private System.Windows.Forms.Button button_InfoCopyout;
         private System.Windows.Forms.Button button_InfoProcessName;
         private System.Windows.Forms.Button button_InfoUserName;
+        private System.Windows.Forms.GroupBox groupBox_ProcessSha256;
+        private System.Windows.Forms.Button button_GetProcessSha256;
+        private System.Windows.Forms.TextBox textBox_ProcessSha256;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.GroupBox groupBox1;
     }
 }

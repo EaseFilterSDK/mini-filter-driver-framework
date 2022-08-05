@@ -34,6 +34,7 @@ namespace EaseFilter.CommonObjects
         public enum AccessRightType
         {
             ProcessNameRight = 0,
+            ProcessSha256,
             ProccessIdRight,
             UserNameRight,
         }
@@ -47,6 +48,9 @@ namespace EaseFilter.CommonObjects
             InitializeComponent();
 
             type = _type;
+            groupBox_AccessRights.Location = groupBox_ProcessSha256.Location;
+            groupBox_ProcessId.Location = groupBox_ProcessName.Location;
+            groupBox_ProcessSha256.Location = groupBox_ProcessName.Location;
             groupBox_UserName.Location = groupBox_ProcessName.Location;
 
             textBox_FileAccessFlags.Text = FilterAPI.ALLOW_MAX_RIGHT_ACCESS.ToString();
@@ -55,6 +59,7 @@ namespace EaseFilter.CommonObjects
             switch (type)
             {
                 case AccessRightType.ProcessNameRight: groupBox_ProcessName.Visible = true; break;
+                case AccessRightType.ProcessSha256: groupBox_ProcessSha256.Visible = true; break;
                 case AccessRightType.ProccessIdRight: groupBox_ProcessId.Visible = true; break;
                 case AccessRightType.UserNameRight: groupBox_UserName.Visible = true; break;
             }
@@ -83,6 +88,30 @@ namespace EaseFilter.CommonObjects
                                         }
 
                                         accessRightText += processName.Trim() + "!" + textBox_FileAccessFlags.Text;
+                                    }
+                                }
+                            }
+                        }
+                        break;
+                    }
+
+                case AccessRightType.ProcessSha256:
+                    {
+                        if (textBox_ProcessSha256.Text.Trim().Length > 0)
+                        {
+                            string[] processShaList = textBox_ProcessSha256.Text.Trim().Split(new char[] { ';' });
+                            if (processShaList.Length > 0)
+                            {
+                                foreach (string processSha in processShaList)
+                                {
+                                    if (processSha.Trim().Length > 0)
+                                    {
+                                        if (accessRightText.Length > 0)
+                                        {
+                                            accessRightText += ";";
+                                        }
+
+                                        accessRightText += processSha.Trim() + "!" + textBox_FileAccessFlags.Text;
                                     }
                                 }
                             }
@@ -483,6 +512,28 @@ namespace EaseFilter.CommonObjects
             }
         }
 
+        private void button_GetProcessSha256_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog fileDialog = new OpenFileDialog();
+            if (fileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                string fileName = fileDialog.FileName;
+                byte[] hashBytes = new byte[32];
+                uint hashBytesLength = 32;
+
+                if (FilterAPI.Sha256HashFile(fileName, hashBytes, ref hashBytesLength))
+                {
+                    textBox_ProcessSha256.Text += Utils.ByteArrayToHex(hashBytes);
+                }
+                else
+                {
+                    string lastError = "Get file sha256 hash failed with error:" + FilterAPI.GetLastErrorMessage();
+                    MessageBox.Show(lastError, "Get sha256 hash", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+
+        }
+
         private void button_InfoProcessName_Click(object sender, EventArgs e)
         {
             MessageBox.Show("Set the specific access rights to the process name list, seperate the process name with ';'.");
@@ -511,7 +562,7 @@ namespace EaseFilter.CommonObjects
         private void button_InfoEncryptOnRead_Click(object sender, EventArgs e)
         {
             MessageBox.Show("If you want to encrypt the file only when it was read by the process, you can enable the encryption feature, disable the new file encryption, enable the encryption on the go. To enable this feature it requires the encryption was enabled in the filter rule.");
-        }
+        }       
 
  
     }

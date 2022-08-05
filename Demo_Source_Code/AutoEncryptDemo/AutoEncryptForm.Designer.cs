@@ -172,9 +172,9 @@
             this.checkBox_EnableUniqueEncryptionKey.AutoSize = true;
             this.checkBox_EnableUniqueEncryptionKey.Location = new System.Drawing.Point(34, 167);
             this.checkBox_EnableUniqueEncryptionKey.Name = "checkBox_EnableUniqueEncryptionKey";
-            this.checkBox_EnableUniqueEncryptionKey.Size = new System.Drawing.Size(328, 17);
+            this.checkBox_EnableUniqueEncryptionKey.Size = new System.Drawing.Size(308, 17);
             this.checkBox_EnableUniqueEncryptionKey.TabIndex = 16;
-            this.checkBox_EnableUniqueEncryptionKey.Text = "Authorize encryption or decryption in user mode application level";
+            this.checkBox_EnableUniqueEncryptionKey.Text = "Authorize encryption or decryption in application with control";
             this.checkBox_EnableUniqueEncryptionKey.UseVisualStyleBackColor = true;
             this.checkBox_EnableUniqueEncryptionKey.CheckedChanged += new System.EventHandler(this.checkBox_EnableUniqueEncryptionKey_CheckedChanged);
             // 

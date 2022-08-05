@@ -263,5 +263,16 @@
 5.1.6.2 ( 2022-03-18)
 	1. Added support for getting encryption key only and tag data from the user mode service.
 	   Authorize the encryption or decryption in use mode callback function.
-
+5.1.7.1 ( 2022-04-15)
+	1. Added trusted process to control the filter rule.
+	2. Fixed the slow issue of the service starting.
+5.1.7.2 ( 2022-04-24)
+	1. Enhanced the driver connection security check.
+5.1.8.1 ( 2022-05-02)
+	1. Fixed the issue which the user access rights not working correctly.
+5.1.9.1 ( 2022-07-05)
+	1. Prevent the thread termination for the protected process.
+	2. Fixed the REG_ALLOW_DELETE_VALUE_KEY not working issue.
+5.1.9.2 ( 2022-07-13)
+	1. Prevent the process from being suspended.
 	

@@ -40,7 +40,7 @@ namespace EaseFilter.CommonObjects
     {
         //Purchase a license key with the link: http://www.easefilter.com/Order.htm
         //Email us to request a trial key: info@easefilter.com //free email is not accepted.
-        public static string licenseKey = "******************************************";
+        public static string licenseKey = "*********************************************";
 
         static Assembly assembly = System.Reflection.Assembly.GetEntryAssembly();
         public static string AssemblyPath = Path.GetDirectoryName(assembly.Location);
