@@ -1191,7 +1191,7 @@ namespace EaseFilter.FilterControl
         [MarshalAs(UnmanagedType.LPWStr)]string reparseFileFilterMask);
 
         /// <summary>
-        /// only manage the IO of the filter rule for the processes in the included process list 
+        ///only manage the file IO for the processes in the included process list
         /// </summary>
         /// <param name="filterMask">the file filter mask of the filter rule</param>
         /// <param name="processName">the include process name filter mask, process name format:notepad.exe</param>
@@ -1346,7 +1346,8 @@ namespace EaseFilter.FilterControl
             ref uint hashBytesLength);
 
         /// <summary>
-        /// Add the access rights to the process which has the same sha256 hash as the setting.
+        /// Add the access rights of the process with the sha256 hash to the filter rule.
+        /// allows you to set the access rights to your trusted process.
         /// </summary>
         /// <param name="filterMask">The filter rule file filter mask.</param>
         /// <param name="imageSha256">the sha256 hash of the executable binary file.</param>
@@ -1354,10 +1355,26 @@ namespace EaseFilter.FilterControl
         /// <param name="accessFlags">the access flags for the setting process.</param>
         /// <returns>return true if it is succeeded.</returns>
         [DllImport("FilterAPI.dll", SetLastError = true)]
-        public static extern bool AddTrustedProcessToFilterRule(
+        public static extern bool AddSha256ProcessAccessRightsToFilterRule(
         [MarshalAs(UnmanagedType.LPWStr)]string filterMask,
         byte[] imageSha256,
         uint hashLength,
+        uint accessFlags);
+
+        /// <summary>
+        /// Add the access rights of the process which was signed with the certificate to the filter rule.
+        /// allows you to set the access rights to your trusted process.
+        /// </summary>
+        /// <param name="filterMask">The filter rule file filter mask.</param>
+        /// <param name="certificateName">the subject name of the code certificate to sign the process.</param>
+        /// <param name="lengthOfCertificate">the length of the certificate name</param>
+        /// <param name="accessFlags">the access flags for the setting process.</param>
+        /// <returns>return true if it is succeeded.</returns>
+        [DllImport("FilterAPI.dll", SetLastError = true)]
+        public static extern bool AddSignedProcessAccessRightsToFilterRule(
+        [MarshalAs(UnmanagedType.LPWStr)]string filterMask,
+        [MarshalAs(UnmanagedType.LPWStr)]string certificateName,
+        uint lengthOfCertificate,
         uint accessFlags);
 
         /// <summary>
@@ -1820,6 +1837,21 @@ namespace EaseFilter.FilterControl
 
         [DllImport("FilterAPI.dll", SetLastError = true)]
         public static extern bool RemoveBlockSaveAsProcessId(uint processId);
+
+        /// <summary>
+        /// Get the subject name of the certificate which the process was signed 
+        /// </summary>
+        /// <param name="processName">the signed process name</param>
+        /// <param name="certificateSubjectName">the subject name of the certificate</param>
+        /// <param name="sizeOfCertificateSubjectName">the size of the subject name</param>
+        /// <param name="signedTime">the signed time</param>
+        /// <returns>return true if the process was signed correctly, or return false.</returns>
+        [DllImport("FilterAPI.dll", SetLastError = true)]
+        public static extern bool GetSignerInfo(
+        [MarshalAs(UnmanagedType.LPWStr)]string processName,
+        [MarshalAs(UnmanagedType.LPWStr)]string certificateSubjectName,
+        ref uint sizeOfCertificateSubjectName,
+        ref long signedTime);
 
         //---------------Process filter APIs   END-----------------------------------------------
 

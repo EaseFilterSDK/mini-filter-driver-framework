@@ -14,14 +14,10 @@
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
-    <SccProjectName>
-    </SccProjectName>
-    <SccLocalPath>
-    </SccLocalPath>
-    <SccAuxPath>
-    </SccAuxPath>
-    <SccProvider>
-    </SccProvider>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -106,25 +102,8 @@
     <Compile Include="ConsoleForm.Designer.cs">
       <DependentUpon>ConsoleForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="ShareFileManagerInServer.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ShareFileManagerInServer.Designer.cs">
-      <DependentUpon>ShareFileManagerInServer.cs</DependentUpon>
-    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Service References\ServiceReference1\Reference.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </Compile>
-    <Compile Include="SharedFileAccessLogForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="SharedFileAccessLogForm.Designer.cs">
-      <DependentUpon>SharedFileAccessLogForm.cs</DependentUpon>
-    </Compile>
     <Compile Include="ShareFileSettingForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -143,12 +122,8 @@
     <Compile Include="ShareFileManagerInLocal.Designer.cs">
       <DependentUpon>ShareFileManagerInLocal.cs</DependentUpon>
     </Compile>
-    <Compile Include="WebAPIService.cs" />
     <EmbeddedResource Include="ConsoleForm.resx">
       <DependentUpon>ConsoleForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ShareFileManagerInServer.resx">
-      <DependentUpon>ShareFileManagerInServer.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -160,9 +135,6 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
-    <EmbeddedResource Include="SharedFileAccessLogForm.resx">
-      <DependentUpon>SharedFileAccessLogForm.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="ShareFileSettingForm.resx">
       <DependentUpon>ShareFileSettingForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -183,12 +155,11 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <None Include="Service References\ServiceReference1\webapi.wsdl" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CommonObjects\CommonObjects.csproj">
       <Project>{34CB783E-DDA2-4CE3-80BC-37B25AA33E5F}</Project>
-      <Name>CommonObjects</Name>
+      <Name>CommonObjects %28FilterDemo\CommonObjects%29</Name>
     </ProjectReference>
     <ProjectReference Include="..\FilterControl\FilterControl.csproj">
       <Project>{21540012-A296-45CE-8D35-3EA5A07B32A6}</Project>
@@ -197,19 +168,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="SecureShareManager.ico" />
-    <None Include="Service References\ServiceReference1\Reference.svcmap">
-      <Generator>WCF Proxy Generator</Generator>
-      <LastGenOutput>Reference.cs</LastGenOutput>
-    </None>
-    <None Include="Service References\ServiceReference1\configuration.svcinfo" />
-    <None Include="Service References\ServiceReference1\configuration91.svcinfo" />
-    <None Include="Service References\ServiceReference1\webapi.disco" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
-  </ItemGroup>
-  <ItemGroup>
-    <WCFMetadataStorage Include="Service References\ServiceReference1\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

@@ -30,7 +30,6 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ShareFileSettingForm));
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.radioButton_Server = new System.Windows.Forms.RadioButton();
             this.radioButton_Local = new System.Windows.Forms.RadioButton();
             this.label7 = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
@@ -60,7 +59,6 @@
             // 
             // groupBox1
             // 
-            this.groupBox1.Controls.Add(this.radioButton_Server);
             this.groupBox1.Controls.Add(this.radioButton_Local);
             this.groupBox1.Controls.Add(this.label7);
             this.groupBox1.Controls.Add(this.label9);
@@ -88,17 +86,6 @@
             this.groupBox1.Size = new System.Drawing.Size(628, 443);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
-            // 
-            // radioButton_Server
-            // 
-            this.radioButton_Server.AutoSize = true;
-            this.radioButton_Server.Location = new System.Drawing.Point(22, 370);
-            this.radioButton_Server.Name = "radioButton_Server";
-            this.radioButton_Server.Size = new System.Drawing.Size(459, 17);
-            this.radioButton_Server.TabIndex = 76;
-            this.radioButton_Server.Text = "Store permisson file in server, grant or revoke the shared file access rights any" +
-    "time anywhere";
-            this.radioButton_Server.UseVisualStyleBackColor = true;
             // 
             // radioButton_Local
             // 
@@ -359,7 +346,6 @@
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.TextBox textBox_ProtectFolderWhiteList;
         private System.Windows.Forms.Label label10;
-        private System.Windows.Forms.RadioButton radioButton_Server;
         private System.Windows.Forms.RadioButton radioButton_Local;
         private System.Windows.Forms.Button button_help;
     }

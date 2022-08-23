@@ -40,7 +40,9 @@ namespace EaseFilter.FilterControl
         GCHandle gchFilter;
         GCHandle gchDisconnect;
 
-        bool isFilterStarted = false;
+        public static bool IsStarted = false;
+        static bool isFilterStarted = false;
+
         uint globalFilterId = 1;
 
         int filterConnectionThreads = 5;
@@ -65,7 +67,7 @@ namespace EaseFilter.FilterControl
         /// <summary>
         /// The volume control flag, reference FilterAPI.VolumeControlFlag
         /// </summary>
-        public uint VolumeControlFlag { get; set; }
+        public FilterAPI.VolumeControlFlag VolumeControlFlag { get; set; }
         /// <summary>
         /// The global registered callback IO
         /// </summary>
@@ -186,6 +188,8 @@ namespace EaseFilter.FilterControl
                     }
 
                     ret = true;
+
+                    IsStarted = true;
 
                 }
             }
@@ -339,7 +343,7 @@ namespace EaseFilter.FilterControl
                     return false;
                 }
 
-                if (VolumeControlFlag > 0 && !FilterAPI.SetVolumeControlFlag(VolumeControlFlag))
+                if (VolumeControlFlag > 0 && !FilterAPI.SetVolumeControlFlag((uint)VolumeControlFlag))
                 {
                     lastError = "SetVolumeControlFlag " + VolumeControlFlag + " failed:" + FilterAPI.GetLastErrorMessage();
                     return false;
@@ -629,14 +633,26 @@ namespace EaseFilter.FilterControl
                             }
                         }
 
-                        foreach (KeyValuePair<byte[], uint> entry in fileFilter.TrustedProcessList)
+                        foreach (KeyValuePair<byte[], uint> entry in fileFilter.Sha256ProcessAccessRightList)
                         {
                             byte[] processSha256 = entry.Key;
                             uint accessFlags = entry.Value;
 
-                            if (!FilterAPI.AddTrustedProcessToFilterRule(fileFilter.IncludeFileFilterMask, processSha256, (uint)processSha256.Length, accessFlags))
+                            if (!FilterAPI.AddSha256ProcessAccessRightsToFilterRule(fileFilter.IncludeFileFilterMask, processSha256, (uint)processSha256.Length, accessFlags))
                             {
                                 lastError = "AddProcessSha256RightsToFilterRule " + fileFilter.IncludeFileFilterMask + ",accessFlags:" + accessFlags + " failed:" + FilterAPI.GetLastErrorMessage();
+                                return false;
+                            }
+                        }
+
+                        foreach (KeyValuePair<string, uint> entry in fileFilter.SignedProcessAccessRightList)
+                        {
+                            string certificateName = entry.Key;
+                            uint accessFlags = entry.Value;
+
+                            if (!FilterAPI.AddSignedProcessAccessRightsToFilterRule(fileFilter.IncludeFileFilterMask, certificateName.Trim(),(uint)certificateName.Length*2, accessFlags))
+                            {
+                                lastError = "AddSignedProcessAccessRightsToFilterRule " + fileFilter.IncludeFileFilterMask + ",certificateName:" + certificateName + ",accessFlags:" + accessFlags + " failed:" + FilterAPI.GetLastErrorMessage();
                                 return false;
                             }
                         }

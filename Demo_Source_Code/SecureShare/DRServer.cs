@@ -315,30 +315,30 @@ namespace  SecureShare
             deleteCachedItemTimer.Elapsed += new System.Timers.ElapsedEventHandler(deleteCachedItemTimer_Elapsed);
         }
 
-        static public bool GetFileAccessPermission(EncryptEventArgs encryptEvebtArgs)
+        static public bool GetFileAccessPermission(EncryptEventArgs encryptEventtArgs)
         {
             Boolean retVal = true;
-            string fileName = encryptEvebtArgs.FileName;
+            string fileName = encryptEventtArgs.FileName;
             string lastError = string.Empty;
-            string processName = encryptEvebtArgs.ProcessName;
-            string userName = encryptEvebtArgs.UserName;
+            string processName = encryptEventtArgs.ProcessName;
+            string userName = encryptEventtArgs.UserName;
             string encryptKey = string.Empty;
 
             try
             {
 
-                if (null == encryptEvebtArgs.EncryptionTag || encryptEvebtArgs.EncryptionTag.Length == 0)
+                if (null == encryptEventtArgs.EncryptionTag || encryptEventtArgs.EncryptionTag.Length == 0)
                 {
-                    encryptEvebtArgs.Description = "There are no encryption tag data.";
+                    encryptEventtArgs.Description = "There are no encryption tag data.";
 
                     return false;
                 }
 
                 //by default the tag data format is "accountName;ivStr"
-                string tagStr = UnicodeEncoding.Unicode.GetString(encryptEvebtArgs.EncryptionTag);
+                string tagStr = UnicodeEncoding.Unicode.GetString(encryptEventtArgs.EncryptionTag);
 
                 int index = tagStr.IndexOf(";");
-                byte[] iv = encryptEvebtArgs.EncryptionTag;
+                byte[] iv = encryptEventtArgs.EncryptionTag;
 
                 if (index > 0)
                 {
@@ -361,23 +361,23 @@ namespace  SecureShare
                 {
                     byte[] keyArray = Utils.ConvertHexStrToByteArray(encryptKey);
 
-                    encryptEvebtArgs.AccessFlags = FilterAPI.ALLOW_MAX_RIGHT_ACCESS;
-                    encryptEvebtArgs.IV = iv;
-                    encryptEvebtArgs.EncryptionKey = keyArray;
-                    encryptEvebtArgs.ReturnStatus = NtStatus.Status.Success;
+                    encryptEventtArgs.AccessFlags = FilterAPI.ALLOW_MAX_RIGHT_ACCESS;
+                    encryptEventtArgs.IV = iv;
+                    encryptEventtArgs.EncryptionKey = keyArray;
+                    encryptEventtArgs.ReturnStatus = NtStatus.Status.Success;
 
                 }
                 else
                 {
-                    encryptEvebtArgs.IoStatus = encryptEvebtArgs.ReturnStatus = NtStatus.Status.AccessDenied;
-                    encryptEvebtArgs.Description = lastError;
+                    encryptEventtArgs.IoStatus = encryptEventtArgs.ReturnStatus = NtStatus.Status.AccessDenied;
+                    encryptEventtArgs.Description = lastError;
 
                 }
             }
             catch (Exception ex)
             {
                 lastError = "GetFileAccessPermission exception." + ex.Message;
-                encryptEvebtArgs.Description = lastError;
+                encryptEventtArgs.Description = lastError;
 
                 EventManager.WriteMessage(340, "GetFileAccessPermission", EventLevel.Error, lastError);
                 retVal = false;
@@ -387,114 +387,7 @@ namespace  SecureShare
 
         }
       
-     
-        static private bool GetAccessPermissionFromServer(  string fileName,
-                                                            string userName,
-                                                            string processName,
-                                                            string tagStr,
-                                                            ref string encryptKey,
-                                                            ref uint accessFlag,
-                                                            ref string lastError)                                                           
-        {
-            Boolean retVal = true;
-
-            try
-            {
-                 CacheUserAccessInfo cacheUserAccessInfo = new CacheUserAccessInfo();
-
-                 string index = userName + "_" + processName + "_" + tagStr;
-
-                //cache the same user/process/filename access.
-                lock (userAccessCache)
-                {
-                    if (userAccessCache.ContainsKey(index))
-                    {
-                        cacheUserAccessInfo = userAccessCache[index];
-                        EventManager.WriteMessage(446, "GetUserPermission", EventLevel.Verbose, "Thread" + Thread.CurrentThread.ManagedThreadId + ",userInfoKey " + index + " exists in the cache table.");
-                    }
-                    else
-                    {
-                        cacheUserAccessInfo.isDownloaded = false;
-                        cacheUserAccessInfo.index = index;
-                        cacheUserAccessInfo.lastAccessTime = DateTime.Now;
-                        userAccessCache.Add(index, cacheUserAccessInfo);
-                        EventManager.WriteMessage(435, "GetUserPermission", EventLevel.Verbose, "Thread" + Thread.CurrentThread.ManagedThreadId + ",add userInfoKey " + index + " to the cache table.");
-                    }
-                }
-
-                //synchronize the same file access.
-                if (!cacheUserAccessInfo.isDownloaded && !cacheUserAccessInfo.syncEvent.WaitOne(new TimeSpan(0, 0, cacheTimeOutInSeconds)) )
-                {
-                    string info = "User name: " + userName + ",processname:" + processName + ",file name:" + fileName + " wait for permission timeout.";
-                    EventManager.WriteMessage(402, "GetUserPermission", EventLevel.Warning, info);
-                    return false;
-                }
-
-                TimeSpan timeSpan = DateTime.Now - cacheUserAccessInfo.lastAccessTime;
-
-                if (cacheUserAccessInfo.isDownloaded && timeSpan.TotalSeconds < cacheTimeOutInSeconds)
-                {
-                    //the access was cached, return the last access status.
-                    retVal = cacheUserAccessInfo.accessStatus;
-
-                    if (!retVal)
-                    {
-                        EventManager.WriteMessage(308, "GetAccessPermissionFromServer", EventLevel.Error, cacheUserAccessInfo.lastError);
-                    }
-                    else
-                    {
-                        string info = "thread" + Thread.CurrentThread.ManagedThreadId + ",  Cached userInfoKey " + index + " in the cache table,return " + retVal;
-                        EventManager.WriteMessage(451, "GetUserPermission", EventLevel.Verbose, info);
-                    }
-
-                    encryptKey = cacheUserAccessInfo.key;
-                    accessFlag = cacheUserAccessInfo.accessFlags;
-                    lastError = cacheUserAccessInfo.lastError;
-
-                    cacheUserAccessInfo.syncEvent.Set();
-
-                    return retVal;
-                }
-
-                string encryptionIV = tagStr;
-
-                retVal = WebAPIServices.GetSharedFilePermission(fileName, processName, userName, tagStr, ref encryptionIV, ref encryptKey, ref accessFlag, ref lastError);
-                cacheUserAccessInfo.accessStatus = retVal;
-                cacheUserAccessInfo.isDownloaded = true;
-                cacheUserAccessInfo.syncEvent.Set();
-
-                if (!retVal)
-                {
-                    string message = "Get file " + fileName + " permission from server return error:" + lastError;
-                    cacheUserAccessInfo.lastError = message;
-                    cacheUserAccessInfo.accessStatus = false;
-
-                    EventManager.WriteMessage(293, "GetAccessPermissionFromServer", EventLevel.Error, message);
-
-                    return retVal;
-                }
-                else
-                {
-                    string message = "Get file " +fileName + " permission frome server return succeed.";
-                    EventManager.WriteMessage(208, "GetAccessPermissionFromServer", EventLevel.Verbose, message);
-                }
-
-                cacheUserAccessInfo.key = encryptKey;
-                cacheUserAccessInfo.iv = encryptionIV;
-                cacheUserAccessInfo.accessFlags = accessFlag;
-              
-
-            }
-            catch (Exception ex)
-            {
-                EventManager.WriteMessage(286, "GetAccessPermissionFromServer", EventLevel.Error, "Get file " + fileName + "permission failed with exception:" + ex.Message);
-                retVal = false;
-            }
-
-            return retVal;
-
-        }
-
+      
         static private bool IsFileAccessAuthorized(string fileName,
                                           string userName,
                                           string processName,
@@ -516,10 +409,6 @@ namespace  SecureShare
 
             try
             {
-                if (GlobalConfig.StoreSharedFileMetaDataInServer)
-                {
-                    return GetAccessPermissionFromServer(fileName, userName, processName, tagStr, ref encryptKey, ref accessFlag, ref lastError);
-                }
 
                 string drFilePath = GlobalConfig.DRInfoFolder + "\\" + tagStr + ".xml";
                 Dictionary<string, string> keyValues = new Dictionary<string, string>();

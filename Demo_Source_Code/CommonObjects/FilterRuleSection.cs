@@ -235,11 +235,23 @@ namespace EaseFilter.CommonObjects
         /// the format is "sha256hash!accessFlags;", e.g. "A10B....BC!123456;"
         /// seperate the multiple items with ';'
         /// </summary>
-        [ConfigurationProperty("trustedProcessRights", IsRequired = false)]
-        public string TrustedProcessRights
+        [ConfigurationProperty("sha256ProcessAccessRights", IsRequired = false)]
+        public string Sha256ProcessAccessRights
         {
-            get { return (string)base["trustedProcessRights"]; }
-            set { base["trustedProcessRights"] = value; }
+            get { return (string)base["sha256ProcessAccessRights"]; }
+            set { base["sha256ProcessAccessRights"] = value; }
+        }
+
+        /// <summary>
+        /// The file access rights for the process which was signed with the specific certificate. Seperated with ";" for multiple processes
+        /// the format is "certificatename!accessFlags;", e.g. "A10B....BC!123456;"
+        /// seperate the multiple items with ';'
+        /// </summary>
+        [ConfigurationProperty("signedProcessAccessRights", IsRequired = false)]
+        public string SignedProcessAccessRights
+        {
+            get { return (string)base["signedProcessAccessRights"]; }
+            set { base["signedProcessAccessRights"] = value; }
         }
 
         /// <summary>
@@ -416,7 +428,8 @@ namespace EaseFilter.CommonObjects
             dest.RegisterMonitorFileIOEvents = RegisterMonitorFileIOEvents;
             dest.ProcessIdRights = ProcessIdRights;
             dest.ProcessNameRights = ProcessNameRights;
-            dest.TrustedProcessRights = TrustedProcessRights;  
+            dest.Sha256ProcessAccessRights = Sha256ProcessAccessRights;
+            dest.SignedProcessAccessRights = SignedProcessAccessRights;
             dest.ReparseFileFilterMask = ReparseFileFilterMask;
             dest.Type = Type;
             dest.UserRights = UserRights;
@@ -563,7 +576,7 @@ namespace EaseFilter.CommonObjects
                     }
                 }
 
-                string[] processSha256Rights = TrustedProcessRights.Split(new char[] { ';' });
+                string[] processSha256Rights = Sha256ProcessAccessRights.Split(new char[] { ';' });
                 if (processSha256Rights.Length > 0)
                 {
                     foreach (string processRight in processSha256Rights)
@@ -573,7 +586,21 @@ namespace EaseFilter.CommonObjects
                             string processSha256Hex = processRight.Substring(0, processRight.IndexOf('!'));
                             byte[] processSha256 = Utils.HexToByteArray(processSha256Hex);
                             uint accessFlags = uint.Parse(processRight.Substring(processRight.IndexOf('!') + 1));
-                            fileFilter.TrustedProcessList.Add(processSha256, accessFlags);
+                            fileFilter.Sha256ProcessAccessRightList.Add(processSha256, accessFlags);
+                        }
+                    }
+                }
+
+                string[] signedProcessAccessRights = SignedProcessAccessRights.Split(new char[] { ';' });
+                if (signedProcessAccessRights.Length > 0)
+                {
+                    foreach (string processRight in signedProcessAccessRights)
+                    {
+                        if (processRight.Trim().Length > 0)
+                        {
+                            string certificateName = processRight.Substring(0, processRight.IndexOf('!'));
+                            uint accessFlags = uint.Parse(processRight.Substring(processRight.IndexOf('!') + 1));
+                            fileFilter.SignedProcessAccessRightList.Add(certificateName, accessFlags);
                         }
                     }
                 }

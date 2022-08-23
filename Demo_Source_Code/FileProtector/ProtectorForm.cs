@@ -195,7 +195,7 @@ namespace FileProtector
             filterControl.NotifyUSBWriteWasBlocked -= controlEventHandler.NotifyUSBWriteWasBlocked;
             filterControl.NotifyUSBWriteWasBlocked += controlEventHandler.NotifyUSBWriteWasBlocked;
 
-            filterControl.VolumeControlFlag = GlobalConfig.VolumeControlFlag;
+            filterControl.VolumeControlFlag = (FilterAPI.VolumeControlFlag)GlobalConfig.VolumeControlFlag;
             filterControl.NotifyFilterAttachToVolume -= controlEventHandler.NotifyFilterAttachToVolume;
             filterControl.NotifyFilterAttachToVolume += controlEventHandler.NotifyFilterAttachToVolume;
             filterControl.NotifyFilterDetachFromVolume -= controlEventHandler.NotifyFilterDetachFromVolume;

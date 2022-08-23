@@ -38,7 +38,6 @@ namespace EaseFilter.FolderLocker
         //Purchase a license key with the link: http://www.easefilter.com/Order.htm
         //Email us to request a trial key: info@easefilter.com //free email is not accepted.
         string licenseKey = GlobalConfig.licenseKey;
-        EncryptEventHandler encryptEventHandler = new EncryptEventHandler();
         FilterControl.FilterControl filterControl = new FilterControl.FilterControl();
 
         void SendSettingsToFilter()
@@ -47,21 +46,9 @@ namespace EaseFilter.FolderLocker
             {
                 filterControl.ClearFilters();
 
-                FileFilterRule filterRuleShareFolder = new FileFilterRule();
-                filterRuleShareFolder.IncludeFileFilterMask = GlobalConfig.ShareFolder + "\\*";
-                filterRuleShareFolder.AccessFlag |= (uint)FilterAPI.AccessFlag.ENABLE_FILE_ENCRYPTION_RULE | FilterAPI.ALLOW_MAX_RIGHT_ACCESS;
-                filterRuleShareFolder.AccessFlag &= (uint)(~FilterAPI.AccessFlag.ALLOW_ENCRYPT_NEW_FILE);// this folder won't encrypt the new file.
-                filterRuleShareFolder.EncryptMethod = (int)FilterAPI.EncryptionMethod.ENCRYPT_FILE_WITH_SAME_KEY_AND_UNIQUE_IV;
-                filterRuleShareFolder.EncryptionPassPhrase = GlobalConfig.MasterPassword;
-
-                FileFilter shareFolderFileFilter = filterRuleShareFolder.ToFileFilter();
-                shareFolderFileFilter.OnFilterRequestEncryptKey += encryptEventHandler.OnFilterRequestEncryptKey;
-                filterControl.AddFilter(shareFolderFileFilter);
-
                 foreach (FileFilterRule filterRule in GlobalConfig.FilterRules.Values)
                 {
                     FileFilter fileFilter = filterRule.ToFileFilter();
-                    fileFilter.OnFilterRequestEncryptKey += encryptEventHandler.OnFilterRequestEncryptKey;
                     filterControl.AddFilter(fileFilter);
                 }
 
@@ -90,9 +77,6 @@ namespace EaseFilter.FolderLocker
 
             InitFolderLockerListView();            
             InitAccessRightsListView();
-
-            InitShareFileListView();
-            RefreshSharedFilesInClient();
 
             DisplayVersion();
 
@@ -347,5 +331,6 @@ namespace EaseFilter.FolderLocker
             InitAccessRightsListView();
         }
 
+       
     }
 }

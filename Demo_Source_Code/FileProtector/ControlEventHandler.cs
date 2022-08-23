@@ -835,8 +835,8 @@ namespace FileProtector
 
             //if (string.Compare(YourTestFileName, e.FileName, true) == 0)
             //{
-            //    //test block the file delete here.
-            //    e.ReturnStatus = NtStatus.Status.AccessDenied;
+            //test block the file delete here.
+            e.ReturnStatus = NtStatus.Status.AccessDenied;
             //}
         }
 
@@ -1006,7 +1006,21 @@ namespace FileProtector
         public void NotifyFilterAttachToVolume(object sender, VolumeInfoEventArgs e)
         {
             DisplayEventMessage(e);
-            //do your job here.
+
+            //if ((e.DeviceCharacteristics & WinData.DeviceObject_Characteristics.FILE_REMOVABLE_MEDIA) > 0)
+            //{
+            //    //this is the USB drive, here is the USB dos volume name or drive letter.
+            //    //e.VolumeDosName
+
+            //    //you can setup the new filter rule for this USB drive here, for example you block this USB as below:
+            //    FileFilter usbFilter = new FileFilter(e.VolumeDosName + "*");
+            //    usbFilter.AccessFlags = FilterAPI.AccessFlag.LEAST_ACCESS_FLAG;
+
+            //    if (!FilterAPI.AddFileFilterRule((uint)usbFilter.AccessFlags, usbFilter.IncludeFileFilterMask, usbFilter.IsResident, usbFilter.FilterId))
+            //    {
+            //        string lastError = "Send filter rule failed:" + FilterAPI.GetLastErrorMessage();
+            //    }
+            //}
         }
 
         /// <summary>

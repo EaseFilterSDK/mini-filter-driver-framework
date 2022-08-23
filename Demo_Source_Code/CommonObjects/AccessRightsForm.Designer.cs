@@ -34,6 +34,7 @@
             this.textBox_ProcessName = new System.Windows.Forms.TextBox();
             this.label_AccessFlags = new System.Windows.Forms.Label();
             this.groupBox_AccessRights = new System.Windows.Forms.GroupBox();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.button_InfoEncryptOnRead = new System.Windows.Forms.Button();
             this.button_InfoDecryptFile = new System.Windows.Forms.Button();
             this.button_InfoEncryptNewFile = new System.Windows.Forms.Button();
@@ -63,14 +64,18 @@
             this.label3 = new System.Windows.Forms.Label();
             this.groupBox_ProcessSha256 = new System.Windows.Forms.GroupBox();
             this.button_GetProcessSha256 = new System.Windows.Forms.Button();
-            this.textBox_ProcessSha256 = new System.Windows.Forms.TextBox();
+            this.textBox_ProcessSha256Hash = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.groupBox_SignedProcess = new System.Windows.Forms.GroupBox();
+            this.button_GetCertificateName = new System.Windows.Forms.Button();
+            this.textBox_ProcessCertificateName = new System.Windows.Forms.TextBox();
+            this.label5 = new System.Windows.Forms.Label();
             this.groupBox_ProcessName.SuspendLayout();
             this.groupBox_AccessRights.SuspendLayout();
             this.groupBox_UserName.SuspendLayout();
             this.groupBox_ProcessId.SuspendLayout();
             this.groupBox_ProcessSha256.SuspendLayout();
+            this.groupBox_SignedProcess.SuspendLayout();
             this.SuspendLayout();
             // 
             // button_Add
@@ -148,10 +153,18 @@
             this.groupBox_AccessRights.Controls.Add(this.button_FileAccessFlags);
             this.groupBox_AccessRights.Location = new System.Drawing.Point(25, 231);
             this.groupBox_AccessRights.Name = "groupBox_AccessRights";
-            this.groupBox_AccessRights.Size = new System.Drawing.Size(535, 218);
+            this.groupBox_AccessRights.Size = new System.Drawing.Size(535, 214);
             this.groupBox_AccessRights.TabIndex = 76;
             this.groupBox_AccessRights.TabStop = false;
             this.groupBox_AccessRights.Text = "File Acess Rights";
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Location = new System.Drawing.Point(9, 170);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(516, 10);
+            this.groupBox1.TabIndex = 124;
+            this.groupBox1.TabStop = false;
             // 
             // button_InfoEncryptOnRead
             // 
@@ -420,7 +433,7 @@
             this.groupBox_ProcessId.Controls.Add(this.button_ProcessId);
             this.groupBox_ProcessId.Controls.Add(this.textBox_ProcessId);
             this.groupBox_ProcessId.Controls.Add(this.label3);
-            this.groupBox_ProcessId.Location = new System.Drawing.Point(25, 118);
+            this.groupBox_ProcessId.Location = new System.Drawing.Point(25, 136);
             this.groupBox_ProcessId.Name = "groupBox_ProcessId";
             this.groupBox_ProcessId.Size = new System.Drawing.Size(535, 48);
             this.groupBox_ProcessId.TabIndex = 29;
@@ -456,9 +469,9 @@
             // groupBox_ProcessSha256
             // 
             this.groupBox_ProcessSha256.Controls.Add(this.button_GetProcessSha256);
-            this.groupBox_ProcessSha256.Controls.Add(this.textBox_ProcessSha256);
+            this.groupBox_ProcessSha256.Controls.Add(this.textBox_ProcessSha256Hash);
             this.groupBox_ProcessSha256.Controls.Add(this.label4);
-            this.groupBox_ProcessSha256.Location = new System.Drawing.Point(25, 70);
+            this.groupBox_ProcessSha256.Location = new System.Drawing.Point(25, 55);
             this.groupBox_ProcessSha256.Name = "groupBox_ProcessSha256";
             this.groupBox_ProcessSha256.Size = new System.Drawing.Size(535, 48);
             this.groupBox_ProcessSha256.TabIndex = 39;
@@ -477,10 +490,10 @@
             // 
             // textBox_ProcessSha256
             // 
-            this.textBox_ProcessSha256.Location = new System.Drawing.Point(149, 16);
-            this.textBox_ProcessSha256.Name = "textBox_ProcessSha256";
-            this.textBox_ProcessSha256.Size = new System.Drawing.Size(298, 20);
-            this.textBox_ProcessSha256.TabIndex = 27;
+            this.textBox_ProcessSha256Hash.Location = new System.Drawing.Point(149, 16);
+            this.textBox_ProcessSha256Hash.Name = "textBox_ProcessSha256";
+            this.textBox_ProcessSha256Hash.Size = new System.Drawing.Size(298, 20);
+            this.textBox_ProcessSha256Hash.TabIndex = 27;
             // 
             // label4
             // 
@@ -491,19 +504,50 @@
             this.label4.TabIndex = 28;
             this.label4.Text = "Executable binrary sha256 ";
             // 
-            // groupBox1
+            // groupBox_SignedProcess
             // 
-            this.groupBox1.Location = new System.Drawing.Point(9, 170);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(516, 10);
-            this.groupBox1.TabIndex = 124;
-            this.groupBox1.TabStop = false;
+            this.groupBox_SignedProcess.Controls.Add(this.button_GetCertificateName);
+            this.groupBox_SignedProcess.Controls.Add(this.textBox_ProcessCertificateName);
+            this.groupBox_SignedProcess.Controls.Add(this.label5);
+            this.groupBox_SignedProcess.Location = new System.Drawing.Point(25, 97);
+            this.groupBox_SignedProcess.Name = "groupBox_SignedProcess";
+            this.groupBox_SignedProcess.Size = new System.Drawing.Size(535, 48);
+            this.groupBox_SignedProcess.TabIndex = 125;
+            this.groupBox_SignedProcess.TabStop = false;
+            this.groupBox_SignedProcess.Visible = false;
+            // 
+            // button_GetCertificateName
+            // 
+            this.button_GetCertificateName.Location = new System.Drawing.Point(461, 12);
+            this.button_GetCertificateName.Name = "button_GetCertificateName";
+            this.button_GetCertificateName.Size = new System.Drawing.Size(50, 20);
+            this.button_GetCertificateName.TabIndex = 40;
+            this.button_GetCertificateName.Text = "...";
+            this.button_GetCertificateName.UseVisualStyleBackColor = true;
+            this.button_GetCertificateName.Click += new System.EventHandler(this.button_GetCertificateName_Click);
+            // 
+            // textBox_ProcessCertificateName
+            // 
+            this.textBox_ProcessCertificateName.Location = new System.Drawing.Point(149, 12);
+            this.textBox_ProcessCertificateName.Name = "textBox_ProcessCertificateName";
+            this.textBox_ProcessCertificateName.Size = new System.Drawing.Size(298, 20);
+            this.textBox_ProcessCertificateName.TabIndex = 39;
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(9, 16);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(130, 13);
+            this.label5.TabIndex = 29;
+            this.label5.Text = "Certificate\'s subject name ";
             // 
             // Form_AccessRights
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(590, 461);
+            this.Controls.Add(this.groupBox_SignedProcess);
             this.Controls.Add(this.groupBox_ProcessSha256);
             this.Controls.Add(this.groupBox_ProcessId);
             this.Controls.Add(this.groupBox_UserName);
@@ -523,6 +567,8 @@
             this.groupBox_ProcessId.PerformLayout();
             this.groupBox_ProcessSha256.ResumeLayout(false);
             this.groupBox_ProcessSha256.PerformLayout();
+            this.groupBox_SignedProcess.ResumeLayout(false);
+            this.groupBox_SignedProcess.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -564,8 +610,12 @@
         private System.Windows.Forms.Button button_InfoUserName;
         private System.Windows.Forms.GroupBox groupBox_ProcessSha256;
         private System.Windows.Forms.Button button_GetProcessSha256;
-        private System.Windows.Forms.TextBox textBox_ProcessSha256;
+        private System.Windows.Forms.TextBox textBox_ProcessSha256Hash;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.GroupBox groupBox_SignedProcess;
+        private System.Windows.Forms.Button button_GetCertificateName;
+        private System.Windows.Forms.TextBox textBox_ProcessCertificateName;
+        private System.Windows.Forms.Label label5;
     }
 }

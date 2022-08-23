@@ -5,12 +5,12 @@
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{8EB7E6DC-D83A-45E7-9F09-72931F2EED66}</ProjectGuid>
+    <ProjectGuid>{32877C42-32C7-411F-B110-CF2FD9CF11D8}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>EaseFilter.FolderLocker</RootNamespace>
-    <AssemblyName>FolderLocker</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <RootNamespace>SecureShare</RootNamespace>
+    <AssemblyName>SecureShare</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
@@ -24,24 +24,26 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\..\Release\</OutputPath>
+    <OutputPath>..\..\Release\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <UseVSHostingProcess>false</UseVSHostingProcess>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\..\..\Release\</OutputPath>
+    <OutputPath>..\..\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <UseVSHostingProcess>false</UseVSHostingProcess>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>Lock Folder.ico</ApplicationIcon>
+    <ApplicationIcon>SecureShareManager.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
@@ -49,14 +51,16 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <DebugType>full</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>
-    <CodeAnalysisLogFile>bin\Debug\AutoFileCryptTool.exe.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisLogFile>bin\Debug\SecureShareManager.exe.CodeAnalysisLog.xml</CodeAnalysisLogFile>
     <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
     <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisIgnoreBuiltInRuleSets>true</CodeAnalysisIgnoreBuiltInRuleSets>
     <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
-    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <CodeAnalysisIgnoreBuiltInRules>true</CodeAnalysisIgnoreBuiltInRules>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <OutputPath>..\..\Release\</OutputPath>
@@ -64,16 +68,16 @@
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>
-    <CodeAnalysisLogFile>..\..\..\Release\AutoFileCryptTool.exe.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisLogFile>bin\Release\SecureShareManager.exe.CodeAnalysisLog.xml</CodeAnalysisLogFile>
     <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
     <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
-    <UseVSHostingProcess>false</UseVSHostingProcess>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
     <CodeAnalysisIgnoreBuiltInRuleSets>true</CodeAnalysisIgnoreBuiltInRuleSets>
     <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
     <CodeAnalysisIgnoreBuiltInRules>true</CodeAnalysisIgnoreBuiltInRules>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationManifest>app.manifest</ApplicationManifest>
@@ -94,34 +98,53 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AccessRightsForm.cs">
+    <Compile Include="EncryptEventHandler.cs" />
+    <Compile Include="DRServer.cs" />
+    <Compile Include="ConsoleForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="AccessRightsForm.Designer.cs">
-      <DependentUpon>AccessRightsForm.cs</DependentUpon>
+    <Compile Include="ConsoleForm.Designer.cs">
+      <DependentUpon>ConsoleForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="FolderLockerSettigs.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="FolderLockerSettigs.Designer.cs">
-      <DependentUpon>FolderLockerSettigs.cs</DependentUpon>
-    </Compile>
-    <Compile Include="FormFolderLocker.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="FormFolderLocker.Designer.cs">
-      <DependentUpon>FormFolderLocker.cs</DependentUpon>
+    <Compile Include="ShareFileManagerInServer.cs" />
+    <Compile Include="ShareFileManagerInServer.Designer.cs">
+      <DependentUpon>ShareFileManagerInServer.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="AccessRightsForm.resx">
-      <DependentUpon>AccessRightsForm.cs</DependentUpon>
+    <Compile Include="Service References\ServiceReference1\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="SharedFileAccessLogForm.cs" />
+    <Compile Include="SharedFileAccessLogForm.Designer.cs">
+      <DependentUpon>SharedFileAccessLogForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ShareFileSettingForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ShareFileSettingForm.Designer.cs">
+      <DependentUpon>ShareFileSettingForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ShareFileForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ShareFileForm.Designer.cs">
+      <DependentUpon>ShareFileForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ShareFileManagerInLocal.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ShareFileManagerInLocal.Designer.cs">
+      <DependentUpon>ShareFileManagerInLocal.cs</DependentUpon>
+    </Compile>
+    <Compile Include="WebAPIService.cs" />
+    <EmbeddedResource Include="ConsoleForm.resx">
+      <DependentUpon>ConsoleForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FolderLockerSettigs.resx">
-      <DependentUpon>FolderLockerSettigs.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="FormFolderLocker.resx">
-      <DependentUpon>FormFolderLocker.cs</DependentUpon>
+    <EmbeddedResource Include="ShareFileManagerInServer.resx">
+      <DependentUpon>ShareFileManagerInServer.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -133,6 +156,18 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <EmbeddedResource Include="SharedFileAccessLogForm.resx">
+      <DependentUpon>SharedFileAccessLogForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ShareFileSettingForm.resx">
+      <DependentUpon>ShareFileSettingForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ShareFileForm.resx">
+      <DependentUpon>ShareFileForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ShareFileManagerInLocal.resx">
+      <DependentUpon>ShareFileManagerInLocal.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="app.config" />
     <None Include="app.manifest" />
     <None Include="Properties\Settings.settings">
@@ -144,11 +179,12 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <None Include="Service References\ServiceReference1\webapi.wsdl" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\CommonObjects\CommonObjects.csproj">
-      <Project>{34CB783E-DDA2-4CE3-80BC-37B25AA33E5F}</Project>
-      <Name>CommonObjects %28FilterDemo\CommonObjects%29</Name>
+    <ProjectReference Include="..\CommonObjects\CommonObjects2015.csproj">
+      <Project>{34cb783e-dda2-4ce3-80bc-37b25aa33e5f}</Project>
+      <Name>CommonObjects2015</Name>
     </ProjectReference>
     <ProjectReference Include="..\FilterControl\FilterControl.csproj">
       <Project>{21540012-A296-45CE-8D35-3EA5A07B32A6}</Project>
@@ -156,10 +192,20 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Lock Folder.ico" />
+    <Content Include="SecureShareManager.ico" />
+    <None Include="Service References\ServiceReference1\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <None Include="Service References\ServiceReference1\configuration.svcinfo" />
+    <None Include="Service References\ServiceReference1\configuration91.svcinfo" />
+    <None Include="Service References\ServiceReference1\webapi.disco" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadataStorage Include="Service References\ServiceReference1\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

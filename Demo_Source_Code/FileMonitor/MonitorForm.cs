@@ -148,7 +148,7 @@ namespace FileMonitor
                 filterControl.AddFilter(fileFilter);
             }
 
-            filterControl.VolumeControlFlag = GlobalConfig.VolumeControlFlag;
+            filterControl.VolumeControlFlag = (FilterAPI.VolumeControlFlag)GlobalConfig.VolumeControlFlag;
             filterControl.NotifyFilterAttachToVolume -= monitorEventHandler.NotifyFilterAttachToVolume;
             filterControl.NotifyFilterAttachToVolume += monitorEventHandler.NotifyFilterAttachToVolume;
             filterControl.NotifyFilterDetachFromVolume -= monitorEventHandler.NotifyFilterDetachFromVolume;

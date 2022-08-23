@@ -275,4 +275,6 @@
 	2. Fixed the REG_ALLOW_DELETE_VALUE_KEY not working issue.
 5.1.9.2 ( 2022-07-13)
 	1. Prevent the process from being suspended.
+5.2.0.1 ( 2022-08-23)
+	1. Support authenticode process access rights setting.
 	

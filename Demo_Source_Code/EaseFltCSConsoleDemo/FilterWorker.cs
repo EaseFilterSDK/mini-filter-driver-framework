@@ -39,11 +39,12 @@ namespace EaseFltCSConsoleDemo
 
                 if (GlobalConfig.ProcessFilterRules.Count == 0)
                 {
-                    ProcessFilterRule processFilterRule = new ProcessFilterRule();
-                    processFilterRule.ProcessNameFilterMask = "*";
-                    processFilterRule.ControlFlag = (uint)(FilterAPI.ProcessControlFlag.PROCESS_CREATION_NOTIFICATION | FilterAPI.ProcessControlFlag.PROCESS_TERMINATION_NOTIFICATION);
+                    //there are no process filter rule in config file, here is the example to create a process filter rule.
+                    //ProcessFilterRule processFilterRule = new ProcessFilterRule();
+                    //processFilterRule.ProcessNameFilterMask = "*";
+                    //processFilterRule.ControlFlag = (uint)(FilterAPI.ProcessControlFlag.PROCESS_CREATION_NOTIFICATION | FilterAPI.ProcessControlFlag.PROCESS_TERMINATION_NOTIFICATION);
 
-                    GlobalConfig.AddProcessFilterRule(processFilterRule);
+                    //GlobalConfig.AddProcessFilterRule(processFilterRule);
                 }
 
                 foreach (ProcessFilterRule filterRule in GlobalConfig.ProcessFilterRules.Values)
@@ -62,14 +63,16 @@ namespace EaseFltCSConsoleDemo
 
                 if (GlobalConfig.FilterRules.Count == 0)
                 {
-                    FileFilterRule fileFilterRule = new FileFilterRule();
-                    fileFilterRule.IncludeFileFilterMask = "*";
-                    fileFilterRule.EnableMonitorEventBuffer = true;
-                    fileFilterRule.RegisterMonitorFileIOEvents = 0x28A8AAAAAAAAAAA;
-                    fileFilterRule.RegisterControlFileIOEvents = 0x0;
-                    fileFilterRule.AccessFlag = (uint)FilterAPI.ALLOW_MAX_RIGHT_ACCESS;
+                    //there are no filter rule in config file, here is the example filter rule to create.
 
-                    GlobalConfig.AddFileFilterRule(fileFilterRule);
+                    //FileFilterRule fileFilterRule = new FileFilterRule();
+                    //fileFilterRule.IncludeFileFilterMask = "*";
+                    //fileFilterRule.EnableMonitorEventBuffer = true;
+                    //fileFilterRule.RegisterMonitorFileIOEvents = 0x28A8AAAAAAAAAAA;
+                    //fileFilterRule.RegisterControlFileIOEvents = 0x0;
+                    //fileFilterRule.AccessFlag = (uint)FilterAPI.ALLOW_MAX_RIGHT_ACCESS;
+
+                    //GlobalConfig.AddFileFilterRule(fileFilterRule);
                 }
 
                 foreach (FileFilterRule filterRule in GlobalConfig.FilterRules.Values)
@@ -149,13 +152,14 @@ namespace EaseFltCSConsoleDemo
 
                 if (GlobalConfig.RegistryFilterRules.Count == 0)
                 {
-                    RegistryFilterRule registryFilterRule = new RegistryFilterRule();
-                    registryFilterRule.AccessFlag = FilterAPI.MAX_REGITRY_ACCESS_FLAG;
-                    registryFilterRule.RegCallbackClass = 93092006832128; //by default only register post callback class
-                    registryFilterRule.ProcessNameFilterMask = "*";
-                    registryFilterRule.RegistryKeyNameFilterMask = "*Windows*"; //only display the key name includs 'Windows'.
+                    //there are no registry filter rule in config file, here is the example to create a registry filter rule.
+                    //RegistryFilterRule registryFilterRule = new RegistryFilterRule();
+                    //registryFilterRule.AccessFlag = FilterAPI.MAX_REGITRY_ACCESS_FLAG;
+                    //registryFilterRule.RegCallbackClass = 93092006832128; //by default only register post callback class
+                    //registryFilterRule.ProcessNameFilterMask = "*";
+                    //registryFilterRule.RegistryKeyNameFilterMask = "*Windows*"; //only display the key name includs 'Windows'.
 
-                    GlobalConfig.AddRegistryFilterRule(registryFilterRule);
+                    //GlobalConfig.AddRegistryFilterRule(registryFilterRule);
                 }
 
                 foreach (RegistryFilterRule filterRule in GlobalConfig.RegistryFilterRules.Values)
@@ -217,7 +221,7 @@ namespace EaseFltCSConsoleDemo
 
                 //register the volume notification
                 //filterControl.VolumeControlFlag = (uint)(FilterAPI.VolumeControlFlag.GET_ATTACHED_VOLUME_INFO | FilterAPI.VolumeControlFlag.VOLUME_ATTACHED_NOTIFICATION | FilterAPI.VolumeControlFlag.VOLUME_DETACHED_NOTIFICATION);
-                filterControl.VolumeControlFlag = GlobalConfig.VolumeControlFlag;
+                filterControl.VolumeControlFlag = (FilterAPI.VolumeControlFlag)GlobalConfig.VolumeControlFlag;
                 filterControl.NotifyFilterAttachToVolume -= controlEventHandler.NotifyFilterAttachToVolume;
                 filterControl.NotifyFilterAttachToVolume += controlEventHandler.NotifyFilterAttachToVolume;
                 filterControl.NotifyFilterDetachFromVolume -= controlEventHandler.NotifyFilterDetachFromVolume;

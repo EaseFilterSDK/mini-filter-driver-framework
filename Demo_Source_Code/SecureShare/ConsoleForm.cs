@@ -265,16 +265,8 @@ namespace  SecureShare
 
         private void shareManagerToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (GlobalConfig.StoreSharedFileMetaDataInServer)
-            {
-                ShareFileManagerInServer shareManager = new ShareFileManagerInServer();
-                shareManager.ShowDialog();
-            }
-            else
-            {
-                ShareFileManagerInLocal shareManager = new ShareFileManagerInLocal();
-                shareManager.ShowDialog();
-            }
+            ShareFileManagerInLocal shareManager = new ShareFileManagerInLocal();
+            shareManager.ShowDialog();
         }
 
         private void toolStripButton_Help_Click(object sender, EventArgs e)

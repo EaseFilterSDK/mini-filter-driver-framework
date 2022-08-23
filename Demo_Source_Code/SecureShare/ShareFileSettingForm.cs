@@ -45,16 +45,6 @@ namespace  SecureShare
             this.textBox_ProtectFolderWhiteList.Text = GlobalConfig.ProtectFolderWhiteList;
             this.textBox_ProtectFolderBlackList.Text = GlobalConfig.ProtectFolderBlackList;
 
-            if (GlobalConfig.StoreSharedFileMetaDataInServer)
-            {
-                radioButton_Server.Checked = true;
-                radioButton_Local.Checked = false;
-            }
-            else
-            {
-                radioButton_Server.Checked = false;
-                radioButton_Local.Checked = true;
-            }
         }
 
         private void button_BrowseFolder_Click(object sender, EventArgs e)

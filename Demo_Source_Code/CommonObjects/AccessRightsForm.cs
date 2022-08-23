@@ -34,7 +34,8 @@ namespace EaseFilter.CommonObjects
         public enum AccessRightType
         {
             ProcessNameRight = 0,
-            ProcessSha256,
+            Sha256Process,
+            SignedProcess,
             ProccessIdRight,
             UserNameRight,
         }
@@ -51,6 +52,7 @@ namespace EaseFilter.CommonObjects
             groupBox_AccessRights.Location = groupBox_ProcessSha256.Location;
             groupBox_ProcessId.Location = groupBox_ProcessName.Location;
             groupBox_ProcessSha256.Location = groupBox_ProcessName.Location;
+            groupBox_SignedProcess.Location = groupBox_ProcessName.Location;
             groupBox_UserName.Location = groupBox_ProcessName.Location;
 
             textBox_FileAccessFlags.Text = FilterAPI.ALLOW_MAX_RIGHT_ACCESS.ToString();
@@ -59,7 +61,8 @@ namespace EaseFilter.CommonObjects
             switch (type)
             {
                 case AccessRightType.ProcessNameRight: groupBox_ProcessName.Visible = true; break;
-                case AccessRightType.ProcessSha256: groupBox_ProcessSha256.Visible = true; break;
+                case AccessRightType.Sha256Process: groupBox_ProcessSha256.Visible = true; break;
+                case AccessRightType.SignedProcess: groupBox_SignedProcess.Visible = true; break;
                 case AccessRightType.ProccessIdRight: groupBox_ProcessId.Visible = true; break;
                 case AccessRightType.UserNameRight: groupBox_UserName.Visible = true; break;
             }
@@ -95,11 +98,11 @@ namespace EaseFilter.CommonObjects
                         break;
                     }
 
-                case AccessRightType.ProcessSha256:
+                case AccessRightType.Sha256Process:
                     {
-                        if (textBox_ProcessSha256.Text.Trim().Length > 0)
+                        if (textBox_ProcessSha256Hash.Text.Trim().Length > 0)
                         {
-                            string[] processShaList = textBox_ProcessSha256.Text.Trim().Split(new char[] { ';' });
+                            string[] processShaList = textBox_ProcessSha256Hash.Text.Trim().Split(new char[] { ';' });
                             if (processShaList.Length > 0)
                             {
                                 foreach (string processSha in processShaList)
@@ -112,6 +115,30 @@ namespace EaseFilter.CommonObjects
                                         }
 
                                         accessRightText += processSha.Trim() + "!" + textBox_FileAccessFlags.Text;
+                                    }
+                                }
+                            }
+                        }
+                        break;
+                    }
+
+                case AccessRightType.SignedProcess:
+                    {
+                        if (textBox_ProcessCertificateName.Text.Trim().Length > 0)
+                        {
+                            string[] certificateNameList = textBox_ProcessCertificateName.Text.Trim().Split(new char[] { ';' });
+                            if (certificateNameList.Length > 0)
+                            {
+                                foreach (string certificateName in certificateNameList)
+                                {
+                                    if (certificateName.Trim().Length > 0)
+                                    {
+                                        if (accessRightText.Length > 0)
+                                        {
+                                            accessRightText += ";";
+                                        }
+
+                                        accessRightText += certificateName.Trim() + "!" + textBox_FileAccessFlags.Text;
                                     }
                                 }
                             }
@@ -523,7 +550,7 @@ namespace EaseFilter.CommonObjects
 
                 if (FilterAPI.Sha256HashFile(fileName, hashBytes, ref hashBytesLength))
                 {
-                    textBox_ProcessSha256.Text += Utils.ByteArrayToHex(hashBytes);
+                    textBox_ProcessSha256Hash.Text += Utils.ByteArrayToHex(hashBytes);
                 }
                 else
                 {
@@ -533,6 +560,30 @@ namespace EaseFilter.CommonObjects
             }
 
         }
+
+        private void button_GetCertificateName_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog fileDialog = new OpenFileDialog();
+            if (fileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                string fileName = fileDialog.FileName;
+                uint len = 1024;
+                long signedTime = 0;
+                string subjectName = new string((char)0, (int)len);
+
+                if (FilterAPI.GetSignerInfo(fileName, subjectName, ref len, ref signedTime))
+                {
+                    subjectName = subjectName.Substring(0, (int)len / 2);
+                    textBox_ProcessCertificateName.Text = subjectName;
+                }
+                else
+                {
+                    string lastError = "Get process's certificate name failed with error:" + FilterAPI.GetLastErrorMessage();
+                    MessageBox.Show(lastError, "Get process's certificate name", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+        }       
+
 
         private void button_InfoProcessName_Click(object sender, EventArgs e)
         {
@@ -562,8 +613,7 @@ namespace EaseFilter.CommonObjects
         private void button_InfoEncryptOnRead_Click(object sender, EventArgs e)
         {
             MessageBox.Show("If you want to encrypt the file only when it was read by the process, you can enable the encryption feature, disable the new file encryption, enable the encryption on the go. To enable this feature it requires the encryption was enabled in the filter rule.");
-        }       
-
+        }      
  
     }
 }

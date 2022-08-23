@@ -46,6 +46,7 @@ namespace EaseFilter.CommonObjects
             checkBox_EnableProtectionInBootTime.Checked = filterRule.IsResident;
             textBox_ProcessRights.Text = filterRule.ProcessNameRights;
             textBox_ProcessIdRights.Text = filterRule.ProcessIdRights;
+            textBox_SignedProcessAccessRights.Text = filterRule.SignedProcessAccessRights;
             textBox_UserRights.Text = filterRule.UserRights;
 
             textBox_PassPhrase.Text = filterRule.EncryptionPassPhrase;
@@ -267,7 +268,8 @@ namespace EaseFilter.CommonObjects
             filterRule.IsResident = checkBox_EnableProtectionInBootTime.Checked;
             filterRule.UserRights = textBox_UserRights.Text;
             filterRule.ProcessNameRights = textBox_ProcessRights.Text;
-            filterRule.TrustedProcessRights = textBox_TrustedProcessWithSha256AccessRights.Text;
+            filterRule.Sha256ProcessAccessRights = textBox_Sha256ProcessAccessRights.Text;
+            filterRule.SignedProcessAccessRights = textBox_SignedProcessAccessRights.Text;
             filterRule.ProcessIdRights = textBox_ProcessIdRights.Text;
 
         }
@@ -321,22 +323,39 @@ namespace EaseFilter.CommonObjects
             }
         }
 
-        private void button_AddTrustedProcessRights_Click(object sender, EventArgs e)
+        private void button_AddSha256ProcessAccessRights_Click(object sender, EventArgs e)
         {
-            Form_AccessRights accessRightsForm = new Form_AccessRights(Form_AccessRights.AccessRightType.ProcessSha256);
+            Form_AccessRights accessRightsForm = new Form_AccessRights(Form_AccessRights.AccessRightType.Sha256Process);
 
             if (accessRightsForm.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 if (textBox_ProcessRights.Text.Trim().Length > 0)
                 {
-                    textBox_TrustedProcessWithSha256AccessRights.Text += ";" + accessRightsForm.accessRightText;
+                    textBox_Sha256ProcessAccessRights.Text += ";" + accessRightsForm.accessRightText;
                 }
                 else
                 {
-                    textBox_TrustedProcessWithSha256AccessRights.Text = accessRightsForm.accessRightText;
+                    textBox_Sha256ProcessAccessRights.Text = accessRightsForm.accessRightText;
                 }
             }
         }
+
+        private void button_AddSignedProcessAccessRights_Click(object sender, EventArgs e)
+        {
+            Form_AccessRights accessRightsForm = new Form_AccessRights(Form_AccessRights.AccessRightType.SignedProcess);
+
+            if (accessRightsForm.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                if (textBox_ProcessRights.Text.Trim().Length > 0)
+                {
+                    textBox_SignedProcessAccessRights.Text += ";" + accessRightsForm.accessRightText;
+                }
+                else
+                {
+                    textBox_SignedProcessAccessRights.Text = accessRightsForm.accessRightText;
+                }
+            }
+        }     
 
 
         private void button_AddProcessIdRights_Click(object sender, EventArgs e)
@@ -667,7 +686,7 @@ namespace EaseFilter.CommonObjects
             MessageBox.Show("Add or remove the file access right of the process via the process name.");
         }
 
-        private void button_InfoTrustedProcessRights_Click(object sender, EventArgs e)
+        private void button_InfoSha256ProcessRights_Click(object sender, EventArgs e)
         {
             MessageBox.Show("Add the trusted process with the sha256 hash of the executable binary to filter rule, only the process has the same sha256 hash can access the files. ");
         }
@@ -685,7 +704,14 @@ namespace EaseFilter.CommonObjects
         private void button_InfoControlEvents_Click(object sender, EventArgs e)
         {
             MessageBox.Show("Register the control events, you can allow, modify or deny the file I/O.");
-        }     
+        }
+
+        private void button_InfoSignedProcessRights_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("Add the trusted process which was signed with the certificate to filter rule, only the authenticated process can access the files. ");
+        }
+
+     
              
     }
 }

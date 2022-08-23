@@ -222,7 +222,8 @@ namespace EaseFilter.FilterControl
         /// the access right of the process 
         /// </summary>
         Dictionary<string, uint> processNameAccessRightList = new Dictionary<string, uint>();
-        Dictionary<byte[], uint> trustedProcessList = new Dictionary<byte[], uint>();
+        Dictionary<byte[], uint> sha256ProcessAccessRightList = new Dictionary<byte[], uint>();
+        Dictionary<string, uint> signedProcessAccessRightList = new Dictionary<string, uint>();
         Dictionary<uint, uint> processIdAccessRightList = new Dictionary<uint, uint>();
 
         /// <summary>
@@ -292,7 +293,7 @@ namespace EaseFilter.FilterControl
 
 
         /// <summary>
-        /// set the access rights of the files for the process name in the list
+        /// set the access rights of the process based on the process name in the list
         /// </summary>
         public Dictionary<string, uint> ProcessNameAccessRightList
         {
@@ -301,13 +302,22 @@ namespace EaseFilter.FilterControl
         }
 
         /// <summary>
-        /// Set the trusted process based on their sha256 hash.
+        /// Set the access rights of the processes which have the sha26 hash.
         /// You can allow only the trusted process to access your files.
         /// </summary>
-        public Dictionary<byte[], uint> TrustedProcessList
+        public Dictionary<byte[], uint> Sha256ProcessAccessRightList
         {
-            get { return trustedProcessList; }
-            set { trustedProcessList = value; }
+            get { return sha256ProcessAccessRightList; }
+            set { sha256ProcessAccessRightList = value; }
+        }
+
+        /// <summary>
+        /// set the access rights of the process which was signed with the certificate in the list
+        /// </summary>
+        public Dictionary<string, uint> SignedProcessAccessRightList
+        {
+            get { return signedProcessAccessRightList; }
+            set { signedProcessAccessRightList = value; }
         }
 
         /// <summary>

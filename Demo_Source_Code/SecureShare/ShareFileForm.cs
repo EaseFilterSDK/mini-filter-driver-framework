@@ -95,39 +95,6 @@ namespace  SecureShare
         }
 
 
-        private bool AddNewFileDRInfoToServer(ref string iv, ref string key, ref long creationTime)
-        {
-            bool retVal = false;
-            string lastError = string.Empty;
-
-            try
-            {
-
-                iv = string.Empty;
-                key = string.Empty;
-                creationTime = 0;
-
-                DRPolicy drPolicy = GetDRSetting();
-
-                string encryptedDRPolicy = Utils.EncryptObjectToStr<DRPolicy>(drPolicy);
-
-                retVal = WebAPIServices.AddShareFile( encryptedDRPolicy, ref creationTime, ref key, ref iv, ref lastError);
-                if (!retVal)
-                {
-                    MessageBoxHelper.PrepToCenterMessageBoxOnForm(this);
-                    MessageBox.Show("Create share encrypted file failed with error:" + lastError, "Process share encrypted file", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return retVal;
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBoxHelper.PrepToCenterMessageBoxOnForm(this);
-                MessageBox.Show("Get encryption key info failed with error:" + ex.Message, "GetEncryptionKeyAndIVFromServer", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-
-            return retVal;
-        }
-
         private bool CreateOrModifyShareEncryptFile()
         {
             string lastError = string.Empty;            
@@ -156,28 +123,6 @@ namespace  SecureShare
                     return false;
                 }
 
-                if (selectedDRPolicy != null)
-                {
-                    DRPolicy drPolicy = GetDRSetting();
-                    string encryptedDRPolicy = Utils.EncryptObjectToStr<DRPolicy>(drPolicy);
-
-                    if (WebAPIServices.ModifySharedFileDRInfo(encryptedDRPolicy, ref lastError))
-                    {
-                        MessageBoxHelper.PrepToCenterMessageBoxOnForm(this);
-                        MessageBox.Show("Modify shared file " + textBox_FileName.Text + " policy succeeded.", "Modify shared file", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-                        return true;
-
-                    }
-                    else
-                    {
-                        MessageBoxHelper.PrepToCenterMessageBoxOnForm(this);
-                        MessageBox.Show("Modify shared file " + textBox_FileName.Text + " policy failed with error:" + lastError, "Modify shared file", MessageBoxButtons.OK, MessageBoxIcon.Error);
-
-                        return false;
-
-                    }
-                }
 
                 //here we generate the random unique IV and key, you can use your own key and iv
                 byte[] encryptionIV = Utils.GetRandomIV();
@@ -187,27 +132,6 @@ namespace  SecureShare
                 string ivStr = string.Empty;
                 string tagStr = Utils.ByteArrayToHexStr(encryptionIV);
 
-                if (GlobalConfig.StoreSharedFileMetaDataInServer)
-                {                 
-                    long creationTime = DateTime.Now.ToFileTime();
-
-                    //send the encrypted file digital right information to the server and get back the iv and key.
-                    if (!AddNewFileDRInfoToServer(ref ivStr, ref keyStr, ref creationTime))
-                    {
-                        return false;
-                    }
-
-                    if (ivStr.Length > 0 && keyStr.Length > 0)
-                    {
-                        encryptionIV = Utils.ConvertHexStrToByteArray(ivStr);
-                        encryptionKey = Utils.ConvertHexStrToByteArray(keyStr);
-                    }
-
-                    //for this example, we add the encryptIV and account name as the tag data to the encrypted file
-                    //you can add your own custom tag data to the encyrpted file, so when someone open the encrypted file, you will get the tag data.
-                    tagStr = GlobalConfig.AccountName + ";" + ivStr;
-                }
-              
                 byte[] tagData = UnicodeEncoding.Unicode.GetBytes(tagStr);
 
                 bool retVal = false;
@@ -225,11 +149,6 @@ namespace  SecureShare
                 {
                     MessageBoxHelper.PrepToCenterMessageBoxOnForm(this);
                     MessageBox.Show("Create encrypted file " + targetFileName + " failed with error:" + FilterAPI.GetLastErrorMessage(), "Create share encrypted file", MessageBoxButtons.OK, MessageBoxIcon.Error);
-
-                    if(GlobalConfig.StoreSharedFileMetaDataInServer)
-                    {
-                        WebAPIServices.DeleteShareFile(ivStr,ref lastError);
-                    }
 
                     if (!fileName.Equals(targetFileName, StringComparison.CurrentCulture))
                     {
