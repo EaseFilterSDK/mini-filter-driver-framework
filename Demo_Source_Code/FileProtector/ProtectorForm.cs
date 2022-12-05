@@ -37,7 +37,8 @@ namespace FileProtector
     {
         //Purchase a license key with the link: http://www.easefilter.com/Order.htm
         //Email us to request a trial key: info@easefilter.com //free email is not accepted.
-        string licenseKey = GlobalConfig.licenseKey;
+        string licenseKey = "*****************************************************";
+
         MonitorEventHandler monitorEventHandler = null;
         ControlEventHandler controlEventHandler = null;
         EncryptEventHandler encryptEventHandler = new EncryptEventHandler();
@@ -47,7 +48,7 @@ namespace FileProtector
         public ProtectorForm()
         {
             GlobalConfig.filterType = FilterAPI.FilterType.MONITOR_FILTER | FilterAPI.FilterType.CONTROL_FILTER | FilterAPI.FilterType.ENCRYPTION_FILTER
-                | FilterAPI.FilterType.PROCESS_FILTER | FilterAPI.FilterType.REGISTRY_FILTER;
+                | FilterAPI.FilterType.PROCESS_FILTER ;
 
             InitializeComponent();
             monitorEventHandler = new MonitorEventHandler(listView_Info);
@@ -352,6 +353,8 @@ namespace FileProtector
         {
             toolStripButton_Stop_Click(null, null);
             FileProtectorUnitTest fileProtectorUnitTest = new FileProtectorUnitTest();
+            FileProtectorUnitTest.licenseKey = licenseKey;
+
             fileProtectorUnitTest.ShowDialog();
         }
 

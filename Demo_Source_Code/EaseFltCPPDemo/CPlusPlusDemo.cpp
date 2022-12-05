@@ -384,6 +384,11 @@ Exit:
 			processFilterRule.ControlFlag = controlFlag;
 
 			filterControl->AddProcessFilter(processFilterRule);
+
+			//block the process to write,rename or delete to folder c:\test
+			ULONG accessFlag = ALLOW_MAX_RIGHT_ACCESS & ~(ALLOW_OPEN_WITH_CREATE_OR_OVERWRITE_ACCESS | ALLOW_WRITE_ACCESS | ALLOW_FILE_RENAME | ALLOW_FILE_DELETE);
+			processFilterRule.AddFileAccessRightsToProcess(L"c:\\test\\*", accessFlag);
+
 			filterControl->StartFilter(filterType,threadCount,connectionTimeout,registerKey);
 			
 			getchar();

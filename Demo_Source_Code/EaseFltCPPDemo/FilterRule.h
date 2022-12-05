@@ -23,12 +23,24 @@ static ULONG g_FilterRuleId = 0;
         /// The control flag to the processes which match the processNameFilterMask
         /// </summary>
         ULONG ControlFlag;
+		/// <summary>
+		/// The List of the file access rights of the process.
+		/// </summary>
+		std::map<std::wstring, ULONG> FileAccessList;
 
         ProcessFilterRule(WCHAR* filterMask)
 		{
 			FilterRuleId = ++g_FilterRuleId;
 			ProcessNameFilterMask.assign(filterMask);
 			ControlFlag = 0;
+		}
+
+		void AddFileAccessRightsToProcess(WCHAR* _fileFilterMask, ULONG accessFlag)
+		{
+			std::wstring fileFilterMask(_fileFilterMask);
+			FileAccessList.insert(std::pair<std::wstring, ULONG >(fileFilterMask, accessFlag));
+
+			return;
 		}
  };
 

@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////////////
 //
-//    (C) Copyright 2014 EaseFilter Technologies Inc.
+//    (C) Copyright 2014 EaseFilter
 //    All Rights Reserved
 //
 //    This software is part of a licensed software product and may
@@ -13,7 +13,7 @@
 
 //Purchase a license key with the link: http://www.EaseFilter.com/Order.htm
 //Email us to request a trial key: info@EaseFilter.com //free email is not accepted.
-#define	registerKey "********************************************"
+#define	registerKey "**************************************************"
 
 #define MESSAGE_SEND_VERIFICATION_NUMBER	0xFF000001
 #define	INET_ADDR_STR_LEN					22
@@ -985,7 +985,7 @@ typedef enum _BooleanConfig
 	/// if it is true, the portable massive storage will be treated as USB.
 	//	this is for the volume control flag for BLOCK_USB_READ,BLOCK_USB_WRITE
 	/// </summary>
-	ENABLE_REMOVABLE_MEDIA_AS_USB = 0x00004000,
+	DISABLE_REMOVABLE_MEDIA_AS_USB = 0x00004000,
 	/// <summary>
 	/// if it is true, it will block the encrypted file to be renamed to different folder.
 	/// </summary>

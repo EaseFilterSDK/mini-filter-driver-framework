@@ -47,13 +47,14 @@ namespace EaseFilter.FilterControl
 
         int filterConnectionThreads = 5;
         int connectionTimeout = 10;
-        string licenseKey = string.Empty;
         FilterAPI.FilterType filterType = FilterAPI.FilterType.MONITOR_FILTER;
 
         Dictionary<uint, Filter> filterRuleList = new Dictionary<uint, Filter>();
         List<uint> protectedProcessIdList = new List<uint>();
         List<uint> includeProcessIdList = new List<uint>();
         List<uint> excludeProcessIdList = new List<uint>();
+
+        public static string licenseKey = string.Empty;
 
         public FilterControl()
         {

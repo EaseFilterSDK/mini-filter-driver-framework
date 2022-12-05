@@ -101,6 +101,19 @@ void FilterControl::StopFilter()
 }
 
 BOOL
+FilterControl::ClearConfigData()
+{
+	if (!ResetConfigData())
+    {
+        PrintLastErrorMessage(L"ResetConfigData failed.");
+        return false;
+    }
+
+	return true;
+}
+
+
+BOOL
 FilterControl::SendFileFilterRuleToFilter(FileFilterRule* fileFilter)
 {
 	//add filter rule to filter driver here, the filter rule is unique with the include file filter mask.
@@ -335,6 +348,24 @@ FilterControl::SendProcessFilterRuleToFilter(ProcessFilterRule* processFilter)
 			PrintLastErrorMessage(L"AddProcessFilterRule failed.");
 			return false;
 		}
+
+		//set the file access rights of the file filter mask to the process
+		std::map<std::wstring, ULONG>::iterator it = processFilter->FileAccessList.begin();
+		while (it != processFilter->FileAccessList.end())
+		{
+			std::wstring fileFilterMask = it->first;
+			ULONG accessFlag = it->second;
+
+			if(!AddFileControlToProcessByName((ULONG)processFilter->ProcessNameFilterMask.length() * 2, &processFilter->ProcessNameFilterMask[0],
+				(ULONG)(fileFilterMask.length()) * 2, &(fileFilterMask[0]), accessFlag))
+			{
+				PrintLastErrorMessage(L"AddProcessRightsToFilterRule failed.");
+				return false;
+			}
+
+			++it;
+		}
+
 	}
 
 	return true;

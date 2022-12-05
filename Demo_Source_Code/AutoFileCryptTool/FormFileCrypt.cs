@@ -384,11 +384,12 @@ namespace AutoFileCryptTool
 
         void StartService()
         {
-            
+
             //Purchase a license key with the link: http://www.easefilter.com/Order.htm
             //Email us to request a trial key: info@easefilter.com //free email is not accepted.
-            string licenseKey = GlobalConfig.licenseKey;
-            GlobalConfig.filterType = FilterAPI.FilterType.ENCRYPTION_FILTER;
+            string licenseKey = "******************************************";
+
+            GlobalConfig.filterType = FilterAPI.FilterType.CONTROL_FILTER | FilterAPI.FilterType.ENCRYPTION_FILTER | FilterAPI.FilterType.PROCESS_FILTER;
 
             bool ret = false;
             string lastError = string.Empty;

@@ -327,7 +327,7 @@ namespace ProcessMon
             
         }
 
-        public static void ProcessFilterUnitTest(RichTextBox richTextBox_TestResult)
+        public static void ProcessFilterUnitTest(RichTextBox richTextBox_TestResult, string licenseKey)
         {
 
             string lastError = string.Empty;
@@ -339,11 +339,13 @@ namespace ProcessMon
             string message = "Process Filter Driver Unit Test.";
             AppendUnitTestResult(message, Color.Black);
 
-            if (!filterControl.StartFilter(GlobalConfig.filterType, GlobalConfig.FilterConnectionThreads, GlobalConfig.ConnectionTimeOut, GlobalConfig.licenseKey, ref lastError))
+            if (!filterControl.StartFilter(GlobalConfig.filterType, GlobalConfig.FilterConnectionThreads, GlobalConfig.ConnectionTimeOut, licenseKey, ref lastError))
             {
                 MessageBox.Show(lastError, "StartFilter", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
+
+            Thread.Sleep(3000);
 
             DenyNewProcessTest();
 

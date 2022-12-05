@@ -197,7 +197,7 @@ namespace RegMon
             }
         }
 
-        public static void RegistryFilterUnitTest(RichTextBox richTextBox_TestResult)
+        public static void RegistryFilterUnitTest(RichTextBox richTextBox_TestResult, string licenseKey)
         {
 
             string lastError = string.Empty;
@@ -219,11 +219,13 @@ namespace RegMon
                 AppendUnitTestResult(message, Color.Black);
 
 
-                if (!filterControl.StartFilter(GlobalConfig.filterType, GlobalConfig.FilterConnectionThreads, GlobalConfig.ConnectionTimeOut, GlobalConfig.licenseKey, ref lastError))
+                if (!filterControl.StartFilter(GlobalConfig.filterType, GlobalConfig.FilterConnectionThreads, GlobalConfig.ConnectionTimeOut, licenseKey, ref lastError))
                 {
                     MessageBox.Show(lastError, "StartFilter", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
+
+                Thread.Sleep(3000);
 
                 //
                 //registry access flag test,set full registry access rights for current process.
@@ -301,12 +303,13 @@ namespace RegMon
                 {
                     AppendUnitTestResult("SendConfigSettingsToFilter failed:" + lastError, Color.Red);
                     return;
-                }
+                }               
 
                 using (Microsoft.Win32.RegistryKey regkey = Microsoft.Win32.Registry.LocalMachine.OpenSubKey(testRegistryKey))
                 {
                     string valueName = (string)regkey.GetValue(testValueKey);
-                    Thread.Sleep(2000);
+
+                    Thread.Sleep(3000);
 
                     if (postQueryValueKeyPassed)
                     {

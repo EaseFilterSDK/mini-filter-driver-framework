@@ -40,7 +40,10 @@ namespace AutoEncryptDemo
 
             string passPhrase = textBox_PassPhrase.Text.Trim();
 
-            string licenseKey = GlobalConfig.licenseKey;
+            //Purchase a license key with the link: http://www.easefilter.com/Order.htm
+            //Email us to request a trial key: info@easefilter.com //free email is not accepted.
+            string licenseKey = "******************************************";
+
             GlobalConfig.filterType = FilterAPI.FilterType.CONTROL_FILTER | FilterAPI.FilterType.ENCRYPTION_FILTER| FilterAPI.FilterType.PROCESS_FILTER;
 
             bool ret = false;

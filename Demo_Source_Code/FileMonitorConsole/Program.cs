@@ -10,7 +10,9 @@ namespace FileMonitorConsole
         static void Main(string[] args)
         {
             string lastError = string.Empty;
-            string licenseKey = "Email us to request a trial key: info@easefilter.com";
+            //Purchase a license key with the link: http://www.easefilter.com/Order.htm
+            //Email us to request a trial key: info@easefilter.com //free email is not accepted.
+            string licenseKey = "******************************************";
             
             FilterAPI.FilterType filterType = FilterAPI.FilterType.MONITOR_FILTER;
             int serviceThreads = 5;
@@ -46,7 +48,6 @@ namespace FileMonitorConsole
 
                 //Filter the monitor file IO events
                 fileMonitorFilter.MonitorFileIOEventFilter = (ulong)(MonitorFileIOEvents.OnFileOpen | MonitorFileIOEvents.OnFileRead);
-
                 fileMonitorFilter.OnFileOpen += OnFileOpen;
                 fileMonitorFilter.OnFileRead += OnFileRead;
 
@@ -58,7 +59,7 @@ namespace FileMonitorConsole
                     return;
                 }
 
-                Console.WriteLine("Start filter service succeeded.");
+                Console.WriteLine("Start filter service succeeded. Monitoring path:" + watchPath);
 
                 // Wait for the user to quit the program.
                 Console.WriteLine("Press 'q' to quit the sample.");

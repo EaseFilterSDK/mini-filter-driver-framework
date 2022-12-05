@@ -377,27 +377,11 @@ namespace EaseFilter.FilterControl
 
                 if (is64BitOperatingSystem)
                 {
-                    if(     (winMajorVersion >= 10 )
-                        ||  (winMajorVersion >= 6 && winMinorVersion >=3) )
-                    {
-                        sourceFolder = Path.Combine(localPath, "Bin\\Win10X64");
-                    }
-                    else
-                    {
-                        sourceFolder = Path.Combine(localPath, "Bin\\x64");
-                    }
+                    sourceFolder = Path.Combine(localPath, "Bin\\x64");
                 }
                 else
                 {
-                    if ((winMajorVersion >= 10)
-                       || (winMajorVersion >= 6 && winMinorVersion >= 3))
-                    {
-                        sourceFolder = Path.Combine(localPath, "Bin\\Win10X86");
-                    }
-                    else
-                    {
-                        sourceFolder = Path.Combine(localPath, "Bin\\win32");
-                    }
+                    sourceFolder = Path.Combine(localPath, "Bin\\win32");
                 }
 
                 string sourceFile = Path.Combine(sourceFolder, "FilterAPI.DLL");

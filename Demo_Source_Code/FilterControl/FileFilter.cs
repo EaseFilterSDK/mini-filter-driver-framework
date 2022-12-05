@@ -1176,6 +1176,8 @@ namespace EaseFilter.FilterControl
                 VolumeDosName = volumeInfo.VolumeDosName;
                 VolumeFilesystemType = (WinData.FLT_FILESYSTEM_TYPE)volumeInfo.VolumeFilesystemType;
                 DeviceCharacteristics = (WinData.DeviceObject_Characteristics)volumeInfo.DeviceCharacteristics;
+
+                FileName = Description;
             }
 
 

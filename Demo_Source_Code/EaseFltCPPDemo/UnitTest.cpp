@@ -197,6 +197,8 @@ AccessFlagControlTest(FilterControl* filterControl)
 	//after the processes open the managed files, it then can't create the new files till the processes terminated. 
 	accessFlag = (~ALLOW_ALL_SAVE_AS)&ALLOW_MAX_RIGHT_ACCESS;
 	fileFilter.AccessFlag = accessFlag;
+
+	filterControl->ClearConfigData();
 	filterControl->SendFileFilterRuleToFilter(&fileFilter);
 
 	pFile = CreateFile(testFile,GENERIC_WRITE,NULL,NULL,OPEN_ALWAYS,FILE_ATTRIBUTE_NORMAL,NULL);
@@ -244,6 +246,8 @@ AccessFlagControlTest(FilterControl* filterControl)
 	//Test Remove ALLOW_OPEN_WTIH_ACCESS_SYSTEM_SECURITY
 	accessFlag = (~ALLOW_OPEN_WTIH_ACCESS_SYSTEM_SECURITY)&ALLOW_MAX_RIGHT_ACCESS;
 	fileFilter.AccessFlag = accessFlag;
+
+	filterControl->ClearConfigData();
 	filterControl->SendFileFilterRuleToFilter(&fileFilter);
 
 	pFile = CreateFile(testFile,ACCESS_SYSTEM_SECURITY,NULL,NULL,OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL,NULL);
@@ -271,6 +275,8 @@ AccessFlagControlTest(FilterControl* filterControl)
 	//Test Remove ALLOW_OPEN_WITH_READ_ACCESS
 	accessFlag = (~ALLOW_OPEN_WITH_READ_ACCESS)&ALLOW_MAX_RIGHT_ACCESS;
 	fileFilter.AccessFlag = accessFlag;
+
+	filterControl->ClearConfigData();
 	filterControl->SendFileFilterRuleToFilter(&fileFilter);
 
 
@@ -298,6 +304,8 @@ AccessFlagControlTest(FilterControl* filterControl)
 	//Test Remove ALLOW_OPEN_WITH_WRITE_ACCESS
 	accessFlag = (~ALLOW_OPEN_WITH_WRITE_ACCESS)&ALLOW_MAX_RIGHT_ACCESS;
 	fileFilter.AccessFlag = accessFlag;
+	
+	filterControl->ClearConfigData();
 	filterControl->SendFileFilterRuleToFilter(&fileFilter);
 
 	pFile = CreateFile(testFile,GENERIC_WRITE,NULL,NULL,OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL,NULL);
@@ -324,6 +332,8 @@ AccessFlagControlTest(FilterControl* filterControl)
 	//Not allow open file with create or overwrite option.
 	accessFlag = (~ALLOW_OPEN_WITH_CREATE_OR_OVERWRITE_ACCESS) & ALLOW_MAX_RIGHT_ACCESS;
 	fileFilter.AccessFlag = accessFlag;
+	
+	filterControl->ClearConfigData();
 	filterControl->SendFileFilterRuleToFilter(&fileFilter);
 
 	pFile = CreateFile(testFile,GENERIC_WRITE,NULL,NULL,CREATE_ALWAYS,FILE_ATTRIBUTE_NORMAL,NULL);
@@ -352,6 +362,8 @@ AccessFlagControlTest(FilterControl* filterControl)
 	//Test Remove ALLOW_OPEN_WITH_DELETE_ACCESS.
 	accessFlag = (~ALLOW_OPEN_WITH_DELETE_ACCESS) & ALLOW_MAX_RIGHT_ACCESS;
 	fileFilter.AccessFlag = accessFlag;
+	
+	filterControl->ClearConfigData();
 	filterControl->SendFileFilterRuleToFilter(&fileFilter);
 
 	pFile = CreateFile(testFile,DELETE,NULL,NULL,OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL,NULL);
@@ -379,6 +391,8 @@ AccessFlagControlTest(FilterControl* filterControl)
 	//Test Remove ALLOW_READ_ACCESS.
 	accessFlag = (~ALLOW_READ_ACCESS) & ALLOW_MAX_RIGHT_ACCESS;
 	fileFilter.AccessFlag = accessFlag;
+	
+	filterControl->ClearConfigData();
 	filterControl->SendFileFilterRuleToFilter(&fileFilter);
 	
 	pFile = CreateFile(testFile,GENERIC_READ,NULL,NULL,OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL,NULL);
@@ -413,6 +427,8 @@ AccessFlagControlTest(FilterControl* filterControl)
 	//Test Remove ALLOW_WRITE_ACCESS.
 	accessFlag = (~ALLOW_WRITE_ACCESS) & ALLOW_MAX_RIGHT_ACCESS;
 	fileFilter.AccessFlag = accessFlag;
+	
+	filterControl->ClearConfigData();
 	filterControl->SendFileFilterRuleToFilter(&fileFilter);
 	
 	pFile = CreateFile(testFile,GENERIC_WRITE,NULL,NULL,OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL,NULL);
@@ -448,6 +464,8 @@ AccessFlagControlTest(FilterControl* filterControl)
 	//Test Remove ALLOW_QUERY_INFORMATION_ACCESS.
 	accessFlag = (~ALLOW_QUERY_INFORMATION_ACCESS) & ALLOW_MAX_RIGHT_ACCESS;
 	fileFilter.AccessFlag = accessFlag;
+	
+	filterControl->ClearConfigData();
 	filterControl->SendFileFilterRuleToFilter(&fileFilter);
 	
 	pFile = CreateFile(testFile,GENERIC_READ,NULL,NULL,OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL,NULL);
@@ -485,6 +503,8 @@ AccessFlagControlTest(FilterControl* filterControl)
 	//Test Remove ALLOW_SET_INFORMATION.
 	accessFlag = (~ALLOW_SET_INFORMATION) & ALLOW_MAX_RIGHT_ACCESS;
 	fileFilter.AccessFlag = accessFlag;
+	
+	filterControl->ClearConfigData();
 	filterControl->SendFileFilterRuleToFilter(&fileFilter);
 	
 	pFile = CreateFile(testFile,GENERIC_ALL,NULL,NULL,OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL,NULL);
@@ -523,6 +543,8 @@ AccessFlagControlTest(FilterControl* filterControl)
 	//Test Remove ALLOW_FILE_RENAME.
 	accessFlag = (~ALLOW_FILE_RENAME) & ALLOW_MAX_RIGHT_ACCESS;
 	fileFilter.AccessFlag = accessFlag;
+	
+	filterControl->ClearConfigData();
 	filterControl->SendFileFilterRuleToFilter(&fileFilter);
 	
 	ret = MoveFile (testFile,L"c:\\TestMoveFileNameFile.txt");
@@ -548,6 +570,8 @@ AccessFlagControlTest(FilterControl* filterControl)
 	//Test Remove ALLOW_FILE_DELETE.
 	accessFlag = (~ALLOW_FILE_DELETE) & ALLOW_MAX_RIGHT_ACCESS;
 	fileFilter.AccessFlag = accessFlag;
+	
+	filterControl->ClearConfigData();
 	filterControl->SendFileFilterRuleToFilter(&fileFilter);
 	
 	ret = DeleteFile(testFile);
@@ -573,6 +597,8 @@ AccessFlagControlTest(FilterControl* filterControl)
 	//Test Remove ALLOW_FILE_SIZE_CHANGE.
 	accessFlag = (~ALLOW_FILE_SIZE_CHANGE) & ALLOW_MAX_RIGHT_ACCESS;
 	fileFilter.AccessFlag = accessFlag;
+	
+	filterControl->ClearConfigData();
 	filterControl->SendFileFilterRuleToFilter(&fileFilter);
 	
 	pFile = CreateFile(testFile,GENERIC_ALL,NULL,NULL,OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL,NULL);
@@ -618,6 +644,8 @@ AccessFlagControlTest(FilterControl* filterControl)
 	//Test Remove ALLOW_QUERY_SECURITY_ACCESS.
 	accessFlag = (~ALLOW_QUERY_SECURITY_ACCESS) & ALLOW_MAX_RIGHT_ACCESS;
 	fileFilter.AccessFlag = accessFlag;
+	
+	filterControl->ClearConfigData();
 	filterControl->SendFileFilterRuleToFilter(&fileFilter);
 	
 	BYTE SecDescBuff[0x4000];
@@ -648,6 +676,8 @@ AccessFlagControlTest(FilterControl* filterControl)
 	//Test Remove ALLOW_SET_SECURITY_ACCESS.
 	accessFlag = (~ALLOW_SET_SECURITY_ACCESS) & ALLOW_MAX_RIGHT_ACCESS;
 	fileFilter.AccessFlag = accessFlag;
+	
+	filterControl->ClearConfigData();
 	filterControl->SendFileFilterRuleToFilter(&fileFilter);
 
 	cbSD =  sizeof(SecDescBuff);
@@ -685,6 +715,8 @@ AccessFlagControlTest(FilterControl* filterControl)
 	//Test Remove ALLOW_DIRECTORY_LIST_ACCESS.
 	accessFlag = (~ALLOW_DIRECTORY_LIST_ACCESS) & ALLOW_MAX_RIGHT_ACCESS;
 	fileFilter.AccessFlag = accessFlag;
+	
+	filterControl->ClearConfigData();
 	filterControl->SendFileFilterRuleToFilter(&fileFilter);
 	
 	 WIN32_FIND_DATA findFileData;
@@ -725,6 +757,8 @@ AccessFlagControlTest(FilterControl* filterControl)
 	accessFlag = (~ALLOW_SET_INFORMATION) & ALLOW_MAX_RIGHT_ACCESS;
 	fileFilter.AccessFlag = accessFlag;
 	fileFilter.AddExcludeFileFilterMask(L"*mytestFile.txt");
+	
+	filterControl->ClearConfigData();
 	filterControl->SendFileFilterRuleToFilter(&fileFilter);
 	
 	pFile = CreateFile(testFile,GENERIC_ALL,NULL,NULL,OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL,NULL);
@@ -783,6 +817,7 @@ ReparseFilterRuleTest(FilterControl* filterControl)
 	fileFilter.AccessFlag = accessFlag;
 	fileFilter.ReparseFileFilterMask = reparseMask;
 
+	filterControl->ClearConfigData();
 	filterControl->SendFileFilterRuleToFilter(&fileFilter);
 	
 	HANDLE pFile = CreateFile(testFile,GENERIC_READ,NULL,NULL,OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL,NULL);
@@ -855,6 +890,7 @@ ReadControlFilterTest(FilterControl* filterControl)
 	fileFilter.BooleanConfig = ENABLE_SEND_DATA_BUFFER;
 	fileFilter.ControlFileIOEventFilter =  PRE_FASTIO_READ|PRE_CACHE_READ|PRE_NOCACHE_READ|PRE_PAGING_IO_READ;
 
+	filterControl->ClearConfigData();
 	filterControl->SendFileFilterRuleToFilter(&fileFilter);
 
 
@@ -935,6 +971,7 @@ WriteControlFilterTest(FilterControl* filterControl)
 	fileFilter.BooleanConfig = ENABLE_SEND_DATA_BUFFER;
 	fileFilter.ControlFileIOEventFilter =  PRE_FASTIO_WRITE|PRE_CACHE_WRITE|PRE_NOCACHE_WRITE|PRE_PAGING_IO_WRITE;
 
+	filterControl->ClearConfigData();
 	filterControl->SendFileFilterRuleToFilter(&fileFilter);
 
 	HANDLE pFile = CreateFile(testFile,GENERIC_ALL,NULL,NULL,OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL,NULL);
@@ -1023,6 +1060,7 @@ QueryInformationControlTest(FilterControl* filterControl)
 	fileFilter.AccessFlag = accessFlag;
 	fileFilter.ControlFileIOEventFilter = PRE_QUERY_INFORMATION;
 
+	filterControl->ClearConfigData();
 	filterControl->SendFileFilterRuleToFilter(&fileFilter);
 
 	HANDLE pFile = CreateFile(testFile,GENERIC_READ,NULL,NULL,OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL,NULL);
@@ -1088,6 +1126,8 @@ SetInformationControlTest(FilterControl* filterControl)
 	fileFilter.AccessFlag = accessFlag;
 	fileFilter.ControlFileIOEventFilter = PRE_SET_INFORMATION;
 
+	
+	filterControl->ClearConfigData();
 	filterControl->SendFileFilterRuleToFilter(&fileFilter);
 
 	//
@@ -1134,6 +1174,8 @@ BrowseDirectoryControlTest(FilterControl* filterControl)
 	fileFilter.AccessFlag = accessFlag;
 	fileFilter.ControlFileIOEventFilter = POST_DIRECTORY;
 
+	
+	filterControl->ClearConfigData();
 	filterControl->SendFileFilterRuleToFilter(&fileFilter);
 
 	WIN32_FIND_DATA ffd;
@@ -1196,6 +1238,8 @@ IncludeExcludeProcessNameTest(FilterControl* filterControl)
 	fileFilter.AccessFlag = accessFlag;
 	fileFilter.AddIncludeProcessId(currentPid);
 
+	
+	filterControl->ClearConfigData();
 	filterControl->SendFileFilterRuleToFilter(&fileFilter);
 
 	HANDLE pFile = CreateFile(testFile,GENERIC_WRITE,NULL,NULL,OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL,NULL);
@@ -1242,6 +1286,8 @@ IncludeExcludeUserNameTest(FilterControl* filterControl)
 	fileFilter.AccessFlag = accessFlag;
 	fileFilter.AddIncludeUserName(userName);
 
+	
+	filterControl->ClearConfigData();
 	filterControl->SendFileFilterRuleToFilter(&fileFilter);
 
 	HANDLE pFile = CreateFile(testFile,GENERIC_WRITE,NULL,NULL,OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL,NULL);

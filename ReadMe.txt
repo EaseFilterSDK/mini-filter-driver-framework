@@ -1,5 +1,9 @@
 EaseFilter File System Filter Driver SDK ReadMe
 
+Known Issues:
+1. The transparent encryption doesn't support the earlier office 97-2003 version real time encryption.
+2. The transparent encryption doesn't support the Database real time encryption.
+
 What can yo do with EaseFilter SDK?
 1. The File Monitor Filter Driver allows you to monitor the file I/O activities, get the notification when the file was changed.
 2. The File Control Filter Driver allows you to control the file access, modify the file I/O data.

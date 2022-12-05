@@ -93,6 +93,9 @@ namespace FileProtector
         private static string globalExcludeFilterRuleTestFolder = "c:\\EaseFilterUnitTest\\excludeFilterRuleFolder";
         private static string globalExcludeFilterRuleTestFile = "c:\\EaseFilterUnitTest\\excludeFilterRuleFolder\\excludeFilterRuleTestFile.txt";
 
+        //Purchase a license key with the link: http://www.easefilter.com/Order.htm
+        //Email us to request a trial key: info@easefilter.com //free email is not accepted.
+        public static string licenseKey = "******************************************";
 
         public FileProtectorUnitTest()
         {
@@ -1290,7 +1293,7 @@ namespace FileProtector
                 isUnitTestStarted = true;
 
                 string lastError = string.Empty;
-                if (!filterControl.StartFilter(GlobalConfig.filterType, GlobalConfig.FilterConnectionThreads, GlobalConfig.ConnectionTimeOut, GlobalConfig.licenseKey, ref lastError))
+                if (!filterControl.StartFilter(GlobalConfig.filterType, GlobalConfig.FilterConnectionThreads, GlobalConfig.ConnectionTimeOut, licenseKey, ref lastError))
                 {
                     MessageBox.Show(lastError, "StartFilter", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;

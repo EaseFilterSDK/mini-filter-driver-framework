@@ -37,7 +37,8 @@ namespace ProcessMon
     {
         //Purchase a license key with the link: http://www.easefilter.com/Order.htm
         //Email us to request a trial key: info@easefilter.com //free email is not accepted.
-        string licenseKey = GlobalConfig.licenseKey;
+        string licenseKey = "******************************************";
+
         ProcessHandler processHandler = null;
         FilterControl filterControl = new FilterControl();        
 
@@ -191,7 +192,7 @@ namespace ProcessMon
         private void toolStripButton_UnitTest_Click(object sender, EventArgs e)
         {
             toolStripButton_Stop_Click(null, null);
-            ProcessUnitTestForm regUnitTest = new ProcessUnitTestForm();
+            ProcessUnitTestForm regUnitTest = new ProcessUnitTestForm(licenseKey);
             regUnitTest.ShowDialog();
         }
     }

@@ -38,11 +38,14 @@ namespace RegMon
     {
 
         bool isUnitTestCompleted = false;
+        //Purchase a license key with the link: http://www.easefilter.com/Order.htm
+        //Email us to request a trial key: info@easefilter.com //free email is not accepted.
+        string licenseKey = "******************************************";
 
-        public RegUnitTest()
+        public RegUnitTest(string _licenseKey)
         {
             InitializeComponent();
-
+            this.licenseKey = _licenseKey;
         }
 
 
@@ -51,7 +54,8 @@ namespace RegMon
             try
             {
                 FilterAPI.ResetConfigData();
-                RegistryUnitTest.RegistryFilterUnitTest(richTextBox_TestResult);
+                RegistryUnitTest.RegistryFilterUnitTest(richTextBox_TestResult,licenseKey);                
+
                 GlobalConfig.Load();
 
               

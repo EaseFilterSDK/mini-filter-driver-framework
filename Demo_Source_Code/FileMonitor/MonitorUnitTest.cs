@@ -77,6 +77,10 @@ namespace FileMonitor
         private  string unitTestCallbackFolder = "c:\\EaseFilterUnitTest\\callbackFolder";
         private  string unitTestCallbackFile = "c:\\EaseFilterUnitTest\\callbackFolder\\unitTestFile.txt";
 
+        //Purchase a license key with the link: http://www.easefilter.com/Order.htm
+        //Email us to request a trial key: info@easefilter.com //free email is not accepted.
+        public string licenseKey = "******************************************";
+
 
         public MonitorUnitTest()
         {
@@ -454,11 +458,13 @@ namespace FileMonitor
                 isUnitTestStarted = true;
 
                 string lastError = string.Empty;
-                if (!filterControl.StartFilter(FilterAPI.FilterType.MONITOR_FILTER, GlobalConfig.FilterConnectionThreads, GlobalConfig.ConnectionTimeOut, GlobalConfig.licenseKey, ref lastError))
+                if (!filterControl.StartFilter(FilterAPI.FilterType.MONITOR_FILTER, GlobalConfig.FilterConnectionThreads, GlobalConfig.ConnectionTimeOut,licenseKey, ref lastError))
                 {
                     MessageBox.Show(lastError, "StartFilter", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
+
+                System.Threading.Thread.Sleep(3000);
 
                 StartFilterUnitTest();
 

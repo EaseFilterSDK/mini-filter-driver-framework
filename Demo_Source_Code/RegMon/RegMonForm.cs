@@ -35,9 +35,10 @@ namespace RegMon
 {
     public partial class RegMonForm : Form
     {
-         //Purchase a license key with the link: http://www.easefilter.com/Order.htm
+        //Purchase a license key with the link: http://www.easefilter.com/Order.htm
         //Email us to request a trial key: info@easefilter.com //free email is not accepted.
-        string licenseKey = GlobalConfig.licenseKey;
+        string licenseKey = "******************************************";
+
         RegistryHandler registryHandler = null;
         FilterControl filterControl = new FilterControl();        
 
@@ -219,7 +220,7 @@ namespace RegMon
         private void toolStripButton_UnitTest_Click(object sender, EventArgs e)
         {
             toolStripButton_Stop_Click(null, null);
-            RegUnitTest regUnitTest = new RegUnitTest();
+            RegUnitTest regUnitTest = new RegUnitTest(licenseKey );
             regUnitTest.ShowDialog();
         }
 

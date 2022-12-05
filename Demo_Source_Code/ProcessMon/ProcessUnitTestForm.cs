@@ -40,10 +40,14 @@ namespace ProcessMon
     {
        
         bool isUnitTestCompleted = false;
+        //Purchase a license key with the link: http://www.easefilter.com/Order.htm
+        //Email us to request a trial key: info@easefilter.com //free email is not accepted.
+        string licenseKey = "******************************************";
 
-        public ProcessUnitTestForm()
+        public ProcessUnitTestForm(string _licenseKey)
         {
             InitializeComponent();
+            this.licenseKey = _licenseKey;
 
         }
 
@@ -53,7 +57,7 @@ namespace ProcessMon
             {
                 isUnitTestCompleted = true;
 
-                ProcessUnitTest.ProcessFilterUnitTest(richTextBox_TestResult);
+                ProcessUnitTest.ProcessFilterUnitTest(richTextBox_TestResult,licenseKey);
                 GlobalConfig.Load();
                 //System.Threading.Tasks.Task.Factory.StartNew(() => { ProcessUnitTest.ProcessFilterUnitTest(richTextBox_TestResult); });
 

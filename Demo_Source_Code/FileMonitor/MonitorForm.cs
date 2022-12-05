@@ -38,7 +38,7 @@ namespace FileMonitor
     {
         //Purchase a license key with the link: http://www.easefilter.com/Order.htm
         //Email us to request a trial key: info@easefilter.com //free email is not accepted.
-        string licenseKey = GlobalConfig.licenseKey;
+        string licenseKey = "******************************************";
         
         MonitorEventHandler monitorEventHandler = null;
         FilterControl filterControl = new FilterControl();
@@ -251,6 +251,8 @@ namespace FileMonitor
         {
             toolStripButton_Stop_Click(null, null);
             MonitorUnitTest monitorDemo = new MonitorUnitTest();
+            monitorDemo.licenseKey = licenseKey;
+
             monitorDemo.ShowDialog();
         }
 

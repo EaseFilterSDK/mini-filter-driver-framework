@@ -359,7 +359,14 @@ namespace FileMonitor
                 int col = 0;
                 listData[col++] = fileIOEventArgs.MessageId.ToString();
                 listData[col++] = DateTime.FromFileTime(fileIOEventArgs.TransactionTime).ToString("yyyy-MM-ddTHH:mm");
-                listData[col++] = fileIOEventArgs.UserName;
+                if (fileIOEventArgs.IsRemoteAccess)
+                {
+                    listData[col++] = fileIOEventArgs.UserName + " IsRemoteAccess " + fileIOEventArgs.RemoteIp; ;
+                }
+                else
+                {
+                    listData[col++] = fileIOEventArgs.UserName;
+                }
                 listData[col++] = fileIOEventArgs.ProcessName + "  (" + fileIOEventArgs.ProcessId + ")";
                 listData[col++] = fileIOEventArgs.ThreadId.ToString();
                 listData[col++] = fileIOEventArgs.EventName;

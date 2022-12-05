@@ -166,6 +166,11 @@ namespace EaseFilter.FilterControl
             /// </summary>
             ENABLE_WRITE_WITH_ZERO_DATA_AND_SEND_DATA = 0x00002000,
             /// <summary>
+            /// if it is true, the portable massive storage won't be treated as USB.
+            //	this is for the volume control flag for BLOCK_USB_READ,BLOCK_USB_WRITE
+            /// </summary>
+            DISABLE_REMOVABLE_MEDIA_AS_USB = 0x00004000,
+            /// <summary>
             /// if it is true, it will block the encrypted file to be renamed to different folder.
             /// </summary>
             DISABLE_RENAME_ENCRYPTED_FILE = 0x00008000,
@@ -1666,6 +1671,11 @@ namespace EaseFilter.FilterControl
         public static extern bool RemoveRegistryFilterRuleByProcessName(
             uint processNameLength,
             [MarshalAs(UnmanagedType.LPWStr)]string processName);
+
+        [DllImport("FilterAPI.dll", SetLastError = true)]
+        public static extern bool RemoveRegistryFilterRuleByRegKeyName(
+            uint registryKeyNameLength,
+            [MarshalAs(UnmanagedType.LPWStr)]string registryKeyName);
 
         //---------------Registry access control APIs END-----------------------------------
 
