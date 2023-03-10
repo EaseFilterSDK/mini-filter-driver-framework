@@ -378,7 +378,7 @@ namespace EaseFilter.FilterControl
                     if (null != OnFileRead)
                     {
                         FileReadEventArgs fileReadEventArgs = new FileReadEventArgs(messageSend);
-                        fileReadEventArgs.EventName = "OnFileRead-" + fileReadEventArgs.readType;
+                        fileReadEventArgs.EventName = "OnPostFileRead-" + fileReadEventArgs.readType;
 
                         OnFileRead(this, fileReadEventArgs);
                     }
@@ -406,7 +406,7 @@ namespace EaseFilter.FilterControl
                     if (null != OnFileWrite)
                     {
                         FileWriteEventArgs fileWriteEventArgs = new FileWriteEventArgs(messageSend);
-                        fileWriteEventArgs.EventName = "OnFileWrite-" + fileWriteEventArgs.writeType;
+                        fileWriteEventArgs.EventName = "OnPostFileWrite-" + fileWriteEventArgs.writeType;
 
                         OnFileWrite(this, fileWriteEventArgs);
                     }

@@ -631,7 +631,7 @@ namespace EaseFilter.FilterControl
             offset = messageSend.Offset;
             readLength = messageSend.Length;
             returnReadLength = messageSend.ReturnLength;
-
+       
             if (messageSend.DataBufferLength > 0 && messageSend.DataBufferLength <= messageSend.DataBuffer.Length)
             {
                 buffer = new byte[messageSend.DataBufferLength];
@@ -648,10 +648,28 @@ namespace EaseFilter.FilterControl
             {
                 readType = "PagingIORead";
             }
+            else if ( messageSend.MessageType == (uint)FilterAPI.MessageType.PRE_FASTIO_READ
+                    || messageSend.MessageType == (uint)FilterAPI.MessageType.POST_FASTIO_READ)
+            {
+                readType = "FastIOCacheRead";
+            }
             else
             {
                 readType = "CacheRead";
             }
+
+            if (messageSend.MessageType == (uint)FilterAPI.MessageType.POST_NOCACHE_READ
+              || messageSend.MessageType == (uint)FilterAPI.MessageType.POST_PAGING_IO_READ
+              || messageSend.MessageType == (uint)FilterAPI.MessageType.POST_FASTIO_READ
+              || messageSend.MessageType == (uint)FilterAPI.MessageType.POST_CACHE_READ)
+            {
+                isPostRead = true;
+            }
+            else
+            {
+                isPostRead = false;
+            }
+
         }
 
         /// <summary>
@@ -674,6 +692,10 @@ namespace EaseFilter.FilterControl
         /// The read type
         /// </summary>
         public string readType { get; set; }
+        /// <summary>
+        /// The data was read and return from file system if it is true.
+        /// </summary>
+        public bool isPostRead { get; set; }
 
         /// <summary>
         /// The description of the IO args
@@ -682,7 +704,18 @@ namespace EaseFilter.FilterControl
         {
             get
             {
-                string message = "ReadOffset:" + offset + ";ReadLength:" + readLength + ";returnReadLength:" + returnReadLength;
+                string message = "ReadOffset:" + offset + ";ReadLength:" + readLength;
+
+                if (isPostRead)
+                {
+                    message = "Post-" + message;
+                   message += ";returnReadLength:" + returnReadLength;
+                }
+                else
+                {
+                    message = "Pre-" + message;
+                }
+
                 return message;
             }
             
@@ -715,9 +748,26 @@ namespace EaseFilter.FilterControl
             {
                  writeType = "PagingIOWrite";
             }
+            else if ( messageSend.MessageType == (uint)FilterAPI.MessageType.PRE_FASTIO_WRITE
+                       || messageSend.MessageType == (uint)FilterAPI.MessageType.POST_FASTIO_WRITE)
+            {
+                writeType = "FastIOCacheWrite";
+            }
             else
             {
                 writeType = "CacheWrite";
+            }
+
+            if (messageSend.MessageType == (uint)FilterAPI.MessageType.POST_NOCACHE_WRITE
+                || messageSend.MessageType == (uint)FilterAPI.MessageType.POST_PAGING_IO_WRITE
+                || messageSend.MessageType == (uint)FilterAPI.MessageType.POST_FASTIO_WRITE
+                || messageSend.MessageType == (uint)FilterAPI.MessageType.POST_CACHE_WRITE)
+            {
+                isPostWrite = true;
+            }
+            else
+            {
+                isPostWrite = false;
             }
         }
 
@@ -745,6 +795,10 @@ namespace EaseFilter.FilterControl
         /// The write type
         /// </summary>
         public string writeType { get; set; }
+        /// <summary>
+        /// The data was written and return from file system if it is true.
+        /// </summary>
+        public bool isPostWrite { get; set; }
 
         /// <summary>
         /// The description of the IO args
@@ -753,7 +807,18 @@ namespace EaseFilter.FilterControl
         {
             get
             {
-                string message = "WriteOffset:" + offset + ",writeLength:" + writeLength + ",WrittenLength:" + writtenLength;
+                string message = "WriteOffset:" + offset + ",writeLength:" + writeLength ;
+
+                if (isPostWrite)
+                {
+                    message = "Post-" + message;
+                    message += ",WrittenLength:" + writtenLength;
+                }
+                else
+                {
+                    message = "Pre-" + message;
+                }
+
                 return message;
             }
             

@@ -37,15 +37,17 @@ namespace RegMon
     public partial class RegUnitTest : Form
     {
 
-        bool isUnitTestCompleted = false;
+        bool isUnitTestStarted = false;
+        FilterControl filterControl = new FilterControl();
+
         //Purchase a license key with the link: http://www.easefilter.com/Order.htm
         //Email us to request a trial key: info@easefilter.com //free email is not accepted.
-        string licenseKey = "******************************************";
+        public static string licenseKey = "********************************************";
 
         public RegUnitTest(string _licenseKey)
         {
             InitializeComponent();
-            this.licenseKey = _licenseKey;
+            licenseKey = _licenseKey;
         }
 
 
@@ -53,12 +55,8 @@ namespace RegMon
         {
             try
             {
-                FilterAPI.ResetConfigData();
-                RegistryUnitTest.RegistryFilterUnitTest(richTextBox_TestResult,licenseKey);                
-
-                GlobalConfig.Load();
-
-              
+                RegistryUnitTest registryUnitTest = new RegistryUnitTest();
+                registryUnitTest.RegistryFilterUnitTest(filterControl, richTextBox_TestResult, licenseKey);
             }
             catch (Exception ex)
             {
@@ -68,11 +66,24 @@ namespace RegMon
 
         private void RegUnitTest_Activated(object sender, EventArgs e)
         {
-            if (!isUnitTestCompleted)
+            if (!isUnitTestStarted)
             {
+                isUnitTestStarted = true;
+
+                string lastError = string.Empty;
+                if (!filterControl.StartFilter(GlobalConfig.filterType, GlobalConfig.FilterConnectionThreads, GlobalConfig.ConnectionTimeOut, licenseKey, ref lastError))
+                {
+                    MessageBox.Show(lastError, "StartFilter", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                System.Threading.Thread.Sleep(3000);
+
                 StartFilterUnitTest();
-                isUnitTestCompleted = true;
+
+                filterControl.StopFilter();
             }
+           
         }
 
     }

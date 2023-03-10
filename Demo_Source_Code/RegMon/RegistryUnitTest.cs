@@ -30,14 +30,14 @@ using EaseFilter.FilterControl;
 
 namespace RegMon
 {
-    static public class RegistryUnitTest
+    public class RegistryUnitTest
     {
-        static FilterControl filterControl = new FilterControl();
+        FilterControl filterControl = null;
 
-        public static RichTextBox unitTestResult = new RichTextBox();
-        public static bool postQueryValueKeyPassed = false;
+        public  RichTextBox unitTestResult = new RichTextBox();
+        public  bool postQueryValueKeyPassed = false;
 
-        static private void AppendUnitTestResult(string text, Color color)
+        private void AppendUnitTestResult(string text, Color color)
         {
             if (color == Color.Black)
             {
@@ -63,7 +63,7 @@ namespace RegMon
         /// <summary>
         /// Fires this event when the register registry event was triggered.
         /// </summary>
-        public static void NotifyQueryValueKey(object sender, RegistryEventArgs e)
+        public void NotifyQueryValueKey(object sender, RegistryEventArgs e)
         {
             if (e.FileName.IndexOf("EaseFilter") > 0)
             {
@@ -75,7 +75,7 @@ namespace RegMon
         /// <summary>
         /// Fires this event when the register registry event was triggered.
         /// </summary>
-        public static void OnPreCreateKey(object sender, RegistryEventArgs e)
+        public  void OnPreCreateKey(object sender, RegistryEventArgs e)
         {
             //   //test block the registry event.
             if (e.FileName.IndexOf("EaseFilter") > 0)
@@ -88,7 +88,7 @@ namespace RegMon
         /// <summary>
         /// Fires this event when the register registry event was triggered.
         /// </summary>
-        public static void OnPreQueryValueKey(object sender, RegistryEventArgs e)
+        public  void OnPreQueryValueKey(object sender, RegistryEventArgs e)
         {
 
             //   //test block the registry event.
@@ -113,7 +113,7 @@ namespace RegMon
                             // }
 
                             uint titleIndex = 0;
-                            uint type = (uint)VALUE_DATA_TYPE.REG_DWORD;
+                            uint type = (uint)VALUE_DATA_TYPE.REG_SZ;
                             byte[] valueName = Encoding.Unicode.GetBytes("value1");
                             uint valueNameLength = (uint)valueName.Length;
 
@@ -140,8 +140,12 @@ namespace RegMon
                             //public byte[] Name;
 
                             uint titleIndex = 0;
-                            uint type = (uint)VALUE_DATA_TYPE.REG_DWORD;
-                            uint testData = 12345;
+                            //uint type = (uint)VALUE_DATA_TYPE.REG_DWORD;
+                            //uint testData = 12345;
+
+                            uint type = (uint)VALUE_DATA_TYPE.REG_SZ;
+                            byte[] testData = UnicodeEncoding.Unicode.GetBytes("S12345");
+
                             uint testDataLength = sizeof(uint);
                             byte[] valueName = Encoding.Unicode.GetBytes("value1");
                             uint valueNameLength = (uint)valueName.Length;
@@ -173,9 +177,11 @@ namespace RegMon
                             //}
 
                             uint titleIndex = 0;
-                            uint type = (uint)VALUE_DATA_TYPE.REG_DWORD;
-                            uint testData = 12345;
-                            uint testDataLength = sizeof(uint);
+                            uint type = (uint)VALUE_DATA_TYPE.REG_SZ;
+                            //uint testData = 12345;
+                            byte[] testData = UnicodeEncoding.Unicode.GetBytes("S12345");
+                            //uint testDataLength = (uint)sizeof(uint);
+                            uint testDataLength = (uint)testData.Length;
 
                             MemoryStream ms = new MemoryStream();
                             BinaryWriter bw = new BinaryWriter(ms);
@@ -197,7 +203,7 @@ namespace RegMon
             }
         }
 
-        public static void RegistryFilterUnitTest(RichTextBox richTextBox_TestResult, string licenseKey)
+        public  void RegistryFilterUnitTest(FilterControl _filterControl, RichTextBox richTextBox_TestResult, string licenseKey)
         {
 
             string lastError = string.Empty;
@@ -207,7 +213,6 @@ namespace RegMon
 
             //full registry access rights
             uint accessFlag = FilterAPI.MAX_REGITRY_ACCESS_FLAG;
-            ulong regCallbackClass = 0;
 
             bool testPassed = true;
 
@@ -218,6 +223,7 @@ namespace RegMon
                 string message = "Registry Filter Driver Unit Test.";
                 AppendUnitTestResult(message, Color.Black);
 
+                filterControl = _filterControl;
 
                 if (!filterControl.StartFilter(GlobalConfig.filterType, GlobalConfig.FilterConnectionThreads, GlobalConfig.ConnectionTimeOut, licenseKey, ref lastError))
                 {
@@ -227,9 +233,9 @@ namespace RegMon
 
                 Thread.Sleep(3000);
 
-                //
+                
                 //registry access flag test,set full registry access rights for current process.
-                //
+                
                 RegistryFilter regFilter = new RegistryFilter();
                 regFilter.ControlFlag = accessFlag;
                 regFilter.RegCallbackClass = 0;
@@ -303,7 +309,7 @@ namespace RegMon
                 {
                     AppendUnitTestResult("SendConfigSettingsToFilter failed:" + lastError, Color.Red);
                     return;
-                }               
+                }
 
                 using (Microsoft.Win32.RegistryKey regkey = Microsoft.Win32.Registry.LocalMachine.OpenSubKey(testRegistryKey))
                 {
@@ -325,7 +331,7 @@ namespace RegMon
             {
                 AppendUnitTestResult("3.Test registry query value key Reg_Post_Query_Value_Key callback failed:" + ex.Message, Color.Red);
             }
-           
+
 
             //test registry access callback control, in callback function we will block the setting of the value name if it succeeds.
 

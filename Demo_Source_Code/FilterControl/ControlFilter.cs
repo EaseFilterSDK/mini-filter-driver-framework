@@ -1006,7 +1006,7 @@ namespace EaseFilter.FilterControl
                     if (null != OnPostFileRead)
                     {
                         FileReadEventArgs fileReadEventArgs = new FileReadEventArgs(messageSend);
-                        fileReadEventArgs.EventName = "OnPostFileRead;" + fileReadEventArgs.readType;
+                        fileReadEventArgs.EventName = "OnPostFileRead-" + fileReadEventArgs.readType;
 
                         //invoke the event delegate
                         OnPostFileRead(this, fileReadEventArgs);
@@ -1030,7 +1030,7 @@ namespace EaseFilter.FilterControl
                     if (null != OnPreFileWrite)
                     {
                         FileWriteEventArgs fileWriteEventArgs = new FileWriteEventArgs(messageSend);
-                        fileWriteEventArgs.EventName = "OnPreFileWrite;" + fileWriteEventArgs.writeType;
+                        fileWriteEventArgs.EventName = "OnPreFileWrite-" + fileWriteEventArgs.writeType;
 
                         //invoke the event delegate
                         OnPreFileWrite(this, fileWriteEventArgs);
@@ -1812,7 +1812,7 @@ namespace EaseFilter.FilterControl
                     {
                         FileIOEventArgs fileIOArgs = new FileIOEventArgs(messageSend);
                         fileIOArgs.EventName = "OnPreFileHandleClose";
-                        fileIOArgs.Description = "Before opened file handle is closed.";
+                        fileIOArgs.Description = "The opened file handle is going to close.";
 
                         //invoke the event delegate
                         OnPreFileHandleClose(this, fileIOArgs);
@@ -1838,7 +1838,7 @@ namespace EaseFilter.FilterControl
                     {
                         FileIOEventArgs fileIOArgs = new FileIOEventArgs(messageSend);
                         fileIOArgs.EventName = "OnPreFileClose";
-                        fileIOArgs.Description = "Before all system references to fileObject " + messageSend.FileObject.ToString("X") + " were closed.";
+                        fileIOArgs.Description = "All references to the fileObject " + messageSend.FileObject.ToString("X") + " are going to close.";
 
                         //invoke the event delegate
                         OnPreFileClose(this, fileIOArgs);
@@ -1851,7 +1851,7 @@ namespace EaseFilter.FilterControl
                     {
                         FileIOEventArgs fileIOArgs = new FileIOEventArgs(messageSend);
                         fileIOArgs.EventName = "OnPostFileClose";
-                        fileIOArgs.Description = "All system references to fileObject " + messageSend.FileObject.ToString("X") + " were closed.";
+                        fileIOArgs.Description = "All references to the fileObject " + messageSend.FileObject.ToString("X") + " were closed.";
 
                         //invoke the event delegate
                         OnPostFileClose(this, fileIOArgs);

@@ -711,6 +711,8 @@ namespace EaseFilter.FilterControl
                 else if (registryEventArgs.IsDataModified)
                 {
                     Array.Copy(registryEventArgs.ReturnDataBuffer, messageReply.DataBuffer, registryEventArgs.ReturnDataBuffer.Length);
+                    messageReply.DataBufferLength = (uint)registryEventArgs.ReturnDataBuffer.Length;
+
                     messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION | (uint)FilterAPI.FilterStatus.FILTER_DATA_BUFFER_IS_UPDATED;
                     messageReply.ReturnStatus = (uint)registryEventArgs.ReturnStatus;
                 }

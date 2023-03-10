@@ -328,14 +328,12 @@ namespace RegMon
                     }
                 }
 
+                if (itemList.Count > 0)
+                {
+                    AddItemToList(itemList);
+                    itemList.Clear();
+                }
             }
-
-            if (itemList.Count > 0)
-            {
-                AddItemToList(itemList);
-                itemList.Clear();
-            }
-
 
         }
 

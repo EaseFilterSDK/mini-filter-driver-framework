@@ -811,6 +811,7 @@ namespace EaseFilter.FilterControl
                 else if (filterRuleList.ContainsKey(messageSend.FilterRuleId))
                 {
                     Filter registerFilter = filterRuleList[messageSend.FilterRuleId];
+
                     if (replyDataPtr.ToInt64() == 0)
                     {
                         registerFilter.SendNotification(messageSend);
