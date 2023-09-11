@@ -55,19 +55,10 @@ Return Value
 
 --*/
 {
-	WCHAR	computerId[26];
-	ULONG	bufferLength = sizeof(computerId);
+	ULONG computerId = GetComputerId();
 
-	if( GetUniqueComputerId((BYTE*)computerId,&bufferLength) )
-	{
-		wprintf(L"\nComputerId:%ws\n\n\n",computerId );
-	}
-	else
-	{
-		PrintLastErrorMessage( L"GetUniqueComputerId failed.");
-		printf( "\n\n" );
-	}
-
+	wprintf(L"\nComputerId:%d\n\n\n",computerId );
+	
 	printf( "\nUsage:		EaseFltCPPDemo  [command] <FilterFolder> <IoRegistration> <AccessFlag>\n" );
 	printf( "\nCommands:\n" );
 	printf( "		i ----- Install Driver\n" );

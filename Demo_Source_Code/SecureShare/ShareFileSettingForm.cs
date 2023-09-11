@@ -80,20 +80,7 @@ namespace  SecureShare
             GlobalConfig.ShareFolderWhiteList = textBox_ShareFolderWhiteList.Text;
             GlobalConfig.ShareFolderBlackList = textBox_ShareFolderBlackList.Text;
 
-            if (radioButton_Local.Checked)
-            {
-                GlobalConfig.StoreSharedFileMetaDataInServer = false;
-            }
-            else
-            {
-                GlobalConfig.StoreSharedFileMetaDataInServer = true;
-                if (GlobalConfig.AccountName.Trim().Length == 0)
-                {
-                    string accountName = "testaccount." + Environment.MachineName + "." + Guid.NewGuid().ToString();
-                    GlobalConfig.AccountName = accountName;
-                }
-            }
-
+            GlobalConfig.StoreSharedFileMetaDataInServer = false;
             GlobalConfig.DRInfoFolder = textBox_DRFolder.Text;
 
             if (!Directory.Exists(GlobalConfig.ShareFolder))

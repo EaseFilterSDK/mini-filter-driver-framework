@@ -12,7 +12,7 @@ namespace FileMonitorConsole
             string lastError = string.Empty;
             //Purchase a license key with the link: http://www.easefilter.com/Order.htm
             //Email us to request a trial key: info@easefilter.com //free email is not accepted.
-            string licenseKey = "******************************************";
+            string licenseKey = "D7979-C51A0-9F523-C186E-C3EC0-5F39C";
             
             FilterAPI.FilterType filterType = FilterAPI.FilterType.MONITOR_FILTER;
             int serviceThreads = 5;
@@ -20,9 +20,6 @@ namespace FileMonitorConsole
 
             try
             {
-                //copy the right Dlls to the current folder.
-                Utils.CopyOSPlatformDependentFiles(ref lastError);
-
                 if (!filterControl.StartFilter(filterType, serviceThreads, connectionTimeOut, licenseKey, ref lastError))
                 {
                     Console.WriteLine("Start Filter Service failed with error:" + lastError);

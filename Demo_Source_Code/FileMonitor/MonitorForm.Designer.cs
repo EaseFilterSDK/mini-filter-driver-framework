@@ -218,8 +218,8 @@ namespace FileMonitor
             this.toolStripButton_Help.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton_Help.Image")));
             this.toolStripButton_Help.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton_Help.Name = "toolStripButton_Help";
-            this.toolStripButton_Help.Size = new System.Drawing.Size(129, 22);
-            this.toolStripButton_Help.Text = "Programming Help";
+            this.toolStripButton_Help.Size = new System.Drawing.Size(52, 22);
+            this.toolStripButton_Help.Text = "Help";
             this.toolStripButton_Help.Click += new System.EventHandler(this.toolStripButton_Help_Click);
             // 
             // listView_Info

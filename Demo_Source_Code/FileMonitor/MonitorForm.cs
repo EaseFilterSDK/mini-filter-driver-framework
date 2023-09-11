@@ -36,10 +36,7 @@ namespace FileMonitor
 
     public partial class MonitorForm : Form
     {
-        //Purchase a license key with the link: http://www.easefilter.com/Order.htm
-        //Email us to request a trial key: info@easefilter.com //free email is not accepted.
-        string licenseKey = "******************************************";
-        
+                        
         MonitorEventHandler monitorEventHandler = null;
         FilterControl filterControl = new FilterControl();
 
@@ -56,7 +53,7 @@ namespace FileMonitor
 
                 StartPosition = FormStartPosition.CenterScreen;
 
-                DisplayVersion();
+                this.Text += GlobalConfig.GetVersionInfo();
 
                 this.Load += new EventHandler(Form1_Load);
 
@@ -74,22 +71,7 @@ namespace FileMonitor
             //to improve the listview performance
             SendMessage(listView_Info.Handle, LVM_SETTEXTBKCOLOR, IntPtr.Zero, unchecked((IntPtr)(int)0xFFFFFF));
         }
-
-        private void DisplayVersion()
-        {
-            string version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
-            try
-            {
-                string filterDllPath = Path.Combine(GlobalConfig.AssemblyPath, "FilterAPI.Dll");
-                version = FileVersionInfo.GetVersionInfo(filterDllPath).ProductVersion;
-            }
-            catch (Exception ex)
-            {
-                EventManager.WriteMessage(43, "LoadFilterAPI Dll", EventLevel.Error, "FilterAPI.dll can't be found." + ex.Message);
-            }
-
-            this.Text += "    Version:  " + version;
-        }
+      
 
         ~MonitorForm()
         {
@@ -167,7 +149,11 @@ namespace FileMonitor
         {
             try
             {
-                string lastError = string.Empty;
+                //Purchase a license key with the link: http://www.easefilter.com/Order.htm
+                //Email us to request a trial key: info@easefilter.com //free email is not accepted.        
+                string licenseKey = GlobalConfig.LicenseKey;
+
+                string lastError = string.Empty;                
 
                 bool ret = filterControl.StartFilter(FilterAPI.FilterType.MONITOR_FILTER, GlobalConfig.FilterConnectionThreads, GlobalConfig.ConnectionTimeOut, licenseKey, ref lastError);
                 if (!ret)
@@ -251,14 +237,14 @@ namespace FileMonitor
         {
             toolStripButton_Stop_Click(null, null);
             MonitorUnitTest monitorDemo = new MonitorUnitTest();
-            monitorDemo.licenseKey = licenseKey;
+            monitorDemo.licenseKey = GlobalConfig.LicenseKey;
 
             monitorDemo.ShowDialog();
         }
 
         private void toolStripButton_Help_Click(object sender, EventArgs e)
         {
-            System.Diagnostics.Process.Start("http://www.easefilter.com/programming.htm");
+            System.Diagnostics.Process.Start("https://blog.easefilter.com/file-monitor-demo-step-by-step/");
         }
 
     }

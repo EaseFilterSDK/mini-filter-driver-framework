@@ -2087,6 +2087,12 @@ namespace EaseFilter.FilterControl
             ref uint ivSize,
             byte[] ivBuffer);
 
+        /// <summary>
+        /// Get the computerId 
+        /// </summary>
+        /// <returns></returns>
+        [DllImport("FilterAPI.dll", SetLastError = true)]
+        public static extern uint GetComputerId();
    
 
         public static string GetLastErrorMessage()

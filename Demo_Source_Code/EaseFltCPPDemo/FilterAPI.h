@@ -13,7 +13,7 @@
 
 //Purchase a license key with the link: http://www.EaseFilter.com/Order.htm
 //Email us to request a trial key: info@EaseFilter.com //free email is not accepted.
-#define	registerKey "**************************************************"
+#define	registerKey "***************************************"
 
 #define MESSAGE_SEND_VERIFICATION_NUMBER	0xFF000001
 #define	INET_ADDR_STR_LEN					22
@@ -1588,6 +1588,50 @@ BOOL
 AddUserRightsToFilterRule(WCHAR* filterMask,  WCHAR* userName, ULONG accessFlags);
 
 /// <summary>
+/// Get sha256 hash of the file, you need to allocate the 32 bytes array to get the sha256 hash.
+/// hashBytesLength is the input byte array length, and the outpou lenght of the hash.
+/// </summary>
+extern "C" __declspec(dllexport) 
+BOOL
+Sha256HashFile(
+	LPCTSTR					sourceFileName,
+	BYTE*					hashBytes,
+	ULONG*					hashBytesLength);
+
+/// <summary>
+/// Add the access rights to the process which has the same sha256 hash as the setting.
+/// </summary>
+/// <param name="filterMask">The filter rule file filter mask.</param>
+/// <param name="imageSha256">the sha256 hash of the executable binary file.</param>
+/// <param name="hashLength">the length of the sha256 hash, by default is 32.</param>
+/// <param name="accessFlags">the access flags for the setting process.</param>
+/// <returns>return true if it is succeeded.</returns>
+extern "C" __declspec(dllexport) 
+BOOL 
+AddSha256ProcessAccessRightsToFilterRule(
+	WCHAR* filterMask, 
+	PUCHAR imageSha256,
+	ULONG hashLength, 
+	ULONG accessFlags);
+
+/// <summary>
+/// Add the access rights of the process which was signed with the code certificate
+/// to the filter rule.
+/// </summary>
+/// <param name="filterMask">The filter rule file filter mask.</param>
+/// <param name="imageSha256">the sha256 hash of the executable binary file.</param>
+/// <param name="hashLength">the length of the sha256 hash, by default is 32.</param>
+/// <param name="accessFlags">the access flags for the setting process.</param>
+/// <returns>return true if it is succeeded.</returns>
+extern "C" __declspec(dllexport) 
+BOOL 
+AddSignedProcessAccessRightsToFilterRule(
+	WCHAR* filterMask, 
+	WCHAR* certificateName,
+	ULONG lengthOfCertificate, 
+	ULONG accessFlags);
+
+/// <summary>
 /// Add the boolean config setting to a filter rule.
 /// Reference BooleanConfig settings
 /// </summary>
@@ -1804,10 +1848,8 @@ AESEncryptDecryptBuffer(
 	ULONG					ivLength);
 
 extern "C" __declspec(dllexport) 
-BOOL
-GetUniqueComputerId(
-	BYTE*					buffer,
-	PULONG					bufferLength  );
+ULONG
+GetComputerId();
 
 extern "C" __declspec(dllexport) 
 BOOL

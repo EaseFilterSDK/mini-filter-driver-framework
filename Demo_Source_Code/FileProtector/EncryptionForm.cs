@@ -76,7 +76,7 @@ namespace FileProtector
                 }
                 else
                 {
-                    FilterAPI.AESEncryptFileToFile(fileName, targetFileName, (uint)key.Length, key, (uint)iv.Length, iv, true);
+                    retVal = FilterAPI.AESEncryptFileToFile(fileName, targetFileName, (uint)key.Length, key, (uint)iv.Length, iv, true);
                     //retVal = FilterAPI.AESEncryptFileToFileWithTag(fileName, targetFileName, (uint)key.Length, key, (uint)iv.Length, iv, (uint)iv.Length, iv);
                 }
             }

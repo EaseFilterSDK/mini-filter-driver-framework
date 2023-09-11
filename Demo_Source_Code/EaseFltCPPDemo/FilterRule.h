@@ -372,7 +372,7 @@ public:
 		return true;
 	}
 
-	void AddProcessRightsToProcessId(ULONG _processId, ULONG accessFlag)
+	void AddAccessRightsToProcessId(ULONG _processId, ULONG accessFlag)
 	{
 		ProcessIdAccessRightList.insert(std::pair<ULONG, ULONG >(_processId, accessFlag));
 		return;

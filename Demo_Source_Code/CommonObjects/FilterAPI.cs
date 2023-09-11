@@ -166,6 +166,11 @@ namespace EaseFilter.FilterControl
             /// </summary>
             ENABLE_WRITE_WITH_ZERO_DATA_AND_SEND_DATA = 0x00002000,
             /// <summary>
+            /// if it is true, the portable massive storage won't be treated as USB.
+            //	this is for the volume control flag for BLOCK_USB_READ,BLOCK_USB_WRITE
+            /// </summary>
+            DISABLE_REMOVABLE_MEDIA_AS_USB = 0x00004000,
+            /// <summary>
             /// if it is true, it will block the encrypted file to be renamed to different folder.
             /// </summary>
             DISABLE_RENAME_ENCRYPTED_FILE = 0x00008000,
@@ -265,6 +270,10 @@ namespace EaseFilter.FilterControl
             /// send the event when the write to USB was blocked.
             /// </summary>
             FILTER_SEND_DENIED_USB_WRITE_EVENT = 0x00010016,
+            /// <summary>
+            /// send process information before it was terminiated.
+            /// </summary>
+            FILTER_SEND_PRE_TERMINATE_PROCESS_INFO = 0x00010017,
 
         }
 
@@ -485,9 +494,9 @@ namespace EaseFilter.FilterControl
         }
 
         /// <summary>
-        /// The events which happened between the file opens and file closes, it will be fired after the file handle was closed.
+        /// The file changed events for monitor filter, it will be fired after the file handle was closed.
         /// </summary>
-        public enum MonitorFileEvents:uint
+        public enum FileChangedEvents:uint
         {
             /// <summary>
             /// Fires this event when the new file was created after the file handle closed
@@ -516,7 +525,7 @@ namespace EaseFilter.FilterControl
             /// <summary>
             /// Fires this event when the file's data was read after the file handle closed
             /// </summary>
-            NotifyFileWasRead = 0x00000800,          
+            NotifyFileWasRead = 0x00000800,
         }
 
         /// <summary>
@@ -1187,7 +1196,7 @@ namespace EaseFilter.FilterControl
         [MarshalAs(UnmanagedType.LPWStr)]string reparseFileFilterMask);
 
         /// <summary>
-        /// only manage the IO of the filter rule for the processes in the included process list 
+        ///only manage the file IO for the processes in the included process list
         /// </summary>
         /// <param name="filterMask">the file filter mask of the filter rule</param>
         /// <param name="processName">the include process name filter mask, process name format:notepad.exe</param>
@@ -1253,14 +1262,14 @@ namespace EaseFilter.FilterControl
         [MarshalAs(UnmanagedType.LPWStr)]string userName);
 
         /// <summary>
-        /// Register the file I/O event types for the filter rule, get the notification when the I/O was triggered
+        /// Register the file changed events for the filter rule, get the notification when the I/O was triggered
         /// after the file handle was closed.
         /// </summary>
         /// <param name="filterMask">the file filter mask of the filter rule</param>
         /// <param name="eventType">the I/O event types,reference the FileEventType enumeration.</param>
         /// <returns></returns>
         [DllImport("FilterAPI.dll", SetLastError = true)]
-        public static extern bool RegisterEventTypeToFilterRule(
+        public static extern bool RegisterFileChangedEventsToFilterRule(
         [MarshalAs(UnmanagedType.LPWStr)]string filterMask,
         uint eventType);
 
@@ -1271,7 +1280,7 @@ namespace EaseFilter.FilterControl
         /// <param name="registerIO">the specific I/Os you want to monitor</param>
         /// <returns></returns>
         [DllImport("FilterAPI.dll", SetLastError = true)]
-        public static extern bool RegisterMoinitorIOToFilterRule(
+        public static extern bool RegisterMonitorIOToFilterRule(
         [MarshalAs(UnmanagedType.LPWStr)]string filterMask,
         ulong registerIO);
 
@@ -1304,7 +1313,7 @@ namespace EaseFilter.FilterControl
         uint filterByCreateOptions);
 
         /// <summary>
-        /// Set the access rigths to the specific process
+        /// Set the access rights to the specific process
         /// </summary>
         /// <param name="filterMask">the file filter mask of the filter rule</param>
         /// <param name="processName">the process name will be added the access rights, e.g. notepad.exe or c:\windows\*.exe</param>
@@ -1326,6 +1335,52 @@ namespace EaseFilter.FilterControl
         public static extern bool RemoveProcessRightsFromFilterRule(
         [MarshalAs(UnmanagedType.LPWStr)]string filterMask,
         [MarshalAs(UnmanagedType.LPWStr)]string processName);
+
+        /// <summary>
+        /// Get sha256 hash of the file, you need to allocate the 32 bytes array to get the sha256 hash.
+        /// hashBytesLength is the input byte array length, and the outpou lenght of the hash.
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <param name="hashBytes"></param>
+        /// <param name="hashBytesLength"></param>
+        /// <returns></returns>
+        [DllImport("FilterAPI.dll", SetLastError = true)]
+        public static extern bool Sha256HashFile(
+            [MarshalAs(UnmanagedType.LPWStr)]string fileName,
+            byte[] hashBytes,
+            ref uint hashBytesLength);
+
+        /// <summary>
+        /// Add the access rights of the process with the sha256 hash to the filter rule.
+        /// allows you to set the access rights to your trusted process.
+        /// </summary>
+        /// <param name="filterMask">The filter rule file filter mask.</param>
+        /// <param name="imageSha256">the sha256 hash of the executable binary file.</param>
+        /// <param name="hashLength">the length of the sha256 hash, by default is 32.</param>
+        /// <param name="accessFlags">the access flags for the setting process.</param>
+        /// <returns>return true if it is succeeded.</returns>
+        [DllImport("FilterAPI.dll", SetLastError = true)]
+        public static extern bool AddSha256ProcessAccessRightsToFilterRule(
+        [MarshalAs(UnmanagedType.LPWStr)]string filterMask,
+        byte[] imageSha256,
+        uint hashLength,
+        uint accessFlags);
+
+        /// <summary>
+        /// Add the access rights of the process which was signed with the certificate to the filter rule.
+        /// allows you to set the access rights to your trusted process.
+        /// </summary>
+        /// <param name="filterMask">The filter rule file filter mask.</param>
+        /// <param name="certificateName">the subject name of the code certificate to sign the process.</param>
+        /// <param name="lengthOfCertificate">the length of the certificate name</param>
+        /// <param name="accessFlags">the access flags for the setting process.</param>
+        /// <returns>return true if it is succeeded.</returns>
+        [DllImport("FilterAPI.dll", SetLastError = true)]
+        public static extern bool AddSignedProcessAccessRightsToFilterRule(
+        [MarshalAs(UnmanagedType.LPWStr)]string filterMask,
+        [MarshalAs(UnmanagedType.LPWStr)]string certificateName,
+        uint lengthOfCertificate,
+        uint accessFlags);
 
         /// <summary>
         /// Set the access control flags to process with the processId
@@ -1617,6 +1672,11 @@ namespace EaseFilter.FilterControl
             uint processNameLength,
             [MarshalAs(UnmanagedType.LPWStr)]string processName);
 
+        [DllImport("FilterAPI.dll", SetLastError = true)]
+        public static extern bool RemoveRegistryFilterRuleByRegKeyName(
+            uint registryKeyNameLength,
+            [MarshalAs(UnmanagedType.LPWStr)]string registryKeyName);
+
         //---------------Registry access control APIs END-----------------------------------
 
        //---------------Process filter APIs-----------------------------------------------
@@ -1630,9 +1690,14 @@ namespace EaseFilter.FilterControl
             /// </summary>
             DENY_NEW_PROCESS_CREATION = 0x00000001,
             /// <summary>
-            /// send the denied the process creation event when new process was blocked if the flag is on
+            /// if this flag is enabled, it will send the notification when the new process creation was blocked.	
             /// </summary>
             ENABLE_SEND_PROCESS_DENIED_EVENT = 0x00000002,
+            /// <summary>
+            /// send the callback reqeust before the process is going to be terminated.
+            /// you can block the process termination in the callback function.
+            /// </summary>
+            PROCESS_PRE_TERMINATION_REQUEST = 0x00000004,
             /// <summary>
             /// Get a notification when a new process is being created.
             /// </summary>
@@ -1783,6 +1848,21 @@ namespace EaseFilter.FilterControl
         [DllImport("FilterAPI.dll", SetLastError = true)]
         public static extern bool RemoveBlockSaveAsProcessId(uint processId);
 
+        /// <summary>
+        /// Get the subject name of the certificate which the process was signed 
+        /// </summary>
+        /// <param name="processName">the signed process name</param>
+        /// <param name="certificateSubjectName">the subject name of the certificate</param>
+        /// <param name="sizeOfCertificateSubjectName">the size of the subject name</param>
+        /// <param name="signedTime">the signed time</param>
+        /// <returns>return true if the process was signed correctly, or return false.</returns>
+        [DllImport("FilterAPI.dll", SetLastError = true)]
+        public static extern bool GetSignerInfo(
+        [MarshalAs(UnmanagedType.LPWStr)]string processName,
+        [MarshalAs(UnmanagedType.LPWStr)]string certificateSubjectName,
+        ref uint sizeOfCertificateSubjectName,
+        ref long signedTime);
+
         //---------------Process filter APIs   END-----------------------------------------------
 
         [DllImport("FilterAPI.dll", SetLastError = true)]
@@ -1821,12 +1901,6 @@ namespace EaseFilter.FilterControl
         [DllImport("kernel32", SetLastError = true)]
         public static extern uint GetCurrentProcessId();
 
-        [DllImport("Kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
-        public static extern int QueryDosDeviceW(
-        [MarshalAs(UnmanagedType.LPWStr)]string dosName,
-        [MarshalAs(UnmanagedType.LPWStr)]ref string volumeName,
-        int volumeNameLength);
-
         [DllImport("FilterAPI.dll", SetLastError = true)]
         public static extern bool CreateFileAPI(
              [MarshalAs(UnmanagedType.LPWStr)]string fileName,
@@ -1834,39 +1908,8 @@ namespace EaseFilter.FilterControl
               uint dwShareMode,
               uint dwCreationDisposition,
               uint dwFlagsAndAttributes,
-              ref IntPtr fileHandle);
-
-        [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-        private static extern bool SetFileTime(SafeFileHandle hFile,
-                                        [In] ref long lpCreationTime,
-                                        [In] ref long lpLastAccessTime,
-                                        [In] ref long lpLastWriteTime);
-
-        [DllImport("FilterAPI.dll", SetLastError = true)]
-        private static extern bool CreateStubFile(
-             [MarshalAs(UnmanagedType.LPWStr)]string fileName,
-             long fileSize,  //if it is 0 and the file exist,it will use the current file size.
-              uint fileAttributes, //if it is 0 and the file exist, it will use the current file attributes.
-              uint tagDataLength, //if it is 0, then no reparsepoint will be created.
-              IntPtr tagData,
-              bool overwriteIfExist,
-              ref IntPtr fileHandle);
-
-        [DllImport("FilterAPI.dll", SetLastError = true)]
-        public static extern bool OpenStubFile(
-            [MarshalAs(UnmanagedType.LPWStr)]string fileName,
-             FileAccess access,
-             FileShare share,
-             ref IntPtr fileHandle);
-
-        [DllImport("FilterAPI.dll", SetLastError = true)]
-        private static extern bool QueryAllocatedRanges(
-                IntPtr fileHandle,
-                long queryOffset,
-                long queryLength,
-                IntPtr allocatedRangesBuffer,
-                int allocatedRangesBufferSize,
-                ref uint returnedLength);
+              ref IntPtr fileHandle);    
+   
 
         [DllImport("FilterAPI.dll", SetLastError = true)]
         public static extern bool AESEncryptDecryptBuffer(
@@ -1917,28 +1960,20 @@ namespace EaseFilter.FilterControl
              uint ivLength,
              byte[] iv,
              uint tagDataLength,
-             byte[] tagData);   
+             byte[] tagData);
 
-        [DllImport("FilterAPI.dll", SetLastError = true)]
-        public static extern bool AESDecryptFile(
-             [MarshalAs(UnmanagedType.LPWStr)]string fileName,
-             uint keyLength,
-             byte[] encryptionKey,
-             uint ivLength,
-             byte[] iv);
-
-         /// <summary>
+        /// <summary>
         /// Encrypt the source file to the dest file, if addIVTag is true then the iv data will be embedded to the encrypted file,
         /// or there are no meta data attached.
-         /// </summary>
-         /// <param name="sourceFileName"></param>
-         /// <param name="destFileName"></param>
-         /// <param name="keyLength"></param>
-         /// <param name="encryptionKey"></param>
-         /// <param name="ivLength"></param>
-         /// <param name="iv"></param>
-         /// <param name="addIVTag"></param>
-         /// <returns></returns>
+        /// </summary>
+        /// <param name="sourceFileName"></param>
+        /// <param name="destFileName"></param>
+        /// <param name="keyLength"></param>
+        /// <param name="encryptionKey"></param>
+        /// <param name="ivLength"></param>
+        /// <param name="iv"></param>
+        /// <param name="addIVTag"></param>
+        /// <returns></returns>
         [DllImport("FilterAPI.dll", SetLastError = true)]
         public static extern bool AESEncryptFileToFile(
              [MarshalAs(UnmanagedType.LPWStr)]string sourceFileName,
@@ -1973,6 +2008,15 @@ namespace EaseFilter.FilterControl
              byte[] tagData);   
 
         [DllImport("FilterAPI.dll", SetLastError = true)]
+        public static extern bool AESDecryptFile(
+             [MarshalAs(UnmanagedType.LPWStr)]string fileName,
+             uint keyLength,
+             byte[] encryptionKey,
+             uint ivLength,
+             byte[] iv);
+         
+
+        [DllImport("FilterAPI.dll", SetLastError = true)]
         public static extern bool AESDecryptFileToFile(
              [MarshalAs(UnmanagedType.LPWStr)]string sourceFileName,
              [MarshalAs(UnmanagedType.LPWStr)]string destFileName,
@@ -1982,31 +2026,32 @@ namespace EaseFilter.FilterControl
              byte[] iv);
 
         /// <summary>
-        /// Set the AES Data to the encrypted file
+        /// Decrypt the encrypted file at offset and length to a buffer array.
         /// </summary>
-        /// <param name="fileName">the encrypted file name</param>
-        /// <param name="headerSize">the size of the AESData</param>
-        /// <param name="header">the AESData structure</param>
+        /// <param name="encryptedFileName">The encrypted file name</param>
+        /// <param name="keyLength">the number of the bytes of the encryption key</param>
+        /// <param name="encryptionKey">the encryption key byte array</param>
+        /// <param name="ivLength">the lenght of the iv key, set it to 0 if the AES header was embedded.</param>
+        /// <param name="iv">the iv key, set it to null if the AES header was embedded.</param>
+        /// <param name="offset">the offset which the decryption will start</param>
+        /// <param name="bytesToDecrypt">the number of bytes to decrypt</param>
+        /// <param name="decryptedBuffer">the decrypted buffer array to receive the decrypted data, 
+        /// the buffer size must be greater or equal than the bytesToDecrypt</param>
+        /// <param name="bytesDecrypted">the length of the return decrytped buffer</param>
         /// <returns></returns>
-         [DllImport("FilterAPI.dll", SetLastError = true)]
-         public static extern bool AddAESHeader(
-             [MarshalAs(UnmanagedType.LPWStr)]string fileName,
-             uint headerSize,
-             byte[] header);
+        [DllImport("FilterAPI.dll", SetLastError = true)]
+        public static extern bool AESDecryptBytes(
+             [MarshalAs(UnmanagedType.LPWStr)]string encryptedFileName,
+             uint keyLength,
+             byte[] encryptionKey,
+             uint ivLength,
+             byte[] iv,
+             long offset,
+             int bytesToDecrypt,
+             byte[] decryptedBuffer,
+             ref int bytesDecrypted);
 
-          /// <summary>
-        /// get the AES Data from the encrypted file
-        /// </summary>
-        /// <param name="fileName">the encrypted file name</param>
-        /// <param name="headerSize">the size of the AESData</param>
-        /// <param name="header">the byte array to store the AESData structure</param>
-        /// <returns></returns>
-         [DllImport("FilterAPI.dll", SetLastError = true)]
-         public static extern bool GetAESHeader(
-             [MarshalAs(UnmanagedType.LPWStr)]string fileName,
-             ref uint headerSize, 
-             byte[] header);
-
+  
         /// <summary>
         /// Set the AESFlags and AccessFlags in the AES header
         /// </summary>
@@ -2042,36 +2087,13 @@ namespace EaseFilter.FilterControl
             ref uint ivSize,
             byte[] ivBuffer);
 
-
-        [DllImport("FilterAPI.dll", SetLastError = true)]
-        public static extern bool AddReparseTagData(
-            [MarshalAs(UnmanagedType.LPWStr)]string fileName,
-            int tagDataLength,
-            IntPtr tagData);
-
-        [DllImport("FilterAPI.dll", SetLastError = true)]
-        public static extern bool RemoveTagData(
-              IntPtr fileHandle);
-
-        [DllImport("FilterAPI.dll", SetLastError = true)]
-        public static extern bool AddTagData(
-              IntPtr fileHandle,
-              int tagDataLength,
-              IntPtr tagData);      
-
         /// <summary>
-        /// Return true if it succeeds to check the iv tag, if ivLenght > 0, it returns ivTag, or there are no ivTag data.
+        /// Get the computerId 
         /// </summary>
-        /// <param name="fileName"></param>
-        /// <param name="ivLength"></param>
-        /// <param name="iv"></param>
         /// <returns></returns>
         [DllImport("FilterAPI.dll", SetLastError = true)]
-        private static extern bool GetIVTag(
-             [MarshalAs(UnmanagedType.LPWStr)]string fileName,
-             ref uint ivLength,
-             IntPtr iv,
-             ref uint aesFlag);        
+        public static extern uint GetComputerId();
+   
 
         public static string GetLastErrorMessage()
         {

@@ -35,10 +35,7 @@ namespace FileProtector
 {
     public partial class ProtectorForm : Form
     {
-        //Purchase a license key with the link: http://www.easefilter.com/Order.htm
-        //Email us to request a trial key: info@easefilter.com //free email is not accepted.
-        string licenseKey = "*****************************************************";
-
+       
         MonitorEventHandler monitorEventHandler = null;
         ControlEventHandler controlEventHandler = null;
         EncryptEventHandler encryptEventHandler = new EncryptEventHandler();
@@ -48,7 +45,7 @@ namespace FileProtector
         public ProtectorForm()
         {
             GlobalConfig.filterType = FilterAPI.FilterType.MONITOR_FILTER | FilterAPI.FilterType.CONTROL_FILTER | FilterAPI.FilterType.ENCRYPTION_FILTER
-                | FilterAPI.FilterType.PROCESS_FILTER ;
+               | FilterAPI.FilterType.PROCESS_FILTER | FilterAPI.FilterType.REGISTRY_FILTER;
 
             InitializeComponent();
             monitorEventHandler = new MonitorEventHandler(listView_Info);
@@ -56,7 +53,7 @@ namespace FileProtector
 
             StartPosition = FormStartPosition.CenterScreen;
 
-            DisplayVersion();
+            this.Text += GlobalConfig.GetVersionInfo();
 
             this.Load += new EventHandler(Form1_Load);
 
@@ -71,23 +68,7 @@ namespace FileProtector
         ~ProtectorForm()
         {
             GlobalConfig.Stop();
-        }
-
-        private void DisplayVersion()
-        {
-            string version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
-            try
-            {
-                string filterDllPath = Path.Combine(GlobalConfig.AssemblyPath, "FilterAPI.Dll");
-                version = FileVersionInfo.GetVersionInfo(filterDllPath).ProductVersion;
-            }
-            catch (Exception ex)
-            {
-                EventManager.WriteMessage(43, "LoadFilterAPI Dll", EventLevel.Error, "FilterAPI.dll can't be found." + ex.Message);
-            }
-
-            this.Text += "    Version:  " + version;
-        }
+        }      
 
         void SendSettingsToFilter()
         {
@@ -216,6 +197,10 @@ namespace FileProtector
         {
             try
             {
+                //Purchase a license key with the link: http://www.easefilter.com/Order.htm
+                //Email us to request a trial key: info@easefilter.com //free email is not accepted.        
+                string licenseKey = GlobalConfig.LicenseKey;
+
                 string lastError = string.Empty;
 
                 bool ret = filterControl.StartFilter(GlobalConfig.filterType, GlobalConfig.FilterConnectionThreads, GlobalConfig.ConnectionTimeOut, licenseKey, ref lastError);
@@ -353,7 +338,7 @@ namespace FileProtector
         {
             toolStripButton_Stop_Click(null, null);
             FileProtectorUnitTest fileProtectorUnitTest = new FileProtectorUnitTest();
-            FileProtectorUnitTest.licenseKey = licenseKey;
+            FileProtectorUnitTest.licenseKey = GlobalConfig.LicenseKey;
 
             fileProtectorUnitTest.ShowDialog();
         }
@@ -361,7 +346,7 @@ namespace FileProtector
      
         private void toolStripButton_Help_Click(object sender, EventArgs e)
         {
-            System.Diagnostics.Process.Start("http://www.easefilter.com/programming.htm");
+            System.Diagnostics.Process.Start("https://blog.easefilter.com/file-protector-demo-step-by-step/");
         }
        
     }

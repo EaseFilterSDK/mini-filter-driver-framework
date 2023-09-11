@@ -74,6 +74,7 @@ namespace FileProtector
             this.toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.encryptFileWithToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.decryptFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.decryptFileWithOffsetToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.getEncryptedFileIVTagToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
@@ -88,7 +89,6 @@ namespace FileProtector
             this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
             this.toolStripButton_UnitTest = new System.Windows.Forms.ToolStripButton();
             this.toolStripButton_Help = new System.Windows.Forms.ToolStripButton();
-            this.decryptFileWithOffsetToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.listView_Info = new FileProtector.FastListView();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
@@ -137,6 +137,13 @@ namespace FileProtector
             this.decryptFileToolStripMenuItem.Size = new System.Drawing.Size(223, 22);
             this.decryptFileToolStripMenuItem.Text = "Decrypt file with API";
             this.decryptFileToolStripMenuItem.Click += new System.EventHandler(this.decryptFileToolStripMenuItem_Click);
+            // 
+            // decryptFileWithOffsetToolStripMenuItem
+            // 
+            this.decryptFileWithOffsetToolStripMenuItem.Name = "decryptFileWithOffsetToolStripMenuItem";
+            this.decryptFileWithOffsetToolStripMenuItem.Size = new System.Drawing.Size(223, 22);
+            this.decryptFileWithOffsetToolStripMenuItem.Text = "Decrypt file with offset";
+            this.decryptFileWithOffsetToolStripMenuItem.Click += new System.EventHandler(this.decryptFileWithOffsetToolStripMenuItem_Click);
             // 
             // getEncryptedFileIVTagToolStripMenuItem
             // 
@@ -251,16 +258,9 @@ namespace FileProtector
             this.toolStripButton_Help.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton_Help.Image")));
             this.toolStripButton_Help.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton_Help.Name = "toolStripButton_Help";
-            this.toolStripButton_Help.Size = new System.Drawing.Size(129, 22);
-            this.toolStripButton_Help.Text = "Programming Help";
+            this.toolStripButton_Help.Size = new System.Drawing.Size(52, 22);
+            this.toolStripButton_Help.Text = "Help";
             this.toolStripButton_Help.Click += new System.EventHandler(this.toolStripButton_Help_Click);
-            // 
-            // decryptFileWithOffsetToolStripMenuItem
-            // 
-            this.decryptFileWithOffsetToolStripMenuItem.Name = "decryptFileWithOffsetToolStripMenuItem";
-            this.decryptFileWithOffsetToolStripMenuItem.Size = new System.Drawing.Size(223, 22);
-            this.decryptFileWithOffsetToolStripMenuItem.Text = "Decrypt file with offset";
-            this.decryptFileWithOffsetToolStripMenuItem.Click += new System.EventHandler(this.decryptFileWithOffsetToolStripMenuItem_Click);
             // 
             // listView_Info
             // 

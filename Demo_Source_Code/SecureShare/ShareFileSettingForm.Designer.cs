@@ -30,7 +30,6 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ShareFileSettingForm));
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.radioButton_Local = new System.Windows.Forms.RadioButton();
             this.label7 = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
             this.textBox_ShareFolderBlackList = new System.Windows.Forms.TextBox();
@@ -46,7 +45,6 @@
             this.label11 = new System.Windows.Forms.Label();
             this.textBox_ProtectFolderWhiteList = new System.Windows.Forms.TextBox();
             this.label10 = new System.Windows.Forms.Label();
-            this.label5 = new System.Windows.Forms.Label();
             this.button_BrowseDRFolder = new System.Windows.Forms.Button();
             this.textBox_DRFolder = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
@@ -54,12 +52,13 @@
             this.textBox_ShareFolder = new System.Windows.Forms.TextBox();
             this.button_help = new System.Windows.Forms.Button();
             this.button_ApplySetting = new System.Windows.Forms.Button();
+            this.label3 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBox1
             // 
-            this.groupBox1.Controls.Add(this.radioButton_Local);
+            this.groupBox1.Controls.Add(this.label3);
             this.groupBox1.Controls.Add(this.label7);
             this.groupBox1.Controls.Add(this.label9);
             this.groupBox1.Controls.Add(this.textBox_ShareFolderBlackList);
@@ -75,7 +74,6 @@
             this.groupBox1.Controls.Add(this.label11);
             this.groupBox1.Controls.Add(this.textBox_ProtectFolderWhiteList);
             this.groupBox1.Controls.Add(this.label10);
-            this.groupBox1.Controls.Add(this.label5);
             this.groupBox1.Controls.Add(this.button_BrowseDRFolder);
             this.groupBox1.Controls.Add(this.textBox_DRFolder);
             this.groupBox1.Controls.Add(this.label1);
@@ -83,21 +81,9 @@
             this.groupBox1.Controls.Add(this.textBox_ShareFolder);
             this.groupBox1.Location = new System.Drawing.Point(12, 21);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(628, 443);
+            this.groupBox1.Size = new System.Drawing.Size(628, 382);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
-            // 
-            // radioButton_Local
-            // 
-            this.radioButton_Local.AutoSize = true;
-            this.radioButton_Local.Checked = true;
-            this.radioButton_Local.Location = new System.Drawing.Point(22, 305);
-            this.radioButton_Local.Name = "radioButton_Local";
-            this.radioButton_Local.Size = new System.Drawing.Size(154, 17);
-            this.radioButton_Local.TabIndex = 75;
-            this.radioButton_Local.TabStop = true;
-            this.radioButton_Local.Text = "Permisson file folder in local";
-            this.radioButton_Local.UseVisualStyleBackColor = true;
             // 
             // label7
             // 
@@ -230,15 +216,6 @@
             this.label10.TabIndex = 60;
             this.label10.Text = "Authorized process names";
             // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(212, 324);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(230, 13);
-            this.label5.TabIndex = 8;
-            this.label5.Text = "The folder to store the encrypted file meta data ";
-            // 
             // button_BrowseDRFolder
             // 
             this.button_BrowseDRFolder.Location = new System.Drawing.Point(537, 301);
@@ -284,7 +261,7 @@
             // button_help
             // 
             this.button_help.Image = ((System.Drawing.Image)(resources.GetObject("button_help.Image")));
-            this.button_help.Location = new System.Drawing.Point(34, 475);
+            this.button_help.Location = new System.Drawing.Point(34, 413);
             this.button_help.Name = "button_help";
             this.button_help.Size = new System.Drawing.Size(36, 33);
             this.button_help.TabIndex = 77;
@@ -294,7 +271,7 @@
             // button_ApplySetting
             // 
             this.button_ApplySetting.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.button_ApplySetting.Location = new System.Drawing.Point(505, 485);
+            this.button_ApplySetting.Location = new System.Drawing.Point(505, 423);
             this.button_ApplySetting.Name = "button_ApplySetting";
             this.button_ApplySetting.Size = new System.Drawing.Size(75, 23);
             this.button_ApplySetting.TabIndex = 2;
@@ -302,11 +279,20 @@
             this.button_ApplySetting.UseVisualStyleBackColor = true;
             this.button_ApplySetting.Click += new System.EventHandler(this.button_ApplySettings_Click);
             // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(19, 301);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(133, 13);
+            this.label3.TabIndex = 75;
+            this.label3.Text = "The DRM data store folder";
+            // 
             // ShareFileSettingForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(664, 535);
+            this.ClientSize = new System.Drawing.Size(664, 474);
             this.Controls.Add(this.button_help);
             this.Controls.Add(this.button_ApplySetting);
             this.Controls.Add(this.groupBox1);
@@ -330,7 +316,6 @@
         private System.Windows.Forms.Button button_ApplySetting;
         private System.Windows.Forms.Button button_BrowseDRFolder;
         private System.Windows.Forms.TextBox textBox_DRFolder;
-        private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.TextBox textBox_ShareFolderBlackList;
@@ -346,7 +331,7 @@
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.TextBox textBox_ProtectFolderWhiteList;
         private System.Windows.Forms.Label label10;
-        private System.Windows.Forms.RadioButton radioButton_Local;
         private System.Windows.Forms.Button button_help;
+        private System.Windows.Forms.Label label3;
     }
 }

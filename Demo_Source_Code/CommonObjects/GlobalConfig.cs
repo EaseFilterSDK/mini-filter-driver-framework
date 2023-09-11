@@ -37,7 +37,7 @@ namespace EaseFilter.CommonObjects
 {
 
     public class GlobalConfig
-    {
+    {      
         static Assembly assembly = System.Reflection.Assembly.GetEntryAssembly();
         public static string AssemblyPath = Path.GetDirectoryName(assembly.Location);
         public static string AssemblyName = assembly.Location;
@@ -68,6 +68,8 @@ namespace EaseFilter.CommonObjects
 
         static string accountName = "";
         static string masterPassword = "testpassword";
+        static string licenseKey = "";
+        static long expireTime = 0;
 
         static int maximumFilterMessages = 1000;
         static string filterMessageLogName = "filterMessage.log";
@@ -114,11 +116,12 @@ namespace EaseFilter.CommonObjects
 
         static GlobalConfig()
         {
-            string lastError = string.Empty;
-            Utils.CopyOSPlatformDependentFiles(ref lastError);
+            string lastError = string.Empty;           
 
            stopWatch.Start();
-           Load();           
+           Load();
+
+           Utils.CopyOSPlatformDependentFiles(ref lastError);
            
         }
 
@@ -173,6 +176,9 @@ namespace EaseFilter.CommonObjects
 
                 volumeControlFlag = ConfigSetting.Get("volumeControlFlag", volumeControlFlag);
 
+                licenseKey = ConfigSetting.Get("licenseKey", licenseKey);
+                expireTime = ConfigSetting.Get("expireTime", expireTime);
+
             }
             catch (Exception ex)
             {
@@ -180,8 +186,30 @@ namespace EaseFilter.CommonObjects
             }
         }
 
+        public static string GetVersionInfo()
+        {
+            string version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
+
+            try
+            {
+                string filterDllPath = Path.Combine(GlobalConfig.AssemblyPath, "FilterAPI.Dll");
+                version = FileVersionInfo.GetVersionInfo(filterDllPath).ProductVersion;
+
+                string computerId = FilterAPI.GetComputerId().ToString();
+
+                version ="  Version:" + version +  "   ComputerId:" + computerId;
+            }
+            catch (Exception ex)
+            {
+                EventManager.WriteMessage(43, "LoadFilterAPI Dll", EventLevel.Error, "FilterAPI.dll can't be found." + ex.Message);
+            }
+
+            return version;
+        }
+
         public static void Stop()
         {
+           
             isRunning = false;
             stopEvent.Set();
             EventManager.Stop();           
@@ -210,7 +238,7 @@ namespace EaseFilter.CommonObjects
             get { return configFileName; }
             set {  configFileName = value; }
         }
-
+      
          /// <summary>
         /// The volume control flag setting
         /// </summary>
@@ -499,6 +527,35 @@ namespace EaseFilter.CommonObjects
             }
         }
 
+         public static string LicenseKey
+        {
+            get
+            {
+                //Purchase a license key with the link: http://www.easefilter.com/Order.htm
+                //Email us to request a trial key: info@easefilter.com //free email is not accepted.
+                string licenseKey = "";
+
+                if (string.IsNullOrEmpty(licenseKey))
+                {
+                    System.Windows.Forms.MessageBox.Show("You don't have a valid license key, Please contact support@easefilter.com to get a trial key.", "LicenseKey", 
+                        System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
+                }
+			  
+              
+				return licenseKey;
+            }
+            
+         }
+
+         public static long ExpireTime
+         {
+             get { return expireTime; }
+             set
+             {
+                 expireTime = value;
+                 ConfigSetting.Set("expireTime", value.ToString());
+             }
+         }
 
         public static string MasterPassword
         {

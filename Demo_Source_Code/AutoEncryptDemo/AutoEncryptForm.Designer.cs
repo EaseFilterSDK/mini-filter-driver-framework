@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AutoEncryptForm));
             this.button_Start = new System.Windows.Forms.Button();
             this.textBox_EncrptFolder = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
@@ -42,8 +43,10 @@
             this.textBox_PassPhrase = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
             this.textBox_AuthorizedUsersForEncryptFolder = new System.Windows.Forms.TextBox();
-            this.checkBox_EnableUniqueEncryptionKey = new System.Windows.Forms.CheckBox();
+            this.checkBox_EnableEncryptionWithDRM = new System.Windows.Forms.CheckBox();
             this.button_EncryptFolder = new System.Windows.Forms.Button();
+            this.button_DRMSetting = new System.Windows.Forms.Button();
+            this.button_Help = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // button_Start
@@ -83,7 +86,7 @@
             // 
             // button_Stop
             // 
-            this.button_Stop.Location = new System.Drawing.Point(267, 363);
+            this.button_Stop.Location = new System.Drawing.Point(158, 363);
             this.button_Stop.Name = "button_Stop";
             this.button_Stop.Size = new System.Drawing.Size(87, 23);
             this.button_Stop.TabIndex = 5;
@@ -114,16 +117,16 @@
             this.textBox_DecryptFolder.Name = "textBox_DecryptFolder";
             this.textBox_DecryptFolder.Size = new System.Drawing.Size(320, 20);
             this.textBox_DecryptFolder.TabIndex = 8;
-            this.textBox_DecryptFolder.Text = "c:\\RawEncryptedFiles";
+            this.textBox_DecryptFolder.Text = "c:\\EncryptedFolder";
             // 
             // label2
             // 
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(28, 260);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(323, 13);
+            this.label2.Size = new System.Drawing.Size(335, 13);
             this.label2.TabIndex = 10;
-            this.label2.Text = "Auto DeEncryption Folder In Computer B ( copy encrypted file here)";
+            this.label2.Text = "Encryption Folder In Computer B ( Use Explorer to copy encrypted file)";
             // 
             // label3
             // 
@@ -169,14 +172,13 @@
             // 
             // checkBox_EnableUniqueEncryptionKey
             // 
-            this.checkBox_EnableUniqueEncryptionKey.AutoSize = true;
-            this.checkBox_EnableUniqueEncryptionKey.Location = new System.Drawing.Point(34, 167);
-            this.checkBox_EnableUniqueEncryptionKey.Name = "checkBox_EnableUniqueEncryptionKey";
-            this.checkBox_EnableUniqueEncryptionKey.Size = new System.Drawing.Size(308, 17);
-            this.checkBox_EnableUniqueEncryptionKey.TabIndex = 16;
-            this.checkBox_EnableUniqueEncryptionKey.Text = "Authorize encryption or decryption in application with control";
-            this.checkBox_EnableUniqueEncryptionKey.UseVisualStyleBackColor = true;
-            this.checkBox_EnableUniqueEncryptionKey.CheckedChanged += new System.EventHandler(this.checkBox_EnableUniqueEncryptionKey_CheckedChanged);
+            this.checkBox_EnableEncryptionWithDRM.AutoSize = true;
+            this.checkBox_EnableEncryptionWithDRM.Location = new System.Drawing.Point(34, 167);
+            this.checkBox_EnableEncryptionWithDRM.Name = "checkBox_EnableUniqueEncryptionKey";
+            this.checkBox_EnableEncryptionWithDRM.Size = new System.Drawing.Size(15, 14);
+            this.checkBox_EnableEncryptionWithDRM.TabIndex = 16;
+            this.checkBox_EnableEncryptionWithDRM.UseVisualStyleBackColor = true;
+            this.checkBox_EnableEncryptionWithDRM.CheckedChanged += new System.EventHandler(this.checkBox_EnableEncryptionWithDRM_CheckedChanged);
             // 
             // button_EncryptFolder
             // 
@@ -188,13 +190,37 @@
             this.button_EncryptFolder.UseVisualStyleBackColor = true;
             this.button_EncryptFolder.Click += new System.EventHandler(this.button_EncryptFolder_Click);
             // 
+            // button_DRMSetting
+            // 
+            this.button_DRMSetting.Enabled = false;
+            this.button_DRMSetting.Location = new System.Drawing.Point(55, 162);
+            this.button_DRMSetting.Name = "button_DRMSetting";
+            this.button_DRMSetting.Size = new System.Drawing.Size(299, 23);
+            this.button_DRMSetting.TabIndex = 18;
+            this.button_DRMSetting.Text = "Enable DRM For Encrypted File Settings";
+            this.button_DRMSetting.TextAlign = System.Drawing.ContentAlignment.TopLeft;
+            this.button_DRMSetting.UseVisualStyleBackColor = true;
+            this.button_DRMSetting.Click += new System.EventHandler(this.button_DRMSetting_Click);
+            // 
+            // button_Help
+            // 
+            this.button_Help.Location = new System.Drawing.Point(268, 363);
+            this.button_Help.Name = "button_Help";
+            this.button_Help.Size = new System.Drawing.Size(86, 23);
+            this.button_Help.TabIndex = 19;
+            this.button_Help.Text = "Help";
+            this.button_Help.UseVisualStyleBackColor = true;
+            this.button_Help.Click += new System.EventHandler(this.button_Help_Click);
+            // 
             // AutoEncryptForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(402, 410);
+            this.Controls.Add(this.button_Help);
+            this.Controls.Add(this.button_DRMSetting);
             this.Controls.Add(this.button_EncryptFolder);
-            this.Controls.Add(this.checkBox_EnableUniqueEncryptionKey);
+            this.Controls.Add(this.checkBox_EnableEncryptionWithDRM);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.textBox_AuthorizedUsersForEncryptFolder);
             this.Controls.Add(this.label5);
@@ -209,8 +235,9 @@
             this.Controls.Add(this.label1);
             this.Controls.Add(this.textBox_EncrptFolder);
             this.Controls.Add(this.button_Start);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "AutoEncryptForm";
-            this.Text = "Auto Encryption Demo";
+            this.Text = "Auto File DRM Encryption Tool";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.AutoEncryptForm_FormClosing);
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -233,8 +260,10 @@
         private System.Windows.Forms.TextBox textBox_PassPhrase;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.TextBox textBox_AuthorizedUsersForEncryptFolder;
-        private System.Windows.Forms.CheckBox checkBox_EnableUniqueEncryptionKey;
+        private System.Windows.Forms.CheckBox checkBox_EnableEncryptionWithDRM;
         private System.Windows.Forms.Button button_EncryptFolder;
+        private System.Windows.Forms.Button button_DRMSetting;
+        private System.Windows.Forms.Button button_Help;
     }
 }
 

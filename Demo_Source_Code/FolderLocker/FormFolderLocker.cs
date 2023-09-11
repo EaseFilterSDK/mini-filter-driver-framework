@@ -35,9 +35,7 @@ namespace EaseFilter.FolderLocker
 {
     public partial class Form_FolderLocker:  Form
     {
-        //Purchase a license key with the link: http://www.easefilter.com/Order.htm
-        //Email us to request a trial key: info@easefilter.com //free email is not accepted.
-        string licenseKey = "******************************************";
+      
         FilterControl.FilterControl filterControl = new FilterControl.FilterControl();
 
         void SendSettingsToFilter()
@@ -79,17 +77,7 @@ namespace EaseFilter.FolderLocker
             InitAccessRightsListView();
 
             DisplayVersion();
-
-            string lastError = string.Empty;
-            bool ret = filterControl.StartFilter(GlobalConfig.filterType, GlobalConfig.FilterConnectionThreads, GlobalConfig.ConnectionTimeOut, licenseKey, ref lastError);
-            if (!ret)
-            {
-                MessageBoxHelper.PrepToCenterMessageBoxOnForm(this);
-                MessageBox.Show("Start filter failed." + lastError);
-                return;
-            }
-
-            SendSettingsToFilter();
+          
         }
 
         private void DisplayVersion()
@@ -329,6 +317,36 @@ namespace EaseFilter.FolderLocker
         private void listView_LockFolders_SelectedIndexChanged(object sender, EventArgs e)
         {
             InitAccessRightsListView();
+        }
+
+        private void toolStripButton_StartFilter_Click(object sender, EventArgs e)
+        {
+            //Purchase a license key with the link: http://www.easefilter.com/Order.htm
+            //Email us to request a trial key: info@easefilter.com //free email is not accepted.        
+            string licenseKey = GlobalConfig.LicenseKey;
+
+            string lastError = string.Empty;
+            bool ret = filterControl.StartFilter(GlobalConfig.filterType, GlobalConfig.FilterConnectionThreads, GlobalConfig.ConnectionTimeOut, licenseKey, ref lastError);
+            if (!ret)
+            {
+                MessageBoxHelper.PrepToCenterMessageBoxOnForm(this);
+                MessageBox.Show("Start filter failed." + lastError);
+                return;
+            }
+
+            SendSettingsToFilter();
+
+            toolStripButton_StartFilter.Enabled = false;
+            toolStripButton_Stop.Enabled = true;
+        }
+
+        private void toolStripButton_Stop_Click(object sender, EventArgs e)
+        {
+            GlobalConfig.Stop();
+            filterControl.StopFilter();
+
+            toolStripButton_StartFilter.Enabled = true;
+            toolStripButton_Stop.Enabled = false;
         }
 
        

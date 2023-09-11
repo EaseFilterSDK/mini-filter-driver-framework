@@ -204,6 +204,15 @@ namespace EaseFilter.FolderLocker
                 checkBox_AllowDelete.Checked = false;
             }
 
+            if ((accessFlags & (uint)FilterAPI.AccessFlag.ALLOW_SET_SECURITY_ACCESS) > 0)
+            {
+                checkBox_AllowSetSecurity.Checked = true;
+            }
+            else
+            {
+                checkBox_AllowSetSecurity.Checked = false;
+            }
+
             if ((accessFlags & (uint)FilterAPI.AccessFlag.ALLOW_FILE_RENAME) > 0)
             {
                 checkBox_AllowRename.Checked = true;

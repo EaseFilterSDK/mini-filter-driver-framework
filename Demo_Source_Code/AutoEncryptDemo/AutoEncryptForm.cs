@@ -30,7 +30,7 @@ namespace AutoEncryptDemo
 
         private void button_Start_Click(object sender, EventArgs e)
         {
-        
+
             string encryptFolder = textBox_EncrptFolder.Text.Trim();
             string authorizedProcessesForEncryptFolder = textBox_AuthorizedProcessesForEncryptFolder.Text;
             string authorizedUsersForEncryptFolder = textBox_AuthorizedUsersForEncryptFolder.Text;
@@ -41,10 +41,10 @@ namespace AutoEncryptDemo
             string passPhrase = textBox_PassPhrase.Text.Trim();
 
             //Purchase a license key with the link: http://www.easefilter.com/Order.htm
-            //Email us to request a trial key: info@easefilter.com //free email is not accepted.
-            string licenseKey = "******************************************";
+            //Email us to request a trial key: info@easefilter.com //free email is not accepted.        
+            string licenseKey = GlobalConfig.LicenseKey;
 
-            GlobalConfig.filterType = FilterAPI.FilterType.CONTROL_FILTER | FilterAPI.FilterType.ENCRYPTION_FILTER| FilterAPI.FilterType.PROCESS_FILTER;
+            GlobalConfig.filterType = FilterAPI.FilterType.CONTROL_FILTER | FilterAPI.FilterType.ENCRYPTION_FILTER | FilterAPI.FilterType.PROCESS_FILTER;
 
             bool ret = false;
 
@@ -63,16 +63,22 @@ namespace AutoEncryptDemo
                 filterControl.ClearFilters();
 
                 //setup a file filter rule for folder encryptFolder
-                FileFilter fileFilter = new FileFilter(encryptFolder + "\\*");
-                
+                if(encryptFolder.IndexOf("*") < 0)
+                {
+                    //set the file filter mask
+                    encryptFolder += "\\*";
+                }
+
+                FileFilter fileFilter = new FileFilter(encryptFolder);
+
                 //enable the encryption for the filter rule.
                 fileFilter.EnableEncryption = true;
 
                 //if we enable the encryption key from service, you can authorize the encryption or decryption for every file
                 //in the callback function OnFilterRequestEncryptKey.
-                fileFilter.EnableEncryptionKeyFromService = checkBox_EnableUniqueEncryptionKey.Checked;
+                fileFilter.EnableEncryptionKeyFromService = checkBox_EnableEncryptionWithDRM.Checked;
                 fileFilter.OnFilterRequestEncryptKey += OnFilterRequestEncryptKey;
-                
+
                 //get the 256bits encryption key with the passphrase
                 fileFilter.EncryptionKey = Utils.GetKeyByPassPhrase(passPhrase, 32);
 
@@ -132,14 +138,19 @@ namespace AutoEncryptDemo
 
                 //if we enable the encryption key from service, you can authorize the decryption for every file
                 //in the callback function OnFilterRequestEncryptKey.
-                decryptFileFilter.EnableEncryptionKeyFromService = checkBox_EnableUniqueEncryptionKey.Checked;
+                decryptFileFilter.EnableEncryptionKeyFromService = checkBox_EnableEncryptionWithDRM.Checked;
                 decryptFileFilter.OnFilterRequestEncryptKey += OnFilterRequestEncryptKey;
 
                 //get the 256bits encryption key with the passphrase
                 decryptFileFilter.EncryptionKey = Utils.GetKeyByPassPhrase(passPhrase, 32);
 
-                //don't encrypt the new created file in the folder.
-                decryptFileFilter.EnableEncryptNewFile = false;
+                //encrypt the new created file or modification in the folder.
+                decryptFileFilter.EnableEncryptNewFile = true;
+
+                //this is important if your process will copy the encrypted file to decryption folder, you need to exclude them.
+                //Exclude Windows explorer.exe process, copy the encrypted file decryption folder with explorer will be excluded,
+                //so the encrypted file won't be encrypted again.
+                decryptFileFilter.ExcludeProcessNameList.Add("explorer.exe");
 
                 //disable the decyrption right, read the raw encrypted data for all except the authorized processes or users.
                 decryptFileFilter.EnableReadEncryptedData = false;
@@ -190,38 +201,62 @@ namespace AutoEncryptDemo
         {
             e.ReturnStatus = NtStatus.Status.Success;
 
-            if (e.IsNewCreatedFile)
+            try
             {
-                //if you want to block the new file creation, you can return accessdenied status.
-                //e.ReturnStatus = NtStatus.Status.AccessDenied;
+                if (e.IsNewCreatedFile)
+                {
+                    //for the new created file, you can add your custom tag data to the header of the encyrpted file.
+                    e.EncryptionTag = DRMServer.GetDRMTagData(e.FileName);
 
-                //if you want to the file being created without encryption, return below status.
-                //e.ReturnStatus = NtStatus.Status.FileIsNoEncrypted;
+                    if (null == e.EncryptionTag)
+                    {
+                        e.ReturnStatus = NtStatus.Status.AccessDenied;
+                    }
 
-                //for the new created file, you can add your custom tag data to the header of the encyrpted file.
-                //here we just add the file name as the tag data.
-                e.EncryptionTag = UnicodeEncoding.Unicode.GetBytes(e.FileName);
+                    //if you want to block the new file creation, you can return access denied status.
+                    //e.ReturnStatus = NtStatus.Status.AccessDenied;
+
+                    //if you want to the file being created without encryption, return below status.
+                    //e.ReturnStatus = NtStatus.Status.FileIsNoEncrypted;  
+
+                   EventManager.WriteMessage(200, "EncryptNewFile", EventLevel.Information, "embedDRMToFile = " 
+                        + DRMServer.embedDRMToFile.ToString() + " for file:" + e.FileName + ",return status:" + e.ReturnStatus.ToString());
+                }
+                else
+                {
+                    //this is the encrytped file open request, request the encryption key and iv.
+                    //here is the tag data if you set custom tag data when the new created file requested the key.
+                    byte[] tagData = e.EncryptionTag;
+
+
+                    if (!DRMServer.GetEncryptedFileAccessPermission(e))
+                    {
+                        e.ReturnStatus = NtStatus.Status.FileIsEncrypted;
+                    }
+
+                    //if you want to block encrypted file being opened, you can return accessdenied status.
+                    //e.ReturnStatus = NtStatus.Status.AccessDenied;
+
+                    //if you want to return the raws encrypted data for this encrypted file, return below status.
+                    //e.ReturnStatus = NtStatus.Status.FileIsEncrypted;
+
+                    EventManager.WriteMessage(250, "OpenEncryptedFile", EventLevel.Information, 
+                        "OpenEncryptedFile:" + e.FileName + ",userName:" + e.UserName + ",processName:" + e.ProcessName + ",return status:" + e.ReturnStatus.ToString());
+
+                }
+
+                //here is the encryption key for the encrypted file, you can set it with your own key.
+                e.EncryptionKey = Utils.GetKeyByPassPhrase(GlobalConfig.MasterPassword, 32);
+
+                //if you want to use your own iv for the encrypted file, set the value here, 
+                //or don't set the iv here, then the unique auto generated iv will be assigned to the file.
+                //e.IV = Utils.GetIVByPassPhrase(GlobalConfig.MasterPassword);
             }
-            else
+            catch( Exception ex)
             {
-                //this is the encrytped file open request, request the encryption key and iv.
-
-                //if you want to block encrypted file being opened, you can return accessdenied status.
-                //e.ReturnStatus = NtStatus.Status.AccessDenied;
-
-                //if you want to return the raws encrypted data for this encrypted file, return below status.
-                //e.ReturnStatus = NtStatus.Status.FileIsEncrypted;
-
-                //here is the tag data if you set custom tag data when the new created file requested the key.
-                byte[] tagData = e.EncryptionTag;
+                EventManager.WriteMessage(500, "OnFilterRequestEncryptKey", EventLevel.Error, "OnFilterRequestEncryptKey:" + e.FileName + ",got exeception:" + ex.Message);
+                e.ReturnStatus = NtStatus.Status.AccessDenied;
             }
-
-            //here is the encryption key for the encrypted file, you can set it with your own key.
-            e.EncryptionKey = Utils.GetKeyByPassPhrase(GlobalConfig.MasterPassword, 32);
-           
-           //if you want to use your own iv for the encrypted file, set the value here, 
-           //or don't set the iv here, then the unique auto generated iv will be assigned to the file.
-           //e.IV = Utils.GetIVByPassPhrase(GlobalConfig.MasterPassword);
 
         }
 
@@ -238,7 +273,7 @@ namespace AutoEncryptDemo
             MessageBoxHelper.PrepToCenterMessageBoxOnForm(this);
             MessageBox.Show("Stop filter service succeeded.", "StopFilter", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-            return ;
+            return;
         }
 
         private void AutoEncryptForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -247,20 +282,26 @@ namespace AutoEncryptDemo
             filterControl.StopFilter();
         }
 
-        private void checkBox_EnableUniqueEncryptionKey_CheckedChanged(object sender, EventArgs e)
+        private void checkBox_EnableEncryptionWithDRM_CheckedChanged(object sender, EventArgs e)
         {
-            if (checkBox_EnableUniqueEncryptionKey.Checked)
+            if (checkBox_EnableEncryptionWithDRM.Checked)
             {
-                //if get encryption key from service, then only the callback function will authorize the encryption or decryption.
+                //To enable DRM encryption, the filter driver will always go to service callback function to get the encryption key,
+                //so you can setup your own unique encryption key for every new encrypted file.
+
                 textBox_PassPhrase.Enabled = false;
                 textBox_AuthorizedProcessesForEncryptFolder.Enabled = false;
                 textBox_AuthorizedUsersForEncryptFolder.Enabled = false;
+                textBox_AuthorizedProcessesForDecryptFolder.Enabled = false;
+                button_DRMSetting.Enabled = true;
             }
             else
             {
+                button_DRMSetting.Enabled = false;
                 textBox_PassPhrase.Enabled = true;
                 textBox_AuthorizedProcessesForEncryptFolder.Enabled = true;
                 textBox_AuthorizedUsersForEncryptFolder.Enabled = true;
+                textBox_AuthorizedProcessesForDecryptFolder.Enabled = true;
             }
         }
 
@@ -273,6 +314,15 @@ namespace AutoEncryptDemo
             }
         }
 
-       
+        private void button_DRMSetting_Click(object sender, EventArgs e)
+        {
+            DRMForm dRMForm = new DRMForm();
+            dRMForm.ShowDialog();
+        }
+
+        private void button_Help_Click(object sender, EventArgs e)
+        {
+            System.Diagnostics.Process.Start("https://www.easefilter.com/kb/auto-file-drm-encryption-tool.htm");
+        }
     }
 }

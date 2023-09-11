@@ -13,21 +13,9 @@ namespace ProcessMon
         [STAThread]
         static void Main()
         {
-            bool mutexCreated = false;
-            System.Threading.Mutex mutex = new System.Threading.Mutex(true, "FilterControl", out mutexCreated);
-            if (!mutexCreated)
-            {
-                mutex.Close();
-                //only one FilterControl can be loaded to communicate with the filter driver.
-                Console.WriteLine("A FilterControl was loaded by another process, start application failed.");
-                return;
-            }                
-      
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new ProcessMon());
-
-            mutex.Close();
         }
     }
 }

@@ -33,12 +33,14 @@
             this.imageList1 = new System.Windows.Forms.ImageList(this.components);
             this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
             this.tabPage_Help = new System.Windows.Forms.TabPage();
-            this.label_VersionInfo = new System.Windows.Forms.Label();
-            this.linkLabel_Report = new System.Windows.Forms.LinkLabel();
             this.linkLabel_SDK = new System.Windows.Forms.LinkLabel();
+            this.linkLabel_Report = new System.Windows.Forms.LinkLabel();
+            this.label_VersionInfo = new System.Windows.Forms.Label();
             this.tabPage_Folder = new System.Windows.Forms.TabPage();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-            this.listView_AccessRights = new System.Windows.Forms.ListView();
+            this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+            this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.listView_LockFolders = new System.Windows.Forms.ListView();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripButton_AddFolder = new System.Windows.Forms.ToolStripButton();
@@ -46,18 +48,18 @@
             this.toolStripButton_RemoveFolder = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripButton_ModifyFolder = new System.Windows.Forms.ToolStripButton();
-            this.listView_LockFolders = new System.Windows.Forms.ListView();
-            this.statusStrip1 = new System.Windows.Forms.StatusStrip();
-            this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.listView_AccessRights = new System.Windows.Forms.ListView();
             this.tabControl1 = new System.Windows.Forms.TabControl();
+            this.toolStripButton_StartFilter = new System.Windows.Forms.ToolStripButton();
+            this.toolStripButton_Stop = new System.Windows.Forms.ToolStripButton();
             this.tabPage_Help.SuspendLayout();
             this.tabPage_Folder.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
-            this.toolStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
+            this.toolStrip1.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -82,14 +84,17 @@
             this.tabPage_Help.UseVisualStyleBackColor = true;
             this.tabPage_Help.Visible = false;
             // 
-            // label_VersionInfo
+            // linkLabel_SDK
             // 
-            this.label_VersionInfo.AutoSize = true;
-            this.label_VersionInfo.Location = new System.Drawing.Point(18, 20);
-            this.label_VersionInfo.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.label_VersionInfo.Name = "label_VersionInfo";
-            this.label_VersionInfo.Size = new System.Drawing.Size(0, 13);
-            this.label_VersionInfo.TabIndex = 9;
+            this.linkLabel_SDK.AutoSize = true;
+            this.linkLabel_SDK.Location = new System.Drawing.Point(18, 63);
+            this.linkLabel_SDK.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.linkLabel_SDK.Name = "linkLabel_SDK";
+            this.linkLabel_SDK.Size = new System.Drawing.Size(192, 13);
+            this.linkLabel_SDK.TabIndex = 10;
+            this.linkLabel_SDK.TabStop = true;
+            this.linkLabel_SDK.Text = "Online help for EaseFilter Folder Locker";
+            this.linkLabel_SDK.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel_SDK_LinkClicked);
             // 
             // linkLabel_Report
             // 
@@ -103,17 +108,14 @@
             this.linkLabel_Report.Text = "Report a bug or make a suggestion";
             this.linkLabel_Report.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel_Report_LinkClicked);
             // 
-            // linkLabel_SDK
+            // label_VersionInfo
             // 
-            this.linkLabel_SDK.AutoSize = true;
-            this.linkLabel_SDK.Location = new System.Drawing.Point(18, 63);
-            this.linkLabel_SDK.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.linkLabel_SDK.Name = "linkLabel_SDK";
-            this.linkLabel_SDK.Size = new System.Drawing.Size(192, 13);
-            this.linkLabel_SDK.TabIndex = 10;
-            this.linkLabel_SDK.TabStop = true;
-            this.linkLabel_SDK.Text = "Online help for EaseFilter Folder Locker";
-            this.linkLabel_SDK.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel_SDK_LinkClicked);
+            this.label_VersionInfo.AutoSize = true;
+            this.label_VersionInfo.Location = new System.Drawing.Point(18, 20);
+            this.label_VersionInfo.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label_VersionInfo.Name = "label_VersionInfo";
+            this.label_VersionInfo.Size = new System.Drawing.Size(0, 13);
+            this.label_VersionInfo.TabIndex = 9;
             // 
             // tabPage_Folder
             // 
@@ -122,7 +124,7 @@
             this.tabPage_Folder.Margin = new System.Windows.Forms.Padding(2);
             this.tabPage_Folder.Name = "tabPage_Folder";
             this.tabPage_Folder.Padding = new System.Windows.Forms.Padding(2);
-            this.tabPage_Folder.Size = new System.Drawing.Size(609, 311);
+            this.tabPage_Folder.Size = new System.Drawing.Size(699, 311);
             this.tabPage_Folder.TabIndex = 0;
             this.tabPage_Folder.Text = "Locked Folders";
             this.tabPage_Folder.UseVisualStyleBackColor = true;
@@ -144,31 +146,52 @@
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.listView_AccessRights);
-            this.splitContainer1.Size = new System.Drawing.Size(605, 307);
+            this.splitContainer1.Size = new System.Drawing.Size(695, 307);
             this.splitContainer1.SplitterDistance = 198;
             this.splitContainer1.SplitterWidth = 3;
             this.splitContainer1.TabIndex = 0;
             // 
-            // listView_AccessRights
+            // statusStrip1
             // 
-            this.listView_AccessRights.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.listView_AccessRights.FullRowSelect = true;
-            this.listView_AccessRights.HideSelection = false;
-            this.listView_AccessRights.HoverSelection = true;
-            this.listView_AccessRights.Location = new System.Drawing.Point(0, 0);
-            this.listView_AccessRights.Margin = new System.Windows.Forms.Padding(2);
-            this.listView_AccessRights.MultiSelect = false;
-            this.listView_AccessRights.Name = "listView_AccessRights";
-            this.listView_AccessRights.ShowItemToolTips = true;
-            this.listView_AccessRights.Size = new System.Drawing.Size(605, 106);
-            this.listView_AccessRights.TabIndex = 3;
-            this.listView_AccessRights.UseCompatibleStateImageBehavior = false;
-            this.listView_AccessRights.View = System.Windows.Forms.View.Details;
+            this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripStatusLabel1});
+            this.statusStrip1.Location = new System.Drawing.Point(0, 176);
+            this.statusStrip1.Name = "statusStrip1";
+            this.statusStrip1.Padding = new System.Windows.Forms.Padding(1, 0, 10, 0);
+            this.statusStrip1.Size = new System.Drawing.Size(695, 22);
+            this.statusStrip1.TabIndex = 4;
+            this.statusStrip1.Text = "statusStrip1";
+            // 
+            // toolStripStatusLabel1
+            // 
+            this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
+            this.toolStripStatusLabel1.Size = new System.Drawing.Size(417, 17);
+            this.toolStripStatusLabel1.Text = "Below is the access rights to the specific users and processes in selected folder" +
+    "";
+            // 
+            // listView_LockFolders
+            // 
+            this.listView_LockFolders.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.listView_LockFolders.FullRowSelect = true;
+            this.listView_LockFolders.HideSelection = false;
+            this.listView_LockFolders.HoverSelection = true;
+            this.listView_LockFolders.Location = new System.Drawing.Point(0, 25);
+            this.listView_LockFolders.Margin = new System.Windows.Forms.Padding(2);
+            this.listView_LockFolders.MultiSelect = false;
+            this.listView_LockFolders.Name = "listView_LockFolders";
+            this.listView_LockFolders.ShowItemToolTips = true;
+            this.listView_LockFolders.Size = new System.Drawing.Size(695, 173);
+            this.listView_LockFolders.TabIndex = 3;
+            this.listView_LockFolders.UseCompatibleStateImageBehavior = false;
+            this.listView_LockFolders.View = System.Windows.Forms.View.Details;
+            this.listView_LockFolders.SelectedIndexChanged += new System.EventHandler(this.listView_LockFolders_SelectedIndexChanged);
             // 
             // toolStrip1
             // 
             this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripSeparator1,
+            this.toolStripButton_StartFilter,
+            this.toolStripButton_Stop,
             this.toolStripButton_AddFolder,
             this.toolStripSeparator5,
             this.toolStripButton_RemoveFolder,
@@ -176,7 +199,7 @@
             this.toolStripButton_ModifyFolder});
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(605, 25);
+            this.toolStrip1.Size = new System.Drawing.Size(695, 25);
             this.toolStrip1.TabIndex = 2;
             this.toolStrip1.Text = "toolStrip1";
             // 
@@ -218,44 +241,25 @@
             this.toolStripButton_ModifyFolder.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton_ModifyFolder.Image")));
             this.toolStripButton_ModifyFolder.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton_ModifyFolder.Name = "toolStripButton_ModifyFolder";
-            this.toolStripButton_ModifyFolder.Size = new System.Drawing.Size(146, 22);
+            this.toolStripButton_ModifyFolder.Size = new System.Drawing.Size(146, 20);
             this.toolStripButton_ModifyFolder.Text = "Modify Folder Settings";
             this.toolStripButton_ModifyFolder.Click += new System.EventHandler(this.toolStripButton_ModifyFolder_Click);
             // 
-            // listView_LockFolders
+            // listView_AccessRights
             // 
-            this.listView_LockFolders.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.listView_LockFolders.FullRowSelect = true;
-            this.listView_LockFolders.HideSelection = false;
-            this.listView_LockFolders.HoverSelection = true;
-            this.listView_LockFolders.Location = new System.Drawing.Point(0, 25);
-            this.listView_LockFolders.Margin = new System.Windows.Forms.Padding(2);
-            this.listView_LockFolders.MultiSelect = false;
-            this.listView_LockFolders.Name = "listView_LockFolders";
-            this.listView_LockFolders.ShowItemToolTips = true;
-            this.listView_LockFolders.Size = new System.Drawing.Size(605, 173);
-            this.listView_LockFolders.TabIndex = 3;
-            this.listView_LockFolders.UseCompatibleStateImageBehavior = false;
-            this.listView_LockFolders.View = System.Windows.Forms.View.Details;
-            this.listView_LockFolders.SelectedIndexChanged += new System.EventHandler(this.listView_LockFolders_SelectedIndexChanged);
-            // 
-            // statusStrip1
-            // 
-            this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripStatusLabel1});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 176);
-            this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Padding = new System.Windows.Forms.Padding(1, 0, 10, 0);
-            this.statusStrip1.Size = new System.Drawing.Size(605, 22);
-            this.statusStrip1.TabIndex = 4;
-            this.statusStrip1.Text = "statusStrip1";
-            // 
-            // toolStripStatusLabel1
-            // 
-            this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
-            this.toolStripStatusLabel1.Size = new System.Drawing.Size(417, 17);
-            this.toolStripStatusLabel1.Text = "Below is the access rights to the specific users and processes in selected folder" +
-    "";
+            this.listView_AccessRights.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.listView_AccessRights.FullRowSelect = true;
+            this.listView_AccessRights.HideSelection = false;
+            this.listView_AccessRights.HoverSelection = true;
+            this.listView_AccessRights.Location = new System.Drawing.Point(0, 0);
+            this.listView_AccessRights.Margin = new System.Windows.Forms.Padding(2);
+            this.listView_AccessRights.MultiSelect = false;
+            this.listView_AccessRights.Name = "listView_AccessRights";
+            this.listView_AccessRights.ShowItemToolTips = true;
+            this.listView_AccessRights.Size = new System.Drawing.Size(695, 106);
+            this.listView_AccessRights.TabIndex = 3;
+            this.listView_AccessRights.UseCompatibleStateImageBehavior = false;
+            this.listView_AccessRights.View = System.Windows.Forms.View.Details;
             // 
             // tabControl1
             // 
@@ -267,14 +271,32 @@
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.Padding = new System.Drawing.Point(6, 8);
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(617, 347);
+            this.tabControl1.Size = new System.Drawing.Size(707, 347);
             this.tabControl1.TabIndex = 0;
+            // 
+            // toolStripButton_StartFilter
+            // 
+            this.toolStripButton_StartFilter.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton_StartFilter.Image")));
+            this.toolStripButton_StartFilter.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButton_StartFilter.Name = "toolStripButton_StartFilter";
+            this.toolStripButton_StartFilter.Size = new System.Drawing.Size(103, 22);
+            this.toolStripButton_StartFilter.Text = "Start protector";
+            this.toolStripButton_StartFilter.Click += new System.EventHandler(this.toolStripButton_StartFilter_Click);
+            // 
+            // toolStripButton_Stop
+            // 
+            this.toolStripButton_Stop.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton_Stop.Image")));
+            this.toolStripButton_Stop.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButton_Stop.Name = "toolStripButton_Stop";
+            this.toolStripButton_Stop.Size = new System.Drawing.Size(103, 22);
+            this.toolStripButton_Stop.Text = "Stop protector";
+            this.toolStripButton_Stop.Click += new System.EventHandler(this.toolStripButton_Stop_Click);
             // 
             // Form_FolderLocker
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(617, 347);
+            this.ClientSize = new System.Drawing.Size(707, 347);
             this.Controls.Add(this.tabControl1);
             this.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -290,10 +312,10 @@
             this.splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
-            this.toolStrip1.ResumeLayout(false);
-            this.toolStrip1.PerformLayout();
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
+            this.toolStrip1.ResumeLayout(false);
+            this.toolStrip1.PerformLayout();
             this.tabControl1.ResumeLayout(false);
             this.ResumeLayout(false);
 
@@ -321,6 +343,8 @@
         private System.Windows.Forms.ToolStripButton toolStripButton_ModifyFolder;
         private System.Windows.Forms.ListView listView_AccessRights;
         private System.Windows.Forms.TabControl tabControl1;
+        private System.Windows.Forms.ToolStripButton toolStripButton_StartFilter;
+        private System.Windows.Forms.ToolStripButton toolStripButton_Stop;
     }
 }
 

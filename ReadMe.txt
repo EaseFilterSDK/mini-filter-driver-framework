@@ -3,6 +3,7 @@ EaseFilter File System Filter Driver SDK ReadMe
 Known Issues:
 1. The transparent encryption doesn't support the earlier office 97-2003 version real time encryption.
 2. The transparent encryption doesn't support the Database real time encryption.
+3. To install the driver in Windows 7/8/8.1/2008R2/2012/2012R2, the KB3033929 is required.
 
 What can yo do with EaseFilter SDK?
 1. The File Monitor Filter Driver allows you to monitor the file I/O activities, get the notification when the file was changed.

@@ -55,10 +55,7 @@ namespace SecureSandbox
         /// Registry filter rule is the access control of the registry, allow the process to access or change the registry.
         /// </summary>
         RegistryFilterRule selectedRegistryFilterRule = null;
-
-        //Purchase a license key with the link: http://www.easefilter.com/Order.htm
-        //Email us to request a trial key: info@easefilter.com //free email is not accepted.
-        string licenseKey = "******************************************";
+       
 
         EncryptEventHandler encryptEventHandler = new EncryptEventHandler();
         FilterControl filterControl = new FilterControl();    
@@ -121,6 +118,10 @@ namespace SecureSandbox
         {
             try
             {
+                //Purchase a license key with the link: http://www.easefilter.com/Order.htm
+                //Email us to request a trial key: info@easefilter.com //free email is not accepted.        
+                string licenseKey = GlobalConfig.LicenseKey;
+
                 string lastError = string.Empty;
 
                 bool ret = filterControl.StartFilter(GlobalConfig.filterType, GlobalConfig.FilterConnectionThreads, GlobalConfig.ConnectionTimeOut, licenseKey, ref lastError);

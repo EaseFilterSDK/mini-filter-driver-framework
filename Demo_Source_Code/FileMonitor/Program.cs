@@ -20,6 +20,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 
+using EaseFilter.FilterControl;
+
 namespace FileMonitor
 {
     static class Program
@@ -28,24 +30,44 @@ namespace FileMonitor
         /// The main entry point for the application.
         /// </summary>
         [STAThread]
-        static void Main()
+       static void Main(string[] args)
         {
 
-            bool mutexCreated = false;
-            System.Threading.Mutex mutex = new System.Threading.Mutex(true, "FilterControl", out mutexCreated);
-            if (!mutexCreated)
+            if (args.Length > 0)
             {
-                mutex.Close();
-                //only one FilterControl can be loaded to communicate with the filter driver.
-                Console.WriteLine("A FilterControl was loaded by another process, start application failed.");
-                return;
-            }            
+                string command = args[0];
+                switch (command.ToLower())
+                {
+                    case "-installdriver":
+                        {
+                            bool ret = FilterAPI.InstallDriver();
+                            if (!ret)
+                            {
+                                Console.WriteLine("Install driver failed:" + FilterAPI.GetLastErrorMessage());
+                            }
 
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new TrayForm());
+                            break;
+                        }
 
-            mutex.Close();
+                    case "-uninstalldriver":
+                        {
+                            bool ret = FilterAPI.UnInstallDriver();
+                            if (!ret)
+                            {
+                                Console.WriteLine("UnInstall driver failed:" + FilterAPI.GetLastErrorMessage());
+                            }
+
+                            break;
+                        }
+                }
+            }
+            else
+            {
+                Application.EnableVisualStyles();
+                Application.SetCompatibleTextRenderingDefault(false);
+                Application.Run(new MonitorForm());
+            }
+
         }
     }
 }

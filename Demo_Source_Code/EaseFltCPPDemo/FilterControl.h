@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////////////
 //
-//    (C) Copyright 2015 EaseFilter Technologies Inc.
+//    (C) Copyright 2015 EaseFilter
 //    All Rights Reserved
 //
 //    This software is part of a licensed software product and may
@@ -954,13 +954,12 @@ private:
 	static VOID
 	__stdcall
 	DisconnectCallback();
-
-	BOOL
-	SendConfigSettingsToFilter();
+	
 
 public:
 
-
+	BOOL
+	SendConfigSettingsToFilter();
 
 	/// <summary>
 	/// The global boolean config setting

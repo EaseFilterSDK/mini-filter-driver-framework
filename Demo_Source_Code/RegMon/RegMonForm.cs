@@ -34,11 +34,7 @@ using EaseFilter.CommonObjects;
 namespace RegMon
 {
     public partial class RegMonForm : Form
-    {
-        //Purchase a license key with the link: http://www.easefilter.com/Order.htm
-        //Email us to request a trial key: info@easefilter.com //free email is not accepted.
-        string licenseKey = "*********************************************************";
-
+    {        
         RegistryHandler registryHandler = null;
         FilterControl filterControl = new FilterControl();        
 
@@ -180,6 +176,10 @@ namespace RegMon
         {
             try
             {
+                //Purchase a license key with the link: http://www.easefilter.com/Order.htm
+                //Email us to request a trial key: info@easefilter.com //free email is not accepted.        
+                string licenseKey = GlobalConfig.LicenseKey;
+
                 string lastError = string.Empty;
 
                 bool ret = filterControl.StartFilter(GlobalConfig.filterType, GlobalConfig.FilterConnectionThreads, GlobalConfig.ConnectionTimeOut, licenseKey, ref lastError);
@@ -221,7 +221,7 @@ namespace RegMon
         private void toolStripButton_UnitTest_Click(object sender, EventArgs e)
         {
             toolStripButton_Stop_Click(null, null);
-            RegUnitTest regUnitTest = new RegUnitTest(licenseKey );
+            RegUnitTest regUnitTest = new RegUnitTest(GlobalConfig.LicenseKey );
             regUnitTest.ShowDialog();
         }
 

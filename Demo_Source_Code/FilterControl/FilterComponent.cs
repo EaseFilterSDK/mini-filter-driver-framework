@@ -137,7 +137,7 @@ namespace EaseFilter.FilterControl
 
             bool ret = true;
             FilterDelegate filterCallback = new FilterDelegate(FilterRequestHandler);
-            DisconnectDelegate disconnectCallback = new DisconnectDelegate(DisconnectCallback);
+            DisconnectDelegate disconnectCallback = new DisconnectDelegate(DisconnectCallback);           
 
             try
             {
@@ -145,6 +145,9 @@ namespace EaseFilter.FilterControl
                 filterConnectionThreads = _filterConnectionThreads;
                 connectionTimeout = _connectionTimeout;
                 licenseKey = _licenseKey;
+
+                //copy the right binary(EaseFlt.sys,FilterAPI.DLL) to the local executable binary folder.
+                Utils.CopyOSPlatformDependentFiles(ref lastError);
 
                 if (Utils.IsDriverChanged())
                 {
@@ -205,6 +208,7 @@ namespace EaseFilter.FilterControl
                 {
                     lastError = lastError + " Make sure you run this application as administrator.";
                 }
+              
             }
 
             return ret;
