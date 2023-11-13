@@ -330,7 +330,7 @@ namespace EaseFilter.FolderLocker
             if (!ret)
             {
                 MessageBoxHelper.PrepToCenterMessageBoxOnForm(this);
-                MessageBox.Show("Start filter failed." + lastError);
+                MessageBox.Show("Start filter failed." + lastError, "StartFilter", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
@@ -347,6 +347,11 @@ namespace EaseFilter.FolderLocker
 
             toolStripButton_StartFilter.Enabled = true;
             toolStripButton_Stop.Enabled = false;
+        }
+
+        private void toolStripButton_ApplyTrialKey_Click(object sender, EventArgs e)
+        {
+            
         }
 
        

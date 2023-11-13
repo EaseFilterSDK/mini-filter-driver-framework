@@ -211,7 +211,7 @@ namespace  SecureShare
                 if (!ret)
                 {
                     MessageBoxHelper.PrepToCenterMessageBoxOnForm(this);
-                    MessageBox.Show("Start filter failed." + lastError);
+                    MessageBox.Show("Start filter failed." + lastError, "StartFilter", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
 

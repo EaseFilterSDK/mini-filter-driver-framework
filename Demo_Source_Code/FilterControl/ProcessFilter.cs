@@ -172,7 +172,7 @@ namespace EaseFilter.FilterControl
         public ProcessEventArgs(FilterAPI.MessageSendData messageSend)
             : base(messageSend)
         {
-            ImageFileName = messageSend.FileName;
+            FileName = ImageFileName = messageSend.FileName;
 
             if (messageSend.DataBufferLength > 0)
             {

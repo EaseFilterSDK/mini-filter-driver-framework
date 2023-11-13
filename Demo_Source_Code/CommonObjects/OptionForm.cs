@@ -343,7 +343,27 @@ namespace EaseFilter.CommonObjects
                                 lvItem.Checked = true;
                             }
 
-                            listView1.Items.Add(lvItem);
+                            if (i > 0 )
+                            {
+                                for (int k = 0; k < i; k++)
+                                {
+                                    if ((int)listView1.Items[k].Tag > processlist[i].Id)
+                                    {
+                                        listView1.Items.Insert(k, lvItem);
+                                        break;
+                                    }
+                                }
+
+                                if (listView1.Items.Count == i )
+                                {
+                                    listView1.Items.Insert(i, lvItem);
+                                }
+                                
+                            }
+                            else
+                            {
+                                listView1.Items.Insert(i, lvItem);
+                            }
 
                         }
 
@@ -360,7 +380,7 @@ namespace EaseFilter.CommonObjects
 
                         foreach (FilterAPI.AccessFlag accessFlag in Enum.GetValues(typeof(FilterAPI.AccessFlag)))
                         {
-                            if (accessFlag <= FilterAPI.AccessFlag.ENABLE_FILE_ENCRYPTION_RULE || accessFlag == FilterAPI.AccessFlag.LEAST_ACCESS_FLAG)
+                            if (accessFlag <= FilterAPI.AccessFlag.EXCLUDE_FILE_ACCESS || accessFlag == FilterAPI.AccessFlag.LEAST_ACCESS_FLAG)
                             {
                                 //this is special usage for the filter 
                                 continue;

@@ -186,7 +186,7 @@ namespace RegMon
                 if (!ret)
                 {
                     MessageBoxHelper.PrepToCenterMessageBoxOnForm(this);
-                    MessageBox.Show("Start filter failed." + lastError);
+                    MessageBox.Show("Start filter failed." + lastError, "StartFilter", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
 
@@ -229,10 +229,13 @@ namespace RegMon
         {
             Close();
         }
+      
 
-        private void toolsToolStripMenuItem_Click(object sender, EventArgs e)
+        private void toolStripButton_ApplyTrialKey_Click(object sender, EventArgs e)
         {
-
+           
         }
+
+    
     }
 }

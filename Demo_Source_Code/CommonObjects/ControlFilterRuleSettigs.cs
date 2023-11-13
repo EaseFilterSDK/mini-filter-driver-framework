@@ -55,17 +55,15 @@ namespace EaseFilter.CommonObjects
 
             SetCheckBoxValue();
 
-            if (filterRule.EncryptionKeySize == 16)
+            if (filterRule.EncryptMethod ==  (int)FilterAPI.EncryptionMethod.ENCRYPT_FILE_WITH_SAME_KEY_AND_UNIQUE_IV )
             {
-                radioButton_128.Checked = true;
-            }
-            else if (filterRule.EncryptionKeySize == 24)
-            {
-                radioButton_196.Checked = true;
+                radioButton_EncryptFileWithSameKey.Checked = true;
+                radioButton_EncryptFileWithTagData.Checked = false;
             }
             else
             {
-                radioButton_256.Checked = true;
+                radioButton_EncryptFileWithSameKey.Checked = false;
+                radioButton_EncryptFileWithTagData.Checked = true;
             }
         }
 
@@ -199,16 +197,6 @@ namespace EaseFilter.CommonObjects
                 checkBox_AllowReadEncryptedFiles.Checked = false;
             }
 
-
-            if ((accessFlags & (uint)FilterAPI.AccessFlag.DISABLE_ENCRYPT_DATA_ON_READ) > 0)
-            {
-                checkBox_EncryptOnRead.Checked = false;
-            }
-            else
-            {
-                checkBox_EncryptOnRead.Checked = true;
-            }
-
             if (GlobalConfig.EnableSendDeniedEvent)
             {
                 checkBox_EnableSendDeniedEvent.Checked = true;
@@ -225,12 +213,20 @@ namespace EaseFilter.CommonObjects
             uint accessFlags = uint.Parse(textBox_FileAccessFlags.Text);
 
             if (checkBox_Encryption.Checked)
-            {
-                filterRule.EncryptMethod = (int)FilterAPI.EncryptionMethod.ENCRYPT_FILE_WITH_SAME_KEY_AND_UNIQUE_IV;
+            {               
                 encryptionPassPhrase = textBox_PassPhrase.Text;
 
                 //enable encryption for this filter rule.
                 accessFlags = accessFlags | (uint)FilterAPI.AccessFlag.ENABLE_FILE_ENCRYPTION_RULE;
+
+                if (radioButton_EncryptFileWithSameKey.Checked)
+                {
+                    filterRule.EncryptMethod = (int)FilterAPI.EncryptionMethod.ENCRYPT_FILE_WITH_SAME_KEY_AND_UNIQUE_IV;
+                }
+                else
+                {
+                    filterRule.EncryptMethod = (int)FilterAPI.EncryptionMethod.ENCRYPT_FILE_WITH_KEY_IV_AND_TAGDATA_FROM_SERVICE;
+                }
             }
 
             if (textBox_HiddenFilterMask.Text.Trim().Length > 0)
@@ -246,20 +242,8 @@ namespace EaseFilter.CommonObjects
             else
             {
                 GlobalConfig.EnableSendDeniedEvent = false;
-            }
-
-            if (radioButton_128.Checked)
-            {
-                filterRule.EncryptionKeySize = 16;
-            }
-            else if (radioButton_196.Checked)
-            {
-                filterRule.EncryptionKeySize = 24;
-            }
-            else
-            {
-                filterRule.EncryptionKeySize = 32;
-            }
+            }           
+           
             filterRule.EncryptionPassPhrase = encryptionPassPhrase;
             filterRule.HiddenFileFilterMasks = textBox_HiddenFilterMask.Text;
             filterRule.ReparseFileFilterMask = textBox_ReparseFileFilterMask.Text;
@@ -573,28 +557,6 @@ namespace EaseFilter.CommonObjects
             textBox_FileAccessFlags.Text = accessFlags.ToString();
         }
 
-
-        private void checkBox_EncryptOnRead_CheckedChanged(object sender, EventArgs e)
-        {
-            uint accessFlags = uint.Parse(textBox_FileAccessFlags.Text.Trim());
-            if (checkBox_EncryptOnRead.Checked)
-            {
-                if (!checkBox_Encryption.Checked)
-                {
-                    MessageBoxHelper.PrepToCenterMessageBoxOnForm(this);
-                    MessageBox.Show("The encryption is not enabled, enable it first.", "EncryptOnRead", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return;
-                }
-
-                accessFlags &= ~(uint)FilterAPI.AccessFlag.DISABLE_ENCRYPT_DATA_ON_READ;
-            }
-            else
-            {
-                accessFlags |= (uint)FilterAPI.AccessFlag.DISABLE_ENCRYPT_DATA_ON_READ;
-            }
-
-            textBox_FileAccessFlags.Text = accessFlags.ToString();
-        }
 
         private void checkBox_EnableHidenFile_CheckedChanged(object sender, EventArgs e)
         {

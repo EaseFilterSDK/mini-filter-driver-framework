@@ -126,7 +126,7 @@ namespace ProcessMon
                 if (!ret)
                 {
                     MessageBoxHelper.PrepToCenterMessageBoxOnForm(this);
-                    MessageBox.Show("Start filter failed." + lastError);
+                    MessageBox.Show("Start filter failed." + lastError, "StartFilter", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
 
@@ -195,6 +195,11 @@ namespace ProcessMon
             toolStripButton_Stop_Click(null, null);
             ProcessUnitTestForm regUnitTest = new ProcessUnitTestForm(GlobalConfig.LicenseKey);
             regUnitTest.ShowDialog();
+        }
+
+        private void toolStripButton_ApplyTrialKey_Click(object sender, EventArgs e)
+        {
+           
         }
     }
 }

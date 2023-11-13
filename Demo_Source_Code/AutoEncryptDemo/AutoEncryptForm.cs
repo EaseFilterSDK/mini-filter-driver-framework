@@ -29,16 +29,7 @@ namespace AutoEncryptDemo
         }
 
         private void button_Start_Click(object sender, EventArgs e)
-        {
-
-            string encryptFolder = textBox_EncrptFolder.Text.Trim();
-            string authorizedProcessesForEncryptFolder = textBox_AuthorizedProcessesForEncryptFolder.Text;
-            string authorizedUsersForEncryptFolder = textBox_AuthorizedUsersForEncryptFolder.Text;
-
-            string decryptFolder = textBox_DecryptFolder.Text.Trim();
-            string authorizedProcessesForDecryptFolder = textBox_AuthorizedProcessesForDecryptFolder.Text;
-
-            string passPhrase = textBox_PassPhrase.Text.Trim();
+        {           
 
             //Purchase a license key with the link: http://www.easefilter.com/Order.htm
             //Email us to request a trial key: info@easefilter.com //free email is not accepted.        
@@ -58,129 +49,14 @@ namespace AutoEncryptDemo
                     MessageBoxHelper.PrepToCenterMessageBoxOnForm(this);
                     MessageBox.Show("StartFilter failed with error:" + lastError, "StartFilter", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
-                }
-
-                filterControl.ClearFilters();
-
-                //setup a file filter rule for folder encryptFolder
-                if(encryptFolder.IndexOf("*") < 0)
-                {
-                    //set the file filter mask
-                    encryptFolder += "\\*";
-                }
-
-                FileFilter fileFilter = new FileFilter(encryptFolder);
-
-                //enable the encryption for the filter rule.
-                fileFilter.EnableEncryption = true;
-
-                //if we enable the encryption key from service, you can authorize the encryption or decryption for every file
-                //in the callback function OnFilterRequestEncryptKey.
-                fileFilter.EnableEncryptionKeyFromService = checkBox_EnableEncryptionWithDRM.Checked;
-                fileFilter.OnFilterRequestEncryptKey += OnFilterRequestEncryptKey;
-
-                //get the 256bits encryption key with the passphrase
-                fileFilter.EncryptionKey = Utils.GetKeyByPassPhrase(passPhrase, 32);
-
-                //disable the decyrption right, read the raw encrypted data for all except the authorized processes or users.
-                fileFilter.EnableReadEncryptedData = false;
-
-                if (textBox_AuthorizedProcessesForEncryptFolder.Text.Trim().Length == 0)
-                {
-                    authorizedProcessesForEncryptFolder = "*";
-                }
-
-                string[] processNames = authorizedProcessesForEncryptFolder.Split(new char[] { ';' });
-                if (processNames.Length > 0)
-                {
-                    foreach (string processName in processNames)
-                    {
-                        if (processName.Trim().Length > 0)
-                        {
-                            //authorized the process with the read encrytped data right.
-                            fileFilter.ProcessNameAccessRightList.Add(processName, FilterAPI.ALLOW_MAX_RIGHT_ACCESS);
-                        }
-                    }
-                }
-
-                if (!string.IsNullOrEmpty(authorizedUsersForEncryptFolder) && !authorizedUsersForEncryptFolder.Equals("*"))
-                {
-                    string[] userNames = authorizedUsersForEncryptFolder.Split(new char[] { ';' });
-                    if (userNames.Length > 0)
-                    {
-                        foreach (string userName in userNames)
-                        {
-                            if (userName.Trim().Length > 0)
-                            {
-                                //authorized the user with the read encrypted data right.
-                                fileFilter.userAccessRightList.Add(userName, FilterAPI.ALLOW_MAX_RIGHT_ACCESS);
-                            }
-                        }
-                    }
-
-                    if (fileFilter.userAccessRightList.Count > 0)
-                    {
-                        //set black list for all other users except the white list users.
-                        uint accessFlag = FilterAPI.ALLOW_MAX_RIGHT_ACCESS & ~(uint)FilterAPI.AccessFlag.ALLOW_READ_ENCRYPTED_FILES;
-                        //disable the decryption right, read the raw encrypted data for all except the authorized users.
-                        fileFilter.userAccessRightList.Add("*", accessFlag);
-                    }
-                }
-
-                //add the encryption file filter rule to the filter control
-                filterControl.AddFilter(fileFilter);
-
-                //setup a file filter rule for folder decryptFolder
-                FileFilter decryptFileFilter = new FileFilter(decryptFolder + "\\*");
-
-                //enable the encryption for the filter rule.
-                decryptFileFilter.EnableEncryption = true;
-
-                //if we enable the encryption key from service, you can authorize the decryption for every file
-                //in the callback function OnFilterRequestEncryptKey.
-                decryptFileFilter.EnableEncryptionKeyFromService = checkBox_EnableEncryptionWithDRM.Checked;
-                decryptFileFilter.OnFilterRequestEncryptKey += OnFilterRequestEncryptKey;
-
-                //get the 256bits encryption key with the passphrase
-                decryptFileFilter.EncryptionKey = Utils.GetKeyByPassPhrase(passPhrase, 32);
-
-                //encrypt the new created file or modification in the folder.
-                decryptFileFilter.EnableEncryptNewFile = true;
-
-                //this is important if your process will copy the encrypted file to decryption folder, you need to exclude them.
-                //Exclude Windows explorer.exe process, copy the encrypted file decryption folder with explorer will be excluded,
-                //so the encrypted file won't be encrypted again.
-                decryptFileFilter.ExcludeProcessNameList.Add("explorer.exe");
-
-                //disable the decyrption right, read the raw encrypted data for all except the authorized processes or users.
-                decryptFileFilter.EnableReadEncryptedData = false;
-
-                processNames = authorizedProcessesForDecryptFolder.Split(new char[] { ';' });
-                if (processNames.Length > 0)
-                {
-                    foreach (string processName in processNames)
-                    {
-                        if (processName.Trim().Length > 0)
-                        {
-                            //authorized the process with the read encrypted data right.
-                            decryptFileFilter.ProcessNameAccessRightList.Add(processName, FilterAPI.ALLOW_MAX_RIGHT_ACCESS);
-                        }
-                    }
-                }
-
-                filterControl.AddFilter(decryptFileFilter);
-
-                if (!filterControl.SendConfigSettingsToFilter(ref lastError))
-                {
-                    MessageBoxHelper.PrepToCenterMessageBoxOnForm(this);
-                    MessageBox.Show("SendConfigSettingsToFilter failed." + lastError, "SendConfigSettingsToFilter", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return;
-                }
+                }               
 
                 EventManager.WriteMessage(102, "StartFilter", EventLevel.Information, "Start filter service succeeded.");
 
                 MessageBoxHelper.PrepToCenterMessageBoxOnForm(this);
                 MessageBox.Show("Start filter service succeeded.", "StartFilter", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                SendConfigToFilter();
 
                 button_Stop.Enabled = true;
                 button_Start.Enabled = false;
@@ -194,6 +70,145 @@ namespace AutoEncryptDemo
             }
         }
 
+        private bool SendConfigToFilter()
+        {
+            string lastError = string.Empty;
+
+            string encryptFolder = textBox_EncrptFolder.Text.Trim();
+            string authorizedProcessesForEncryptFolder = textBox_AuthorizedProcessesForEncryptFolder.Text;
+            string authorizedUsersForEncryptFolder = textBox_AuthorizedUsersForEncryptFolder.Text;
+
+            string decryptFolder = textBox_DecryptFolder.Text.Trim();
+            string authorizedProcessesForDecryptFolder = textBox_AuthorizedProcessesForDecryptFolder.Text;
+
+            string passPhrase = textBox_PassPhrase.Text.Trim();
+
+            filterControl.ClearFilters();
+
+            //setup a file filter rule for folder encryptFolder
+            if (encryptFolder.IndexOf("*") < 0)
+            {
+                //set the file filter mask
+                encryptFolder += "\\*";
+            }
+
+            FileFilter fileFilter = new FileFilter(encryptFolder);
+
+            //enable the encryption for the filter rule.
+            fileFilter.EnableEncryption = true;
+
+            //if we enable the encryption key from service, you can authorize the encryption or decryption for every file
+            //in the callback function OnFilterRequestEncryptKey.
+            fileFilter.EnableEncryptionKeyFromService = checkBox_EnableEncryptionWithDRM.Checked;
+            fileFilter.OnFilterRequestEncryptKey += OnFilterRequestEncryptKey;
+
+            //get the 256bits encryption key with the passphrase
+            fileFilter.EncryptionKey = Utils.GetKeyByPassPhrase(passPhrase, 32);
+
+            //disable the decyrption right, read the raw encrypted data for all except the authorized processes or users.
+            fileFilter.EnableReadEncryptedData = false;
+
+            if (textBox_AuthorizedProcessesForEncryptFolder.Text.Trim().Length == 0)
+            {
+                authorizedProcessesForEncryptFolder = "*";
+            }
+
+            string[] processNames = authorizedProcessesForEncryptFolder.Split(new char[] { ';' });
+            if (processNames.Length > 0)
+            {
+                foreach (string processName in processNames)
+                {
+                    if (processName.Trim().Length > 0)
+                    {
+                        //authorized the process with the read encrytped data right.
+                        fileFilter.ProcessNameAccessRightList.Add(processName, FilterAPI.ALLOW_MAX_RIGHT_ACCESS);
+                    }
+                }
+            }
+
+            if (!string.IsNullOrEmpty(authorizedUsersForEncryptFolder) && !authorizedUsersForEncryptFolder.Equals("*"))
+            {
+                string[] userNames = authorizedUsersForEncryptFolder.Split(new char[] { ';' });
+                if (userNames.Length > 0)
+                {
+                    foreach (string userName in userNames)
+                    {
+                        if (userName.Trim().Length > 0)
+                        {
+                            //authorized the user with the read encrypted data right.
+                            fileFilter.userAccessRightList.Add(userName, FilterAPI.ALLOW_MAX_RIGHT_ACCESS);
+                        }
+                    }
+                }
+
+                if (fileFilter.userAccessRightList.Count > 0)
+                {
+                    //set black list for all other users except the white list users.
+                    uint accessFlag = FilterAPI.ALLOW_MAX_RIGHT_ACCESS & ~(uint)FilterAPI.AccessFlag.ALLOW_READ_ENCRYPTED_FILES;
+                    //disable the decryption right, read the raw encrypted data for all except the authorized users.
+                    fileFilter.userAccessRightList.Add("*", accessFlag);
+                }
+            }
+
+            //add the encryption file filter rule to the filter control
+            filterControl.AddFilter(fileFilter);
+
+            //setup a file filter rule for folder decryptFolder
+            if (decryptFolder.IndexOf("*") < 0)
+            {
+                //set the file filter mask
+                decryptFolder += "\\*";
+            }
+
+            FileFilter decryptFileFilter = new FileFilter(decryptFolder);
+
+            //enable the encryption for the filter rule.
+            decryptFileFilter.EnableEncryption = true;
+
+            //if we enable the encryption key from service, you can authorize the decryption for every file
+            //in the callback function OnFilterRequestEncryptKey.
+            decryptFileFilter.EnableEncryptionKeyFromService = checkBox_EnableEncryptionWithDRM.Checked;
+            decryptFileFilter.OnFilterRequestEncryptKey += OnFilterRequestEncryptKey;
+
+            //get the 256bits encryption key with the passphrase
+            decryptFileFilter.EncryptionKey = Utils.GetKeyByPassPhrase(passPhrase, 32);
+
+            //encrypt the new created file or modification in the folder.
+            decryptFileFilter.EnableEncryptNewFile = true;
+
+            //this is important if your process will copy the encrypted file to decryption folder, you need to exclude them.
+            //Exclude Windows explorer.exe process, copy the encrypted file decryption folder with explorer will be excluded,
+            //so the encrypted file won't be encrypted again.
+            decryptFileFilter.ExcludeProcessNameList.Add("explorer.exe");
+
+            //disable the decyrption right, read the raw encrypted data for all except the authorized processes or users.
+            decryptFileFilter.EnableReadEncryptedData = false;
+
+            processNames = authorizedProcessesForDecryptFolder.Split(new char[] { ';' });
+            if (processNames.Length > 0)
+            {
+                foreach (string processName in processNames)
+                {
+                    if (processName.Trim().Length > 0)
+                    {
+                        //authorized the process with the read encrypted data right.
+                        decryptFileFilter.ProcessNameAccessRightList.Add(processName, FilterAPI.ALLOW_MAX_RIGHT_ACCESS);
+                    }
+                }
+            }
+
+            filterControl.AddFilter(decryptFileFilter);
+
+            if (!filterControl.SendConfigSettingsToFilter(ref lastError))
+            {
+                MessageBoxHelper.PrepToCenterMessageBoxOnForm(this);
+                MessageBox.Show("SendConfigSettingsToFilter failed." + lastError, "SendConfigSettingsToFilter", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+
+            return true;
+        }
+
         /// <summary>
         /// Fires this event when the encrypted file requests the encryption key.
         /// </summary>
@@ -204,14 +219,17 @@ namespace AutoEncryptDemo
             try
             {
                 if (e.IsNewCreatedFile)
-                {
-                    //for the new created file, you can add your custom tag data to the header of the encyrpted file.
-                    e.EncryptionTag = DRMServer.GetDRMTagData(e.FileName);
+                {                   
+                    byte[] iv = Guid.NewGuid().ToByteArray();
+                    //for the new created file, you can add your custom tag data to the header of the encyrpted file here.
+                    //here we add the iv to the tag data.
+                    e.EncryptionTag = iv;
 
-                    if (null == e.EncryptionTag)
-                    {
-                        e.ReturnStatus = NtStatus.Status.AccessDenied;
-                    }
+                    //if you don't set the iv data, the filter driver will generate the new GUID as iv 
+                    e.IV = iv;
+
+                    //here is the encryption key for the new encrypted file, you can set it with your own custom key.
+                    e.EncryptionKey = Utils.GetKeyByPassPhrase(GlobalConfig.MasterPassword, 32);
 
                     //if you want to block the new file creation, you can return access denied status.
                     //e.ReturnStatus = NtStatus.Status.AccessDenied;
@@ -227,30 +245,30 @@ namespace AutoEncryptDemo
                     //this is the encrytped file open request, request the encryption key and iv.
                     //here is the tag data if you set custom tag data when the new created file requested the key.
                     byte[] tagData = e.EncryptionTag;
-
-
+                    
                     if (!DRMServer.GetEncryptedFileAccessPermission(e))
                     {
+                        //here didn't get the permission for the encrytped file open, it will return the raw encrypted data.
                         e.ReturnStatus = NtStatus.Status.FileIsEncrypted;
                     }
+
+                    //The encryption key must be the same one which you created the new encrypted file.
+                    e.EncryptionKey = Utils.GetKeyByPassPhrase(GlobalConfig.MasterPassword, 32);
+
+                    //here is the iv key we saved in tag data.
+                    e.IV = tagData;
 
                     //if you want to block encrypted file being opened, you can return accessdenied status.
                     //e.ReturnStatus = NtStatus.Status.AccessDenied;
 
-                    //if you want to return the raws encrypted data for this encrypted file, return below status.
+                    //if you want to return the raw encrypted data for this encrypted file, return below status.
                     //e.ReturnStatus = NtStatus.Status.FileIsEncrypted;
 
                     EventManager.WriteMessage(250, "OpenEncryptedFile", EventLevel.Information, 
                         "OpenEncryptedFile:" + e.FileName + ",userName:" + e.UserName + ",processName:" + e.ProcessName + ",return status:" + e.ReturnStatus.ToString());
 
-                }
-
-                //here is the encryption key for the encrypted file, you can set it with your own key.
-                e.EncryptionKey = Utils.GetKeyByPassPhrase(GlobalConfig.MasterPassword, 32);
-
-                //if you want to use your own iv for the encrypted file, set the value here, 
-                //or don't set the iv here, then the unique auto generated iv will be assigned to the file.
-                //e.IV = Utils.GetIVByPassPhrase(GlobalConfig.MasterPassword);
+                }              
+              
             }
             catch( Exception ex)
             {
@@ -310,19 +328,52 @@ namespace AutoEncryptDemo
             FolderBrowserDialog folderDialog = new FolderBrowserDialog();
             if (folderDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                textBox_EncrptFolder.Text = folderDialog.SelectedPath;
+                textBox_EncrptFolder.Text = folderDialog.SelectedPath + "\\*";
             }
         }
 
         private void button_DRMSetting_Click(object sender, EventArgs e)
         {
             DRMForm dRMForm = new DRMForm();
-            dRMForm.ShowDialog();
+            if (dRMForm.ShowDialog() == System.Windows.Forms.DialogResult.OK && filterControl.IsFilterStarted )
+            {
+                SendConfigToFilter();
+            }
         }
+      
 
-        private void button_Help_Click(object sender, EventArgs e)
+        private void helpToolStripMenuItem_Click(object sender, EventArgs e)
         {
             System.Diagnostics.Process.Start("https://www.easefilter.com/kb/auto-file-drm-encryption-tool.htm");
+        }
+
+        private void applyTrialKeyToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+          return;
+        }
+
+        private void getTagDataOfEncryptedFileToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            InputForm inputForm = new InputForm("Input file name", "Plase input file name", "");
+
+            if (inputForm.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                string fileName = inputForm.InputText;
+
+                byte[] tagData = new Byte[FilterAPI.MAX_AES_TAG_SIZE];
+                uint tagDataLength = (uint)tagData.Length;
+                bool retVal = FilterAPI.GetAESTagData(fileName, ref tagDataLength, tagData);
+
+                if (!retVal)
+                {
+                    MessageBoxHelper.PrepToCenterMessageBoxOnForm(this);
+                    MessageBox.Show("GetAESTagData failed with error:" + FilterAPI.GetLastErrorMessage(), "GetAESTagData", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                MessageBoxHelper.PrepToCenterMessageBoxOnForm(this);
+                MessageBox.Show("Get encrypted file " + fileName + " tag data succeeded. return tag data length:" + tagDataLength, "tagData", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
         }
     }
 }

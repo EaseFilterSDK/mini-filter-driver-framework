@@ -35,9 +35,10 @@ namespace FileProtector
 {
     public partial class ProtectorForm : Form
     {
-       
+        MessageHandler messageHandler = null;
         MonitorEventHandler monitorEventHandler = null;
         ControlEventHandler controlEventHandler = null;
+        ProcessEventHandler processEventHandler = null;
         EncryptEventHandler encryptEventHandler = new EncryptEventHandler();
 
         FilterControl filterControl = new FilterControl();
@@ -48,8 +49,11 @@ namespace FileProtector
                | FilterAPI.FilterType.PROCESS_FILTER | FilterAPI.FilterType.REGISTRY_FILTER;
 
             InitializeComponent();
-            monitorEventHandler = new MonitorEventHandler(listView_Info);
-            controlEventHandler = new ControlEventHandler(listView_Info);
+
+            messageHandler = new MessageHandler(listView_Info);
+            monitorEventHandler = new MonitorEventHandler(messageHandler);
+            controlEventHandler = new ControlEventHandler(messageHandler);
+            processEventHandler = new ProcessEventHandler(messageHandler);
 
             StartPosition = FormStartPosition.CenterScreen;
 
@@ -68,7 +72,7 @@ namespace FileProtector
         ~ProtectorForm()
         {
             GlobalConfig.Stop();
-        }      
+        }
 
         void SendSettingsToFilter()
         {
@@ -160,6 +164,23 @@ namespace FileProtector
                 filterControl.AddFilter(fileFilter);
             }
 
+            foreach (ProcessFilterRule filterRule in GlobalConfig.ProcessFilterRules.Values)
+            {
+                ProcessFilter processFilter = filterRule.ToProcessFilter();
+
+                processFilter.OnProcessCreation += processEventHandler.OnProcessCreation;
+                processFilter.OnProcessPreTermination += processEventHandler.OnProcessPreTermination;
+                processFilter.NotifyProcessWasBlocked += processEventHandler.NotifyProcessWasBlocked;
+                processFilter.NotifyProcessTerminated += processEventHandler.NotifyProcessTerminated;
+                processFilter.NotifyThreadCreation += processEventHandler.NotifyThreadCreation;
+                processFilter.NotifyThreadTerminated += processEventHandler.NotifyThreadTerminated;
+                processFilter.NotifyProcessHandleInfo += processEventHandler.NotifyProcessHandleInfo;
+                processFilter.NotifyThreadHandleInfo += processEventHandler.NotifyThreadHandleInfo;
+
+                filterControl.AddFilter(processFilter);
+            }
+
+
             filterControl.ProtectedProcessIdList = GlobalConfig.ProtectPidList;
             filterControl.IncludeProcessIdList = GlobalConfig.IncludePidList;
             filterControl.ExcludeProcessIdList = GlobalConfig.ExcludePidList;
@@ -207,7 +228,7 @@ namespace FileProtector
                 if (!ret)
                 {
                     MessageBoxHelper.PrepToCenterMessageBoxOnForm(this);
-                    MessageBox.Show("Start filter failed." + lastError);
+                    MessageBox.Show("Start filter failed." + lastError, "StartFilter", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
 
@@ -236,7 +257,7 @@ namespace FileProtector
 
         private void toolStripButton_ClearMessage_Click(object sender, EventArgs e)
         {
-            controlEventHandler.InitListView();
+            messageHandler.InitListView();
         }
 
         private void settingsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -274,7 +295,7 @@ namespace FileProtector
         }
 
 
-        private void getEncryptedFileIVTagToolStripMenuItem_Click(object sender, EventArgs e)
+        private void getEncryptedFileTagdataToolStripMenuItem_Click(object sender, EventArgs e)
         {
             InputForm inputForm = new InputForm("Input file name", "Plase input file name", "");
 
@@ -282,21 +303,19 @@ namespace FileProtector
             {
                 string fileName = inputForm.InputText;
 
-                //by default we set the custom tag data with iv data
-
-                byte[] iv = new Byte[16];
-                uint ivLength = (uint)iv.Length;
-                bool retVal = FilterAPI.GetAESTagData(fileName, ref ivLength, iv);
+                byte[] tagData = new Byte[FilterAPI.MAX_AES_TAG_SIZE];
+                uint tagDataLength = (uint)tagData.Length;
+                bool retVal = FilterAPI.GetAESTagData(fileName, ref tagDataLength, tagData);
 
                 if (!retVal)
                 {
                     MessageBoxHelper.PrepToCenterMessageBoxOnForm(this);
-                    MessageBox.Show("GetAESTagData failed with error " + FilterAPI.GetLastErrorMessage(), "GetAESTagData", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("GetAESTagData failed with error:" + FilterAPI.GetLastErrorMessage(), "GetAESTagData", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
 
                 MessageBoxHelper.PrepToCenterMessageBoxOnForm(this);
-                MessageBox.Show("Get encrypted file " + fileName + " tag data succeeded.", "IV Tag", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("Get encrypted file " + fileName + " tag data succeeded. return tag data length:" + tagDataLength, "tagData", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
 
@@ -331,7 +350,7 @@ namespace FileProtector
 
         private void toolStripButton_LoadMessage_Click(object sender, EventArgs e)
         {
-            controlEventHandler.LoadMessageFromLogToConsole();
+            messageHandler.LoadMessageFromLogToConsole();
         }
 
         private void toolStripButton_UnitTest_Click(object sender, EventArgs e)
@@ -347,6 +366,11 @@ namespace FileProtector
         private void toolStripButton_Help_Click(object sender, EventArgs e)
         {
             System.Diagnostics.Process.Start("https://blog.easefilter.com/file-protector-demo-step-by-step/");
+        }
+
+        private void toolStripButton_ApplyTrialKey_Click(object sender, EventArgs e)
+        {
+            return;
         }
        
     }

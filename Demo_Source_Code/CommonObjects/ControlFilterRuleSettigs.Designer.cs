@@ -30,24 +30,17 @@
         {
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.groupBox_AccessControl = new System.Windows.Forms.GroupBox();
-            this.button_InfoControlFlag = new System.Windows.Forms.Button();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
-            this.button_InfoControlEvents = new System.Windows.Forms.Button();
             this.label17 = new System.Windows.Forms.Label();
             this.textBox_ControlIO = new System.Windows.Forms.TextBox();
             this.button_RegisterControlIO = new System.Windows.Forms.Button();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.button_InfoSignedProcessRights = new System.Windows.Forms.Button();
             this.button_AddSignedProcessAccessRights = new System.Windows.Forms.Button();
             this.textBox_SignedProcessAccessRights = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
-            this.button_InfoTrustedProcessRights = new System.Windows.Forms.Button();
             this.button_AddTrustedProcessRights = new System.Windows.Forms.Button();
             this.textBox_Sha256ProcessAccessRights = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
-            this.button_InfoProcessNameRights = new System.Windows.Forms.Button();
-            this.button_InfoProcessIdRights = new System.Windows.Forms.Button();
-            this.button_InfoUserRights = new System.Windows.Forms.Button();
             this.textBox_UserRights = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.button_AddProcessRights = new System.Windows.Forms.Button();
@@ -60,21 +53,10 @@
             this.button_SaveControlSettings = new System.Windows.Forms.Button();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.checkBox_EnableSendDeniedEvent = new System.Windows.Forms.CheckBox();
-            this.button_InfoEncryptKeyLenght = new System.Windows.Forms.Button();
-            this.button_InfoEncryptNewFile = new System.Windows.Forms.Button();
-            this.button_InfoCopyout = new System.Windows.Forms.Button();
-            this.button_InfoDecryption = new System.Windows.Forms.Button();
-            this.button_InfoEncryptOnRead = new System.Windows.Forms.Button();
-            this.button_InfoPassPhrase = new System.Windows.Forms.Button();
-            this.button_HideFileFilterMask = new System.Windows.Forms.Button();
-            this.button_InfoReparseFile = new System.Windows.Forms.Button();
-            this.radioButton_256 = new System.Windows.Forms.RadioButton();
-            this.radioButton_196 = new System.Windows.Forms.RadioButton();
-            this.radioButton_128 = new System.Windows.Forms.RadioButton();
-            this.label2 = new System.Windows.Forms.Label();
+            this.radioButton_EncryptFileWithTagData = new System.Windows.Forms.RadioButton();
+            this.radioButton_EncryptFileWithSameKey = new System.Windows.Forms.RadioButton();
             this.checkBox_EnableReparseFile = new System.Windows.Forms.CheckBox();
             this.checkBox_EnableHidenFile = new System.Windows.Forms.CheckBox();
-            this.checkBox_EncryptOnRead = new System.Windows.Forms.CheckBox();
             this.checkBox_AllowReadEncryptedFiles = new System.Windows.Forms.CheckBox();
             this.checkBox_AllowEncryptNewFile = new System.Windows.Forms.CheckBox();
             this.checkBox_AllowCopyOut = new System.Windows.Forms.CheckBox();
@@ -93,6 +75,21 @@
             this.label_AccessFlags = new System.Windows.Forms.Label();
             this.textBox_FileAccessFlags = new System.Windows.Forms.TextBox();
             this.button_FileAccessFlags = new System.Windows.Forms.Button();
+            this.button_InfoControlFlag = new System.Windows.Forms.Button();
+            this.button_InfoControlEvents = new System.Windows.Forms.Button();
+            this.button_InfoSignedProcessRights = new System.Windows.Forms.Button();
+            this.button_InfoTrustedProcessRights = new System.Windows.Forms.Button();
+            this.button_InfoProcessNameRights = new System.Windows.Forms.Button();
+            this.button_InfoProcessIdRights = new System.Windows.Forms.Button();
+            this.button_InfoUserRights = new System.Windows.Forms.Button();
+            this.button_InfoEncryptKeyLenght = new System.Windows.Forms.Button();
+            this.button_InfoEncryptNewFile = new System.Windows.Forms.Button();
+            this.button_InfoCopyout = new System.Windows.Forms.Button();
+            this.button_InfoDecryption = new System.Windows.Forms.Button();
+            this.button_InfoEncryptOnRead = new System.Windows.Forms.Button();
+            this.button_InfoPassPhrase = new System.Windows.Forms.Button();
+            this.button_HideFileFilterMask = new System.Windows.Forms.Button();
+            this.button_InfoReparseFile = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox_AccessControl.SuspendLayout();
             this.groupBox4.SuspendLayout();
@@ -127,16 +124,6 @@
             this.groupBox_AccessControl.TabIndex = 24;
             this.groupBox_AccessControl.TabStop = false;
             // 
-            // button_InfoControlFlag
-            // 
-            this.button_InfoControlFlag.Image = global::EaseFilter.CommonObjects.Properties.Resources.about;
-            this.button_InfoControlFlag.Location = new System.Drawing.Point(530, 8);
-            this.button_InfoControlFlag.Name = "button_InfoControlFlag";
-            this.button_InfoControlFlag.Size = new System.Drawing.Size(28, 20);
-            this.button_InfoControlFlag.TabIndex = 118;
-            this.button_InfoControlFlag.UseVisualStyleBackColor = true;
-            this.button_InfoControlFlag.Click += new System.EventHandler(this.button_InfoControlFlag_Click);
-            // 
             // groupBox4
             // 
             this.groupBox4.Controls.Add(this.button_InfoControlEvents);
@@ -149,16 +136,6 @@
             this.groupBox4.TabIndex = 91;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Register File I/O Callback Notification Settings";
-            // 
-            // button_InfoControlEvents
-            // 
-            this.button_InfoControlEvents.Image = global::EaseFilter.CommonObjects.Properties.Resources.about;
-            this.button_InfoControlEvents.Location = new System.Drawing.Point(524, 31);
-            this.button_InfoControlEvents.Name = "button_InfoControlEvents";
-            this.button_InfoControlEvents.Size = new System.Drawing.Size(28, 20);
-            this.button_InfoControlEvents.TabIndex = 127;
-            this.button_InfoControlEvents.UseVisualStyleBackColor = true;
-            this.button_InfoControlEvents.Click += new System.EventHandler(this.button_InfoControlEvents_Click);
             // 
             // label17
             // 
@@ -218,16 +195,6 @@
             this.groupBox3.Text = "Add or Remove Access Rights to Processes or Users (create whiltelist or blacklist" +
     ")";
             // 
-            // button_InfoSignedProcessRights
-            // 
-            this.button_InfoSignedProcessRights.Image = global::EaseFilter.CommonObjects.Properties.Resources.about;
-            this.button_InfoSignedProcessRights.Location = new System.Drawing.Point(518, 89);
-            this.button_InfoSignedProcessRights.Name = "button_InfoSignedProcessRights";
-            this.button_InfoSignedProcessRights.Size = new System.Drawing.Size(28, 20);
-            this.button_InfoSignedProcessRights.TabIndex = 134;
-            this.button_InfoSignedProcessRights.UseVisualStyleBackColor = true;
-            this.button_InfoSignedProcessRights.Click += new System.EventHandler(this.button_InfoSignedProcessRights_Click);
-            // 
             // button_AddSignedProcessAccessRights
             // 
             this.button_AddSignedProcessAccessRights.Location = new System.Drawing.Point(470, 88);
@@ -254,16 +221,6 @@
             this.label4.TabIndex = 132;
             this.label4.Text = "Signed process rights";
             // 
-            // button_InfoTrustedProcessRights
-            // 
-            this.button_InfoTrustedProcessRights.Image = global::EaseFilter.CommonObjects.Properties.Resources.about;
-            this.button_InfoTrustedProcessRights.Location = new System.Drawing.Point(521, 56);
-            this.button_InfoTrustedProcessRights.Name = "button_InfoTrustedProcessRights";
-            this.button_InfoTrustedProcessRights.Size = new System.Drawing.Size(28, 20);
-            this.button_InfoTrustedProcessRights.TabIndex = 130;
-            this.button_InfoTrustedProcessRights.UseVisualStyleBackColor = true;
-            this.button_InfoTrustedProcessRights.Click += new System.EventHandler(this.button_InfoSha256ProcessRights_Click);
-            // 
             // button_AddTrustedProcessRights
             // 
             this.button_AddTrustedProcessRights.Location = new System.Drawing.Point(473, 55);
@@ -289,36 +246,6 @@
             this.label3.Size = new System.Drawing.Size(112, 13);
             this.label3.TabIndex = 128;
             this.label3.Text = "Sha256 process rights";
-            // 
-            // button_InfoProcessNameRights
-            // 
-            this.button_InfoProcessNameRights.Image = global::EaseFilter.CommonObjects.Properties.Resources.about;
-            this.button_InfoProcessNameRights.Location = new System.Drawing.Point(521, 23);
-            this.button_InfoProcessNameRights.Name = "button_InfoProcessNameRights";
-            this.button_InfoProcessNameRights.Size = new System.Drawing.Size(28, 20);
-            this.button_InfoProcessNameRights.TabIndex = 124;
-            this.button_InfoProcessNameRights.UseVisualStyleBackColor = true;
-            this.button_InfoProcessNameRights.Click += new System.EventHandler(this.button_InfoProcessNameRights_Click);
-            // 
-            // button_InfoProcessIdRights
-            // 
-            this.button_InfoProcessIdRights.Image = global::EaseFilter.CommonObjects.Properties.Resources.about;
-            this.button_InfoProcessIdRights.Location = new System.Drawing.Point(521, 122);
-            this.button_InfoProcessIdRights.Name = "button_InfoProcessIdRights";
-            this.button_InfoProcessIdRights.Size = new System.Drawing.Size(28, 20);
-            this.button_InfoProcessIdRights.TabIndex = 125;
-            this.button_InfoProcessIdRights.UseVisualStyleBackColor = true;
-            this.button_InfoProcessIdRights.Click += new System.EventHandler(this.button_InfoProcessIdRights_Click);
-            // 
-            // button_InfoUserRights
-            // 
-            this.button_InfoUserRights.Image = global::EaseFilter.CommonObjects.Properties.Resources.about;
-            this.button_InfoUserRights.Location = new System.Drawing.Point(521, 154);
-            this.button_InfoUserRights.Name = "button_InfoUserRights";
-            this.button_InfoUserRights.Size = new System.Drawing.Size(28, 20);
-            this.button_InfoUserRights.TabIndex = 126;
-            this.button_InfoUserRights.UseVisualStyleBackColor = true;
-            this.button_InfoUserRights.Click += new System.EventHandler(this.button_InfoUserRights_Click);
             // 
             // textBox_UserRights
             // 
@@ -421,13 +348,10 @@
             this.groupBox2.Controls.Add(this.button_InfoPassPhrase);
             this.groupBox2.Controls.Add(this.button_HideFileFilterMask);
             this.groupBox2.Controls.Add(this.button_InfoReparseFile);
-            this.groupBox2.Controls.Add(this.radioButton_256);
-            this.groupBox2.Controls.Add(this.radioButton_196);
-            this.groupBox2.Controls.Add(this.radioButton_128);
-            this.groupBox2.Controls.Add(this.label2);
+            this.groupBox2.Controls.Add(this.radioButton_EncryptFileWithTagData);
+            this.groupBox2.Controls.Add(this.radioButton_EncryptFileWithSameKey);
             this.groupBox2.Controls.Add(this.checkBox_EnableReparseFile);
             this.groupBox2.Controls.Add(this.checkBox_EnableHidenFile);
-            this.groupBox2.Controls.Add(this.checkBox_EncryptOnRead);
             this.groupBox2.Controls.Add(this.checkBox_AllowReadEncryptedFiles);
             this.groupBox2.Controls.Add(this.checkBox_AllowEncryptNewFile);
             this.groupBox2.Controls.Add(this.checkBox_AllowCopyOut);
@@ -461,126 +385,27 @@
     "g";
             this.checkBox_EnableSendDeniedEvent.UseVisualStyleBackColor = true;
             // 
-            // button_InfoEncryptKeyLenght
+            // radioButton_EncryptFileWithTagData
             // 
-            this.button_InfoEncryptKeyLenght.Image = global::EaseFilter.CommonObjects.Properties.Resources.about;
-            this.button_InfoEncryptKeyLenght.Location = new System.Drawing.Point(521, 145);
-            this.button_InfoEncryptKeyLenght.Name = "button_InfoEncryptKeyLenght";
-            this.button_InfoEncryptKeyLenght.Size = new System.Drawing.Size(28, 20);
-            this.button_InfoEncryptKeyLenght.TabIndex = 119;
-            this.button_InfoEncryptKeyLenght.UseVisualStyleBackColor = true;
-            this.button_InfoEncryptKeyLenght.Click += new System.EventHandler(this.button_InfoEncryptKeyLenght_Click);
+            this.radioButton_EncryptFileWithTagData.AutoSize = true;
+            this.radioButton_EncryptFileWithTagData.Location = new System.Drawing.Point(158, 145);
+            this.radioButton_EncryptFileWithTagData.Name = "radioButton_EncryptFileWithTagData";
+            this.radioButton_EncryptFileWithTagData.Size = new System.Drawing.Size(343, 17);
+            this.radioButton_EncryptFileWithTagData.TabIndex = 93;
+            this.radioButton_EncryptFileWithTagData.Text = "Encrypt file with unique encryption key, iv and tag data from service";
+            this.radioButton_EncryptFileWithTagData.UseVisualStyleBackColor = true;
             // 
-            // button_InfoEncryptNewFile
+            // radioButton_EncryptFileWithSameKey
             // 
-            this.button_InfoEncryptNewFile.Image = global::EaseFilter.CommonObjects.Properties.Resources.about;
-            this.button_InfoEncryptNewFile.Location = new System.Drawing.Point(521, 40);
-            this.button_InfoEncryptNewFile.Name = "button_InfoEncryptNewFile";
-            this.button_InfoEncryptNewFile.Size = new System.Drawing.Size(28, 20);
-            this.button_InfoEncryptNewFile.TabIndex = 125;
-            this.button_InfoEncryptNewFile.UseVisualStyleBackColor = true;
-            this.button_InfoEncryptNewFile.Click += new System.EventHandler(this.button_InfoEncryptNewFile_Click);
-            // 
-            // button_InfoCopyout
-            // 
-            this.button_InfoCopyout.Image = global::EaseFilter.CommonObjects.Properties.Resources.about;
-            this.button_InfoCopyout.Location = new System.Drawing.Point(521, 19);
-            this.button_InfoCopyout.Name = "button_InfoCopyout";
-            this.button_InfoCopyout.Size = new System.Drawing.Size(28, 20);
-            this.button_InfoCopyout.TabIndex = 124;
-            this.button_InfoCopyout.UseVisualStyleBackColor = true;
-            this.button_InfoCopyout.Click += new System.EventHandler(this.button_InfoCopyout_Click);
-            // 
-            // button_InfoDecryption
-            // 
-            this.button_InfoDecryption.Image = global::EaseFilter.CommonObjects.Properties.Resources.about;
-            this.button_InfoDecryption.Location = new System.Drawing.Point(521, 66);
-            this.button_InfoDecryption.Name = "button_InfoDecryption";
-            this.button_InfoDecryption.Size = new System.Drawing.Size(28, 20);
-            this.button_InfoDecryption.TabIndex = 119;
-            this.button_InfoDecryption.UseVisualStyleBackColor = true;
-            this.button_InfoDecryption.Click += new System.EventHandler(this.button_InfoDecryption_Click);
-            // 
-            // button_InfoEncryptOnRead
-            // 
-            this.button_InfoEncryptOnRead.Image = global::EaseFilter.CommonObjects.Properties.Resources.about;
-            this.button_InfoEncryptOnRead.Location = new System.Drawing.Point(521, 92);
-            this.button_InfoEncryptOnRead.Name = "button_InfoEncryptOnRead";
-            this.button_InfoEncryptOnRead.Size = new System.Drawing.Size(28, 20);
-            this.button_InfoEncryptOnRead.TabIndex = 120;
-            this.button_InfoEncryptOnRead.UseVisualStyleBackColor = true;
-            this.button_InfoEncryptOnRead.Click += new System.EventHandler(this.button_InfoEncryptOnRead_Click);
-            // 
-            // button_InfoPassPhrase
-            // 
-            this.button_InfoPassPhrase.Image = global::EaseFilter.CommonObjects.Properties.Resources.about;
-            this.button_InfoPassPhrase.Location = new System.Drawing.Point(521, 118);
-            this.button_InfoPassPhrase.Name = "button_InfoPassPhrase";
-            this.button_InfoPassPhrase.Size = new System.Drawing.Size(28, 20);
-            this.button_InfoPassPhrase.TabIndex = 121;
-            this.button_InfoPassPhrase.UseVisualStyleBackColor = true;
-            this.button_InfoPassPhrase.Click += new System.EventHandler(this.button_InfoPassPhrase_Click);
-            // 
-            // button_HideFileFilterMask
-            // 
-            this.button_HideFileFilterMask.Image = global::EaseFilter.CommonObjects.Properties.Resources.about;
-            this.button_HideFileFilterMask.Location = new System.Drawing.Point(521, 175);
-            this.button_HideFileFilterMask.Name = "button_HideFileFilterMask";
-            this.button_HideFileFilterMask.Size = new System.Drawing.Size(28, 20);
-            this.button_HideFileFilterMask.TabIndex = 122;
-            this.button_HideFileFilterMask.UseVisualStyleBackColor = true;
-            this.button_HideFileFilterMask.Click += new System.EventHandler(this.button_HideFileFilterMask_Click);
-            // 
-            // button_InfoReparseFile
-            // 
-            this.button_InfoReparseFile.Image = global::EaseFilter.CommonObjects.Properties.Resources.about;
-            this.button_InfoReparseFile.Location = new System.Drawing.Point(521, 210);
-            this.button_InfoReparseFile.Name = "button_InfoReparseFile";
-            this.button_InfoReparseFile.Size = new System.Drawing.Size(28, 20);
-            this.button_InfoReparseFile.TabIndex = 123;
-            this.button_InfoReparseFile.UseVisualStyleBackColor = true;
-            this.button_InfoReparseFile.Click += new System.EventHandler(this.button_InfoReparseFile_Click);
-            // 
-            // radioButton_256
-            // 
-            this.radioButton_256.AutoSize = true;
-            this.radioButton_256.Checked = true;
-            this.radioButton_256.Location = new System.Drawing.Point(429, 145);
-            this.radioButton_256.Name = "radioButton_256";
-            this.radioButton_256.Size = new System.Drawing.Size(62, 17);
-            this.radioButton_256.TabIndex = 93;
-            this.radioButton_256.TabStop = true;
-            this.radioButton_256.Text = "256 bits";
-            this.radioButton_256.UseVisualStyleBackColor = true;
-            // 
-            // radioButton_196
-            // 
-            this.radioButton_196.AutoSize = true;
-            this.radioButton_196.Location = new System.Drawing.Point(328, 145);
-            this.radioButton_196.Name = "radioButton_196";
-            this.radioButton_196.Size = new System.Drawing.Size(62, 17);
-            this.radioButton_196.TabIndex = 92;
-            this.radioButton_196.Text = "196 bits";
-            this.radioButton_196.UseVisualStyleBackColor = true;
-            // 
-            // radioButton_128
-            // 
-            this.radioButton_128.AutoSize = true;
-            this.radioButton_128.Location = new System.Drawing.Point(212, 145);
-            this.radioButton_128.Name = "radioButton_128";
-            this.radioButton_128.Size = new System.Drawing.Size(62, 17);
-            this.radioButton_128.TabIndex = 91;
-            this.radioButton_128.Text = "128 bits";
-            this.radioButton_128.UseVisualStyleBackColor = true;
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(33, 145);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(147, 13);
-            this.label2.TabIndex = 90;
-            this.label2.Text = "Choose encryption key length";
+            this.radioButton_EncryptFileWithSameKey.AutoSize = true;
+            this.radioButton_EncryptFileWithSameKey.Checked = true;
+            this.radioButton_EncryptFileWithSameKey.Location = new System.Drawing.Point(158, 117);
+            this.radioButton_EncryptFileWithSameKey.Name = "radioButton_EncryptFileWithSameKey";
+            this.radioButton_EncryptFileWithSameKey.Size = new System.Drawing.Size(248, 17);
+            this.radioButton_EncryptFileWithSameKey.TabIndex = 91;
+            this.radioButton_EncryptFileWithSameKey.TabStop = true;
+            this.radioButton_EncryptFileWithSameKey.Text = "Encrypt file with same root key from passphrase";
+            this.radioButton_EncryptFileWithSameKey.UseVisualStyleBackColor = true;
             // 
             // checkBox_EnableReparseFile
             // 
@@ -604,25 +429,14 @@
             this.checkBox_EnableHidenFile.UseVisualStyleBackColor = true;
             this.checkBox_EnableHidenFile.CheckedChanged += new System.EventHandler(this.checkBox_EnableHidenFile_CheckedChanged);
             // 
-            // checkBox_EncryptOnRead
-            // 
-            this.checkBox_EncryptOnRead.AutoSize = true;
-            this.checkBox_EncryptOnRead.Location = new System.Drawing.Point(349, 92);
-            this.checkBox_EncryptOnRead.Name = "checkBox_EncryptOnRead";
-            this.checkBox_EncryptOnRead.Size = new System.Drawing.Size(161, 17);
-            this.checkBox_EncryptOnRead.TabIndex = 29;
-            this.checkBox_EncryptOnRead.Text = "Enable encrypt file on the go";
-            this.checkBox_EncryptOnRead.UseVisualStyleBackColor = true;
-            this.checkBox_EncryptOnRead.CheckedChanged += new System.EventHandler(this.checkBox_EncryptOnRead_CheckedChanged);
-            // 
             // checkBox_AllowReadEncryptedFiles
             // 
             this.checkBox_AllowReadEncryptedFiles.AutoSize = true;
             this.checkBox_AllowReadEncryptedFiles.Location = new System.Drawing.Point(349, 69);
             this.checkBox_AllowReadEncryptedFiles.Name = "checkBox_AllowReadEncryptedFiles";
-            this.checkBox_AllowReadEncryptedFiles.Size = new System.Drawing.Size(177, 17);
+            this.checkBox_AllowReadEncryptedFiles.Size = new System.Drawing.Size(141, 17);
             this.checkBox_AllowReadEncryptedFiles.TabIndex = 28;
-            this.checkBox_AllowReadEncryptedFiles.Text = "Enable encrypted file decryption";
+            this.checkBox_AllowReadEncryptedFiles.Text = "Allow read encrypted file";
             this.checkBox_AllowReadEncryptedFiles.UseVisualStyleBackColor = true;
             this.checkBox_AllowReadEncryptedFiles.CheckedChanged += new System.EventHandler(this.checkBox_AllowReadEncryptedFiles_CheckedChanged);
             // 
@@ -631,9 +445,9 @@
             this.checkBox_AllowEncryptNewFile.AutoSize = true;
             this.checkBox_AllowEncryptNewFile.Location = new System.Drawing.Point(349, 46);
             this.checkBox_AllowEncryptNewFile.Name = "checkBox_AllowEncryptNewFile";
-            this.checkBox_AllowEncryptNewFile.Size = new System.Drawing.Size(150, 17);
+            this.checkBox_AllowEncryptNewFile.Size = new System.Drawing.Size(142, 17);
             this.checkBox_AllowEncryptNewFile.TabIndex = 26;
-            this.checkBox_AllowEncryptNewFile.Text = "Enable new file encryption";
+            this.checkBox_AllowEncryptNewFile.Text = "Allow new file encryption";
             this.checkBox_AllowEncryptNewFile.UseVisualStyleBackColor = true;
             this.checkBox_AllowEncryptNewFile.CheckedChanged += new System.EventHandler(this.checkBox_AllowEncryptNewFile_CheckedChanged);
             // 
@@ -748,18 +562,18 @@
             this.checkBox_Encryption.AutoSize = true;
             this.checkBox_Encryption.Location = new System.Drawing.Point(12, 118);
             this.checkBox_Encryption.Name = "checkBox_Encryption";
-            this.checkBox_Encryption.Size = new System.Drawing.Size(193, 17);
+            this.checkBox_Encryption.Size = new System.Drawing.Size(111, 17);
             this.checkBox_Encryption.TabIndex = 18;
-            this.checkBox_Encryption.Text = "Enable encryption with pass phrase";
+            this.checkBox_Encryption.Text = "Enable encryption";
             this.checkBox_Encryption.UseVisualStyleBackColor = true;
             this.checkBox_Encryption.CheckedChanged += new System.EventHandler(this.checkBox_Encryption_CheckedChanged);
             // 
             // textBox_PassPhrase
             // 
-            this.textBox_PassPhrase.Location = new System.Drawing.Point(212, 118);
+            this.textBox_PassPhrase.Location = new System.Drawing.Point(412, 114);
             this.textBox_PassPhrase.Name = "textBox_PassPhrase";
             this.textBox_PassPhrase.ReadOnly = true;
-            this.textBox_PassPhrase.Size = new System.Drawing.Size(302, 20);
+            this.textBox_PassPhrase.Size = new System.Drawing.Size(91, 20);
             this.textBox_PassPhrase.TabIndex = 19;
             this.textBox_PassPhrase.UseSystemPasswordChar = true;
             // 
@@ -797,6 +611,156 @@
             this.button_FileAccessFlags.Text = "...";
             this.button_FileAccessFlags.UseVisualStyleBackColor = true;
             this.button_FileAccessFlags.Click += new System.EventHandler(this.button_FileAccessFlags_Click);
+            // 
+            // button_InfoControlFlag
+            // 
+            this.button_InfoControlFlag.Image = global::EaseFilter.CommonObjects.Properties.Resources.about;
+            this.button_InfoControlFlag.Location = new System.Drawing.Point(530, 8);
+            this.button_InfoControlFlag.Name = "button_InfoControlFlag";
+            this.button_InfoControlFlag.Size = new System.Drawing.Size(28, 20);
+            this.button_InfoControlFlag.TabIndex = 118;
+            this.button_InfoControlFlag.UseVisualStyleBackColor = true;
+            this.button_InfoControlFlag.Click += new System.EventHandler(this.button_InfoControlFlag_Click);
+            // 
+            // button_InfoControlEvents
+            // 
+            this.button_InfoControlEvents.Image = global::EaseFilter.CommonObjects.Properties.Resources.about;
+            this.button_InfoControlEvents.Location = new System.Drawing.Point(524, 31);
+            this.button_InfoControlEvents.Name = "button_InfoControlEvents";
+            this.button_InfoControlEvents.Size = new System.Drawing.Size(28, 20);
+            this.button_InfoControlEvents.TabIndex = 127;
+            this.button_InfoControlEvents.UseVisualStyleBackColor = true;
+            this.button_InfoControlEvents.Click += new System.EventHandler(this.button_InfoControlEvents_Click);
+            // 
+            // button_InfoSignedProcessRights
+            // 
+            this.button_InfoSignedProcessRights.Image = global::EaseFilter.CommonObjects.Properties.Resources.about;
+            this.button_InfoSignedProcessRights.Location = new System.Drawing.Point(518, 89);
+            this.button_InfoSignedProcessRights.Name = "button_InfoSignedProcessRights";
+            this.button_InfoSignedProcessRights.Size = new System.Drawing.Size(28, 20);
+            this.button_InfoSignedProcessRights.TabIndex = 134;
+            this.button_InfoSignedProcessRights.UseVisualStyleBackColor = true;
+            this.button_InfoSignedProcessRights.Click += new System.EventHandler(this.button_InfoSignedProcessRights_Click);
+            // 
+            // button_InfoTrustedProcessRights
+            // 
+            this.button_InfoTrustedProcessRights.Image = global::EaseFilter.CommonObjects.Properties.Resources.about;
+            this.button_InfoTrustedProcessRights.Location = new System.Drawing.Point(521, 56);
+            this.button_InfoTrustedProcessRights.Name = "button_InfoTrustedProcessRights";
+            this.button_InfoTrustedProcessRights.Size = new System.Drawing.Size(28, 20);
+            this.button_InfoTrustedProcessRights.TabIndex = 130;
+            this.button_InfoTrustedProcessRights.UseVisualStyleBackColor = true;
+            this.button_InfoTrustedProcessRights.Click += new System.EventHandler(this.button_InfoSha256ProcessRights_Click);
+            // 
+            // button_InfoProcessNameRights
+            // 
+            this.button_InfoProcessNameRights.Image = global::EaseFilter.CommonObjects.Properties.Resources.about;
+            this.button_InfoProcessNameRights.Location = new System.Drawing.Point(521, 23);
+            this.button_InfoProcessNameRights.Name = "button_InfoProcessNameRights";
+            this.button_InfoProcessNameRights.Size = new System.Drawing.Size(28, 20);
+            this.button_InfoProcessNameRights.TabIndex = 124;
+            this.button_InfoProcessNameRights.UseVisualStyleBackColor = true;
+            this.button_InfoProcessNameRights.Click += new System.EventHandler(this.button_InfoProcessNameRights_Click);
+            // 
+            // button_InfoProcessIdRights
+            // 
+            this.button_InfoProcessIdRights.Image = global::EaseFilter.CommonObjects.Properties.Resources.about;
+            this.button_InfoProcessIdRights.Location = new System.Drawing.Point(521, 122);
+            this.button_InfoProcessIdRights.Name = "button_InfoProcessIdRights";
+            this.button_InfoProcessIdRights.Size = new System.Drawing.Size(28, 20);
+            this.button_InfoProcessIdRights.TabIndex = 125;
+            this.button_InfoProcessIdRights.UseVisualStyleBackColor = true;
+            this.button_InfoProcessIdRights.Click += new System.EventHandler(this.button_InfoProcessIdRights_Click);
+            // 
+            // button_InfoUserRights
+            // 
+            this.button_InfoUserRights.Image = global::EaseFilter.CommonObjects.Properties.Resources.about;
+            this.button_InfoUserRights.Location = new System.Drawing.Point(521, 154);
+            this.button_InfoUserRights.Name = "button_InfoUserRights";
+            this.button_InfoUserRights.Size = new System.Drawing.Size(28, 20);
+            this.button_InfoUserRights.TabIndex = 126;
+            this.button_InfoUserRights.UseVisualStyleBackColor = true;
+            this.button_InfoUserRights.Click += new System.EventHandler(this.button_InfoUserRights_Click);
+            // 
+            // button_InfoEncryptKeyLenght
+            // 
+            this.button_InfoEncryptKeyLenght.Image = global::EaseFilter.CommonObjects.Properties.Resources.about;
+            this.button_InfoEncryptKeyLenght.Location = new System.Drawing.Point(521, 145);
+            this.button_InfoEncryptKeyLenght.Name = "button_InfoEncryptKeyLenght";
+            this.button_InfoEncryptKeyLenght.Size = new System.Drawing.Size(28, 20);
+            this.button_InfoEncryptKeyLenght.TabIndex = 119;
+            this.button_InfoEncryptKeyLenght.UseVisualStyleBackColor = true;
+            this.button_InfoEncryptKeyLenght.Click += new System.EventHandler(this.button_InfoEncryptKeyLenght_Click);
+            // 
+            // button_InfoEncryptNewFile
+            // 
+            this.button_InfoEncryptNewFile.Image = global::EaseFilter.CommonObjects.Properties.Resources.about;
+            this.button_InfoEncryptNewFile.Location = new System.Drawing.Point(521, 40);
+            this.button_InfoEncryptNewFile.Name = "button_InfoEncryptNewFile";
+            this.button_InfoEncryptNewFile.Size = new System.Drawing.Size(28, 20);
+            this.button_InfoEncryptNewFile.TabIndex = 125;
+            this.button_InfoEncryptNewFile.UseVisualStyleBackColor = true;
+            this.button_InfoEncryptNewFile.Click += new System.EventHandler(this.button_InfoEncryptNewFile_Click);
+            // 
+            // button_InfoCopyout
+            // 
+            this.button_InfoCopyout.Image = global::EaseFilter.CommonObjects.Properties.Resources.about;
+            this.button_InfoCopyout.Location = new System.Drawing.Point(521, 19);
+            this.button_InfoCopyout.Name = "button_InfoCopyout";
+            this.button_InfoCopyout.Size = new System.Drawing.Size(28, 20);
+            this.button_InfoCopyout.TabIndex = 124;
+            this.button_InfoCopyout.UseVisualStyleBackColor = true;
+            this.button_InfoCopyout.Click += new System.EventHandler(this.button_InfoCopyout_Click);
+            // 
+            // button_InfoDecryption
+            // 
+            this.button_InfoDecryption.Image = global::EaseFilter.CommonObjects.Properties.Resources.about;
+            this.button_InfoDecryption.Location = new System.Drawing.Point(521, 66);
+            this.button_InfoDecryption.Name = "button_InfoDecryption";
+            this.button_InfoDecryption.Size = new System.Drawing.Size(28, 20);
+            this.button_InfoDecryption.TabIndex = 119;
+            this.button_InfoDecryption.UseVisualStyleBackColor = true;
+            this.button_InfoDecryption.Click += new System.EventHandler(this.button_InfoDecryption_Click);
+            // 
+            // button_InfoEncryptOnRead
+            // 
+            this.button_InfoEncryptOnRead.Image = global::EaseFilter.CommonObjects.Properties.Resources.about;
+            this.button_InfoEncryptOnRead.Location = new System.Drawing.Point(521, 92);
+            this.button_InfoEncryptOnRead.Name = "button_InfoEncryptOnRead";
+            this.button_InfoEncryptOnRead.Size = new System.Drawing.Size(28, 20);
+            this.button_InfoEncryptOnRead.TabIndex = 120;
+            this.button_InfoEncryptOnRead.UseVisualStyleBackColor = true;
+            this.button_InfoEncryptOnRead.Click += new System.EventHandler(this.button_InfoEncryptOnRead_Click);
+            // 
+            // button_InfoPassPhrase
+            // 
+            this.button_InfoPassPhrase.Image = global::EaseFilter.CommonObjects.Properties.Resources.about;
+            this.button_InfoPassPhrase.Location = new System.Drawing.Point(521, 118);
+            this.button_InfoPassPhrase.Name = "button_InfoPassPhrase";
+            this.button_InfoPassPhrase.Size = new System.Drawing.Size(28, 20);
+            this.button_InfoPassPhrase.TabIndex = 121;
+            this.button_InfoPassPhrase.UseVisualStyleBackColor = true;
+            this.button_InfoPassPhrase.Click += new System.EventHandler(this.button_InfoPassPhrase_Click);
+            // 
+            // button_HideFileFilterMask
+            // 
+            this.button_HideFileFilterMask.Image = global::EaseFilter.CommonObjects.Properties.Resources.about;
+            this.button_HideFileFilterMask.Location = new System.Drawing.Point(521, 175);
+            this.button_HideFileFilterMask.Name = "button_HideFileFilterMask";
+            this.button_HideFileFilterMask.Size = new System.Drawing.Size(28, 20);
+            this.button_HideFileFilterMask.TabIndex = 122;
+            this.button_HideFileFilterMask.UseVisualStyleBackColor = true;
+            this.button_HideFileFilterMask.Click += new System.EventHandler(this.button_HideFileFilterMask_Click);
+            // 
+            // button_InfoReparseFile
+            // 
+            this.button_InfoReparseFile.Image = global::EaseFilter.CommonObjects.Properties.Resources.about;
+            this.button_InfoReparseFile.Location = new System.Drawing.Point(521, 210);
+            this.button_InfoReparseFile.Name = "button_InfoReparseFile";
+            this.button_InfoReparseFile.Size = new System.Drawing.Size(28, 20);
+            this.button_InfoReparseFile.TabIndex = 123;
+            this.button_InfoReparseFile.UseVisualStyleBackColor = true;
+            this.button_InfoReparseFile.Click += new System.EventHandler(this.button_InfoReparseFile_Click);
             // 
             // ControlFilterRuleSettigs
             // 
@@ -857,15 +821,12 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox textBox_ProcessIdRights;
         private System.Windows.Forms.Button button_AddProcessIdRights;
-        private System.Windows.Forms.CheckBox checkBox_EncryptOnRead;
         private System.Windows.Forms.CheckBox checkBox_EnableReparseFile;
         private System.Windows.Forms.CheckBox checkBox_EnableHidenFile;
         private System.Windows.Forms.GroupBox groupBox4;
         private System.Windows.Forms.GroupBox groupBox3;
-        private System.Windows.Forms.RadioButton radioButton_256;
-        private System.Windows.Forms.RadioButton radioButton_196;
-        private System.Windows.Forms.RadioButton radioButton_128;
-        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.RadioButton radioButton_EncryptFileWithTagData;
+        private System.Windows.Forms.RadioButton radioButton_EncryptFileWithSameKey;
         private System.Windows.Forms.Button button_InfoControlFlag;
         private System.Windows.Forms.Button button_InfoControlEvents;
         private System.Windows.Forms.Button button_InfoProcessNameRights;

@@ -90,6 +90,7 @@ namespace FileProtector
             this.toolStripButton_UnitTest = new System.Windows.Forms.ToolStripButton();
             this.toolStripButton_Help = new System.Windows.Forms.ToolStripButton();
             this.listView_Info = new FileProtector.FastListView();
+            this.toolStripButton_ApplyTrialKey = new System.Windows.Forms.ToolStripButton();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -150,7 +151,7 @@ namespace FileProtector
             this.getEncryptedFileIVTagToolStripMenuItem.Name = "getEncryptedFileIVTagToolStripMenuItem";
             this.getEncryptedFileIVTagToolStripMenuItem.Size = new System.Drawing.Size(223, 22);
             this.getEncryptedFileIVTagToolStripMenuItem.Text = "Check Encrypt File Tag Data ";
-            this.getEncryptedFileIVTagToolStripMenuItem.Click += new System.EventHandler(this.getEncryptedFileIVTagToolStripMenuItem_Click);
+            this.getEncryptedFileIVTagToolStripMenuItem.Click += new System.EventHandler(this.getEncryptedFileTagdataToolStripMenuItem_Click);
             // 
             // exitToolStripMenuItem
             // 
@@ -172,7 +173,8 @@ namespace FileProtector
             this.toolStripSeparator4,
             this.toolStripButton1,
             this.toolStripButton_UnitTest,
-            this.toolStripButton_Help});
+            this.toolStripButton_Help,
+            this.toolStripButton_ApplyTrialKey});
             this.toolStrip1.Location = new System.Drawing.Point(0, 24);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.Size = new System.Drawing.Size(974, 25);
@@ -276,6 +278,15 @@ namespace FileProtector
             this.listView_Info.UseCompatibleStateImageBehavior = false;
             this.listView_Info.View = System.Windows.Forms.View.Details;
             // 
+            // toolStripButton_ApplyTrialKey
+            // 
+            this.toolStripButton_ApplyTrialKey.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton_ApplyTrialKey.Image")));
+            this.toolStripButton_ApplyTrialKey.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButton_ApplyTrialKey.Name = "toolStripButton_ApplyTrialKey";
+            this.toolStripButton_ApplyTrialKey.Size = new System.Drawing.Size(102, 22);
+            this.toolStripButton_ApplyTrialKey.Text = "Apply trial key";
+            this.toolStripButton_ApplyTrialKey.Click += new System.EventHandler(this.toolStripButton_ApplyTrialKey_Click);
+            // 
             // ProtectorForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -321,6 +332,7 @@ namespace FileProtector
         private System.Windows.Forms.ToolStripButton toolStripButton_UnitTest;
         private System.Windows.Forms.ToolStripButton toolStripButton_Help;
         private ToolStripMenuItem decryptFileWithOffsetToolStripMenuItem;
+        private ToolStripButton toolStripButton_ApplyTrialKey;
     }
 }
 

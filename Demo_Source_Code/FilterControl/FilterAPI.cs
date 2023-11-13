@@ -41,6 +41,10 @@ namespace EaseFilter.FilterControl
         public const uint GENERIC_WRITE = 0x40000000;
         public const uint AES_TAG_KEY = 0xccb76e80;
 
+        //default AES encrypted file header size
+        public const uint MAX_AES_HEADER_SIZE = 1024;
+        public const uint MAX_AES_TAG_SIZE = 910;
+
         public const uint FILE_FLAG_OPEN_REPARSE_POINT =  0x00200000;
         public const uint FILE_FLAG_OPEN_NO_RECALL =  0x00100000;
         public const uint FILE_FLAG_NO_BUFFERING =  0x20000000;
@@ -94,14 +98,9 @@ namespace EaseFilter.FilterControl
             /// </summary>
             ENCRYPT_FILE_WITH_SAME_KEY_AND_UNIQUE_IV,
             /// <summary>
-            ///Use the encryption key and iv from the user mode service,you can control how to use encryption key and iv per file.
+            ///Use the encryption key and iv from the user mode service,you can use the custom encryption key,iv and taga data per file.
             /// </summary>
-            ENCRYPT_FILE_WITH_KEY_AND_IV_FROM_SERVICE,
-            /// <summary>
-            ///Use the same encryption key from the filter rule for all files, use unique iv key per file, a meta data tag will be embeded to the 
-            /// the encyrpted file in the reparse point tag extended attribute. You can identify if the file is encrypted by checking the reparse point tag.
-            /// </summary>
-            ENCRYPT_FILE_WITH_REPARSE_POINT_DATA,
+            ENCRYPT_FILE_WITH_KEY_IV_AND_TAGDATA_FROM_SERVICE,
         }
 
         public enum BooleanConfig : uint

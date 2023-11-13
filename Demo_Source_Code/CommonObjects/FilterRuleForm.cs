@@ -203,6 +203,16 @@ namespace EaseFilter.CommonObjects
             }
         }
 
+        private void button_ProcessFilterRule_Click(object sender, EventArgs e)
+        {
+            ProcessFilterSetting processSettingForm = new ProcessFilterSetting();
+
+            if (processSettingForm.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+               ProcessFilterRule processFilterRule =  processSettingForm.selectedFilterRule;
+            }
+        }      
+
         private void button_InfoFilterMask_Click(object sender, EventArgs e)
         {
             MessageBox.Show("Input managed file filter mask with wild card character '*', it is unique index of the filter rule, to filter map drive file, you can use the filter mask like this: '*\\192.168.1.1\\shareName\\foldername\\*'");

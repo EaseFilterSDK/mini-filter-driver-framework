@@ -128,7 +128,7 @@ namespace SecureSandbox
                 if (!ret)
                 {
                     MessageBoxHelper.PrepToCenterMessageBoxOnForm(this);
-                    MessageBox.Show("Start filter failed." + lastError);
+                    MessageBox.Show("Start filter failed." + lastError, "StartFilter", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
 
@@ -690,6 +690,11 @@ namespace SecureSandbox
 
             MessageBoxHelper.PrepToCenterMessageBoxOnForm(this);
             MessageBox.Show(information, "How to use sandbox?", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private void toolStripButton_ApplyTrialKey_Click(object sender, EventArgs e)
+        {
+            
         }
             
     }

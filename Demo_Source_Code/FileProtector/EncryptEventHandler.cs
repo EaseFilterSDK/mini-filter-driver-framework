@@ -66,13 +66,68 @@ namespace FileProtector
         /// Fires this event after the new file was created, the handle is not closed.
         /// </summary>
         public void OnFilterRequestEncryptKey(object sender, EncryptEventArgs e)
-        {            
+        {
 
-            //if you want to block the encryption you can return access denied
-            // e.ReturnStatus = NtStatus.Status.AccessDenied;
-            //or return the encryption key and iv here.
-            //e.EncryptionKey = new byte[32]; //put your own encryption key here
-            //e.IV = Utils.GetRandomIV();
+            e.ReturnStatus = NtStatus.Status.Success;
+
+            try
+            {
+                if (e.IsNewCreatedFile)
+                {
+                    byte[] iv = Guid.NewGuid().ToByteArray();
+                    //for the new created file, you can add your custom tag data to the header of the encyrpted file here.
+                    //here we add the iv to the tag data.
+                    e.EncryptionTag = iv;
+
+                    //if you don't set the iv data, the filter driver will generate the new GUID as iv 
+                    e.IV = iv;
+
+                    //here is the encryption key for the new encrypted file, you can set it with your own unique custom key.
+                    e.EncryptionKey = Utils.GetKeyByPassPhrase(GlobalConfig.MasterPassword, 32);
+
+                    //if you want to block the new file creation, you can return access denied status.
+                    //e.ReturnStatus = NtStatus.Status.AccessDenied;
+
+                    //if you want to the file being created without encryption, return below status.
+                    //e.ReturnStatus = NtStatus.Status.FileIsNoEncrypted;  
+
+                }
+                else
+                {
+                    //this is the encrytped file open request, request the encryption key and iv.
+                    //here is the tag data if you set custom tag data when the new created file requested the key.
+                    byte[] tagData = e.EncryptionTag;
+
+                    //if (!GetEncryptedFileAccessPermission(e))
+                    //{
+                    //    //here didn't get the permission for the encrytped file open, it will return the raw encrypted data.
+                    //    e.ReturnStatus = NtStatus.Status.FileIsEncrypted;
+                    //}
+
+                    //The encryption key must be the same one which you created the new encrypted file.
+                    e.EncryptionKey = Utils.GetKeyByPassPhrase(GlobalConfig.MasterPassword, 32);
+
+                    //here is the iv key we saved in tag data.
+                    //e.IV = tagData;
+
+                    //if you want to block encrypted file being opened, you can return accessdenied status.
+                    //e.ReturnStatus = NtStatus.Status.AccessDenied;
+
+                    //if you want to return the raw encrypted data for this encrypted file, return below status.
+                    //e.ReturnStatus = NtStatus.Status.FileIsEncrypted;
+
+                    EventManager.WriteMessage(250, "OpenEncryptedFile", EventLevel.Information,
+                        "OpenEncryptedFile:" + e.FileName + ",userName:" + e.UserName + ",processName:" + e.ProcessName + ",return status:" + e.ReturnStatus.ToString());
+
+                }
+
+            }
+            catch (Exception ex)
+            {
+                EventManager.WriteMessage(500, "OnFilterRequestEncryptKey", EventLevel.Error, "OnFilterRequestEncryptKey:" + e.FileName + ",got exeception:" + ex.Message);
+                e.ReturnStatus = NtStatus.Status.AccessDenied;
+            }
+
 
         }
      

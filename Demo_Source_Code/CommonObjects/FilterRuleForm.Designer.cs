@@ -38,6 +38,8 @@
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.button_ControlSettings = new System.Windows.Forms.Button();
             this.groupBox_AccessControl = new System.Windows.Forms.GroupBox();
+            this.button_MonitorBufferInfo = new System.Windows.Forms.Button();
+            this.checkBox_MonitorEventBuffer = new System.Windows.Forms.CheckBox();
             this.button_InfoMonitorIO = new System.Windows.Forms.Button();
             this.button_InfoFileEvents = new System.Windows.Forms.Button();
             this.textBox_SelectedEvents = new System.Windows.Forms.TextBox();
@@ -84,8 +86,7 @@
             this.button_InfoIncludeProcessName = new System.Windows.Forms.Button();
             this.button_InfoExcludeProcessName = new System.Windows.Forms.Button();
             this.button_InfoFilterMask = new System.Windows.Forms.Button();
-            this.checkBox_MonitorEventBuffer = new System.Windows.Forms.CheckBox();
-            this.button_MonitorBufferInfo = new System.Windows.Forms.Button();
+            this.button_ProcessFilterRule = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox_AccessControl.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -105,7 +106,7 @@
             // button_SaveFilterRule
             // 
             this.button_SaveFilterRule.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.button_SaveFilterRule.Location = new System.Drawing.Point(439, 560);
+            this.button_SaveFilterRule.Location = new System.Drawing.Point(438, 592);
             this.button_SaveFilterRule.Name = "button_SaveFilterRule";
             this.button_SaveFilterRule.Size = new System.Drawing.Size(75, 23);
             this.button_SaveFilterRule.TabIndex = 8;
@@ -148,10 +149,11 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.button_ProcessFilterRule);
             this.groupBox1.Controls.Add(this.button_ControlSettings);
             this.groupBox1.Location = new System.Drawing.Point(12, 2);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(547, 552);
+            this.groupBox1.Size = new System.Drawing.Size(547, 584);
             this.groupBox1.TabIndex = 11;
             this.groupBox1.TabStop = false;
             // 
@@ -185,6 +187,26 @@
             this.groupBox_AccessControl.TabIndex = 24;
             this.groupBox_AccessControl.TabStop = false;
             this.groupBox_AccessControl.Text = "Monitor Filter Only Settings";
+            // 
+            // button_MonitorBufferInfo
+            // 
+            this.button_MonitorBufferInfo.Image = global::EaseFilter.CommonObjects.Properties.Resources.about;
+            this.button_MonitorBufferInfo.Location = new System.Drawing.Point(364, 84);
+            this.button_MonitorBufferInfo.Name = "button_MonitorBufferInfo";
+            this.button_MonitorBufferInfo.Size = new System.Drawing.Size(28, 20);
+            this.button_MonitorBufferInfo.TabIndex = 121;
+            this.button_MonitorBufferInfo.UseVisualStyleBackColor = true;
+            this.button_MonitorBufferInfo.Click += new System.EventHandler(this.button_MonitorBufferInfo_Click);
+            // 
+            // checkBox_MonitorEventBuffer
+            // 
+            this.checkBox_MonitorEventBuffer.AutoSize = true;
+            this.checkBox_MonitorEventBuffer.Location = new System.Drawing.Point(199, 87);
+            this.checkBox_MonitorEventBuffer.Name = "checkBox_MonitorEventBuffer";
+            this.checkBox_MonitorEventBuffer.Size = new System.Drawing.Size(159, 17);
+            this.checkBox_MonitorEventBuffer.TabIndex = 120;
+            this.checkBox_MonitorEventBuffer.Text = "Enable Monitor Event Buffer";
+            this.checkBox_MonitorEventBuffer.UseVisualStyleBackColor = true;
             // 
             // button_InfoMonitorIO
             // 
@@ -652,32 +674,23 @@
             this.button_InfoFilterMask.UseVisualStyleBackColor = true;
             this.button_InfoFilterMask.Click += new System.EventHandler(this.button_InfoFilterMask_Click);
             // 
-            // checkBox_MonitorEventBuffer
+            // button_ProcessFilterRule
             // 
-            this.checkBox_MonitorEventBuffer.AutoSize = true;
-            this.checkBox_MonitorEventBuffer.Location = new System.Drawing.Point(199, 87);
-            this.checkBox_MonitorEventBuffer.Name = "checkBox_MonitorEventBuffer";
-            this.checkBox_MonitorEventBuffer.Size = new System.Drawing.Size(159, 17);
-            this.checkBox_MonitorEventBuffer.TabIndex = 120;
-            this.checkBox_MonitorEventBuffer.Text = "Enable Monitor Event Buffer";
-            this.checkBox_MonitorEventBuffer.UseVisualStyleBackColor = true;
-            // 
-            // button_MonitorBufferInfo
-            // 
-            this.button_MonitorBufferInfo.Image = global::EaseFilter.CommonObjects.Properties.Resources.about;
-            this.button_MonitorBufferInfo.Location = new System.Drawing.Point(364, 84);
-            this.button_MonitorBufferInfo.Name = "button_MonitorBufferInfo";
-            this.button_MonitorBufferInfo.Size = new System.Drawing.Size(28, 20);
-            this.button_MonitorBufferInfo.TabIndex = 121;
-            this.button_MonitorBufferInfo.UseVisualStyleBackColor = true;
-            this.button_MonitorBufferInfo.Click += new System.EventHandler(this.button_MonitorBufferInfo_Click);
+            this.button_ProcessFilterRule.BackColor = System.Drawing.SystemColors.GradientActiveCaption;
+            this.button_ProcessFilterRule.Location = new System.Drawing.Point(12, 552);
+            this.button_ProcessFilterRule.Name = "button_ProcessFilterRule";
+            this.button_ProcessFilterRule.Size = new System.Drawing.Size(489, 23);
+            this.button_ProcessFilterRule.TabIndex = 76;
+            this.button_ProcessFilterRule.Text = "Configure the process filter rule settings";
+            this.button_ProcessFilterRule.UseVisualStyleBackColor = false;
+            this.button_ProcessFilterRule.Click += new System.EventHandler(this.button_ProcessFilterRule_Click);
             // 
             // FilterRuleForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
-            this.ClientSize = new System.Drawing.Size(571, 595);
+            this.ClientSize = new System.Drawing.Size(571, 622);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox_AccessControl);
             this.Controls.Add(this.groupBox1);
@@ -755,5 +768,6 @@
         private System.Windows.Forms.Button button_InfoDesiredAccess;
         private System.Windows.Forms.Button button_MonitorBufferInfo;
         private System.Windows.Forms.CheckBox checkBox_MonitorEventBuffer;
+        private System.Windows.Forms.Button button_ProcessFilterRule;
     }
 }

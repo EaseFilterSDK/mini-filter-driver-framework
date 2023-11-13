@@ -238,6 +238,19 @@ int _tmain(int argc, _TCHAR* argv[])
 
 			if( filterType == FILE_SYSTEM_CONTROL)
 			{
+				//if you want to hide the files, you need to enable this flag.
+				//fileFilterRule.AccessFlag |= ENABLE_HIDE_FILES_IN_DIRECTORY_BROWSING;
+				//hide the txt files from the directory.
+				//fileFilterRule.AddHiddenFileFilterMask(L"*.txt");
+
+				//if you want to reparse the file open, you need to enable this flag.
+				//fileFilterRule.AccessFlag |= ENABLE_REPARSE_FILE_OPEN;
+                //FilterMask = c:\test\*txt
+                //ReparseFilterMask = d:\reparse\*doc
+                //If you open file c:\test\MyTest.txt, it will reparse to the file d:\reparse\MyTest.doc.
+				//fileFilterRule.ReparseFileFilterMask= L" d:\\reparse\*doc";
+
+				//get the control callback I/O request.
 				fileFilterRule.ControlFileIOEventFilter = ioCallbackClass;				
 			
 				//disable the file being renamed, deleted and written access rights.
@@ -303,6 +316,10 @@ int _tmain(int argc, _TCHAR* argv[])
 
 			FileFilterRule fileFilterRule(fileFilterMask);
 			fileFilterRule.AccessFlag = accessFlag;
+
+			//if we enable the encryption key from service, you can authorize the decryption for every file
+            //in the callback function OnFilterRequestEncryptKey, with this flag enabled, you don't need to set the encryption key.
+			//fileFilterRule.BooleanConfig |= REQUEST_ENCRYPT_KEY_IV_AND_TAGDATA_FROM_SERVICE;
 
 			//if you have a master key, you can set it here, or if you want to get the encryption key from the callback function then don't set the key here.
 			//256 bit,32bytes encrytpion key

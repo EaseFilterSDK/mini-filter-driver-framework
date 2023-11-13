@@ -188,7 +188,7 @@ FilterControl::SendFileFilterRuleToFilter(FileFilterRule* fileFilter)
     {
 		if (excludeProcessName->length() > 0)
         {
-            if (!AddIncludeProcessNameToFilterRule(&fileFilter->FileFilterMask[0], &(*excludeProcessName)[0]))
+            if (!AddExcludeProcessNameToFilterRule(&fileFilter->FileFilterMask[0], &(*excludeProcessName)[0]))
             {
                 PrintLastErrorMessage(L"AddExcludeProcessNameToFilterRule failed.");
                 return false;
