@@ -541,6 +541,15 @@ namespace EaseFilter.FilterControl
                                 }
                             }
 
+                            if (fileFilter.EncryptWriteBufferSize > 0)
+                            {
+                                if (!FilterAPI.SetEncryptWriteBufferSize(fileFilter.EncryptWriteBufferSize))
+                                {
+                                    lastError = "SetEncryptWriteBufferSize " + fileFilter.EncryptWriteBufferSize + " failed:" + FilterAPI.GetLastErrorMessage();
+                                    return false;
+                                }
+                            }
+
                         }
 
                         if (fileFilter.BooleanConfig > 0 && !FilterAPI.AddBooleanConfigToFilterRule(fileFilter.IncludeFileFilterMask, fileFilter.BooleanConfig))
@@ -708,7 +717,7 @@ namespace EaseFilter.FilterControl
                         //FilterMask = c:\test\*txt
                         //ReparseFilterMask = d:\reparse\*doc
                         //If you open file c:\test\MyTest.txt, it will reparse to the file d:\reparse\MyTest.doc.
-                        if (fileFilter.EnableReparseFile)
+                        if (fileFilter.EnableReparseFile && fileFilter.ReparseFileFilterMask.Trim().Length > 0)
                         {
                             string reparseFileFilterMask = fileFilter.ReparseFileFilterMask;
                             if (!FilterAPI.AddReparseFileMaskToFilterRule(fileFilter.IncludeFileFilterMask, reparseFileFilterMask.Trim()))

@@ -103,6 +103,20 @@ namespace EaseFilter.FilterControl
             ENCRYPT_FILE_WITH_KEY_IV_AND_TAGDATA_FROM_SERVICE,
         }
 
+        //This is the enumeration of the file copy flags.
+        public enum FILE_COPY_FLAG:uint
+        {
+            //this is the source file for copy in the open.
+            CREATE_FLAG_FILE_SOURCE_OPEN_FOR_COPY = 0x00000001,
+            //this is the dest file for copy in the open.
+            CREATE_FLAG_FILE_DEST_OPEN_FOR_COPY = 0x00000002,
+            //this is the source file read for file copy.
+            READ_FLAG_FILE_SOURCE_FOR_COPY = 0x00000004,
+            //this is the destination file write for file copy.
+            WRITE_FLAG_FILE_DEST_FOR_COPY = 0x00000008,
+
+        }
+
         public enum BooleanConfig : uint
         {
             /// <summary>
@@ -173,7 +187,21 @@ namespace EaseFilter.FilterControl
             /// if it is true, it will block the encrypted file to be renamed to different folder.
             /// </summary>
             DISABLE_RENAME_ENCRYPTED_FILE = 0x00008000,
-         
+            /// <summary>
+            /// if it is true, the data protection will continue even the service process is stopped.
+            /// </summary>
+            ENABLE_PROTECTION_IF_SERVICE_STOPPED = 0x00020000,
+            /// <summary>
+            /// if it is true and write encrypt info to cache is enabled, it will signal the system thread to write cache data to disk right away.
+            /// </summary>
+            ENABLE_SIGNAL_WRITE_ENCRYPT_INFO_EVENT = 0x00020000,
+            /// <summary>
+            ///enable this feature when accessFlag "ALLOW_SAVE_AS" or "ALLOW_COPY_PROTECTED_FILES_OUT" was disabled.
+            ///by default we don't enable this feature, because of the drawback of these two flags were disabled 
+            ///which will block all new file creation of the process which was read the protected files.
+            /// </summary>
+            ENABLE_BLOCK_SAVE_AS_FLAG = 0x00040000,
+
         }
 
         /// <summary>
@@ -525,6 +553,11 @@ namespace EaseFilter.FilterControl
             /// Fires this event when the file's data was read after the file handle closed
             /// </summary>
             NotifyFileWasRead = 0x00000800,
+            /// <summary>
+            /// This is only for Windows 11, version 22H2 or later OS.
+            /// Fires this event when the file was copied after the file handle closed
+            /// </summary>
+            NotifyFileWasCopied = 0x00001000,
         }
 
         /// <summary>
@@ -1108,6 +1141,15 @@ namespace EaseFilter.FilterControl
         [DllImport("FilterAPI.dll", SetLastError = true)]
         public static extern bool SetMaxMonitorEventBuffersize(uint maxMonitorEventBufferSize);
 
+      /// <summary>
+        /// If the encrypt write buffer size is greater than 0, then the small buffer encryption write will be combined together to a bigger buffer,
+        /// and write it to the disk.
+      /// </summary>
+      /// <param name="encryptWriteBufferSize"></param>
+      /// <returns></returns>
+        [DllImport("FilterAPI.dll", SetLastError = true)]
+        public static extern bool SetEncryptWriteBufferSize(uint encryptWriteBufferSize);
+
         /// <summary>
         /// Add the new filter rule to the filter driver.
         /// </summary>
@@ -1417,6 +1459,17 @@ namespace EaseFilter.FilterControl
         [MarshalAs(UnmanagedType.LPWStr)]string filterMask,
         [MarshalAs(UnmanagedType.LPWStr)]string userName,
         uint accessFlags);
+
+        /// <summary>
+        /// Remove the access control rights to specific users
+        /// </summary>
+        /// <param name="filterMask">the filter rule file filter mask</param>
+        /// <param name="userName">the user name you want to set the access right</param>
+        /// <returns></returns>
+        [DllImport("FilterAPI.dll", SetLastError = true)]
+        public static extern bool RemoveUserRightsFromFilterRule(
+        [MarshalAs(UnmanagedType.LPWStr)]string filterMask,
+        [MarshalAs(UnmanagedType.LPWStr)]string userName);
 
         /// <summary>
         /// Add the boolean config setting to a filter rule.

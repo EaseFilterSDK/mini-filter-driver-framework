@@ -303,6 +303,17 @@ namespace EaseFilter.CommonObjects
             set { base["encryptionKeySize"] = value; }
         }
 
+        /// <summary>
+        /// If the encrypt write buffer size is greater than 0, then the small buffer encryption write will be combined together to a bigger buffer,
+        /// and write it to the disk.
+        /// </summary>
+        [ConfigurationProperty("encryptWriteBufferSize", IsRequired = false)]
+        public uint EncryptWriteBufferSize
+        {
+            get { return (uint)base["encryptWriteBufferSize"]; }
+            set { base["encryptWriteBufferSize"] = value; }
+        }
+
 
         /// <summary>
         /// the file access control flags for the filter rule.
@@ -437,6 +448,7 @@ namespace EaseFilter.CommonObjects
             dest.FilterDesiredAccess = FilterDesiredAccess;
             dest.FilterDisposition = FilterDisposition;
             dest.EnableMonitorEventBuffer = EnableMonitorEventBuffer;
+            dest.EncryptWriteBufferSize = EncryptWriteBufferSize;
 
             return dest;
         }
@@ -455,6 +467,7 @@ namespace EaseFilter.CommonObjects
                 fileFilter.FilterDesiredAccess = FilterDesiredAccess;
                 fileFilter.FilterDisposition = FilterDisposition;
                 fileFilter.EnableMonitorEventBuffer = EnableMonitorEventBuffer;
+                fileFilter.EncryptWriteBufferSize = EncryptWriteBufferSize;
 
                 string[] excludeFileFilterMasks = ExcludeFileFilterMasks.Split(new char[] { ';' });
                 if (excludeFileFilterMasks.Length > 0)

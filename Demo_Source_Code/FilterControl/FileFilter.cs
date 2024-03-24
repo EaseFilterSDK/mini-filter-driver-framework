@@ -247,6 +247,32 @@ namespace EaseFilter.FilterControl
             }
         }
 
+        /// <summary>
+        ///enable this feature when accessFlag "ALLOW_SAVE_AS" or "ALLOW_COPY_PROTECTED_FILES_OUT" was disabled.
+        ///by default we don't enable this feature, because of the drawback of these two flags were disabled 
+        ///which will block all new file creation of the process which was read the protected files.
+        /// </summary>
+        public bool EnableBlockSaveAs
+        {
+            get
+            {
+                return (booleanConfig & (uint)FilterAPI.BooleanConfig.ENABLE_BLOCK_SAVE_AS_FLAG) > 0;
+            }
+
+            set
+            {
+                if (value)
+                {
+                    booleanConfig |= (uint)FilterAPI.BooleanConfig.ENABLE_BLOCK_SAVE_AS_FLAG;
+                }
+                else
+                {
+                    booleanConfig &= ~(uint)FilterAPI.BooleanConfig.ENABLE_BLOCK_SAVE_AS_FLAG;
+                }
+            }
+        }
+
+
 
         public override bool ReplyMessage(FilterAPI.MessageSendData messageSend, IntPtr replyDataPtr)
         {
@@ -512,6 +538,22 @@ namespace EaseFilter.FilterControl
                 Description += "The file " + FileName + " information was changed.";
             }
 
+            if ((messageSend.InfoClass & (uint)FilterAPI.FileChangedEvents.NotifyFileWasCopied) > 0)
+            {
+                if (messageSend.DataBufferLength > 0)
+                {
+                    newFileName = Encoding.Unicode.GetString(messageSend.DataBuffer);
+                    if (newFileName.IndexOf((char)0) > 0)
+                    {
+                        newFileName = newFileName.Remove(newFileName.IndexOf((char)0));
+                    }
+                }
+
+                eventType |= FilterAPI.FileChangedEvents.NotifyFileWasRenamed;
+                EventName += "NotifyFileWasCopied;";
+                Description += "The file " + FileName + " was copied from " + newFileName + ".";
+            }
+
             if ((messageSend.InfoClass & (uint)FilterAPI.FileChangedEvents.NotifyFileWasRenamed) > 0)
             {
                 if (messageSend.DataBufferLength > 0)
@@ -582,6 +624,16 @@ namespace EaseFilter.FilterControl
                     isNewFileCreated = false;
                 }
             }
+
+            if ((messageSend.InfoClass & (uint)FilterAPI.FILE_COPY_FLAG.CREATE_FLAG_FILE_SOURCE_OPEN_FOR_COPY) > 0)
+            {
+                isFileCopySource = true;
+            }
+
+            if ((messageSend.InfoClass & (uint)FilterAPI.FILE_COPY_FLAG.CREATE_FLAG_FILE_DEST_OPEN_FOR_COPY) > 0)
+            {
+                isFileCopyDest = true;
+            }
         }
     
         /// <summary>
@@ -597,6 +649,14 @@ namespace EaseFilter.FilterControl
         /// It indicates that the new file was created if it is true.
         /// </summary>
         public bool isNewFileCreated { get; set; }
+        /// <summary>
+        /// It indicates that this is file copy source file open.
+        /// </summary>
+        public bool isFileCopySource { get; set; }
+        /// <summary>
+        /// It indicates that this is file copy dest file open.
+        /// </summary>
+        public bool isFileCopyDest { get; set; }
 
         /// <summary>
         /// The description of the IO args
@@ -617,6 +677,15 @@ namespace EaseFilter.FilterControl
                     message = "The file will be deleted on close." + message;
                 }
 
+                if (isFileCopySource)
+                {
+                    message = "FileCopy source file open." + message;
+                }
+
+                if (isFileCopyDest)
+                {
+                    message = "FileCopy dest file open." + message;
+                }
 
                 return message;
             }
@@ -670,6 +739,11 @@ namespace EaseFilter.FilterControl
                 isPostRead = false;
             }
 
+            if ((messageSend.InfoClass & (uint)FilterAPI.FILE_COPY_FLAG.READ_FLAG_FILE_SOURCE_FOR_COPY) > 0)
+            {
+                isFileCopySource = true;
+            }
+
         }
 
         /// <summary>
@@ -696,6 +770,10 @@ namespace EaseFilter.FilterControl
         /// The data was read and return from file system if it is true.
         /// </summary>
         public bool isPostRead { get; set; }
+        /// <summary>
+        /// It indicates that this is file copy source file open.
+        /// </summary>
+        public bool isFileCopySource { get; set; }
 
         /// <summary>
         /// The description of the IO args
@@ -714,6 +792,11 @@ namespace EaseFilter.FilterControl
                 else
                 {
                     message = "Pre-" + message;
+                }
+
+                if (isFileCopySource)
+                {
+                    message = "FileCopy source file read." + message;
                 }
 
                 return message;
@@ -769,6 +852,11 @@ namespace EaseFilter.FilterControl
             {
                 isPostWrite = false;
             }
+
+            if ((messageSend.InfoClass & (uint)FilterAPI.FILE_COPY_FLAG.WRITE_FLAG_FILE_DEST_FOR_COPY) > 0)
+            {
+                isFileCopyDest = true;
+            }
         }
 
         /// <summary>
@@ -799,6 +887,10 @@ namespace EaseFilter.FilterControl
         /// The data was written and return from file system if it is true.
         /// </summary>
         public bool isPostWrite { get; set; }
+        /// <summary>
+        /// It indicates that this is file copy dest file write.
+        /// </summary>
+        public bool isFileCopyDest { get; set; }
 
         /// <summary>
         /// The description of the IO args
@@ -817,6 +909,11 @@ namespace EaseFilter.FilterControl
                 else
                 {
                     message = "Pre-" + message;
+                }
+
+                if(isFileCopyDest)
+                {
+                    message = "FileCopy dest file write." + message;
                 }
 
                 return message;

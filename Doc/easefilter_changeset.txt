@@ -291,6 +291,25 @@
 5.2.5.3 ( 2023-02-15)
 	1. Fixed the decryption issue for file size greater than 4GB.
 	2. Fixed the send buffer related issue.
-5.2.5.4 ( 2023-02-22)
-	1. Added the trial key support per computer.
+5.2.5.7 ( 2023-08-13)
+	1. Fixed rename event didn't send the new file name information.
+	2. Fixed computer Id support issue for DRM encryption.
+5.2.6.1 ( 2023-09-01)
+	1. Fixed process access rights compatible issue for process signed with certificate and process name/id together.
+5.2.7.1 ( 2023-09-24)
+	1. Fixed read encrypted file slowness issue via SMB share.
+5.2.8.1 ( 2023-10-11)
+	1. Fixed protected process can't spawn a child process issue.
+5.2.9.1 ( 2023-11-15)
+	1. Added iv data as the default encrypted file tag data if it wasn't set.
+5.3.1.5 ( 2024-01-11)
+	1. Improved the encryption performance for small buffer size writing.
+	1. Improved the performance for control access rights by user name.
+5.3.2.1 ( 2024-01-24)
+	1. Fixed registry filter bug when the process name filter mask is in format "*xxx*".
+5.3.4.1 ( 2024-02-18)
+	1. Added the support to detect the FileCopy request for Windows 11 22H2 or later OS.
+
+
+
 	

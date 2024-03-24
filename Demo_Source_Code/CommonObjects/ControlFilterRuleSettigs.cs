@@ -52,6 +52,7 @@ namespace EaseFilter.CommonObjects
             textBox_PassPhrase.Text = filterRule.EncryptionPassPhrase;
             textBox_HiddenFilterMask.Text = filterRule.HiddenFileFilterMasks;
             textBox_ReparseFileFilterMask.Text = filterRule.ReparseFileFilterMask;
+            textBox_EncryptWriteBufferSize.Text = filterRule.EncryptWriteBufferSize.ToString();
 
             SetCheckBoxValue();
 
@@ -227,6 +228,8 @@ namespace EaseFilter.CommonObjects
                 {
                     filterRule.EncryptMethod = (int)FilterAPI.EncryptionMethod.ENCRYPT_FILE_WITH_KEY_IV_AND_TAGDATA_FROM_SERVICE;
                 }
+
+                filterRule.EncryptWriteBufferSize = uint.Parse(textBox_EncryptWriteBufferSize.Text);
             }
 
             if (textBox_HiddenFilterMask.Text.Trim().Length > 0)
@@ -625,9 +628,9 @@ namespace EaseFilter.CommonObjects
             MessageBox.Show("Enable the encryption feature and set the encryption key phrase for generating the encryption key.");
         }
 
-        private void button_InfoEncryptKeyLenght_Click(object sender, EventArgs e)
+        private void button_EnableEncryptionKeyFromService_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Set the encryption key lenght for the file encryption.");
+            MessageBox.Show("If this is enabled, all encryption/decryption will get the encryption key from the callback service, you also can embed the custom tag data to the new created encrypted file.");
         }
 
         private void button_HideFileFilterMask_Click(object sender, EventArgs e)
@@ -671,6 +674,11 @@ namespace EaseFilter.CommonObjects
         private void button_InfoSignedProcessRights_Click(object sender, EventArgs e)
         {
             MessageBox.Show("Add the trusted process which was signed with the certificate to filter rule, only the authenticated process can access the files. ");
+        }
+
+        private void button_EncryptWriteBufferSize_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("If the encrypt write buffer size is greater than 0, then the small buffer encryption write will be combined together to a bigger buffer, and write it to the disk.");
         }
 
      

@@ -203,6 +203,18 @@
 				Description += L"The file was renamed to " + newFileName;
             }
 
+            if ((messageSend->InfoClass & FILE_WAS_COPIED) > 0)
+            {
+                if (messageSend->DataBufferLength > 0)
+                {
+                    newFileName.assign((WCHAR*)messageSend->DataBuffer);
+                }
+
+                eventType |= FILE_WAS_COPIED;
+                EventName.append(L"NotifyFileWasCopied;");
+                Description += L"The file was copied from " + newFileName;
+            }
+
             if ((messageSend->InfoClass & FILE_SECURITY_CHANGED ) > 0)
             {
                 eventType |= FILE_SECURITY_CHANGED;
@@ -232,9 +244,27 @@
         /// It indicates that the new file was created if it is true.
         /// </summary>
         BOOL isNewFileCreated ;
+        /// <summary>
+        /// It indicates that this is file copy source file open.
+        /// </summary>
+        BOOL isFileCopySource;
+        /// <summary>
+        /// It indicates that this is file copy dest file open.
+        /// </summary>
+        BOOL isFileCopyDest;
 
         FileCreateEventArgs(PMESSAGE_SEND_DATA messageSend) : FileIOEventArgs(messageSend)
-        {                       
+        {        
+            if ((messageSend->InfoClass & CREATE_FLAG_FILE_SOURCE_OPEN_FOR_COPY) > 0)
+            {
+                isFileCopySource = true;
+            }
+
+            if ((messageSend->InfoClass & CREATE_FLAG_FILE_DEST_OPEN_FOR_COPY) > 0)
+            {
+                isFileCopyDest = true;
+            }
+
             if (    messageSend->Status == 0 
                 && POST_CREATE == messageSend->MessageType)
             {
@@ -267,7 +297,7 @@
 
                 }
 
-            }        
+            }    
 
 			if ((messageSend->CreateOptions & FILE_DELETE_ON_CLOSE) > 0)
             {
@@ -277,6 +307,16 @@
             else
             {
                 isDeleteOnClose = false;
+            }
+
+            if (isFileCopySource)
+            {
+                Description = L"FileCopy source file open." + Description;
+            }
+
+            if (isFileCopyDest)
+            {
+                Description = L"FileCopy dest file open." + Description;
             }
 
 		}
@@ -336,6 +376,11 @@
 
 			Description =  L"ReadType:" + readType + L",ReadOffset:" + std::to_wstring(offset) + L",ReadLength:" + std::to_wstring((ULONGLONG)readLength) 
 				+ L",returnReadLength:" + std::to_wstring((ULONGLONG)returnReadLength);
+
+            if ((messageSend->InfoClass & READ_FLAG_FILE_SOURCE_FOR_COPY) > 0)
+            {
+                Description = L"FileCopy source file read." + Description;
+            }
             
         }
     };
@@ -399,6 +444,11 @@
         
 			Description = L"WriteType:" + writeType +  L",WriteOffset:" + std::to_wstring(offset) + L",writeLength:" + std::to_wstring((ULONGLONG)writeLength) 
 				+ L",WrittenLength:" + std::to_wstring((ULONGLONG)writtenLength);
+
+            if ((messageSend->InfoClass & WRITE_FLAG_FILE_DEST_FOR_COPY) > 0)
+            {
+                Description = L"FileCopy dest file write." + Description;
+            }
         }
     };
 

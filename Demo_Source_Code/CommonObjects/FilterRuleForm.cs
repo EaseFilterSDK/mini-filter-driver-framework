@@ -38,6 +38,7 @@ namespace EaseFilter.CommonObjects
             //set the default value for the new filter rule.
             filterRule.IncludeFileFilterMask = "c:\\test\\*";
             filterRule.EncryptMethod = (int)FilterAPI.EncryptionMethod.ENCRYPT_FILE_WITH_SAME_KEY_AND_UNIQUE_IV;
+            filterRule.EncryptWriteBufferSize = 1048576;
             filterRule.RegisterMonitorFileEvents = (uint)(FilterAPI.FileChangedEvents.NotifyFileWasCreated | FilterAPI.FileChangedEvents.NotifyFileWasDeleted | FilterAPI.FileChangedEvents.NotifyFileInfoWasChanged
                 | FilterAPI.FileChangedEvents.NotifyFileWasRenamed | FilterAPI.FileChangedEvents.NotifyFileWasWritten | FilterAPI.FileChangedEvents.NotifyFileSecurityWasChanged | FilterAPI.FileChangedEvents.NotifyFileWasRead);
 

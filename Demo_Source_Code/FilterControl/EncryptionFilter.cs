@@ -44,6 +44,17 @@ namespace EaseFilter.FilterControl
         /// </summary>
         byte[] encryptionIV = null;
 
+        uint encryptWriteBufferSize = 0;
+
+        /// <summary>
+        /// If the encrypt write buffer size is greater than 0, then the small buffer encryption write will be combined together to a bigger buffer, 
+        /// and write it to the disk.
+        /// </summary>
+        public uint EncryptWriteBufferSize
+        {
+            get { return encryptWriteBufferSize; }
+            set { encryptWriteBufferSize = value; }
+        }      
 
         /// <summary>
         /// Enable the encryption feature when it is true

@@ -38,7 +38,7 @@ namespace EaseFilter.CommonObjects
             {
                 selectedFilterRule = new ProcessFilterRule();
                 selectedFilterRule.ProcessNameFilterMask = "*";
-                selectedFilterRule.ControlFlag = 16130;
+                selectedFilterRule.ControlFlag = 770;
             }
 
             if (selectedFilterRule.ProcessId.Length > 0 && selectedFilterRule.ProcessId != "0" )

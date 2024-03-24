@@ -388,10 +388,13 @@ FilterControl::SendRegistryFilterRuleToFilter(RegistryFilterRule* registryFilter
 BOOL
 FilterControl::SendConfigSettingsToFilter()
 {
-	if (!ResetConfigData())
+    if (ProcessFilterRules.size() > 0 || RegistryFilterRules.size() > 0 || FileFilterRules.size() > 0)
     {
-        PrintLastErrorMessage(L"ResetConfigData failed.");
-        return false;
+        if (!ResetConfigData())
+        {
+            PrintLastErrorMessage(L"ResetConfigData failed.");
+            return false;
+        }
     }
 
     if (!SetConnectionTimeout(connectionTimeout))

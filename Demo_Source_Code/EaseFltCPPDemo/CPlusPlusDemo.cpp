@@ -80,6 +80,8 @@ Return Value
 	printf( "EaseFltCPPDemo m c:\\filterTest\\*  ----- monitor filter driver with default settings.\r\n" );
 	printf( "EaseFltCPPDemo c c:\\filterTest\\*  ----- control filter driver with default settings.\r\n" );
 	printf( "EaseFltCPPDemo c c:\\filterTest\\*  0 33393264   ---control filter driver, prevent files from being changed.\r\n" );
+	printf( "EaseFltCPPDemo P *(processNameFilterMask) controlFlag ---process filter driver to monitor/control process activities.\r\n");
+	printf( "EaseFltCPPDemo r *(processNameFilterMask) *(keyNameFilterMask)  controlFlag ---registry filter driver to monitor/control registry activities.\r\n");
 	
 }
 
@@ -210,9 +212,9 @@ int _tmain(int argc, _TCHAR* argv[])
 			ULONG ioCallbackClass = allPostIO;
 			ULONG accessFlag = ALLOW_MAX_RIGHT_ACCESS;		
 
-			if( argc >= 3 )
+			if (argc >= 3)
 			{
-				fileFilterMask = argv[2];
+				fileFilterMask = argv[2];			
 			}
 			
 			//To get the I/O callback registration class, you can check the IOCallbackClass for your reference.
@@ -224,16 +226,14 @@ int _tmain(int argc, _TCHAR* argv[])
 			if( argc >= 5 )
 			{
 				accessFlag = std::stoul (argv[4],nullptr,10);
-			}
-
-			_tprintf(_T("Start Monitor %s  ioCallbackClass:0X%0X accessFlag:0X%0X \n\n Press any key to stop.\n"),fileFilterMask,ioCallbackClass,accessFlag);			
+			}					
 
 			FilterControl* filterControl = FilterControl::GetSingleInstance();
 
 			FileFilterRule fileFilterRule(fileFilterMask);
 			fileFilterRule.AccessFlag = accessFlag;
 			fileFilterRule.BooleanConfig = ENABLE_MONITOR_EVENT_BUFFER;
-			fileFilterRule.FileChangeEventFilter = FILE_WAS_CREATED|FILE_WAS_WRITTEN|FILE_WAS_RENAMED|FILE_WAS_DELETED;
+			fileFilterRule.FileChangeEventFilter = FILE_WAS_CREATED|FILE_WAS_WRITTEN|FILE_WAS_RENAMED|FILE_WAS_DELETED|FILE_WAS_READ;
 			fileFilterRule.MonitorFileIOEventFilter = ioCallbackClass;
 
 			if( filterType == FILE_SYSTEM_CONTROL)
@@ -273,6 +273,15 @@ int _tmain(int argc, _TCHAR* argv[])
 			filterControl->globalBooleanConfig = globalBooleanConfig;
 
 			filterControl->StartFilter(filterType,threadCount,connectionTimeout,registerKey);
+
+			if (op == 'm')
+			{
+				_tprintf(_T("Start Monitor filter, fileFilterMask=%s  ioCallbackClass:0X%0X accessFlag:0X%0X \n\n Press any key to stop.\n"), fileFilterMask, ioCallbackClass, accessFlag);
+			}
+			else
+			{
+				_tprintf(_T("Start control filter, fileFilterMask=%s  ioCallbackClass:0X%0X accessFlag:0X%0X \n\n Press any key to stop.\n"), fileFilterMask, ioCallbackClass, accessFlag);
+			}
 			
 			//prevent the current process from being terminated.
 			//AddProtectedProcessId(GetCurrentProcessId());
@@ -365,7 +374,6 @@ Exit:
 				return 1;
 			}
 
-			_tprintf(_T("Start process filter driver test, press any key to stop.\n\n"));
 					
 			WCHAR* processFilterMask = L"*";
 			ULONG controlFlag  = PROCESS_CREATION_NOTIFICATION|PROCESS_TERMINATION_NOTIFICATION|THREAD_CREATION_NOTIFICATION|THREAD_TERMINIATION_NOTIFICATION; 
@@ -399,6 +407,8 @@ Exit:
 
 			filterControl->StartFilter(filterType,threadCount,connectionTimeout,registerKey);
 			
+			_tprintf(_T("Start Process filter, processFilterMask=%s  controlFlag:0X%0X \n\n Press any key to stop.\n"), processFilterMask, controlFlag);
+
 			getchar();
 			
 			filterControl->StopFilter();
@@ -427,15 +437,37 @@ Exit:
 			FilterControl* filterControl = FilterControl::GetSingleInstance();
 
 			WCHAR* processNameFilterMask = L"*";
+			WCHAR* keyNameFilterMask = L"*";
+
+			if (argc >= 3)
+			{
+				processNameFilterMask = argv[2];
+			}
+
+			if (argc >= 4)
+			{
+				keyNameFilterMask = argv[3];
+			}
+
+			ULONG callbackClass = Max_Reg_Callback_Class;
+			if (argc >= 5)
+			{
+				callbackClass = std::stoul(argv[5], nullptr, 10);
+			}
+
 			RegistryFilterRule registryFilterRule(processNameFilterMask);
 			
+			registryFilterRule.RegistryKeyNameFilterMask = keyNameFilterMask;
+
 			//you can block the registry key being renamed or deleted.
 			//ULONG controlFlag = REG_MAX_ACCESS_FLAG & (~(REG_ALLOW_RENAME_KEY|REG_ALLOW_DELETE_KEY));
-			registryFilterRule.ControlFlag = REG_MAX_ACCESS_FLAG;
+			registryFilterRule.ControlFlag = callbackClass;
 			registryFilterRule.RegCallbackClass = Max_Reg_Callback_Class;
 
 			filterControl->AddRegistryFilter(registryFilterRule);
 			filterControl->StartFilter(filterType,threadCount,connectionTimeout,registerKey);
+
+			_tprintf(_T("Start Registry filter, processNameFilterMask=%s keyNameFilterMask=%s controlFlag:0X%0X \n\n Press any key to stop.\n"), processNameFilterMask, keyNameFilterMask, callbackClass);
 								
 			getchar();
 			

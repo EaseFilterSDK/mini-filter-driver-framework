@@ -13,7 +13,7 @@
 
 //Purchase a license key with the link: http://www.EaseFilter.com/Order.htm
 //Email us to request a trial key: info@EaseFilter.com //free email is not accepted.
-#define	registerKey "***************************************"
+#define	registerKey "**************************************"
 
 #define MESSAGE_SEND_VERIFICATION_NUMBER	0xFF000001
 #define	INET_ADDR_STR_LEN					22
@@ -990,6 +990,24 @@ typedef enum _BooleanConfig
 	/// if it is true, it will block the encrypted file to be renamed to different folder.
 	/// </summary>
 	DISABLE_RENAME_ENCRYPTED_FILE = 0x00008000,
+    /// <summary>
+    /// if it is true, it will disable the file synchronization for file reading for CloudTier.
+    /// </summary>
+    DISABLE_FILE_SYNCHRONIZATION = 0x00010000,
+    /// <summary>
+    /// if it is true, the data protection will continue even the service process is stopped.
+    /// </summary>
+    ENABLE_PROTECTION_IF_SERVICE_STOPPED = 0x00020000,
+    /// <summary>
+    /// if it is true and write encrypt info to cache is enabled, it will signal the system thread to write cache data to disk right away.
+    /// </summary>
+    ENABLE_SIGNAL_WRITE_ENCRYPT_INFO_EVENT = 0x00020000,
+    /// <summary>
+    ///enable this feature when accessFlag "ALLOW_SAVE_AS" or "ALLOW_COPY_PROTECTED_FILES_OUT" was disabled.
+    ///by default we don't enable this feature, because of the drawback of these two flags were disabled 
+    ///which will block all new file creation of the process which was read the protected files.
+    /// </summary>
+    ENABLE_BLOCK_SAVE_AS_FLAG = 0x00040000,
 
 } BooleanConfig;
 
@@ -1192,8 +1210,23 @@ typedef enum _FileEventType
 	FILE_SECURITY_CHANGED			= 0x00000200,
 	FILE_INFO_CHANGED				= 0x00000400,
 	FILE_WAS_READ					= 0x00000800,
+    FILE_WAS_COPIED                 = 0x00001000,
 
 } FileEventType, *PFileEventType;
+
+//This is the enumeration of the file copy flags.
+typedef enum _FILE_COPY_FLAG
+{
+    //this is the source file for copy in the open.
+    CREATE_FLAG_FILE_SOURCE_OPEN_FOR_COPY = 0x00000001,
+    //this is the dest file for copy in the open.
+    CREATE_FLAG_FILE_DEST_OPEN_FOR_COPY = 0x00000002,
+    //this is the source file read for file copy.
+    READ_FLAG_FILE_SOURCE_FOR_COPY = 0x00000004,
+    //this is the destination file write for file copy.
+    WRITE_FLAG_FILE_DEST_FOR_COPY = 0x00000008,
+
+} FILE_COPY_FLAG;
 
 //
 // Define the various device characteristics flags
