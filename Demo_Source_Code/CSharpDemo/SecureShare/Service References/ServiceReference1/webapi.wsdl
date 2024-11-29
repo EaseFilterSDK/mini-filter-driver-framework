@@ -1,0 +1,494 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://tempuri.org/" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" targetNamespace="http://tempuri.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://tempuri.org/">
+      <s:element name="SignInAccount">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="accountName" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="password" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="lastError" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="SignInAccountResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="SignInAccountResult" type="s:boolean" />
+            <s:element minOccurs="0" maxOccurs="1" name="lastError" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="SignUpAccount">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="accountName" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="password" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="lastError" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="SignUpAccountResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="SignUpAccountResult" type="s:boolean" />
+            <s:element minOccurs="0" maxOccurs="1" name="lastError" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetFileList">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="accountName" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="password" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="fileList" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="lastError" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetFileListResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="GetFileListResult" type="s:boolean" />
+            <s:element minOccurs="0" maxOccurs="1" name="fileList" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="lastError" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="AddShareFile">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="accountName" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="password" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="policy" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="creationTime" type="s:long" />
+            <s:element minOccurs="0" maxOccurs="1" name="key" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="iv" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="lastError" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="AddShareFileResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="AddShareFileResult" type="s:boolean" />
+            <s:element minOccurs="1" maxOccurs="1" name="creationTime" type="s:long" />
+            <s:element minOccurs="0" maxOccurs="1" name="key" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="iv" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="lastError" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="DeleteSharedFile">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="accountName" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="password" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="encryptionIV" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="lastError" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="DeleteSharedFileResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="DeleteSharedFileResult" type="s:boolean" />
+            <s:element minOccurs="0" maxOccurs="1" name="lastError" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetSharedFileDRInfo">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="accountName" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="password" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="ivStr" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="encryptedDRPolicy" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="lastError" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetSharedFileDRInfoResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="GetSharedFileDRInfoResult" type="s:boolean" />
+            <s:element minOccurs="0" maxOccurs="1" name="encryptedDRPolicy" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="lastError" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ModifySharedFileDRInfo">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="accountName" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="password" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="encryptedDRPolicy" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="lastError" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ModifySharedFileDRInfoResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="ModifySharedFileDRInfoResult" type="s:boolean" />
+            <s:element minOccurs="0" maxOccurs="1" name="lastError" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetAccessLog">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="accountName" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="password" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="accessLog" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="lastError" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetAccessLogResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="GetAccessLogResult" type="s:boolean" />
+            <s:element minOccurs="0" maxOccurs="1" name="accessLog" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="lastError" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ClearAccessLog">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="accountName" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="password" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="lastError" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ClearAccessLogResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="ClearAccessLogResult" type="s:boolean" />
+            <s:element minOccurs="0" maxOccurs="1" name="lastError" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetSharedFilePermission">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="userInfoStr" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="key" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="iv" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="accessFlags" type="s:unsignedInt" />
+            <s:element minOccurs="0" maxOccurs="1" name="lastError" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetSharedFilePermissionResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="GetSharedFilePermissionResult" type="s:boolean" />
+            <s:element minOccurs="0" maxOccurs="1" name="key" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="iv" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="accessFlags" type="s:unsignedInt" />
+            <s:element minOccurs="0" maxOccurs="1" name="lastError" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+    </s:schema>
+  </wsdl:types>
+  <wsdl:message name="SignInAccountSoapIn">
+    <wsdl:part name="parameters" element="tns:SignInAccount" />
+  </wsdl:message>
+  <wsdl:message name="SignInAccountSoapOut">
+    <wsdl:part name="parameters" element="tns:SignInAccountResponse" />
+  </wsdl:message>
+  <wsdl:message name="SignUpAccountSoapIn">
+    <wsdl:part name="parameters" element="tns:SignUpAccount" />
+  </wsdl:message>
+  <wsdl:message name="SignUpAccountSoapOut">
+    <wsdl:part name="parameters" element="tns:SignUpAccountResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetFileListSoapIn">
+    <wsdl:part name="parameters" element="tns:GetFileList" />
+  </wsdl:message>
+  <wsdl:message name="GetFileListSoapOut">
+    <wsdl:part name="parameters" element="tns:GetFileListResponse" />
+  </wsdl:message>
+  <wsdl:message name="AddShareFileSoapIn">
+    <wsdl:part name="parameters" element="tns:AddShareFile" />
+  </wsdl:message>
+  <wsdl:message name="AddShareFileSoapOut">
+    <wsdl:part name="parameters" element="tns:AddShareFileResponse" />
+  </wsdl:message>
+  <wsdl:message name="DeleteSharedFileSoapIn">
+    <wsdl:part name="parameters" element="tns:DeleteSharedFile" />
+  </wsdl:message>
+  <wsdl:message name="DeleteSharedFileSoapOut">
+    <wsdl:part name="parameters" element="tns:DeleteSharedFileResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetSharedFileDRInfoSoapIn">
+    <wsdl:part name="parameters" element="tns:GetSharedFileDRInfo" />
+  </wsdl:message>
+  <wsdl:message name="GetSharedFileDRInfoSoapOut">
+    <wsdl:part name="parameters" element="tns:GetSharedFileDRInfoResponse" />
+  </wsdl:message>
+  <wsdl:message name="ModifySharedFileDRInfoSoapIn">
+    <wsdl:part name="parameters" element="tns:ModifySharedFileDRInfo" />
+  </wsdl:message>
+  <wsdl:message name="ModifySharedFileDRInfoSoapOut">
+    <wsdl:part name="parameters" element="tns:ModifySharedFileDRInfoResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetAccessLogSoapIn">
+    <wsdl:part name="parameters" element="tns:GetAccessLog" />
+  </wsdl:message>
+  <wsdl:message name="GetAccessLogSoapOut">
+    <wsdl:part name="parameters" element="tns:GetAccessLogResponse" />
+  </wsdl:message>
+  <wsdl:message name="ClearAccessLogSoapIn">
+    <wsdl:part name="parameters" element="tns:ClearAccessLog" />
+  </wsdl:message>
+  <wsdl:message name="ClearAccessLogSoapOut">
+    <wsdl:part name="parameters" element="tns:ClearAccessLogResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetSharedFilePermissionSoapIn">
+    <wsdl:part name="parameters" element="tns:GetSharedFilePermission" />
+  </wsdl:message>
+  <wsdl:message name="GetSharedFilePermissionSoapOut">
+    <wsdl:part name="parameters" element="tns:GetSharedFilePermissionResponse" />
+  </wsdl:message>
+  <wsdl:portType name="ServiceSoap">
+    <wsdl:operation name="SignInAccount">
+      <wsdl:input message="tns:SignInAccountSoapIn" />
+      <wsdl:output message="tns:SignInAccountSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="SignUpAccount">
+      <wsdl:input message="tns:SignUpAccountSoapIn" />
+      <wsdl:output message="tns:SignUpAccountSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetFileList">
+      <wsdl:input message="tns:GetFileListSoapIn" />
+      <wsdl:output message="tns:GetFileListSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="AddShareFile">
+      <wsdl:input message="tns:AddShareFileSoapIn" />
+      <wsdl:output message="tns:AddShareFileSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="DeleteSharedFile">
+      <wsdl:input message="tns:DeleteSharedFileSoapIn" />
+      <wsdl:output message="tns:DeleteSharedFileSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetSharedFileDRInfo">
+      <wsdl:input message="tns:GetSharedFileDRInfoSoapIn" />
+      <wsdl:output message="tns:GetSharedFileDRInfoSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ModifySharedFileDRInfo">
+      <wsdl:input message="tns:ModifySharedFileDRInfoSoapIn" />
+      <wsdl:output message="tns:ModifySharedFileDRInfoSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetAccessLog">
+      <wsdl:input message="tns:GetAccessLogSoapIn" />
+      <wsdl:output message="tns:GetAccessLogSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ClearAccessLog">
+      <wsdl:input message="tns:ClearAccessLogSoapIn" />
+      <wsdl:output message="tns:ClearAccessLogSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetSharedFilePermission">
+      <wsdl:input message="tns:GetSharedFilePermissionSoapIn" />
+      <wsdl:output message="tns:GetSharedFilePermissionSoapOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="ServiceSoap" type="tns:ServiceSoap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="SignInAccount">
+      <soap:operation soapAction="http://tempuri.org/SignInAccount" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SignUpAccount">
+      <soap:operation soapAction="http://tempuri.org/SignUpAccount" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetFileList">
+      <soap:operation soapAction="http://tempuri.org/GetFileList" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="AddShareFile">
+      <soap:operation soapAction="http://tempuri.org/AddShareFile" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="DeleteSharedFile">
+      <soap:operation soapAction="http://tempuri.org/DeleteSharedFile" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetSharedFileDRInfo">
+      <soap:operation soapAction="http://tempuri.org/GetSharedFileDRInfo" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ModifySharedFileDRInfo">
+      <soap:operation soapAction="http://tempuri.org/ModifySharedFileDRInfo" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetAccessLog">
+      <soap:operation soapAction="http://tempuri.org/GetAccessLog" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ClearAccessLog">
+      <soap:operation soapAction="http://tempuri.org/ClearAccessLog" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetSharedFilePermission">
+      <soap:operation soapAction="http://tempuri.org/GetSharedFilePermission" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="ServiceSoap12" type="tns:ServiceSoap">
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="SignInAccount">
+      <soap12:operation soapAction="http://tempuri.org/SignInAccount" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SignUpAccount">
+      <soap12:operation soapAction="http://tempuri.org/SignUpAccount" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetFileList">
+      <soap12:operation soapAction="http://tempuri.org/GetFileList" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="AddShareFile">
+      <soap12:operation soapAction="http://tempuri.org/AddShareFile" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="DeleteSharedFile">
+      <soap12:operation soapAction="http://tempuri.org/DeleteSharedFile" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetSharedFileDRInfo">
+      <soap12:operation soapAction="http://tempuri.org/GetSharedFileDRInfo" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ModifySharedFileDRInfo">
+      <soap12:operation soapAction="http://tempuri.org/ModifySharedFileDRInfo" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetAccessLog">
+      <soap12:operation soapAction="http://tempuri.org/GetAccessLog" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ClearAccessLog">
+      <soap12:operation soapAction="http://tempuri.org/ClearAccessLog" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetSharedFilePermission">
+      <soap12:operation soapAction="http://tempuri.org/GetSharedFilePermission" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="Service">
+    <wsdl:port name="ServiceSoap" binding="tns:ServiceSoap">
+      <soap:address location="http://encryptme.net/webapi.asmx" />
+    </wsdl:port>
+    <wsdl:port name="ServiceSoap12" binding="tns:ServiceSoap12">
+      <soap12:address location="http://encryptme.net/webapi.asmx" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

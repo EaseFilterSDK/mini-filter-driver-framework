@@ -1,0 +1,194 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="richTextBox1.Text" xml:space="preserve">
+    <value>1. To manage your files, you need to create at least one filter rule, you can have multiple filter rules with different policies to manage different files with your requirement. 
+2. A filter rule only can have one unique include file mask, when a new filter rule was added to the filter driver, if a filter rule with the same include file mask already exists, then the new filter rule will replace the older one. A filter rule can have multiple exclude file masks, multiple include process names and exclude process names, multiple include process Ids and exclude process Ids, multiple include user names and exclude user names. 
+3. If the exclude filter rules exist, the filter driver will look for the exclude filter rules first, if the files match the include file mask of the filter rule, then the files won't be managed by the filter driver, if no exclude filter rule matches the file ,then the filter driver will look for the include filter rules.
+4.When an I/O occurs, the filter driver will check if the file name matches the filter rules. If the file name matches the include file mask of the filter rule, then it will check if the exclude file mask list is empty, if it is not empty, then it will check if the file name matches the exclude file mask, if it matches, then go to next filter rule, or it will check if the include process name and include process Id list are empty, if they are not empty, then check if the current process name or process Id is  in the include list, if not then go to next filter rule, or go to check if the exclude process name and exclude process Id list are empty, if they are not empty, then check if the current process name or process Id is in the list, if yes then go to the next filter rule, or go to check if the include user names list is empty, if it is not empty, then check if the current user name is in the list, if not then go to the next filter rule, or go to check if the exclude user names list is empty, if it is not empty, then check if the current user name is in the list, if yes then go to the next filter rule, or this is the filter rule for the file.
+5. If the files match multiple filter rules, the filter driver will choose the deepest one. 
+For example, there are filter rule1 with include file mask c:\test\*; filter rule2 with include file mask c:\test\test2\*; filter rule3 with include file mask c:\test\test2\test3\*
+Filter rule3 is the subset of the filter rule2, filter rule2 is the subset of the filter rule1, filter rule3 is above of the filter rule2, filter rule2 is above of the filter rule1.File c:\test\test2\text.txt  matches the filter rule1 and filter rule2, the filter driver will choose filter rule2 as the filter rule for file c:\test\test2\test.txt
+6.File changed event settings.
+You can register the file changed events: file created, file renamed, file deleted, file changed. If the files match this filter rule and the files were changed, the notification with this event information will send it to the service.
+</value>
+  </data>
+  <data name="richTextBox2.Text" xml:space="preserve">
+    <value> 1. Filter type setting: it can be monitor filter, control filter, encryption filter or control + encryption filter.
+ 2. Protected process Id list, the processes will be protected by filter driver, they won't be terminated from task manager.
+ 3. Include process Id list, if it is not empty, only the files were opened from these processes the filter driver will go to look for the filter rules, or the filter driver won't manage the files.
+ 4. Exclude process Id list, if it is not empty, if the files were opened by the process which is in the exclude process Id list, the filter driver won't manage the files.
+5. Register I/O requests, after you register the file I/O type, if the I/O occurs with the manage files, then I/O notification will be sent to user mode application. For control filter, you can change the I/O behavior to block the I/O access or modify the I/O data.
+6. Set the connection timeout value, it is the timeout for filter driver wait for the response from the user mode for control filter if the I/O requests were registered.   </value>
+  </data>
+  <data name="richTextBox3.Text" xml:space="preserve">
+    <value>The control filter driver can protect your sensitive data, prevent the files being accessed, modified, deleted, renamed and copied from unauthorized users and processes or from remote computers. You also can hide your sensitive data from the user's view.
+1. Set the AccessFlags in the filter rules.
+When the I/O occurs on the managed files, the filter driver will check if the I/O allows in the access flags, if it allows to access, the I/O pass, or the I/O will be blocked and return access denied.
+2. Register the I/O requests. 
+When you register a I/O request, you have fully control to that I/O request, a callback request will send to the user mode service with the I/O type, file name, file size, file date information, user name, process name, and I/O data. With these information, you can control the I/O behavior, modify the I/O or block the I/O.
+3. The major I/O types:
+  a. File open/create: normally most of the I/Os start with open/create I/O first.
+  b. File read: read the file data.
+  c. File write: write the data to the file.
+  d. File information query: query the file name, file size, creation time, last write time, last access time, file Id, file attributes.
+  e. Set file information: change the above file information.
+  f. Query file security information.
+  g. Set file security information.
+  h. Browse directory information. 
+</value>
+  </data>
+  <data name="richTextBox4.Text" xml:space="preserve">
+    <value>1. EaseFilter File system encryption filter driver provides a comprehensive solution for transparent file level encryption. It supports AES 256-bits encryption.
+2. EaseFilter encryption filter driver introduces the shadow file object technology to support private cache for per encrypted file open. With the client-defined policy, the authorized users and processes can get clear view of the encrypted data, for unauthorized user or processes can't access the encrypted files.
+3. Distribute the encrypted files with the rights management policy via internet. You can embed the access right policy to the encrypted files, allow you to set the expiration time for the encrypted files, or set the authorized process names, user names to the encrypted files.
+</value>
+  </data>
+  <data name="richTextBox5.Text" xml:space="preserve">
+    <value>1.  Set all files to be read-only in folder c:\protectFolder, you can do the following setting:
+//Here is the example which you can’t modify the files, can't rename, can't delete, can’t write, can’t change security, 
+//can’t change file information (creation time, last write time, file attributes.) except the process cmd.exe from user testdomain\testuser
+ uint accessFlag = (~ALLOW_FILE_DELETE) &amp;(~ALLOW_FILE_RENAME) &amp;(~ALLOW_WRITE_ACCESS)&amp; (~ALLOW_SET_INFORMATION)&amp; (~ALLOW_SET_SECURITY_ACCESS)&amp;  ALLOW_MAX_RIGHT_ACCESS;
+string filterMask = "c:\\protectFolder\\*";
+AddNewFilterRule(accessFlag,filterMask);
+AddExcludeProcessNameToFilterRule(filterMask,"cmd.exe");
+AddExcludeUserNameToFilterRule(filterMask,"testdomain\\testuser");
+2.   Exclude all files in folder c:\protectFolder\excludeFolder from all your filter rules:
+ //Here is the example show you how to exclude the folder from the filter rule.
+//The filter driver will bypass all the I/O for folder c:\protectFolder\excludeFolder
+ uint accessFlag = EXCLUDE_FILTER_RULE;
+string  filterMask = "c:\\protectFolder\\excludeFolder\\*";
+AddNewFilterRule(accessFlag,filterMask);
+ 3.Hide all files with extension .txt from folder c:\test, when you browse the folder, all the .txt files will be hidden from the file list.
+ uint accessFlag = (~ALLOW_WRITE_ACCESS)&amp; (~ALLOW_SET_INFORMATION)&amp; (~ALLOW_SET_SECURITY_ACCESS)&amp;  ALLOW_MAX_RIGHT_ACCESS;
+string  filterMask = "c:\\test\\*";
+AddNewFilterRule(accessFlag,filterMask);
+string  hideFileMask = L"*.txt";
+AddHiddenFileMaskToFilterRule(filterMask,hideFileMask);
+4.Set encryption rule to c:\\protectFolder, only process wordpad.exe can read the encrypted files.
+ uint accessFlag = FILE_ENCRYPTION_RULE | ALLOW_MAX_RIGHT_ACCESS;
+string filterMask = "c:\\protectFolder\\*";
+AddNewFilterRule(accessFlag,filterMask);
+encryptionKey = 32 bytes encryption key byte array;
+encryptionKeyLength = 32;
+AddEncryptionKeyToFilterRule(filterMask, encryptionKeyLength, encryptionKey)
+AddIncludeProcessNameToFilterRule(filterMask,"wordpad.exe");
+</value>
+  </data>
+</root>
