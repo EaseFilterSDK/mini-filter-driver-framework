@@ -81,11 +81,11 @@
             // button_Add
             // 
             this.button_Add.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.button_Add.Location = new System.Drawing.Point(450, 186);
+            this.button_Add.Location = new System.Drawing.Point(436, 201);
             this.button_Add.Name = "button_Add";
             this.button_Add.Size = new System.Drawing.Size(75, 23);
             this.button_Add.TabIndex = 25;
-            this.button_Add.Text = "Add";
+            this.button_Add.Text = "Apply";
             this.button_Add.UseVisualStyleBackColor = true;
             this.button_Add.Click += new System.EventHandler(this.button_Add_Click);
             // 
@@ -117,16 +117,16 @@
             this.textBox_ProcessName.Name = "textBox_ProcessName";
             this.textBox_ProcessName.Size = new System.Drawing.Size(298, 20);
             this.textBox_ProcessName.TabIndex = 27;
-            this.textBox_ProcessName.Text = "notepad.exe;   cmd.exe;";
+            this.textBox_ProcessName.Text = "notepad.exe";
             // 
             // label_AccessFlags
             // 
             this.label_AccessFlags.AutoSize = true;
             this.label_AccessFlags.Location = new System.Drawing.Point(9, 19);
             this.label_AccessFlags.Name = "label_AccessFlags";
-            this.label_AccessFlags.Size = new System.Drawing.Size(77, 13);
+            this.label_AccessFlags.Size = new System.Drawing.Size(124, 13);
             this.label_AccessFlags.TabIndex = 28;
-            this.label_AccessFlags.Text = "Process name ";
+            this.label_AccessFlags.Text = "Process name filter mask";
             // 
             // groupBox_AccessRights
             // 
@@ -153,7 +153,7 @@
             this.groupBox_AccessRights.Controls.Add(this.button_FileAccessFlags);
             this.groupBox_AccessRights.Location = new System.Drawing.Point(25, 231);
             this.groupBox_AccessRights.Name = "groupBox_AccessRights";
-            this.groupBox_AccessRights.Size = new System.Drawing.Size(535, 214);
+            this.groupBox_AccessRights.Size = new System.Drawing.Size(535, 234);
             this.groupBox_AccessRights.TabIndex = 76;
             this.groupBox_AccessRights.TabStop = false;
             this.groupBox_AccessRights.Text = "File Acess Rights";
@@ -417,7 +417,7 @@
             this.textBox_UserName.Name = "textBox_UserName";
             this.textBox_UserName.Size = new System.Drawing.Size(298, 20);
             this.textBox_UserName.TabIndex = 27;
-            this.textBox_UserName.Text = "domain1\\user1;  domain2\\user2;";
+            this.textBox_UserName.Text = "domain1\\user1";
             // 
             // label1
             // 
@@ -471,7 +471,7 @@
             this.groupBox_ProcessSha256.Controls.Add(this.button_GetProcessSha256);
             this.groupBox_ProcessSha256.Controls.Add(this.textBox_ProcessSha256Hash);
             this.groupBox_ProcessSha256.Controls.Add(this.label4);
-            this.groupBox_ProcessSha256.Location = new System.Drawing.Point(25, 55);
+            this.groupBox_ProcessSha256.Location = new System.Drawing.Point(25, 98);
             this.groupBox_ProcessSha256.Name = "groupBox_ProcessSha256";
             this.groupBox_ProcessSha256.Size = new System.Drawing.Size(535, 48);
             this.groupBox_ProcessSha256.TabIndex = 39;
@@ -488,10 +488,10 @@
             this.button_GetProcessSha256.UseVisualStyleBackColor = true;
             this.button_GetProcessSha256.Click += new System.EventHandler(this.button_GetProcessSha256_Click);
             // 
-            // textBox_ProcessSha256
+            // textBox_ProcessSha256Hash
             // 
             this.textBox_ProcessSha256Hash.Location = new System.Drawing.Point(149, 16);
-            this.textBox_ProcessSha256Hash.Name = "textBox_ProcessSha256";
+            this.textBox_ProcessSha256Hash.Name = "textBox_ProcessSha256Hash";
             this.textBox_ProcessSha256Hash.Size = new System.Drawing.Size(298, 20);
             this.textBox_ProcessSha256Hash.TabIndex = 27;
             // 
@@ -500,16 +500,16 @@
             this.label4.AutoSize = true;
             this.label4.Location = new System.Drawing.Point(9, 19);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(135, 13);
+            this.label4.Size = new System.Drawing.Size(133, 13);
             this.label4.TabIndex = 28;
-            this.label4.Text = "Executable binrary sha256 ";
+            this.label4.Text = "The process  sha256 hash";
             // 
             // groupBox_SignedProcess
             // 
             this.groupBox_SignedProcess.Controls.Add(this.button_GetCertificateName);
             this.groupBox_SignedProcess.Controls.Add(this.textBox_ProcessCertificateName);
             this.groupBox_SignedProcess.Controls.Add(this.label5);
-            this.groupBox_SignedProcess.Location = new System.Drawing.Point(25, 97);
+            this.groupBox_SignedProcess.Location = new System.Drawing.Point(25, 61);
             this.groupBox_SignedProcess.Name = "groupBox_SignedProcess";
             this.groupBox_SignedProcess.Size = new System.Drawing.Size(535, 48);
             this.groupBox_SignedProcess.TabIndex = 125;
@@ -546,7 +546,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(590, 461);
+            this.ClientSize = new System.Drawing.Size(590, 467);
             this.Controls.Add(this.groupBox_SignedProcess);
             this.Controls.Add(this.groupBox_ProcessSha256);
             this.Controls.Add(this.groupBox_ProcessId);

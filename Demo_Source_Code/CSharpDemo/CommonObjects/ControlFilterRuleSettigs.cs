@@ -30,33 +30,27 @@ namespace EaseFilter.CommonObjects
 {
     public partial class ControlFilterRuleSettigs : Form
     {
-        public FileFilterRule filterRule = new FileFilterRule();
+        public FileFilter fileFilter = null;
 
-        public ControlFilterRuleSettigs()
-        {
-        }
-
-        public ControlFilterRuleSettigs(FileFilterRule _filterRule)
+        public ControlFilterRuleSettigs(FileFilter _filterRule)
         {
             InitializeComponent();
-            filterRule = _filterRule;
+            fileFilter = _filterRule;
 
-            textBox_FileAccessFlags.Text = filterRule.AccessFlag.ToString();        
-            textBox_ControlIO.Text = filterRule.RegisterControlFileIOEvents.ToString();
-            checkBox_EnableProtectionInBootTime.Checked = filterRule.IsResident;
-            textBox_ProcessRights.Text = filterRule.ProcessNameRights;
-            textBox_ProcessIdRights.Text = filterRule.ProcessIdRights;
-            textBox_SignedProcessAccessRights.Text = filterRule.SignedProcessAccessRights;
-            textBox_UserRights.Text = filterRule.UserRights;
-
-            textBox_PassPhrase.Text = filterRule.EncryptionPassPhrase;
-            textBox_HiddenFilterMask.Text = filterRule.HiddenFileFilterMasks;
-            textBox_ReparseFileFilterMask.Text = filterRule.ReparseFileFilterMask;
-            textBox_EncryptWriteBufferSize.Text = filterRule.EncryptWriteBufferSize.ToString();
+            textBox_FileAccessFlags.Text = fileFilter.AccessFlags.ToString();        
+            textBox_ControlIO.Text = fileFilter.ControlFileIOEventFilter.ToString();
+            checkBox_EnableProtectionInBootTime.Checked = fileFilter.IsResident;
+            textBox_ProcessRights.Text = fileFilter.ProcessNameAccessRightString;
+            textBox_ProcessIdRights.Text = fileFilter.ProcessIdAccessRightString;
+            textBox_UserRights.Text = fileFilter.UserAccessRightString;
+            textBox_PassPhrase.Text = fileFilter.EncryptionPassPhrase;
+            textBox_HiddenFilterMask.Text = fileFilter.HiddenFileFilterMaskString;
+            textBox_ReparseFileFilterMask.Text = fileFilter.ReparseFileFilterMask;
+            textBox_EncryptWriteBufferSize.Text = fileFilter.EncryptWriteBufferSize.ToString();
 
             SetCheckBoxValue();
 
-            if (filterRule.EncryptMethod ==  (int)FilterAPI.EncryptionMethod.ENCRYPT_FILE_WITH_SAME_KEY_AND_UNIQUE_IV )
+            if (!fileFilter.EnableEncryptionKeyFromService )
             {
                 radioButton_EncryptFileWithSameKey.Checked = true;
                 radioButton_EncryptFileWithTagData.Checked = false;
@@ -210,33 +204,30 @@ namespace EaseFilter.CommonObjects
 
         private void button_SaveControlSettings_Click(object sender, EventArgs e)
         {
-            string encryptionPassPhrase = string.Empty;
             uint accessFlags = uint.Parse(textBox_FileAccessFlags.Text);
 
             if (checkBox_Encryption.Checked)
             {               
-                encryptionPassPhrase = textBox_PassPhrase.Text;
-
                 //enable encryption for this filter rule.
                 accessFlags = accessFlags | (uint)FilterAPI.AccessFlag.ENABLE_FILE_ENCRYPTION_RULE;
 
-                if (radioButton_EncryptFileWithSameKey.Checked)
+                if (!radioButton_EncryptFileWithSameKey.Checked)
                 {
-                    filterRule.EncryptMethod = (int)FilterAPI.EncryptionMethod.ENCRYPT_FILE_WITH_SAME_KEY_AND_UNIQUE_IV;
-                }
-                else
-                {
-                    filterRule.EncryptMethod = (int)FilterAPI.EncryptionMethod.ENCRYPT_FILE_WITH_KEY_IV_AND_TAGDATA_FROM_SERVICE;
+                    fileFilter.EnableEncryptionKeyFromService = true;
                 }
 
-                filterRule.EncryptWriteBufferSize = uint.Parse(textBox_EncryptWriteBufferSize.Text);
+                fileFilter.EncryptionPassPhrase = textBox_PassPhrase.Text;
+                fileFilter.EncryptWriteBufferSize = uint.Parse(textBox_EncryptWriteBufferSize.Text);
             }
 
-            if (textBox_HiddenFilterMask.Text.Trim().Length > 0)
+            if (checkBox_EnableHidenFile.Checked && textBox_HiddenFilterMask.Text.Trim().Length > 0)
             {
                 //enable hidden filter mask for this filter rule.
                 accessFlags = accessFlags | (uint)FilterAPI.AccessFlag.ENABLE_HIDE_FILES_IN_DIRECTORY_BROWSING;
+                fileFilter.HiddenFileFilterMaskString = textBox_HiddenFilterMask.Text;
             }
+
+            fileFilter.AccessFlags = (FilterAPI.AccessFlag)accessFlags;
 
             if (checkBox_EnableSendDeniedEvent.Checked)
             {
@@ -245,19 +236,15 @@ namespace EaseFilter.CommonObjects
             else
             {
                 GlobalConfig.EnableSendDeniedEvent = false;
-            }           
-           
-            filterRule.EncryptionPassPhrase = encryptionPassPhrase;
-            filterRule.HiddenFileFilterMasks = textBox_HiddenFilterMask.Text;
-            filterRule.ReparseFileFilterMask = textBox_ReparseFileFilterMask.Text;
-            filterRule.AccessFlag = accessFlags;
-            filterRule.RegisterControlFileIOEvents = ulong.Parse(textBox_ControlIO.Text);
-            filterRule.IsResident = checkBox_EnableProtectionInBootTime.Checked;
-            filterRule.UserRights = textBox_UserRights.Text;
-            filterRule.ProcessNameRights = textBox_ProcessRights.Text;
-            filterRule.Sha256ProcessAccessRights = textBox_Sha256ProcessAccessRights.Text;
-            filterRule.SignedProcessAccessRights = textBox_SignedProcessAccessRights.Text;
-            filterRule.ProcessIdRights = textBox_ProcessIdRights.Text;
+            }                                  
+
+            fileFilter.ReparseFileFilterMask = textBox_ReparseFileFilterMask.Text;
+            
+            fileFilter.ControlFileIOEventFilter = (ControlFileIOEvents) ulong.Parse(textBox_ControlIO.Text);
+            fileFilter.IsResident = checkBox_EnableProtectionInBootTime.Checked;
+            fileFilter.UserAccessRightString = textBox_UserRights.Text;
+            fileFilter.ProcessNameAccessRightString = textBox_ProcessRights.Text;
+            fileFilter.ProcessIdAccessRightString = textBox_ProcessIdRights.Text;
 
         }
 
@@ -295,70 +282,20 @@ namespace EaseFilter.CommonObjects
 
         private void button_AddProcessRights_Click(object sender, EventArgs e)
         {
-            Form_AccessRights accessRightsForm = new Form_AccessRights(Form_AccessRights.AccessRightType.ProcessNameRight);
-
+            Form_AccessRights accessRightsForm = new Form_AccessRights(Form_AccessRights.AccessRightType.ProcessNameRight, textBox_ProcessRights.Text);
             if (accessRightsForm.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                if (textBox_ProcessRights.Text.Trim().Length > 0)
-                {
-                    textBox_ProcessRights.Text += ";" + accessRightsForm.accessRightText;
-                }
-                else
-                {
-                    textBox_ProcessRights.Text = accessRightsForm.accessRightText;
-                }
+                textBox_ProcessRights.Text = accessRightsForm.accessRightText;
             }
         }
-
-        private void button_AddSha256ProcessAccessRights_Click(object sender, EventArgs e)
-        {
-            Form_AccessRights accessRightsForm = new Form_AccessRights(Form_AccessRights.AccessRightType.Sha256Process);
-
-            if (accessRightsForm.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-            {
-                if (textBox_ProcessRights.Text.Trim().Length > 0)
-                {
-                    textBox_Sha256ProcessAccessRights.Text += ";" + accessRightsForm.accessRightText;
-                }
-                else
-                {
-                    textBox_Sha256ProcessAccessRights.Text = accessRightsForm.accessRightText;
-                }
-            }
-        }
-
-        private void button_AddSignedProcessAccessRights_Click(object sender, EventArgs e)
-        {
-            Form_AccessRights accessRightsForm = new Form_AccessRights(Form_AccessRights.AccessRightType.SignedProcess);
-
-            if (accessRightsForm.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-            {
-                if (textBox_ProcessRights.Text.Trim().Length > 0)
-                {
-                    textBox_SignedProcessAccessRights.Text += ";" + accessRightsForm.accessRightText;
-                }
-                else
-                {
-                    textBox_SignedProcessAccessRights.Text = accessRightsForm.accessRightText;
-                }
-            }
-        }     
-
 
         private void button_AddProcessIdRights_Click(object sender, EventArgs e)
         {
-            Form_AccessRights accessRightsForm = new Form_AccessRights(Form_AccessRights.AccessRightType.ProccessIdRight);
+            Form_AccessRights accessRightsForm = new Form_AccessRights(Form_AccessRights.AccessRightType.ProccessIdRight, textBox_ProcessIdRights.Text);
 
             if (accessRightsForm.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                if (textBox_ProcessIdRights.Text.Trim().Length > 0)
-                {
-                    textBox_ProcessIdRights.Text += ";" + accessRightsForm.accessRightText;
-                }
-                else
-                {
-                    textBox_ProcessIdRights.Text = accessRightsForm.accessRightText;
-                }
+                textBox_ProcessIdRights.Text = accessRightsForm.accessRightText;
             }
 
         }   
@@ -366,18 +303,11 @@ namespace EaseFilter.CommonObjects
 
         private void button_AddUserRights_Click(object sender, EventArgs e)
         {
-            Form_AccessRights accessRightsForm = new Form_AccessRights(Form_AccessRights.AccessRightType.UserNameRight);
+            Form_AccessRights accessRightsForm = new Form_AccessRights(Form_AccessRights.AccessRightType.UserNameRight, textBox_UserRights.Text);
 
             if (accessRightsForm.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                if (textBox_UserRights.Text.Trim().Length > 0)
-                {
-                    textBox_UserRights.Text += ";" + accessRightsForm.accessRightText;
-                }
-                else
-                {
-                    textBox_UserRights.Text = accessRightsForm.accessRightText;
-                }
+                textBox_UserRights.Text = accessRightsForm.accessRightText;
             }
         }
 
@@ -630,7 +560,7 @@ namespace EaseFilter.CommonObjects
 
         private void button_EnableEncryptionKeyFromService_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("If this is enabled, all encryption/decryption will get the encryption key from the callback service, you also can embed the custom tag data to the new created encrypted file.");
+            MessageBox.Show("If this is enabled, you can have your own custom unique encryption key/iv per file, you can embed your own custom meta data into the encrypted file's header.");
         }
 
         private void button_HideFileFilterMask_Click(object sender, EventArgs e)

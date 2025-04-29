@@ -135,7 +135,7 @@ namespace EaseFilter.FilterControl
         /// we need to convert it to 8 bytes registerCallbackMonitorIO, since all the file info query and set IOs are 
         /// using the same messageType.
         /// </summary>
-        ulong registerMonitorFileIOEvents = 0;
+        MonitorFileIOEvents registerMonitorFileIOEvents = 0;
         /// <summary>
         /// the maximum buffer size for monitor events if it was enabled.
         /// </summary>
@@ -280,7 +280,7 @@ namespace EaseFilter.FilterControl
         /// <summary>
         /// The monitor file IO events which will be registered to the filter driver.
         /// </summary>
-        public ulong MonitorFileIOEventFilter
+        public MonitorFileIOEvents MonitorFileIOEventFilter
         {
             get { return registerMonitorFileIOEvents; }
             set { registerMonitorFileIOEvents = value; }
@@ -290,21 +290,21 @@ namespace EaseFilter.FilterControl
         /// <summary>
         /// Below is the properties to check if the monitor file IO events were registered, if yes, the associated events will be fired.
         /// </summary>
-        public bool IsOnFileOpenRegister { get { return (registerMonitorFileIOEvents & (ulong)MonitorFileIOEvents.OnFileOpen) > 0; } }
-        public bool IsOnFileCreateRegister { get { return (registerMonitorFileIOEvents & (ulong)MonitorFileIOEvents.OnFileCreate) > 0; } }
-        public bool IsOnQueryFileInfoRegister { get { return (registerMonitorFileIOEvents & (ulong)MonitorFileIOEvents.OnQueryFileInfo) > 0; } }
-        public bool IsOnQueryFileSizeRegister { get { return (registerMonitorFileIOEvents & (ulong)MonitorFileIOEvents.OnQueryFileSize) > 0; } }
-        public bool IsOnQueryBasicInfoRegister { get { return (registerMonitorFileIOEvents & (ulong)MonitorFileIOEvents.OnQueryFileBasicInfo) > 0; } }
-        public bool IsOnQueryFileStandardInfoRegister { get { return (registerMonitorFileIOEvents & (ulong)MonitorFileIOEvents.OnQueryFileStandardInfo) > 0; } }
-        public bool IsOnQueryFileNetworkInfoRegister { get { return (registerMonitorFileIOEvents & (ulong)MonitorFileIOEvents.OnQueryFileNetworkInfo) > 0; } }
-        public bool IsOnQueryFileIdRegister { get { return (registerMonitorFileIOEvents & (ulong)MonitorFileIOEvents.OnQueryFileId) > 0; } }
-        public bool IsOnDeleteFileRegister { get { return (registerMonitorFileIOEvents & (ulong)MonitorFileIOEvents.OnDeleteFile) > 0; } }
-        public bool IsOnMoveOrRenameFileRegister { get { return (registerMonitorFileIOEvents & (ulong)MonitorFileIOEvents.OnMoveOrRenameFile) > 0; } }
-        public bool IsOnSetFileBasicInfoRegister { get { return (registerMonitorFileIOEvents & (ulong)MonitorFileIOEvents.OnSetFileBasicInfo) > 0; } }
-        public bool IsOnSetFileNetworkInfoRegister { get { return (registerMonitorFileIOEvents & (ulong)MonitorFileIOEvents.OnSetFileNetworkInfo) > 0; } }
-        public bool IsOnSetFileSizeRegister { get { return (registerMonitorFileIOEvents & (ulong)MonitorFileIOEvents.OnSetFileSize) > 0; } }
-        public bool IsOnSetFileStandardInfoRegister { get { return (registerMonitorFileIOEvents & (ulong)MonitorFileIOEvents.OnSetFileStandardInfo) > 0; } }
-        public bool IsOnSetFileInfoRegister { get { return (registerMonitorFileIOEvents & (ulong)MonitorFileIOEvents.OnSetFileInfo) > 0; } }
+        public bool IsOnFileOpenRegister { get { return (registerMonitorFileIOEvents & MonitorFileIOEvents.OnFileOpen) > 0; } }
+        public bool IsOnFileCreateRegister { get { return (registerMonitorFileIOEvents & MonitorFileIOEvents.OnFileCreate) > 0; } }
+        public bool IsOnQueryFileInfoRegister { get { return (registerMonitorFileIOEvents & MonitorFileIOEvents.OnQueryFileInfo) > 0; } }
+        public bool IsOnQueryFileSizeRegister { get { return (registerMonitorFileIOEvents & MonitorFileIOEvents.OnQueryFileSize) > 0; } }
+        public bool IsOnQueryBasicInfoRegister { get { return (registerMonitorFileIOEvents & MonitorFileIOEvents.OnQueryFileBasicInfo) > 0; } }
+        public bool IsOnQueryFileStandardInfoRegister { get { return (registerMonitorFileIOEvents & MonitorFileIOEvents.OnQueryFileStandardInfo) > 0; } }
+        public bool IsOnQueryFileNetworkInfoRegister { get { return (registerMonitorFileIOEvents & MonitorFileIOEvents.OnQueryFileNetworkInfo) > 0; } }
+        public bool IsOnQueryFileIdRegister { get { return (registerMonitorFileIOEvents & MonitorFileIOEvents.OnQueryFileId) > 0; } }
+        public bool IsOnDeleteFileRegister { get { return (registerMonitorFileIOEvents & MonitorFileIOEvents.OnDeleteFile) > 0; } }
+        public bool IsOnMoveOrRenameFileRegister { get { return (registerMonitorFileIOEvents & MonitorFileIOEvents.OnMoveOrRenameFile) > 0; } }
+        public bool IsOnSetFileBasicInfoRegister { get { return (registerMonitorFileIOEvents & MonitorFileIOEvents.OnSetFileBasicInfo) > 0; } }
+        public bool IsOnSetFileNetworkInfoRegister { get { return (registerMonitorFileIOEvents & MonitorFileIOEvents.OnSetFileNetworkInfo) > 0; } }
+        public bool IsOnSetFileSizeRegister { get { return (registerMonitorFileIOEvents & MonitorFileIOEvents.OnSetFileSize) > 0; } }
+        public bool IsOnSetFileStandardInfoRegister { get { return (registerMonitorFileIOEvents & MonitorFileIOEvents.OnSetFileStandardInfo) > 0; } }
+        public bool IsOnSetFileInfoRegister { get { return (registerMonitorFileIOEvents & MonitorFileIOEvents.OnSetFileInfo) > 0; } }
 
         #endregion //monitor filter property
 

@@ -89,17 +89,15 @@ namespace FileMonitor
 
             GlobalConfig.Load();
 
-            if (GlobalConfig.FilterRules.Count == 0)
+            if (GlobalConfig.FileFilters.Count == 0)
             {
                // MessageBoxHelper.PrepToCenterMessageBoxOnForm(this);
                 MessageBox.Show("You don't have any monitor folder setup, please set up a filter rule in the settings, or there are no IOs will be filtered.", "FilterRule", MessageBoxButtons.OK, MessageBoxIcon.Warning);
               //  MessageBox.Show("You don't have any monitor folder setup, please set up a filter rule in the settings, or there are no IOs will be filtered.");
             }
 
-            foreach (FileFilterRule filterRule in GlobalConfig.FilterRules.Values)
+            foreach (FileFilter fileFilter in GlobalConfig.FileFilters.Values)
             {
-                FileFilter fileFilter = filterRule.ToFileFilter();
-
                 //add the event handler for the file filter.
                 fileFilter.OnFileOpen += monitorEventHandler.OnFileOpen;
                 fileFilter.OnNewFileCreate += monitorEventHandler.OnFileCreate;
@@ -248,6 +246,9 @@ namespace FileMonitor
             System.Diagnostics.Process.Start("https://blog.easefilter.com/file-monitor-demo-step-by-step/");
         }
 
+        private void toolStripButton_ApplyTrialKey_Click(object sender, EventArgs e)
+        {
+        }
 
     }
 }

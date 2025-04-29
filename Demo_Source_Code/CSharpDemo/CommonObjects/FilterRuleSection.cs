@@ -17,8 +17,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.ComponentModel;
 using System.Configuration;
 
 using EaseFilter.FilterControl;
@@ -52,6 +51,12 @@ namespace EaseFilter.CommonObjects
 
         public void Add(FileFilterRule filterRule)
         {
+            BaseAdd(filterRule);
+        }
+
+        public void Add(FileFilter fileFilter)
+        {
+            FileFilterRule filterRule = new FileFilterRule(fileFilter);
             BaseAdd(filterRule);
         }
 
@@ -208,7 +213,7 @@ namespace EaseFilter.CommonObjects
 
         /// <summary>
         /// The file access rights for the user name list, seperated with ";" for multiple users
-        /// the format is "userName!accessFlags;", e.g. "mydomain\user1!123456;"
+        /// the format is "userName|accessFlags;", e.g. "mydomain\user1|123456;"
         /// seperate the multiple items with ';'
         /// </summary>
         [ConfigurationProperty("userRights", IsRequired = false)]
@@ -219,8 +224,8 @@ namespace EaseFilter.CommonObjects
         }
 
         /// <summary>
-        /// The file access rights inside the filter rule for the process name list, seperated with ";" for multiple processes
-        /// the format is "processName!accessFlags;", e.g. "notepad.exe!123456;"
+        /// the process access rights with format "accessFlags|processName|certificateName|image256Hash"
+        /// for example: "123456|notepad.exe|EaseFilter Technologies|A123234234BADSFSFASDFSFASFASDF"
         /// seperate the multiple items with ';'
         /// </summary>
         [ConfigurationProperty("processNameRights", IsRequired = false)]
@@ -231,32 +236,8 @@ namespace EaseFilter.CommonObjects
         }
 
         /// <summary>
-        /// The file access rights for the process which has the specific sha256 hash. Seperated with ";" for multiple processes
-        /// the format is "sha256hash!accessFlags;", e.g. "A10B....BC!123456;"
-        /// seperate the multiple items with ';'
-        /// </summary>
-        [ConfigurationProperty("sha256ProcessAccessRights", IsRequired = false)]
-        public string Sha256ProcessAccessRights
-        {
-            get { return (string)base["sha256ProcessAccessRights"]; }
-            set { base["sha256ProcessAccessRights"] = value; }
-        }
-
-        /// <summary>
-        /// The file access rights for the process which was signed with the specific certificate. Seperated with ";" for multiple processes
-        /// the format is "certificatename!accessFlags;", e.g. "A10B....BC!123456;"
-        /// seperate the multiple items with ';'
-        /// </summary>
-        [ConfigurationProperty("signedProcessAccessRights", IsRequired = false)]
-        public string SignedProcessAccessRights
-        {
-            get { return (string)base["signedProcessAccessRights"]; }
-            set { base["signedProcessAccessRights"] = value; }
-        }
-
-        /// <summary>
         /// The file access rights inside the filter rule for the process Id list, seperated with ";" for multiple processes
-        /// the format is "processId!accessFlags;", e.g. "1234!123456;"
+        /// the format is "processId|accessFlags;", e.g. "1234|123456;"
         /// seperate the multiple items with ';'
         /// </summary>
         [ConfigurationProperty("processIdRights", IsRequired = false)]
@@ -328,11 +309,11 @@ namespace EaseFilter.CommonObjects
         /// <summary>
         /// The register the file events
         /// </summary>
-        [ConfigurationProperty("registerMonitorFileEvents", IsRequired = false)]
-        public uint RegisterMonitorFileEvents
+        [ConfigurationProperty("fileChangeEventFilter", IsRequired = false)]
+        public uint FileChangeEventFilter
         {
-            get { return (uint)base["registerMonitorFileEvents"]; }
-            set { base["registerMonitorFileEvents"] = value; }
+            get { return (uint)base["fileChangeEventFilter"]; }
+            set { base["fileChangeEventFilter"] = value; }
         }
 
         /// <summary>
@@ -416,41 +397,38 @@ namespace EaseFilter.CommonObjects
             set { base["type"] = value; }
         }
 
-
-        public FileFilterRule Copy()
+        public FileFilterRule()
         {
-            FileFilterRule dest = new FileFilterRule();
-            dest.AccessFlag = AccessFlag;
-            dest.RegisterControlFileIOEvents = RegisterControlFileIOEvents;
-            dest.EncryptionPassPhrase = EncryptionPassPhrase;
-            dest.EncryptionKeySize = EncryptionKeySize;
-            dest.EncryptMethod = EncryptMethod;
-            dest.RegisterMonitorFileEvents = RegisterMonitorFileEvents;
-            dest.ExcludeFileFilterMasks = ExcludeFileFilterMasks;
-            dest.ExcludeProcessIds = ExcludeProcessIds;
-            dest.ExcludeProcessNames = ExcludeProcessNames;
-            dest.ExcludeUserNames = ExcludeUserNames;
-            dest.HiddenFileFilterMasks = HiddenFileFilterMasks;
-            dest.IncludeFileFilterMask = IncludeFileFilterMask;
-            dest.IncludeProcessIds = IncludeProcessIds;
-            dest.IncludeProcessNames = IncludeProcessNames;
-            dest.IncludeUserNames = IncludeUserNames;
-            dest.IsResident = IsResident;
-            dest.RegisterMonitorFileIOEvents = RegisterMonitorFileIOEvents;
-            dest.ProcessIdRights = ProcessIdRights;
-            dest.ProcessNameRights = ProcessNameRights;
-            dest.Sha256ProcessAccessRights = Sha256ProcessAccessRights;
-            dest.SignedProcessAccessRights = SignedProcessAccessRights;
-            dest.ReparseFileFilterMask = ReparseFileFilterMask;
-            dest.Type = Type;
-            dest.UserRights = UserRights;
-            dest.FilterCreateOptions = FilterCreateOptions;
-            dest.FilterDesiredAccess = FilterDesiredAccess;
-            dest.FilterDisposition = FilterDisposition;
-            dest.EnableMonitorEventBuffer = EnableMonitorEventBuffer;
-            dest.EncryptWriteBufferSize = EncryptWriteBufferSize;
 
-            return dest;
+        }
+
+        public FileFilterRule(FileFilter fileFilter)
+        {
+            IncludeFileFilterMask = fileFilter.IncludeFileFilterMask;
+            AccessFlag = (uint)fileFilter.AccessFlags;
+            FileChangeEventFilter = (uint)fileFilter.FileChangeEventFilter;
+            IsResident = fileFilter.IsResident;
+            FilterCreateOptions = fileFilter.FilterCreateOptions;
+            FilterDesiredAccess = fileFilter.FilterDesiredAccess;
+            FilterDisposition = fileFilter.FilterDisposition;
+            EnableMonitorEventBuffer = fileFilter.EnableMonitorEventBuffer;
+            EncryptionPassPhrase = fileFilter.EncryptionPassPhrase;
+            EncryptWriteBufferSize = fileFilter.EncryptWriteBufferSize;
+            RegisterControlFileIOEvents = (ulong)fileFilter.ControlFileIOEventFilter;
+            RegisterMonitorFileIOEvents = (ulong)fileFilter.MonitorFileIOEventFilter;
+            ExcludeFileFilterMasks = fileFilter.ExcludeFileFilterMaskString;
+            ExcludeProcessNames = fileFilter.ExcludeProcessNameString;
+            ExcludeUserNames = fileFilter.ExcludeUserNameString;
+            IncludeProcessNames = fileFilter.IncludeProcessNameString;
+            IncludeUserNames = fileFilter.IncludeUserNameString;
+            ProcessNameRights = fileFilter.ProcessNameAccessRightString;
+            UserRights = fileFilter.UserAccessRightString;
+            HiddenFileFilterMasks = fileFilter.HiddenFileFilterMaskString;
+            ReparseFileFilterMask = fileFilter.ReparseFileFilterMask;
+            IncludeProcessIds = fileFilter.IncludeProcessIdString;
+            ExcludeProcessIds = fileFilter.ExcludeProcessIdString;
+            ProcessIdRights = fileFilter.ProcessIdAccessRightString;
+
         }
 
         public FileFilter ToFileFilter()
@@ -459,198 +437,36 @@ namespace EaseFilter.CommonObjects
             {
                 FileFilter fileFilter = new FileFilter(IncludeFileFilterMask);
                 fileFilter.AccessFlags = (FilterAPI.AccessFlag)AccessFlag;
-                fileFilter.FileChangeEventFilter = (FilterAPI.FileChangedEvents)RegisterMonitorFileEvents;
-                fileFilter.ControlFileIOEventFilter = RegisterControlFileIOEvents;
-                fileFilter.MonitorFileIOEventFilter = RegisterMonitorFileIOEvents;
+                fileFilter.FileChangeEventFilter = (FilterAPI.FileChangedEvents)FileChangeEventFilter;
                 fileFilter.IsResident = IsResident;
                 fileFilter.FilterCreateOptions = FilterCreateOptions;
                 fileFilter.FilterDesiredAccess = FilterDesiredAccess;
                 fileFilter.FilterDisposition = FilterDisposition;
                 fileFilter.EnableMonitorEventBuffer = EnableMonitorEventBuffer;
                 fileFilter.EncryptWriteBufferSize = EncryptWriteBufferSize;
+                fileFilter.ControlFileIOEventFilter = (ControlFileIOEvents)RegisterControlFileIOEvents;
+                fileFilter.MonitorFileIOEventFilter = (MonitorFileIOEvents)RegisterMonitorFileIOEvents;
 
                 if ((fileFilter.AccessFlags & FilterAPI.AccessFlag.ALLOW_COPY_PROTECTED_FILES_OUT) > 0)
                 {
                     fileFilter.EnableBlockSaveAs = true;
                 }
 
-                string[] excludeFileFilterMasks = ExcludeFileFilterMasks.Split(new char[] { ';' });
-                if (excludeFileFilterMasks.Length > 0)
-                {
-                    foreach (string excludeFileFilterMask in excludeFileFilterMasks)
-                    {
-                        if (excludeFileFilterMask.Trim().Length > 0)
-                        {
-                            fileFilter.ExcludeFileFilterMaskList.Add(excludeFileFilterMask);
-                        }
-                    }
-                }
-
-                string[] excludeProcessIds = ExcludeProcessIds.Split(new char[] { ';' });
-                if (excludeProcessIds.Length > 0)
-                {
-                    foreach (string excludeProcessId in excludeProcessIds)
-                    {
-                        if (excludeProcessId.Trim().Length > 0)
-                        {
-                            uint exPid = 0;
-                            if (uint.TryParse(excludeProcessId, out exPid))
-                            {
-                                fileFilter.ExcludeProcessIdList.Add(exPid);
-                            }
-                        }
-                    }
-                }
-
-                string[] excludeProcessNames = ExcludeProcessNames.Split(new char[] { ';' });
-                if (excludeProcessNames.Length > 0)
-                {
-                    foreach (string excludeProcessName in excludeProcessNames)
-                    {
-                        if (excludeProcessName.Trim().Length > 0)
-                        {
-                            fileFilter.ExcludeProcessNameList.Add(excludeProcessName);
-                        }
-                    }
-                }
-
-                string[] excludeUserNames = ExcludeUserNames.Split(new char[] { ';' });
-                if (excludeUserNames.Length > 0)
-                {
-                    foreach (string excludeUserName in excludeUserNames)
-                    {
-                        if (excludeUserName.Trim().Length > 0)
-                        {
-                            fileFilter.ExcludeUserNameList.Add(excludeUserName);
-                        }
-                    }
-                }
-
-                string[] includeProcessIds = IncludeProcessIds.Split(new char[] { ';' });
-                if (includeProcessIds.Length > 0)
-                {
-                    foreach (string includeProcessId in includeProcessIds)
-                    {
-                        if (includeProcessId.Trim().Length > 0)
-                        {
-                            uint exPid = 0;
-                            if (uint.TryParse(includeProcessId, out exPid))
-                            {
-                                fileFilter.IncludeProcessIdList.Add(exPid);
-                            }
-                        }
-                    }
-                }
-
-                string[] includeProcessNames = IncludeProcessNames.Split(new char[] { ';' });
-                if (includeProcessNames.Length > 0)
-                {
-                    foreach (string includeProcessName in includeProcessNames)
-                    {
-                        if (includeProcessName.Trim().Length > 0)
-                        {
-                            fileFilter.IncludeProcessNameList.Add(includeProcessName);
-                        }
-                    }
-                }
-
-                string[] includeUserNames = IncludeUserNames.Split(new char[] { ';' });
-                if (includeUserNames.Length > 0)
-                {
-                    foreach (string includeUserName in includeUserNames)
-                    {
-                        if (includeUserName.Trim().Length > 0)
-                        {
-                            fileFilter.IncludeUserNameList.Add(includeUserName);
-                        }
-                    }
-                }
-
-                string[] processIdRights = ProcessIdRights.Split(new char[] { ';' });
-                if (processIdRights.Length > 0)
-                {
-                    foreach (string processIdRight in processIdRights)
-                    {
-                        if (processIdRight.Trim().Length > 0)
-                        {
-                            uint processId = uint.Parse(processIdRight.Substring(0, processIdRight.IndexOf('!')));
-                            uint accessFlags = uint.Parse(processIdRight.Substring(processIdRight.IndexOf('!') + 1));
-                            fileFilter.ProcessIdAccessRightList.Add(processId, accessFlags);
-                        }
-                    }
-                }
-
-                string[] processNameRights = ProcessNameRights.Split(new char[] { ';' });
-                if (processNameRights.Length > 0)
-                {
-                    foreach (string processRight in processNameRights)
-                    {
-                        if (processRight.Trim().Length > 0)
-                        {
-                            string processName = processRight.Substring(0, processRight.IndexOf('!'));
-                            uint accessFlags = uint.Parse(processRight.Substring(processRight.IndexOf('!') + 1));
-                            fileFilter.ProcessNameAccessRightList.Add(processName, accessFlags);
-                        }
-                    }
-                }
-
-                string[] processSha256Rights = Sha256ProcessAccessRights.Split(new char[] { ';' });
-                if (processSha256Rights.Length > 0)
-                {
-                    foreach (string processRight in processSha256Rights)
-                    {
-                        if (processRight.Trim().Length > 0)
-                        {
-                            string processSha256Hex = processRight.Substring(0, processRight.IndexOf('!'));
-                            byte[] processSha256 = Utils.HexToByteArray(processSha256Hex);
-                            uint accessFlags = uint.Parse(processRight.Substring(processRight.IndexOf('!') + 1));
-                            fileFilter.Sha256ProcessAccessRightList.Add(processSha256, accessFlags);
-                        }
-                    }
-                }
-
-                string[] signedProcessAccessRights = SignedProcessAccessRights.Split(new char[] { ';' });
-                if (signedProcessAccessRights.Length > 0)
-                {
-                    foreach (string processRight in signedProcessAccessRights)
-                    {
-                        if (processRight.Trim().Length > 0)
-                        {
-                            string certificateName = processRight.Substring(0, processRight.IndexOf('!'));
-                            uint accessFlags = uint.Parse(processRight.Substring(processRight.IndexOf('!') + 1));
-                            fileFilter.SignedProcessAccessRightList.Add(certificateName, accessFlags);
-                        }
-                    }
-                }
-
-                string[] userRights = UserRights.Split(new char[] { ';' });
-                if (userRights.Length > 0)
-                {
-                    foreach (string userRight in userRights)
-                    {
-                        if (userRight.Trim().Length > 0)
-                        {
-                            string userName = userRight.Substring(0, userRight.IndexOf('!'));
-                            uint accessFlags = uint.Parse(userRight.Substring(userRight.IndexOf('!') + 1));
-                            fileFilter.userAccessRightList.Add(userName, accessFlags);
-                        }
-                    }
-                }
+                fileFilter.ExcludeFileFilterMaskString = ExcludeFileFilterMasks;
+                fileFilter.ExcludeProcessIdString = ExcludeProcessIds;
+                fileFilter.ExcludeProcessNameString = ExcludeProcessNames;
+                fileFilter.ExcludeUserNameString = ExcludeUserNames;
+                fileFilter.IncludeProcessIdString = IncludeProcessIds;
+                fileFilter.IncludeProcessNameString = IncludeProcessNames;
+                fileFilter.IncludeUserNameString = IncludeUserNames;
+                fileFilter.ProcessIdAccessRightString = ProcessIdRights;
+                fileFilter.ProcessNameAccessRightString = ProcessNameRights;
+                fileFilter.UserAccessRightString = UserRights;
 
                 if ((AccessFlag & (uint)FilterAPI.AccessFlag.ENABLE_HIDE_FILES_IN_DIRECTORY_BROWSING) > 0)
                 {
                     fileFilter.EnableHiddenFile = true;
-                    string[] hiddenFileFilterMasks = HiddenFileFilterMasks.Split(new char[] { ';' });
-                    if (hiddenFileFilterMasks.Length > 0)
-                    {
-                        foreach (string hiddenFileFilterMask in hiddenFileFilterMasks)
-                        {
-                            if (hiddenFileFilterMask.Trim().Length > 0)
-                            {
-                                fileFilter.HiddenFileFilterMaskList.Add(hiddenFileFilterMask);
-                            }
-                        }
-                    }
+                    fileFilter.HiddenFileFilterMaskString = HiddenFileFilterMasks;
                 }
 
                 fileFilter.ReparseFileFilterMask = ReparseFileFilterMask;
@@ -658,35 +474,7 @@ namespace EaseFilter.CommonObjects
                 if ((AccessFlag & (uint)FilterAPI.AccessFlag.ENABLE_FILE_ENCRYPTION_RULE) > 0)
                 {
                     fileFilter.EnableEncryption = true;
-
-                    switch ((FilterAPI.EncryptionMethod)EncryptMethod)
-                    {
-                        case FilterAPI.EncryptionMethod.ENCRYPT_FILE_WITH_SAME_KEY_AND_IV:
-                            {
-                                fileFilter.EncryptionKey = Utils.GetKeyByPassPhrase(EncryptionPassPhrase, EncryptionKeySize);
-                                fileFilter.EncryptionIV = Utils.GetIVByPassPhrase(EncryptionPassPhrase);
-                                break;
-                            }
-
-                        case FilterAPI.EncryptionMethod.ENCRYPT_FILE_WITH_SAME_KEY_AND_UNIQUE_IV:
-                            {
-                                //it will generate the unique iv key for every encrypted file
-                                fileFilter.EncryptionKey = Utils.GetKeyByPassPhrase(EncryptionPassPhrase, EncryptionKeySize);
-                                break;
-                            }
-                        case FilterAPI.EncryptionMethod.ENCRYPT_FILE_WITH_KEY_IV_AND_TAGDATA_FROM_SERVICE:
-                            {
-                                //with this setting, to open or create encrypted file, it will request the encryption key and iv from the user mode callback service.
-                                fileFilter.EnableEncryptionKeyFromService = true;
-                                break;
-                            }
-                    }
-
-                    if( Type == 1)// (FilterRuleType.EncryptionOnRead )
-                    {
-                        //encrypt file on the read
-                        AccessFlag &= ~(uint)FilterAPI.AccessFlag.DISABLE_ENCRYPT_DATA_ON_READ;
-                    }
+                    fileFilter.EncryptionPassPhrase = EncryptionPassPhrase;
                 }
 
                 return fileFilter;

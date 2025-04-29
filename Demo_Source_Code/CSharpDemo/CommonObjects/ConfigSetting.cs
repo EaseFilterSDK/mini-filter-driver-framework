@@ -76,27 +76,27 @@ namespace EaseFilter.CommonObjects
             config.Save(ConfigurationSaveMode.Full);
         }
 
-        public static Dictionary<string, FileFilterRule> GetFilterRules()
+        public static Dictionary<string, FileFilter> GetFileFilters()
         {
-            Dictionary<string, FileFilterRule> filterRules = new Dictionary<string, FileFilterRule>();
+            Dictionary<string, FileFilter> fileFilters = new Dictionary<string, FileFilter>();
 
             foreach (FileFilterRule filterRule in filterRuleSection.Instances)
             {
-                filterRules.Add(filterRule.IncludeFileFilterMask, filterRule);
+                fileFilters.Add(filterRule.IncludeFileFilterMask, filterRule.ToFileFilter());
             }
 
-            return filterRules;
+            return fileFilters;
         }
 
-        public static void AddFilterRule(FileFilterRule filterRule)
+        public static void AddFileFilter(FileFilter fileFilter)
         {
-
-            filterRuleSection.Instances.Add(filterRule);
+            filterRuleSection.Instances.Remove(fileFilter.IncludeFileFilterMask);
+            filterRuleSection.Instances.Add(fileFilter);
 
             return ;
         }
 
-        public static void RemoveFilterRule(string includeFilterMask)
+        public static void RemoveFileFilter(string includeFilterMask)
         {
             filterRuleSection.Instances.Remove(includeFilterMask);
             FilterAPI.RemoveFilterRule(includeFilterMask);
@@ -104,52 +104,54 @@ namespace EaseFilter.CommonObjects
             return;
         }
 
-        public static Dictionary<string, ProcessFilterRule> GetProcessFilterRules()
+        public static Dictionary<string, ProcessFilter> GetProcessFilters()
         {
-            Dictionary<string, ProcessFilterRule> filterRules = new Dictionary<string, ProcessFilterRule>();
+            Dictionary<string, ProcessFilter> processFilters = new Dictionary<string, ProcessFilter>();
 
-            foreach (ProcessFilterRule filterRule in processFilterRuleSection.Instances)
+            foreach (ProcessFilterRule processFilterRule in processFilterRuleSection.Instances)
             {
-                filterRules.Add(filterRule.ProcessNameFilterMask + filterRule.ProcessId, filterRule);
+                processFilters.Add(processFilterRule.ProcessNameFilterMask + processFilterRule.ProcessId, processFilterRule.ToProcessFilter());
             }
 
-            return filterRules;
+            return processFilters;
         }
 
-        public static void AddProcessFilterRule(ProcessFilterRule filterRule)
+        public static void AddProcessFilter(ProcessFilter processFilter)
         {
-            processFilterRuleSection.Instances.Add(filterRule);
-            return;
-        }
-
-        public static void RemoveProcessFilterRule(ProcessFilterRule filterRule)
-        {
-            processFilterRuleSection.Instances.Remove(filterRule.ProcessNameFilterMask + filterRule.ProcessId);
-
-            if (filterRule.ProcessNameFilterMask.Length > 0)
-            {
-                FilterAPI.RemoveProcessFilterRule((uint)filterRule.ProcessNameFilterMask.Length * 2, filterRule.ProcessNameFilterMask);
-            }
+            processFilterRuleSection.Instances.Remove(processFilter.ProcessNameFilterMask + processFilter.ProcessId);
+            processFilterRuleSection.Instances.Add(processFilter);
 
             return;
         }
 
-        public static Dictionary<string, RegistryFilterRule> GetRegistryFilterRules()
+        public static void RemoveProcessFilter(ProcessFilter processFilter)
         {
-            Dictionary<string, RegistryFilterRule> registryFilterRules = new Dictionary<string, RegistryFilterRule>();
+            processFilterRuleSection.Instances.Remove(processFilter.ProcessNameFilterMask + processFilter.ProcessId);
+
+            if (processFilter.ProcessNameFilterMask.Length > 0)
+            {
+                FilterAPI.RemoveProcessFilterRule((uint)processFilter.ProcessNameFilterMask.Length * 2, processFilter.ProcessNameFilterMask);
+            }
+
+            return;
+        }
+
+        public static Dictionary<string, RegistryFilter> GetRegistryFilters()
+        {
+            Dictionary<string, RegistryFilter> registryFilters = new Dictionary<string, RegistryFilter>();
 
             foreach (RegistryFilterRule registryFilterRule in registryFilterRuleSection.Instances)
             {
-                registryFilterRules.Add(registryFilterRule.ProcessId + registryFilterRule.ProcessNameFilterMask, registryFilterRule);
+                registryFilters.Add(registryFilterRule.ProcessId + registryFilterRule.ProcessNameFilterMask, registryFilterRule.ToRegistryFilter());
             }
 
-            return registryFilterRules;
+            return registryFilters;
         }
 
-        public static void AddRegistryFilterRule(RegistryFilterRule registryFilterRule)
+        public static void AddRegistryFilter(RegistryFilter registryFilter)
         {
-
-            registryFilterRuleSection.Instances.Add(registryFilterRule);
+            registryFilterRuleSection.Instances.Remove(registryFilter.ProcessId + registryFilter.ProcessNameFilterMask);
+            registryFilterRuleSection.Instances.Add(registryFilter);
 
             return;
         }

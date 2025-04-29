@@ -16,13 +16,6 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.IO;
 using System.Windows.Forms;
 
 using EaseFilter.FilterControl;
@@ -31,7 +24,7 @@ namespace EaseFilter.CommonObjects
 {
     public partial class RegistryAccessControlForm : Form
     {
-        RegistryFilterRule selectedFilterRule = null;
+        RegistryFilter selectedFilterRule = null;
 
         public RegistryAccessControlForm()
         {
@@ -53,10 +46,10 @@ namespace EaseFilter.CommonObjects
             listView_FilterRules.Columns.Add("AccessFlags", 100, System.Windows.Forms.HorizontalAlignment.Left);
             listView_FilterRules.Columns.Add("CallbackClass", 100, System.Windows.Forms.HorizontalAlignment.Left);
 
-            foreach (RegistryFilterRule rule in GlobalConfig.RegistryFilterRules.Values)
+            foreach (RegistryFilter registryFilter in GlobalConfig.RegistryFilters.Values)
             {
-                AddItem(rule);
-                selectedFilterRule = rule;
+                AddItem(registryFilter);
+                selectedFilterRule = registryFilter;
             }
 
             InitSelectedFilterRule();
@@ -66,17 +59,17 @@ namespace EaseFilter.CommonObjects
         {
             if (null == selectedFilterRule)
             {
-                selectedFilterRule = new RegistryFilterRule();
+                selectedFilterRule = new RegistryFilter();
 
-                selectedFilterRule.AccessFlag = FilterAPI.MAX_REGITRY_ACCESS_FLAG;
+                selectedFilterRule.ControlFlag = FilterAPI.MAX_REGITRY_ACCESS_FLAG;
                 selectedFilterRule.RegCallbackClass = 93092006832128; //by default only register post callback class
                 selectedFilterRule.ProcessNameFilterMask = "*";
                 selectedFilterRule.RegistryKeyNameFilterMask = "*";
             }
 
-            if (selectedFilterRule.ProcessId.Length > 0 && selectedFilterRule.ProcessId != "0")
+            if (selectedFilterRule.ProcessId> 0 )
             {
-                textBox_ProcessId.Text = selectedFilterRule.ProcessId;
+                textBox_ProcessId.Text = selectedFilterRule.ProcessId.ToString();
                 radioButton_Pid_Click(null, null);
             }
             else
@@ -87,23 +80,23 @@ namespace EaseFilter.CommonObjects
 
             textBox_RegistryKeyNameFilterMask.Text = selectedFilterRule.RegistryKeyNameFilterMask;
 
-            textBox_ExcludeProcessNames.Text = selectedFilterRule.ExcludeProcessNames;
-            textBox_ExcludeUserNames.Text = selectedFilterRule.ExcludeUserNames;
-            textBox_ExcludeKeyNames.Text = selectedFilterRule.ExcludeKeyNames;
+            textBox_ExcludeProcessNames.Text = selectedFilterRule.ExcludeProcessNameString;
+            textBox_ExcludeUserNames.Text = selectedFilterRule.ExcludeUserNameString;
+            textBox_ExcludeKeyNames.Text = selectedFilterRule.ExcludeKeyNameString;
 
-            textBox_AccessFlags.Text = selectedFilterRule.AccessFlag.ToString();
+            textBox_AccessFlags.Text = selectedFilterRule.ControlFlag.ToString();
             textBox_RegistryCallbackClass.Text = selectedFilterRule.RegCallbackClass.ToString();
             checkBox_isExcludeFilter.Checked = selectedFilterRule.IsExcludeFilter;
         }
 
-        private void AddItem(RegistryFilterRule newRule)
+        private void AddItem(RegistryFilter newRule)
         {
             string[] itemStr = new string[listView_FilterRules.Columns.Count];
             itemStr[0] = listView_FilterRules.Items.Count.ToString();
-            itemStr[1] = newRule.ProcessId;
+            itemStr[1] = newRule.ProcessId.ToString();
             itemStr[2] = newRule.ProcessNameFilterMask;
             itemStr[3] = newRule.RegistryKeyNameFilterMask;
-            itemStr[4] = newRule.AccessFlag.ToString();
+            itemStr[4] = newRule.ControlFlag.ToString();
             itemStr[5] = newRule.RegCallbackClass.ToString();
             ListViewItem item = new ListViewItem(itemStr, 0);
             item.Tag = newRule;
@@ -115,17 +108,17 @@ namespace EaseFilter.CommonObjects
         {
             try
             {
-                selectedFilterRule = new RegistryFilterRule();
+                selectedFilterRule = new RegistryFilter();
 
                 if (textBox_ProcessId.Text.Trim().Length > 0 && textBox_ProcessId.Text != "0")
                 {
                     //please note that the process Id will be changed when the process launch every time.
-                    selectedFilterRule.ProcessId = textBox_ProcessId.Text;
+                    selectedFilterRule.ProcessId = uint.Parse(textBox_ProcessId.Text);
                     selectedFilterRule.ProcessNameFilterMask = "";
                 }
                 else if (textBox_ProcessName.Text.Trim().Length > 0)
                 {
-                    selectedFilterRule.ProcessId = "";
+                    selectedFilterRule.ProcessId = 0;
                     selectedFilterRule.ProcessNameFilterMask = textBox_ProcessName.Text;
                 }
                 else
@@ -137,16 +130,16 @@ namespace EaseFilter.CommonObjects
 
                 selectedFilterRule.RegistryKeyNameFilterMask = textBox_RegistryKeyNameFilterMask.Text;
 
-                selectedFilterRule.ExcludeProcessNames = textBox_ExcludeProcessNames.Text;
-                selectedFilterRule.ExcludeUserNames = textBox_ExcludeUserNames.Text;
-                selectedFilterRule.ExcludeKeyNames = textBox_ExcludeKeyNames.Text;
+                selectedFilterRule.ExcludeProcessNameString = textBox_ExcludeProcessNames.Text;
+                selectedFilterRule.ExcludeUserNameString = textBox_ExcludeUserNames.Text;
+                selectedFilterRule.ExcludeKeyNameString = textBox_ExcludeKeyNames.Text;
 
                 //this is the key of the filter rule for registry filter rule
                 selectedFilterRule.IsExcludeFilter = checkBox_isExcludeFilter.Checked;
-                selectedFilterRule.AccessFlag = uint.Parse(textBox_AccessFlags.Text);
+                selectedFilterRule.ControlFlag = uint.Parse(textBox_AccessFlags.Text);
                 selectedFilterRule.RegCallbackClass = ulong.Parse(textBox_RegistryCallbackClass.Text);
 
-                GlobalConfig.AddRegistryFilterRule(selectedFilterRule);
+                GlobalConfig.AddRegistryFilter(selectedFilterRule);
 
                 InitListView();
 
@@ -171,8 +164,8 @@ namespace EaseFilter.CommonObjects
 
             foreach (System.Windows.Forms.ListViewItem item in listView_FilterRules.SelectedItems)
             {
-                RegistryFilterRule filterRule = (RegistryFilterRule)item.Tag;
-                GlobalConfig.RemoveRegistryFilterRule(filterRule);
+                RegistryFilter registryFilter = (RegistryFilter)item.Tag;
+                GlobalConfig.RemoveRegistryFilter(registryFilter);
             }
 
             InitListView();
@@ -231,7 +224,7 @@ namespace EaseFilter.CommonObjects
         {
             if (listView_FilterRules.SelectedItems.Count > 0)
             {
-                selectedFilterRule = (RegistryFilterRule)listView_FilterRules.SelectedItems[0].Tag;
+                selectedFilterRule = (RegistryFilter)listView_FilterRules.SelectedItems[0].Tag;
                 InitSelectedFilterRule();
             }
         }

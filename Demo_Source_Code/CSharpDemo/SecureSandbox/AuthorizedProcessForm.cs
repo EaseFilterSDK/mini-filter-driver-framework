@@ -40,69 +40,53 @@ namespace SecureSandbox
             public uint AccessFlag;
         }
 
-        public FileFilterRule currentFilterRule = null;
+        public FileFilter currentFileFilter = null;
         ProcessRight selectedProcessRight;
         Dictionary<string, ProcessRight> processRights = new Dictionary<string, ProcessRight>();
 
-        public Form_ProcessRights(ref FileFilterRule filterRule)
+        public Form_ProcessRights(ref FileFilter fileFilter)
         {
             InitializeComponent();
-            currentFilterRule = filterRule;
+            currentFileFilter = fileFilter;
 
             StartPosition = FormStartPosition.CenterParent;
 
-            string[] processRightList = filterRule.ProcessNameRights.ToLower().Split(new char[] { ';' });
-            if (processRightList.Length > 0)
+            foreach (KeyValuePair<string, ProcessRightInfo> entry in fileFilter.TrustedProcessAccessRightList)
             {
-                foreach (string processRightStr in processRightList)
+                string processName = entry.Value.processNameFilterMask;
+                uint accessFlag = entry.Value.accessFlags;
+
+                if (!processRights.ContainsKey(processName))
                 {
-                    if (processRightStr.Trim().Length > 0)
-                    {
-                        string processName = processRightStr.Substring(0, processRightStr.IndexOf('!'));
-                        uint accessFlag = uint.Parse(processRightStr.Substring(processRightStr.IndexOf('!') + 1));
+                    ProcessRight processRight = new ProcessRight();
+                    processRight.ProcessName = processName;
+                    processRight.ProcessId = 0;
+                    processRight.AccessFlag = accessFlag;
 
-                        if (!processRights.ContainsKey(processName))
-                        {
-                            ProcessRight processRight = new ProcessRight();
-                            processRight.ProcessName = processName;
-                            processRight.ProcessId = 0;
-                            processRight.AccessFlag = accessFlag;
-                          
-                            processRights.Add(processName, processRight);
-                        }
-
-                        textBox_ProcessName.Text = processName;
-                        textBox_AccessFlag.Text = accessFlag.ToString();
-                    }
+                    processRights.Add(processName, processRight);
                 }
 
+                textBox_ProcessName.Text = processName;
+                textBox_AccessFlag.Text = accessFlag.ToString();
             }
 
-            string[] processIdList = filterRule.ProcessIdRights.Split(new char[] { ';' });
-            if (processIdList.Length > 0)
+            foreach (KeyValuePair<uint, uint> entry in fileFilter.ProcessIdAccessRightList)
             {
-                foreach (string processIdRightStr in processIdList)
+                string processId = entry.Key.ToString();
+                uint accessFlag = entry.Value;
+
+                if (!processRights.ContainsKey(processId))
                 {
-                    if (processIdRightStr.Trim().Length > 0)
-                    {
-                        string processId = processIdRightStr.Substring(0, processIdRightStr.IndexOf('!'));
-                        uint accessFlag = uint.Parse(processIdRightStr.Substring(processIdRightStr.IndexOf('!') + 1));
+                    ProcessRight processRight = new ProcessRight();
+                    processRight.ProcessName = "";
+                    processRight.ProcessId = uint.Parse(processId);
+                    processRight.AccessFlag = accessFlag;
 
-                        if (!processRights.ContainsKey(processId))
-                        {
-                            ProcessRight processRight = new ProcessRight();
-                            processRight.ProcessName = "";
-                            processRight.ProcessId = uint.Parse(processId);
-                            processRight.AccessFlag = accessFlag;
-
-                            processRights.Add(processId, processRight);
-                        }
-
-                        textBox_ProcessId.Text = processId;
-                        textBox_AccessFlag.Text = accessFlag.ToString();
-                    }
+                    processRights.Add(processId, processRight);
                 }
 
+                textBox_ProcessId.Text = processId;
+                textBox_AccessFlag.Text = accessFlag.ToString();
             }
 
             InitListView();
@@ -521,18 +505,18 @@ namespace SecureSandbox
 
         private void button_ApplyAll_Click(object sender, EventArgs e)
         {
-            currentFilterRule.ProcessNameRights = "";
-            currentFilterRule.ProcessIdRights = "";
+            currentFileFilter.TrustedProcessAccessRightList.Clear();
+            currentFileFilter.ProcessIdAccessRightList.Clear();
 
             foreach (ProcessRight processRight in processRights.Values )
             {
                 if (processRight.ProcessId > 0)
                 {
-                    currentFilterRule.ProcessIdRights += processRight.ProcessId.ToString() + "!" + processRight.AccessFlag + ";";
+                    currentFileFilter.ProcessIdAccessRightList.Add(processRight.ProcessId,processRight.AccessFlag);
                 }
                 else
                 {
-                    currentFilterRule.ProcessNameRights += processRight.ProcessName + "!" + processRight.AccessFlag + ";";
+                    currentFileFilter.AddTrustedProcessRight(processRight.AccessFlag, processRight.ProcessName, "", "");
                 }
             }
         }

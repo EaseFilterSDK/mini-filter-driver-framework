@@ -25,6 +25,7 @@
 #include "FileMonitorHandler.h"
 #include "ProcessFilterHandler.h"
 #include "RegistryFilterHandler.h"
+#include "ReparseFilterHandler.h"
 #include "FilterControl.h"
 
 FilterControl* FilterControl::instance = NULL;
@@ -263,19 +264,19 @@ FilterControl::SendFileFilterRuleToFilter(FileFilterRule* fileFilter)
     }
 
 	//set the access rights to the specific process, you can add or remove the process access rights here.
-	it = fileFilter->ProcessNameAccessRightList.begin();
-    while (it != fileFilter->ProcessNameAccessRightList.end())
+    std::map<std::wstring, PROCESS_RIGHT_INFO>::iterator processRights = fileFilter->ProcessNameAccessRightList.begin();
+    while (processRights != fileFilter->ProcessNameAccessRightList.end())
     {
-		std::wstring processName = it->first;
-		ULONG accessFlag = it->second;
+		std::wstring processName = processRights->first;
+        PROCESS_RIGHT_INFO processInfo = processRights->second;
 
-        if (!AddProcessRightsToFilterRule(&fileFilter->FileFilterMask[0],&processName[0], accessFlag))
+        if (!AddProcessRightsToFilterRule(&fileFilter->FileFilterMask[0],&processName[0], processInfo.AccessFlags, &processInfo.CertificateName[0],&processInfo.ImageSha256Hash[0]))
         {
             PrintLastErrorMessage(L"AddProcessRightsToFilterRule failed.");
             return false;
         }
 
-		++it;
+		++processRights;
     }
 
 	//set the access rights to the specific process, you can add or remove the process access rights here.
@@ -314,7 +315,7 @@ FilterControl::SendFileFilterRuleToFilter(FileFilterRule* fileFilter)
     //FilterMask = c:\test\*txt
     //ReparseFilterMask = d:\reparse\*doc
     //If you open file c:\test\MyTest.txt, it will reparse to the file d:\reparse\MyTest.doc.
-    if (fileFilter->IsReparseFileEnabled())
+    if (fileFilter->IsReparseFileEnabled() && fileFilter->ReparseFileFilterMask.length() > 0)
     {
         if (!AddReparseFileMaskToFilterRule(&fileFilter->FileFilterMask[0], &fileFilter->ReparseFileFilterMask[0]))
         {
@@ -595,10 +596,16 @@ __try
 		ret = ProcessFilterHandler(messageSend,messageReply);
     }
 	else if(	messageSend->FilterCommand == FILTER_REQUEST_ENCRYPTION_IV_AND_KEY 
-			||	messageSend->FilterCommand == FILTER_REQUEST_ENCRYPTION_IV_AND_KEY_AND_TAGDATA )
+			||	messageSend->FilterCommand == FILTER_REQUEST_ENCRYPTION_IV_AND_KEY_AND_TAGDATA 
+            ||  messageSend->FilterCommand == FILTER_NO_ENCRYPT_FILE_OPEN_WITH_TAG)
 	{
 		ret = EncryptionHandler(messageSend,messageReply);
 	}
+    else if (messageSend->FilterCommand == FILTER_REPARSE_FILE_CREATE_REQUEST
+        || messageSend->FilterCommand == FILTER_REPARSE_FILE_OPEN_REQUEST)
+    {
+        ret = ReparseFilterHandler(messageSend, messageReply);
+    }
 	else
 	{
 		ret = FileControlHandler(messageSend,messageReply);

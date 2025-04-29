@@ -147,6 +147,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
     <TargetName>EaseFltCPPDemo</TargetName>
+    <OutDir>$(SolutionDir)$(Configuration)\$(Platform)\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -293,7 +294,7 @@
     <Link>
       <AdditionalDependencies>FilterAPI.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(ProjectName).exe</OutputFile>
-      <AdditionalLibraryDirectories>$(OutDir)x64;..\..\bin\x64</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(OutDir);..\..\bin\x64</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
@@ -316,6 +317,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="TestData.cpp" />
     <ClCompile Include="Tools.cpp" />
     <ClCompile Include="WindowsService.cpp" />
   </ItemGroup>
@@ -329,9 +331,11 @@
     <ClInclude Include="FilterMessage.h" />
     <ClInclude Include="ProcessFilterHandler.h" />
     <ClInclude Include="RegistryFilterHandler.h" />
+    <ClInclude Include="ReparseFilterHandler.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="TestData.h" />
     <ClInclude Include="Tools.h" />
     <ClInclude Include="WinDataStructures.h" />
     <ClInclude Include="WindowsService.h" />

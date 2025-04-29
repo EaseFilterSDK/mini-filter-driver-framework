@@ -50,9 +50,15 @@ namespace EaseFilter.CommonObjects
             }
         }
 
-        public void Add(RegistryFilterRule RegistryFilterRule)
+        public void Add(RegistryFilterRule registryFilterRule)
         {
-            BaseAdd(RegistryFilterRule);
+            BaseAdd(registryFilterRule);
+        }
+
+        public void Add(RegistryFilter registryFilter)
+        {
+            RegistryFilterRule registryFilterRule = new RegistryFilterRule(registryFilter);
+            BaseAdd(registryFilterRule);
         }
 
         public void Clear()
@@ -193,6 +199,27 @@ namespace EaseFilter.CommonObjects
             set { base["isExcludeFilter"] = value; }
         }
 
+        public RegistryFilterRule()
+        {
+
+        }
+
+        public RegistryFilterRule(RegistryFilter registryFilter)
+        {
+            ProcessNameFilterMask = registryFilter.ProcessNameFilterMask;
+            RegistryKeyNameFilterMask = registryFilter.RegistryKeyNameFilterMask;
+            UserName = registryFilter.UserName;
+            AccessFlag = registryFilter.ControlFlag;
+            RegCallbackClass = registryFilter.RegCallbackClass;
+            IsExcludeFilter = registryFilter.IsExcludeFilter;
+
+            ExcludeProcessNames = registryFilter.ExcludeProcessNameString;
+            ExcludeUserNames = registryFilter.ExcludeUserNameString;
+            ExcludeKeyNames = registryFilter.ExcludeKeyNameString;
+
+        }
+
+
         public RegistryFilterRule Copy()
         {
             RegistryFilterRule dest = new RegistryFilterRule();
@@ -223,42 +250,9 @@ namespace EaseFilter.CommonObjects
                 registryFilter.ProcessId = 0;
             }
 
-            string[] excludeProcessNames = ExcludeProcessNames.Split(new char[] { ';' });
-            if (excludeProcessNames.Length > 0)
-            {
-                foreach (string excludeProcessName in excludeProcessNames)
-                {
-                    if (excludeProcessName.Trim().Length > 0)
-                    {
-                        registryFilter.ExcludeProcessNameList.Add(excludeProcessName);
-                    }
-                }
-            }
-
-            string[] excludeUserNames = ExcludeUserNames.Split(new char[] { ';' });
-            if (excludeUserNames.Length > 0)
-            {
-                foreach (string excludeUserName in excludeUserNames)
-                {
-                    if (excludeUserName.Trim().Length > 0)
-                    {
-                        registryFilter.ExcludeUserNameList.Add(excludeUserName);
-                    }
-                }
-            }
-
-            string[] excludeKeyNames = ExcludeKeyNames.Split(new char[] { ';' });
-            if (excludeKeyNames.Length > 0)
-            {
-                foreach (string excludeKeyName in excludeKeyNames)
-                {
-                    if (excludeKeyName.Trim().Length > 0)
-                    {
-                        registryFilter.ExcludeKeyNameList.Add(excludeKeyName);
-                    }
-                }
-            }
-
+            registryFilter.ExcludeProcessNameString = ExcludeProcessNames;
+            registryFilter.ExcludeUserNameString = ExcludeUserNames;
+            registryFilter.ExcludeKeyNameString = ExcludeKeyNames;
             registryFilter.ProcessNameFilterMask = ProcessNameFilterMask;
             registryFilter.RegistryKeyNameFilterMask = RegistryKeyNameFilterMask;
             registryFilter.UserName = UserName;

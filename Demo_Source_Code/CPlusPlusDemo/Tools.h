@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////////////
 //
-//    (C) Copyright 2011 EaseFilter Technologies Inc.
+//    (C) Copyright 2011 EaseFilter
 //    All Rights Reserved
 //
 //    This software is part of a licensed software product and may
@@ -13,6 +13,13 @@
 #include <strsafe.h>
 #include "FilterAPI.h"
 #include "WinDataStructures.h"
+
+//the user need to allocate the enough buffer to receive the subject name.
+BOOL
+GetSignerInfo(
+	WCHAR* processName,
+	WCHAR* subjectName,
+	PULONG sizeofSubjectName);
 
 void ChangeColour(WORD theColour);
 

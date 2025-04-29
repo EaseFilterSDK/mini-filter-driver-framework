@@ -350,6 +350,16 @@ namespace ProcessMon
 
         }
 
+        /// <summary>
+        /// Fires this event after the image was loaded to memory.
+        /// </summary>
+        public void NotifyImageWasLoaded(object sender, ProcessEventArgs e)
+        {
+            DisplayEventMessage(e);
+            //do your job here.
+
+        }
+
     }
 }
 

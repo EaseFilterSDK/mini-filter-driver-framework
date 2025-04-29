@@ -224,7 +224,7 @@ DWORD WINAPI ServiceWorkerThread (LPVOID lpParam)
 			
 			system("pause");			
 
-			//the process can be termiated now.
+			//the process can be terminated now.
 			//RemoveProtectedProcessId(GetCurrentProcessId());
 			
     }

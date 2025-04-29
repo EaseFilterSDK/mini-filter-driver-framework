@@ -12,7 +12,7 @@ namespace FileProtectorConsole
             string lastError = string.Empty;
             //Purchase a license key with the link: http://www.easefilter.com/Order.htm
             //Email us to request a trial key: info@easefilter.com //free email is not accepted.
-            string licenseKey = "*************************************";
+            string licenseKey = "**************************************";
 
             FilterAPI.FilterType filterType = FilterAPI.FilterType.MONITOR_FILTER|FilterAPI.FilterType.CONTROL_FILTER
                 |FilterAPI.FilterType.PROCESS_FILTER|FilterAPI.FilterType.REGISTRY_FILTER|FilterAPI.FilterType.ENCRYPTION_FILTER;
@@ -51,16 +51,17 @@ namespace FileProtectorConsole
                 fileProtectorFilter.EnableWriteToFile = false;
 
                 //authorize process with full access right
-                fileProtectorFilter.ProcessNameAccessRightList.Add("notepad.exe", FilterAPI.ALLOW_MAX_RIGHT_ACCESS);
+                fileProtectorFilter.AddTrustedProcessRight(FilterAPI.ALLOW_MAX_RIGHT_ACCESS, "notepad.exe", "", "");
+
 
                 //set the access rights for the specific user, here is to remove the delete and rename rights.
                 uint accessRights = FilterAPI.ALLOW_MAX_RIGHT_ACCESS & (uint)(~(FilterAPI.AccessFlag.ALLOW_FILE_DELETE | FilterAPI.AccessFlag.ALLOW_FILE_RENAME));
-                fileProtectorFilter.userAccessRightList.Add("domainname or computer\\username", accessRights);
+                fileProtectorFilter.UserAccessRightList.Add("domainname or computer\\username", accessRights);
 
                 //you can enable/disalbe more access right by setting the properties of the fileProtectorFilter.
 
                 //Filter the callback file IO events, here get callback before the file was opened/created, and file was deleted.
-                fileProtectorFilter.ControlFileIOEventFilter = (ulong)(ControlFileIOEvents.OnPreFileCreate | ControlFileIOEvents.OnPreDeleteFile);
+                fileProtectorFilter.ControlFileIOEventFilter = (ControlFileIOEvents.OnPreFileCreate | ControlFileIOEvents.OnPreDeleteFile);
 
                 fileProtectorFilter.OnPreCreateFile += OnPreCreateFile;
                 fileProtectorFilter.OnPreDeleteFile += OnPreDeleteFile;

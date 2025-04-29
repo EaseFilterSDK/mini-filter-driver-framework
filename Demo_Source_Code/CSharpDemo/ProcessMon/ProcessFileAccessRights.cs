@@ -20,48 +20,39 @@ namespace ProcessMon
             public uint AccessFlag;
         }
 
-        ProcessFilterRule currentFilterRule = null;
+        ProcessFilter currentProcessFilter = null;
         Dictionary<string, FileAccessRight> processFileAccessRightsList = new Dictionary<string, FileAccessRight>();
         FileAccessRight currentFileAccessRight = new FileAccessRight();
 
-        public ProcessFileAccessRights(ProcessFilterRule filterRule)
+        public ProcessFileAccessRights(ProcessFilter processFilter)
         {
-            InitializeComponent();           
+            InitializeComponent();
 
             StartPosition = FormStartPosition.CenterParent;
 
-            currentFilterRule = filterRule;
-            string processFileAccessRights = filterRule.FileAccessRights; 
-
-            string[] accessRightList = processFileAccessRights.ToLower().Split(new char[] { ';' });
-            if (accessRightList.Length > 0)
+            currentProcessFilter = processFilter;
+            foreach (KeyValuePair<string, uint> entry in processFilter.FileAccessRightList)
             {
-                foreach (string processFileAccessRightStr in accessRightList)
+                string fileMask = entry.Key;
+                uint accessFlag = entry.Value;
+
+                if (!processFileAccessRightsList.ContainsKey(fileMask))
                 {
-                    if (processFileAccessRightStr.Trim().Length > 0)
-                    {
-                        string fileMask = processFileAccessRightStr.Substring(0, processFileAccessRightStr.IndexOf('!'));
-                        uint accessFlag = uint.Parse(processFileAccessRightStr.Substring(processFileAccessRightStr.IndexOf('!') + 1));
+                    FileAccessRight fileAccessRight = new FileAccessRight();
+                    fileAccessRight.FileNameMask = fileMask;
+                    fileAccessRight.AccessFlag = accessFlag;
 
-                        if (!processFileAccessRightsList.ContainsKey(fileMask))
-                        {
-                            FileAccessRight fileAccessRight = new FileAccessRight();
-                            fileAccessRight.FileNameMask = fileMask;
-                            fileAccessRight.AccessFlag = accessFlag;
+                    processFileAccessRightsList.Add(fileMask, fileAccessRight);
 
-                            processFileAccessRightsList.Add(fileMask, fileAccessRight);
-
-                            currentFileAccessRight = fileAccessRight;
-                        }
-
-                        textBox_FileMask.Text = fileMask;
-                        textBox_AccessFlag.Text = accessFlag.ToString();
-                    }
+                    currentFileAccessRight = fileAccessRight;
                 }
 
+                textBox_FileMask.Text = fileMask;
+                textBox_AccessFlag.Text = accessFlag.ToString();
             }
 
-            groupBox_ProcessRights.Text = "The file access rights for processes which match " + filterRule.ProcessNameFilterMask;
+
+            groupBox_ProcessRights.Text = "The file access rights for processes which match " + processFilter.ProcessNameFilterMask;
 
             InitListView();
             SetCheckBoxValue();
@@ -385,11 +376,11 @@ namespace ProcessMon
 
         private void button_ApplyAll_Click(object sender, EventArgs e)
         {
-            currentFilterRule.FileAccessRights = string.Empty;
+            currentProcessFilter.FileAccessRightString = string.Empty;
 
             foreach (FileAccessRight fileAccessRight in processFileAccessRightsList.Values)
             {
-                currentFilterRule.FileAccessRights += fileAccessRight.FileNameMask + "!" + fileAccessRight.AccessFlag + ";";
+                currentProcessFilter.FileAccessRightString += fileAccessRight.FileNameMask + "|" + fileAccessRight.AccessFlag + ";";
             }
         }
 

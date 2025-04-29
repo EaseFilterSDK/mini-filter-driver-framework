@@ -86,7 +86,6 @@
             this.button_InfoIncludeProcessName = new System.Windows.Forms.Button();
             this.button_InfoExcludeProcessName = new System.Windows.Forms.Button();
             this.button_InfoFilterMask = new System.Windows.Forms.Button();
-            this.button_ProcessFilterRule = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox_AccessControl.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -149,7 +148,6 @@
             // 
             // groupBox1
             // 
-            this.groupBox1.Controls.Add(this.button_ProcessFilterRule);
             this.groupBox1.Controls.Add(this.button_ControlSettings);
             this.groupBox1.Location = new System.Drawing.Point(12, 2);
             this.groupBox1.Name = "groupBox1";
@@ -674,17 +672,6 @@
             this.button_InfoFilterMask.UseVisualStyleBackColor = true;
             this.button_InfoFilterMask.Click += new System.EventHandler(this.button_InfoFilterMask_Click);
             // 
-            // button_ProcessFilterRule
-            // 
-            this.button_ProcessFilterRule.BackColor = System.Drawing.SystemColors.GradientActiveCaption;
-            this.button_ProcessFilterRule.Location = new System.Drawing.Point(12, 552);
-            this.button_ProcessFilterRule.Name = "button_ProcessFilterRule";
-            this.button_ProcessFilterRule.Size = new System.Drawing.Size(489, 23);
-            this.button_ProcessFilterRule.TabIndex = 76;
-            this.button_ProcessFilterRule.Text = "Configure the process filter rule settings";
-            this.button_ProcessFilterRule.UseVisualStyleBackColor = false;
-            this.button_ProcessFilterRule.Click += new System.EventHandler(this.button_ProcessFilterRule_Click);
-            // 
             // FilterRuleForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -768,6 +755,5 @@
         private System.Windows.Forms.Button button_InfoDesiredAccess;
         private System.Windows.Forms.Button button_MonitorBufferInfo;
         private System.Windows.Forms.CheckBox checkBox_MonitorEventBuffer;
-        private System.Windows.Forms.Button button_ProcessFilterRule;
     }
 }

@@ -27,7 +27,6 @@ using System.Threading;
 using System.Reflection;
 
 using EaseFilter.FilterControl;
-using EaseFilter.CommonObjects;
 
 namespace EaseFltCSConsoleDemo
 {

@@ -30,31 +30,27 @@ namespace EaseFilter.CommonObjects
 {
     public partial class FilterRuleForm : Form
     {
-        FileFilterRule filterRule = new FileFilterRule();
-        FileFilterRule passInFilterRule = null;
+        FileFilter fileFilter = null;
+        bool isNewFileFilter = true;
 
         public FilterRuleForm()
         {
-            //set the default value for the new filter rule.
-            filterRule.IncludeFileFilterMask = "c:\\test\\*";
-            filterRule.EncryptMethod = (int)FilterAPI.EncryptionMethod.ENCRYPT_FILE_WITH_SAME_KEY_AND_UNIQUE_IV;
-            filterRule.EncryptWriteBufferSize = 1048576;
-            filterRule.RegisterMonitorFileEvents = (uint)(FilterAPI.FileChangedEvents.NotifyFileWasCreated | FilterAPI.FileChangedEvents.NotifyFileWasDeleted | FilterAPI.FileChangedEvents.NotifyFileInfoWasChanged
+            //create a new filter rule as the default filter rule.
+            fileFilter = new FileFilter("c:\\test\\*");
+            
+            fileFilter.FileChangeEventFilter = (FilterAPI.FileChangedEvents.NotifyFileWasCreated | FilterAPI.FileChangedEvents.NotifyFileWasDeleted | FilterAPI.FileChangedEvents.NotifyFileInfoWasChanged
                 | FilterAPI.FileChangedEvents.NotifyFileWasRenamed | FilterAPI.FileChangedEvents.NotifyFileWasWritten | FilterAPI.FileChangedEvents.NotifyFileSecurityWasChanged | FilterAPI.FileChangedEvents.NotifyFileWasRead);
 
-            filterRule.RegisterMonitorFileIOEvents = 0x0;
-            filterRule.RegisterControlFileIOEvents = 0x0;
-            filterRule.AccessFlag = (uint)FilterAPI.ALLOW_MAX_RIGHT_ACCESS;
-            filterRule.EnableMonitorEventBuffer = true;
+            fileFilter.EnableMonitorEventBuffer = true;
+            fileFilter.EncryptWriteBufferSize = 1048576;
 
             InitializeFilterRuleForm();
         }
 
-        public FilterRuleForm(FileFilterRule _filterRule)
+        public FilterRuleForm(FileFilter _fileFilter)
         {
-            passInFilterRule = _filterRule;
-            filterRule = _filterRule.Copy();
-
+            isNewFileFilter = false;
+            fileFilter = _fileFilter;
             InitializeFilterRuleForm();
         }
 
@@ -62,25 +58,24 @@ namespace EaseFilter.CommonObjects
         {
             InitializeComponent();
 
-            textBox_IncludeFilterMask.Text = filterRule.IncludeFileFilterMask;
-            textBox_ExcludeFilterMask.Text = filterRule.ExcludeFileFilterMasks;
-            textBox_SelectedEvents.Text = filterRule.RegisterMonitorFileEvents.ToString();
-            textBox_IncludePID.Text = filterRule.IncludeProcessIds;
-            textBox_ExcludePID.Text = filterRule.ExcludeProcessIds;
-            textBox_ExcludeProcessNames.Text = filterRule.ExcludeProcessNames;
-            textBox_IncludeProcessNames.Text = filterRule.IncludeProcessNames;
-            textBox_ExcludeUserNames.Text = filterRule.ExcludeUserNames;
-            textBox_IncludeUserNames.Text = filterRule.IncludeUserNames;
-            textBox_MonitorIO.Text = filterRule.RegisterMonitorFileIOEvents.ToString();
-            textBox_FilterDesiredAccess.Text = filterRule.FilterDesiredAccess.ToString();
-            textBox_FilterDisposition.Text = filterRule.FilterDisposition.ToString();
-            textBox_FilterCreateOptions.Text = filterRule.FilterCreateOptions.ToString();
-            checkBox_MonitorEventBuffer.Checked = filterRule.EnableMonitorEventBuffer;
+            textBox_IncludeFilterMask.Text = fileFilter.IncludeFileFilterMask;
+            textBox_ExcludeFilterMask.Text = fileFilter.ExcludeFileFilterMaskString;
+            textBox_SelectedEvents.Text = ((uint)fileFilter.FileChangeEventFilter).ToString();
+            textBox_IncludePID.Text = fileFilter.IncludeProcessIdString;
+            textBox_ExcludePID.Text = fileFilter.ExcludeProcessIdString;
+            textBox_ExcludeProcessNames.Text = fileFilter.ExcludeProcessNameString;
+            textBox_IncludeProcessNames.Text = fileFilter.IncludeProcessNameString;
+            textBox_ExcludeUserNames.Text = fileFilter.ExcludeUserNameString;
+            textBox_IncludeUserNames.Text = fileFilter.IncludeUserNameString;
+            textBox_MonitorIO.Text = fileFilter.MonitorFileIOEventFilter.ToString();
+            textBox_FilterDesiredAccess.Text = fileFilter.FilterDesiredAccess.ToString();
+            textBox_FilterDisposition.Text = fileFilter.FilterDisposition.ToString();
+            textBox_FilterCreateOptions.Text = fileFilter.FilterCreateOptions.ToString();
+            checkBox_MonitorEventBuffer.Checked = fileFilter.EnableMonitorEventBuffer;
 
             if (GlobalConfig.filterType == FilterAPI.FilterType.MONITOR_FILTER)
             {
                 button_ControlSettings.Visible = false;
-                button_ProcessFilterRule.Visible = false;
             }
         }
 
@@ -93,30 +88,28 @@ namespace EaseFilter.CommonObjects
                 return;
             }
 
-            //include filter mask must be unique, but it can have multiple exclude filter masks associate to the same include filter mask.
-            filterRule.IncludeFileFilterMask = textBox_IncludeFilterMask.Text;
-            filterRule.ExcludeFileFilterMasks = textBox_ExcludeFilterMask.Text;
-            filterRule.IncludeProcessNames = textBox_IncludeProcessNames.Text;
-            filterRule.ExcludeProcessNames = textBox_ExcludeProcessNames.Text;
-            filterRule.IncludeUserNames = textBox_IncludeUserNames.Text;
-            filterRule.ExcludeUserNames = textBox_ExcludeUserNames.Text;
-            filterRule.IncludeProcessIds = textBox_IncludePID.Text;
-            filterRule.ExcludeProcessIds = textBox_ExcludePID.Text;
-            filterRule.RegisterMonitorFileEvents = uint.Parse(textBox_SelectedEvents.Text);
-            filterRule.RegisterMonitorFileIOEvents = ulong.Parse(textBox_MonitorIO.Text);
-
-            filterRule.FilterDesiredAccess = uint.Parse(textBox_FilterDesiredAccess.Text);
-            filterRule.FilterDisposition = uint.Parse(textBox_FilterDisposition.Text);
-            filterRule.FilterCreateOptions = uint.Parse(textBox_FilterCreateOptions.Text);
-
-            filterRule.EnableMonitorEventBuffer = checkBox_MonitorEventBuffer.Checked;
-
-            if (null != passInFilterRule)
+            if(!isNewFileFilter)
             {
-                GlobalConfig.RemoveFilterRule(passInFilterRule.IncludeFileFilterMask);
+                GlobalConfig.RemoveFileFilter(fileFilter.IncludeFileFilterMask);
             }
 
-            GlobalConfig.AddFileFilterRule(filterRule);
+            //include filter mask must be unique, but it can have multiple exclude filter masks associate to the same include filter mask.
+            fileFilter.IncludeFileFilterMask = textBox_IncludeFilterMask.Text;
+            fileFilter.ExcludeFileFilterMaskString = textBox_ExcludeFilterMask.Text;
+            fileFilter.IncludeProcessNameString = textBox_IncludeProcessNames.Text;
+            fileFilter.ExcludeProcessNameString = textBox_ExcludeProcessNames.Text;
+            fileFilter.IncludeUserNameString = textBox_IncludeUserNames.Text;
+            fileFilter.ExcludeUserNameString = textBox_ExcludeUserNames.Text;
+            fileFilter.IncludeProcessIdString = textBox_IncludePID.Text;
+            fileFilter.ExcludeProcessIdString = textBox_ExcludePID.Text;
+            fileFilter.FileChangeEventFilter = (FilterAPI.FileChangedEvents)uint.Parse(textBox_SelectedEvents.Text);
+            fileFilter.MonitorFileIOEventFilter = (MonitorFileIOEvents)ulong.Parse(textBox_MonitorIO.Text);
+            fileFilter.FilterDesiredAccess = uint.Parse(textBox_FilterDesiredAccess.Text);
+            fileFilter.FilterDisposition = uint.Parse(textBox_FilterDisposition.Text);
+            fileFilter.FilterCreateOptions = uint.Parse(textBox_FilterCreateOptions.Text);
+            fileFilter.EnableMonitorEventBuffer = checkBox_MonitorEventBuffer.Checked;
+
+            GlobalConfig.AddFileFilter(fileFilter);
 
             this.Close();
         }
@@ -197,23 +190,13 @@ namespace EaseFilter.CommonObjects
 
         private void button_ControlSettings_Click(object sender, EventArgs e)
         {
-            ControlFilterRuleSettigs controlSettingForm = new ControlFilterRuleSettigs(filterRule);
+            ControlFilterRuleSettigs controlSettingForm = new ControlFilterRuleSettigs(fileFilter);
 
             if (controlSettingForm.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                filterRule = controlSettingForm.filterRule;
+                fileFilter = controlSettingForm.fileFilter;
             }
         }
-
-        private void button_ProcessFilterRule_Click(object sender, EventArgs e)
-        {
-            ProcessFilterSetting processSettingForm = new ProcessFilterSetting();
-
-            if (processSettingForm.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-            {
-               ProcessFilterRule processFilterRule =  processSettingForm.selectedFilterRule;
-            }
-        }      
 
         private void button_InfoFilterMask_Click(object sender, EventArgs e)
         {
@@ -275,7 +258,8 @@ namespace EaseFilter.CommonObjects
             string info = "Enable the filter driver to send the monitor events to the user mode service asynchronously,"
                         + "or the filter driver will send the monitor events synchronously, block and wait till the events being picked up.";
             MessageBox.Show(info);
-        }      
+        }
 
+      
     }
 }

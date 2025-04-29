@@ -65,7 +65,7 @@ namespace EaseFilter.CommonObjects
                 textBox_ConnectionThreads.Text = GlobalConfig.FilterConnectionThreads.ToString();
                 textBox_ConnectionTimeout.Text = GlobalConfig.ConnectionTimeOut.ToString();
 
-                if ((GlobalConfig.BooleanConfig & (uint)FilterAPI.BooleanConfig.ENABLE_SEND_DATA_BUFFER) > 0)
+                if ((GlobalConfig.BooleanConfig & FilterAPI.BooleanConfig.ENABLE_SEND_DATA_BUFFER) > 0)
                 {
                     checkBox_SendBuffer.Checked = true;
                 }
@@ -179,22 +179,22 @@ namespace EaseFilter.CommonObjects
             listView_FilterRules.Columns.Add("ExcludeFilterMask", 200, System.Windows.Forms.HorizontalAlignment.Left);
             listView_FilterRules.Columns.Add("AccessFlags", 100, System.Windows.Forms.HorizontalAlignment.Left);
 
-            foreach (FileFilterRule rule in GlobalConfig.FilterRules.Values)
+            foreach (FileFilter fileFilter in GlobalConfig.FileFilters.Values)
             {
-                AddItem(rule);
+                AddItem(fileFilter);
             }
 
         }
 
-        private void AddItem(FileFilterRule newRule)
+        private void AddItem(FileFilter fileFilter)
         {
             string[] itemStr = new string[listView_FilterRules.Columns.Count];
             itemStr[0] = listView_FilterRules.Items.Count.ToString();
-            itemStr[1] = newRule.IncludeFileFilterMask;
-            itemStr[2] = newRule.ExcludeFileFilterMasks;
-            itemStr[3] = newRule.AccessFlag.ToString();
+            itemStr[1] = fileFilter.IncludeFileFilterMask;
+            itemStr[2] = fileFilter.ExcludeFileFilterMaskString;
+            itemStr[3] = fileFilter.AccessFlags.ToString();
             ListViewItem item = new ListViewItem(itemStr, 0);
-            item.Tag = newRule;
+            item.Tag = fileFilter;
             listView_FilterRules.Items.Add(item);
         }
 
@@ -219,9 +219,9 @@ namespace EaseFilter.CommonObjects
             }
 
             System.Windows.Forms.ListViewItem item = listView_FilterRules.SelectedItems[0];
-            FileFilterRule filterRule = ((FileFilterRule)item.Tag).Copy();
+            FileFilter fileFilter = (FileFilter)item.Tag;
 
-            FilterRuleForm filterRuleForm = new FilterRuleForm(filterRule);
+            FilterRuleForm filterRuleForm = new FilterRuleForm(fileFilter);
             filterRuleForm.StartPosition = FormStartPosition.CenterParent;
             filterRuleForm.ShowDialog();
 
@@ -239,8 +239,8 @@ namespace EaseFilter.CommonObjects
 
             foreach (System.Windows.Forms.ListViewItem item in listView_FilterRules.SelectedItems)
             {
-                FileFilterRule filterRule = (FileFilterRule)item.Tag;
-                GlobalConfig.RemoveFilterRule(filterRule.IncludeFileFilterMask);
+                FileFilter fileFilter = (FileFilter)item.Tag;
+                GlobalConfig.RemoveFileFilter(fileFilter.IncludeFileFilterMask);
             }
 
             InitListView();
@@ -315,11 +315,11 @@ namespace EaseFilter.CommonObjects
 
                 if (checkBox_SendBuffer.Checked)
                 {
-                    GlobalConfig.BooleanConfig |= (uint)FilterAPI.BooleanConfig.ENABLE_SEND_DATA_BUFFER;
+                    GlobalConfig.BooleanConfig |= FilterAPI.BooleanConfig.ENABLE_SEND_DATA_BUFFER;
                 }
                 else
                 {
-                    GlobalConfig.BooleanConfig &= (uint)(~FilterAPI.BooleanConfig.ENABLE_SEND_DATA_BUFFER);
+                    GlobalConfig.BooleanConfig &= (~FilterAPI.BooleanConfig.ENABLE_SEND_DATA_BUFFER);
                 }
 
                 GlobalConfig.FilterConnectionThreads = int.Parse(textBox_ConnectionThreads.Text);
@@ -342,7 +342,7 @@ namespace EaseFilter.CommonObjects
 
                 GlobalConfig.ProtectPidList = protectPids;
 
-                if (GlobalConfig.FilterRules.Count == 0)
+                if (GlobalConfig.FileFilters.Count == 0)
                 {
                     MessageBoxHelper.PrepToCenterMessageBoxOnForm(this);
                     MessageBox.Show("There are no one filter rule added, the filter driver won't monitor any file.", "Filter Rule", MessageBoxButtons.OK, MessageBoxIcon.Warning);

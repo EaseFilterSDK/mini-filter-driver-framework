@@ -42,7 +42,7 @@ namespace RegMon
 
         //Purchase a license key with the link: http://www.easefilter.com/Order.htm
         //Email us to request a trial key: info@easefilter.com //free email is not accepted.
-        public static string licenseKey = "********************************************";
+        public static string licenseKey = GlobalConfig.LicenseKey;
 
         public RegUnitTest(string _licenseKey)
         {
@@ -60,7 +60,7 @@ namespace RegMon
             }
             catch (Exception ex)
             {
-                richTextBox_TestResult.Text = "Filter test exception:" + ex.Message;
+                richTextBox_TestResult.Text += "Filter test exception:" + ex.Message;
             }
         }
 

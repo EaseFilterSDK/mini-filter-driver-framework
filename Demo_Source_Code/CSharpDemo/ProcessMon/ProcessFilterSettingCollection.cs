@@ -31,27 +31,27 @@ namespace ProcessMon
             listView_FilterRules.Columns.Add("ControlFlag", 100, System.Windows.Forms.HorizontalAlignment.Left);
             listView_FilterRules.Columns.Add("FileAccessRights", 300, System.Windows.Forms.HorizontalAlignment.Left);
 
-            foreach (ProcessFilterRule rule in GlobalConfig.ProcessFilterRules.Values)
+            foreach (ProcessFilter rule in GlobalConfig.ProcessFilters.Values)
             {
                 AddItem(rule);
             }
 
         }
 
-        private void AddItem(ProcessFilterRule newRule)
+        private void AddItem(ProcessFilter newRule)
         {
             string[] itemStr = new string[listView_FilterRules.Columns.Count];
             itemStr[0] = listView_FilterRules.Items.Count.ToString();
-            itemStr[1] = newRule.ProcessId;
+            itemStr[1] = newRule.ProcessId.ToString();
             itemStr[2] = newRule.ProcessNameFilterMask;
             itemStr[3] = newRule.ControlFlag.ToString();
-            itemStr[4] = newRule.FileAccessRights;
+            itemStr[4] = newRule.FileAccessRightList.ToString();
             ListViewItem item = new ListViewItem(itemStr, 0);
             item.Tag = newRule;
 
             foreach (ListViewItem lvItem in listView_FilterRules.Items)
             {
-                if (string.Compare(((ProcessFilterRule)(lvItem.Tag)).ProcessNameFilterMask, newRule.ProcessNameFilterMask, true) == 0)
+                if (string.Compare(((ProcessFilter)(lvItem.Tag)).ProcessNameFilterMask, newRule.ProcessNameFilterMask, true) == 0)
                 {
                     listView_FilterRules.Items.Remove(lvItem);
                     break;
@@ -69,7 +69,7 @@ namespace ProcessMon
                 ProcessFilterSetting processFilterSetting = new ProcessFilterSetting(null);
                 if (processFilterSetting.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 {
-                    ProcessFilterRule newRule = processFilterSetting.selectedFilterRule;
+                    ProcessFilter newRule = processFilterSetting.selectedProcessFilter;
                     AddItem(newRule);
                 }
             }
@@ -104,14 +104,14 @@ namespace ProcessMon
                 return;
             }
 
-            ProcessFilterRule processFilter = (ProcessFilterRule)listView_FilterRules.SelectedItems[0].Tag;
+            ProcessFilter processFilter = (ProcessFilter)listView_FilterRules.SelectedItems[0].Tag;
             ProcessFilterSetting processFilterSetting = new ProcessFilterSetting(processFilter);
 
             if (processFilterSetting.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 listView_FilterRules.Items.Remove(listView_FilterRules.SelectedItems[0]);
 
-                ProcessFilterRule modifiedProcessFilter = processFilterSetting.selectedFilterRule;
+                ProcessFilter modifiedProcessFilter = processFilterSetting.selectedProcessFilter;
                 AddItem(modifiedProcessFilter);
             }
 
@@ -123,7 +123,7 @@ namespace ProcessMon
 
             foreach(ListViewItem item in listView_FilterRules.Items)
             {
-                GlobalConfig.AddProcessFilterRule((ProcessFilterRule)item.Tag);                
+                GlobalConfig.AddProcessFilter((ProcessFilter)item.Tag);                
             }
 
             GlobalConfig.SaveConfigSetting();

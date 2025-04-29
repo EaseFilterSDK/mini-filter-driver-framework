@@ -41,7 +41,7 @@ namespace ProcessMon
 
         public ProcessMon()
         {
-            GlobalConfig.filterType = FilterAPI.FilterType.PROCESS_FILTER|FilterAPI.FilterType.CONTROL_FILTER|FilterAPI.FilterType.MONITOR_FILTER;
+            GlobalConfig.filterType = FilterAPI.FilterType.PROCESS_FILTER;
             InitializeComponent();
 
             StartPosition = FormStartPosition.CenterScreen;
@@ -79,16 +79,14 @@ namespace ProcessMon
 
             GlobalConfig.Load();
 
-            if (GlobalConfig.ProcessFilterRules.Count == 0)
+            if (GlobalConfig.ProcessFilters.Count == 0)
             {
                 MessageBoxHelper.PrepToCenterMessageBoxOnForm(this);
                 MessageBox.Show("You don't have any process filter setup, please go to the settings to add a new filter rule, or the filter driver won't intercept any process or IO.");
             }
 
-            foreach (ProcessFilterRule filterRule in GlobalConfig.ProcessFilterRules.Values)
+            foreach (ProcessFilter processFilter in GlobalConfig.ProcessFilters.Values)
             {
-                ProcessFilter processFilter = filterRule.ToProcessFilter();
-                
                 processFilter.OnProcessCreation += processHandler.OnProcessCreation;
                 processFilter.OnProcessPreTermination += processHandler.OnProcessPreTermination;
                 processFilter.NotifyProcessWasBlocked += processHandler.NotifyProcessWasBlocked;
@@ -97,6 +95,7 @@ namespace ProcessMon
                 processFilter.NotifyThreadTerminated += processHandler.NotifyThreadTerminated;
                 processFilter.NotifyProcessHandleInfo += processHandler.NotifyProcessHandleInfo;
                 processFilter.NotifyThreadHandleInfo += processHandler.NotifyThreadHandleInfo;
+                processFilter.NotifyImageWasLoaded += processHandler.NotifyImageWasLoaded;
 
                 filterControl.AddFilter(processFilter);
             }
@@ -197,5 +196,9 @@ namespace ProcessMon
             regUnitTest.ShowDialog();
         }
 
+        private void toolStripButton_ApplyTrialKey_Click(object sender, EventArgs e)
+        {
+           
+        }
     }
 }

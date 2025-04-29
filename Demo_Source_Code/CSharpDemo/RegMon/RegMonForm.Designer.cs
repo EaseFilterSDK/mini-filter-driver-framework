@@ -37,6 +37,7 @@
             this.toolStripButton_ClearMessage = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripButton_UnitTest = new System.Windows.Forms.ToolStripButton();
+            this.toolStripButton_ApplyTrialKey = new System.Windows.Forms.ToolStripButton();
             this.listView_Info = new System.Windows.Forms.ListView();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -55,7 +56,8 @@
             this.toolStripSeparator2,
             this.toolStripButton_ClearMessage,
             this.toolStripSeparator3,
-            this.toolStripButton_UnitTest});
+            this.toolStripButton_UnitTest,
+            this.toolStripButton_ApplyTrialKey});
             this.toolStrip1.Location = new System.Drawing.Point(0, 24);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.Size = new System.Drawing.Size(909, 25);
@@ -109,15 +111,23 @@
             this.toolStripButton_UnitTest.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton_UnitTest.Image")));
             this.toolStripButton_UnitTest.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton_UnitTest.Name = "toolStripButton_UnitTest";
-            this.toolStripButton_UnitTest.Size = new System.Drawing.Size(117, 22);
+            this.toolStripButton_UnitTest.Size = new System.Drawing.Size(118, 22);
             this.toolStripButton_UnitTest.Text = "Registry Unit Test";
             this.toolStripButton_UnitTest.Click += new System.EventHandler(this.toolStripButton_UnitTest_Click);
+            // 
+            // toolStripButton_ApplyTrialKey
+            // 
+            this.toolStripButton_ApplyTrialKey.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton_ApplyTrialKey.Image")));
+            this.toolStripButton_ApplyTrialKey.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButton_ApplyTrialKey.Name = "toolStripButton_ApplyTrialKey";
+            this.toolStripButton_ApplyTrialKey.Size = new System.Drawing.Size(102, 22);
+            this.toolStripButton_ApplyTrialKey.Text = "Apply trial key";
+            this.toolStripButton_ApplyTrialKey.Click += new System.EventHandler(this.toolStripButton_ApplyTrialKey_Click);
             // 
             // listView_Info
             // 
             this.listView_Info.Dock = System.Windows.Forms.DockStyle.Fill;
             this.listView_Info.FullRowSelect = true;
-            this.listView_Info.HideSelection = false;
             this.listView_Info.HoverSelection = true;
             this.listView_Info.LabelEdit = true;
             this.listView_Info.Location = new System.Drawing.Point(0, 49);
@@ -150,13 +160,13 @@
             // toolsToolStripMenuItem
             // 
             this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
-            this.toolsToolStripMenuItem.Size = new System.Drawing.Size(46, 20);
+            this.toolsToolStripMenuItem.Size = new System.Drawing.Size(47, 20);
             this.toolsToolStripMenuItem.Text = "Tools";
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(38, 20);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
@@ -197,6 +207,7 @@
         private System.Windows.Forms.ToolStripMenuItem settingsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem toolsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
+        private System.Windows.Forms.ToolStripButton toolStripButton_ApplyTrialKey;
     }
 }
 

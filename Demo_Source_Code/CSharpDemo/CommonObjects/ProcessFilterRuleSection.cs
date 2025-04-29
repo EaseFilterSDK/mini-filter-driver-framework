@@ -50,9 +50,15 @@ namespace EaseFilter.CommonObjects
             }
         }
 
-        public void Add(ProcessFilterRule ProcessFilterRule)
+        public void Add(ProcessFilterRule processFilterRule)
         {
-            BaseAdd(ProcessFilterRule);
+            BaseAdd(processFilterRule);
+        }
+
+        public void Add(ProcessFilter ProcessFilter)
+        {
+            ProcessFilterRule processFilterRule = new ProcessFilterRule(ProcessFilter);
+            BaseAdd(processFilterRule);
         }
 
         public void Clear()
@@ -136,7 +142,7 @@ namespace EaseFilter.CommonObjects
 
         /// <summary>
         /// The file access rights to the processes which match the processNameFilterMask
-        /// the format is "FileMask!accessFalg;" e.g. "c:\sandbox\*!12356;"
+        /// the format is "FileMask|accessFalg;" e.g. "c:\sandbox\*|12356;"
         /// </summary>
         [ConfigurationProperty("fileAccessRights", IsRequired = false)]
         public string FileAccessRights
@@ -154,6 +160,24 @@ namespace EaseFilter.CommonObjects
             get { return (uint)base["controlFlag"]; }
             set { base["controlFlag"] = value; }
         }
+
+        public ProcessFilterRule()
+        {
+
+        }
+
+        public ProcessFilterRule(ProcessFilter processFilter)
+        {
+            ProcessNameFilterMask = processFilter.ProcessNameFilterMask;
+            ProcessId = processFilter.ProcessId.ToString();
+            ControlFlag = processFilter.ControlFlag;
+            ExcludeProcessNames = processFilter.ExcludeProcessNameString;
+            ExcludeUserNames = processFilter.ExcludeUserNameString;
+            FileAccessRights = processFilter.FileAccessRightString;
+
+        }
+
+
 
         public ProcessFilterRule Copy()
         {
@@ -183,46 +207,11 @@ namespace EaseFilter.CommonObjects
                 processFilter.ProcessId = 0;
             }
 
-            string[] excludeProcessNames = ExcludeProcessNames.Split(new char[] { ';' });
-            if (excludeProcessNames.Length > 0)
-            {
-                foreach (string excludeProcessName in excludeProcessNames)
-                {
-                    if (excludeProcessName.Trim().Length > 0)
-                    {
-                        processFilter.ExcludeProcessNameList.Add(excludeProcessName);
-                    }
-                }
-            }
-
-            string[] excludeUserNames = ExcludeUserNames.Split(new char[] { ';' });
-            if (excludeUserNames.Length > 0)
-            {
-                foreach (string excludeUserName in excludeUserNames)
-                {
-                    if (excludeUserName.Trim().Length > 0)
-                    {
-                        processFilter.ExcludeUserNameList.Add(excludeUserName);
-                    }
-                }
-            }
-
+            processFilter.ExcludeProcessNameString = ExcludeProcessNames;
+            processFilter.ExcludeUserNameString = ExcludeUserNames;
             processFilter.ProcessNameFilterMask = ProcessNameFilterMask;      
             processFilter.ControlFlag = ControlFlag;
-
-            string[] fileAccessRights = FileAccessRights.Split(new char[] { ';' });
-            if (fileAccessRights.Length > 0)
-            {
-                foreach (string fileAccessRight in fileAccessRights)
-                {
-                    if (fileAccessRight.Trim().Length > 0)
-                    {
-                        string fileNamFilterMask = fileAccessRight.Substring(0, fileAccessRight.IndexOf('!'));
-                        uint accessFlags = uint.Parse(fileAccessRight.Substring(fileAccessRight.IndexOf('!') + 1));
-                        processFilter.FileAccessRights.Add(fileNamFilterMask, accessFlags);
-                    }
-                }
-            }
+            processFilter.FileAccessRightString = FileAccessRights;
 
             return processFilter;
         }

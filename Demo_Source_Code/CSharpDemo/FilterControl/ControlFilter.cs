@@ -205,12 +205,42 @@ namespace EaseFilter.FilterControl
 
     }
 
+    public class ProcessRightInfo
+    {
+        /// <summary>
+        /// the process name filter mask
+        /// </summary>
+        public string processNameFilterMask;
+        /// <summary>
+        /// the certificate name of the signed process
+        /// if it is not empty, only the process signed with this trusted certificate will have the access rights.
+        /// </summary>
+        public string certificateName;
+        /// <summary>
+        /// the sha256 hash of the binary image
+        /// if it is not empty, only the process with the same sha256 hash will have the access rights.
+        /// </summary>
+        public string imageSha256Hash;
+        /// <summary>
+        /// The process's access right to the files.
+        /// </summary>
+        public uint accessFlags;
+
+        public ProcessRightInfo(uint accessFlags, string processName, string certificateName, string imageSha256)
+        {
+            this.processNameFilterMask = processName;
+            this.certificateName = certificateName;
+            this.imageSha256Hash = imageSha256;
+            this.accessFlags = accessFlags;
+        }
+    }
+
     partial class FileFilter
     {
         /// <summary>
         /// register the callback control IO
         /// </summary>
-        ulong registerControlFileIOEvents = 0;
+        ControlFileIOEvents registerControlFileIOEvents = 0;
 
         /// <summary>
         /// the control flag of the filter
@@ -221,10 +251,8 @@ namespace EaseFilter.FilterControl
         /// <summary>
         /// the access right of the process 
         /// </summary>
-        Dictionary<string, uint> processNameAccessRightList = new Dictionary<string, uint>();
-        Dictionary<byte[], uint> sha256ProcessAccessRightList = new Dictionary<byte[], uint>();
-        Dictionary<string, uint> signedProcessAccessRightList = new Dictionary<string, uint>();
         Dictionary<uint, uint> processIdAccessRightList = new Dictionary<uint, uint>();
+        Dictionary<string, ProcessRightInfo> processNameRightList = new Dictionary<string, ProcessRightInfo>();
 
         /// <summary>
         /// the access right of the users
@@ -245,83 +273,141 @@ namespace EaseFilter.FilterControl
         /// <summary>
         /// Below is the control filter properties to check if the associated control event was registered.
         /// </summary>
-        public bool IsPreFileCreateRegister { get { return (registerControlFileIOEvents & (ulong)ControlFileIOEvents.OnPreFileCreate) > 0; } }
-        public bool IsPostFileCreateRegister { get { return (registerControlFileIOEvents & (ulong)ControlFileIOEvents.OnPostFileCreate) > 0; } }
+        public bool IsPreFileCreateRegister { get { return (registerControlFileIOEvents & ControlFileIOEvents.OnPreFileCreate) > 0; } }
+        public bool IsPostFileCreateRegister { get { return (registerControlFileIOEvents & ControlFileIOEvents.OnPostFileCreate) > 0; } }
 
-        public bool IsPreQueryFileSizeRegister{ get { return (registerControlFileIOEvents & (ulong)ControlFileIOEvents.OnPreQueryFileSize) > 0;} }
-        public bool IsPostQueryFileSizeRegister { get { return (registerControlFileIOEvents & (ulong)ControlFileIOEvents.OnPostQueryFileSize) > 0; } }
+        public bool IsPreQueryFileSizeRegister { get { return (registerControlFileIOEvents & ControlFileIOEvents.OnPreQueryFileSize) > 0; } }
+        public bool IsPostQueryFileSizeRegister { get { return (registerControlFileIOEvents & ControlFileIOEvents.OnPostQueryFileSize) > 0; } }
 
-        public bool IsPreQueryBasicInfoRegister{ get { return (registerControlFileIOEvents & (ulong)ControlFileIOEvents.OnPreQueryFileBasicInfo) > 0;} }
-        public bool IsPostQueryBasicInfoRegister { get { return (registerControlFileIOEvents & (ulong)ControlFileIOEvents.OnPostQueryFileBasicInfo) > 0; } }
+        public bool IsPreQueryBasicInfoRegister { get { return (registerControlFileIOEvents & ControlFileIOEvents.OnPreQueryFileBasicInfo) > 0; } }
+        public bool IsPostQueryBasicInfoRegister { get { return (registerControlFileIOEvents & ControlFileIOEvents.OnPostQueryFileBasicInfo) > 0; } }
 
-        public bool IsPreQueryFileStandardInfoRegister{ get { return (registerControlFileIOEvents & (ulong)ControlFileIOEvents.OnPreQueryFileStandardInfo) > 0;} }
-        public bool IsPostQueryFileStandardInfoRegister { get { return (registerControlFileIOEvents & (ulong)ControlFileIOEvents.OnPostQueryFileStandardInfo) > 0; } }
+        public bool IsPreQueryFileStandardInfoRegister { get { return (registerControlFileIOEvents & ControlFileIOEvents.OnPreQueryFileStandardInfo) > 0; } }
+        public bool IsPostQueryFileStandardInfoRegister { get { return (registerControlFileIOEvents & ControlFileIOEvents.OnPostQueryFileStandardInfo) > 0; } }
 
-        public bool IsPreQueryFileNetworkInfoRegister{ get { return (registerControlFileIOEvents & (ulong)ControlFileIOEvents.OnPreQueryFileNetworkInfo) > 0;} }
-        public bool IsPostQueryFileNetworkInfoRegister { get { return (registerControlFileIOEvents & (ulong)ControlFileIOEvents.OnPostQueryFileNetworkInfo) > 0; } }
+        public bool IsPreQueryFileNetworkInfoRegister { get { return (registerControlFileIOEvents & ControlFileIOEvents.OnPreQueryFileNetworkInfo) > 0; } }
+        public bool IsPostQueryFileNetworkInfoRegister { get { return (registerControlFileIOEvents & ControlFileIOEvents.OnPostQueryFileNetworkInfo) > 0; } }
 
-        public bool IsPreQueryFileIdRegister{ get { return (registerControlFileIOEvents & (ulong)ControlFileIOEvents.OnPreQueryFileId) > 0;} }
-        public bool IsPostQueryFileIdRegister{ get { return (registerControlFileIOEvents & (ulong)ControlFileIOEvents.OnPostQueryFileId) > 0;} }
+        public bool IsPreQueryFileIdRegister { get { return (registerControlFileIOEvents & ControlFileIOEvents.OnPreQueryFileId) > 0; } }
+        public bool IsPostQueryFileIdRegister { get { return (registerControlFileIOEvents & ControlFileIOEvents.OnPostQueryFileId) > 0; } }
 
-        public bool IsPreDeleteFileRegister{ get { return (registerControlFileIOEvents & (ulong)ControlFileIOEvents.OnPreDeleteFile) > 0;} }
-        public bool IsPostDeleteFileRegister { get { return (registerControlFileIOEvents & (ulong)ControlFileIOEvents.OnPostDeleteFile) > 0; } }
+        public bool IsPreDeleteFileRegister { get { return (registerControlFileIOEvents & ControlFileIOEvents.OnPreDeleteFile) > 0; } }
+        public bool IsPostDeleteFileRegister { get { return (registerControlFileIOEvents & ControlFileIOEvents.OnPostDeleteFile) > 0; } }
 
-        public bool IsPreMoveOrRenameFileRegister{ get { return (registerControlFileIOEvents & (ulong)ControlFileIOEvents.OnPreMoveOrRenameFile) > 0;} }
-        public bool IsPostMoveOrRenameFileRegister { get { return (registerControlFileIOEvents & (ulong)ControlFileIOEvents.OnPostMoveOrRenameFile) > 0; } }
+        public bool IsPreMoveOrRenameFileRegister { get { return (registerControlFileIOEvents & ControlFileIOEvents.OnPreMoveOrRenameFile) > 0; } }
+        public bool IsPostMoveOrRenameFileRegister { get { return (registerControlFileIOEvents & ControlFileIOEvents.OnPostMoveOrRenameFile) > 0; } }
 
-        public bool IsPreSetFileBasicInfoRegister{ get { return (registerControlFileIOEvents & (ulong)ControlFileIOEvents.OnPreSetFileBasicInfo) > 0;} }
-        public bool IsPostSetFileBasicInfoRegister { get { return (registerControlFileIOEvents & (ulong)ControlFileIOEvents.OnPostSetFileBasicInfo) > 0; } }
+        public bool IsPreSetFileBasicInfoRegister { get { return (registerControlFileIOEvents & ControlFileIOEvents.OnPreSetFileBasicInfo) > 0; } }
+        public bool IsPostSetFileBasicInfoRegister { get { return (registerControlFileIOEvents & ControlFileIOEvents.OnPostSetFileBasicInfo) > 0; } }
 
-        public bool IsPreSetFileNetworkInfoRegister{ get { return (registerControlFileIOEvents & (ulong)ControlFileIOEvents.OnPreSetFileNetworkInfo) > 0;} }
-        public bool IsPostSetFileNetworkInfoRegister { get { return (registerControlFileIOEvents & (ulong)ControlFileIOEvents.OnPostSetFileNetworkInfo) > 0; } }
+        public bool IsPreSetFileNetworkInfoRegister { get { return (registerControlFileIOEvents & ControlFileIOEvents.OnPreSetFileNetworkInfo) > 0; } }
+        public bool IsPostSetFileNetworkInfoRegister { get { return (registerControlFileIOEvents & ControlFileIOEvents.OnPostSetFileNetworkInfo) > 0; } }
 
-        public bool IsPreSetFileSizeRegister{ get { return (registerControlFileIOEvents & (ulong)ControlFileIOEvents.OnPreSetFileSize) > 0;} }
-        public bool IsPostSetFileSizeRegister { get { return (registerControlFileIOEvents & (ulong)ControlFileIOEvents.OnPostSetFileSize) > 0; } }
+        public bool IsPreSetFileSizeRegister { get { return (registerControlFileIOEvents & ControlFileIOEvents.OnPreSetFileSize) > 0; } }
+        public bool IsPostSetFileSizeRegister { get { return (registerControlFileIOEvents & ControlFileIOEvents.OnPostSetFileSize) > 0; } }
 
-        public bool IsPreSetFileStandardInfoRegister{ get { return (registerControlFileIOEvents & (ulong)ControlFileIOEvents.OnPreSetFileStandardInfo) > 0;} }
-        public bool IsPostSetFileStandardInfoRegister{ get { return (registerControlFileIOEvents & (ulong)ControlFileIOEvents.OnPostSetFileStandardInfo) > 0;} }
+        public bool IsPreSetFileStandardInfoRegister { get { return (registerControlFileIOEvents & ControlFileIOEvents.OnPreSetFileStandardInfo) > 0; } }
+        public bool IsPostSetFileStandardInfoRegister { get { return (registerControlFileIOEvents & ControlFileIOEvents.OnPostSetFileStandardInfo) > 0; } }
 
         /// <summary>
         /// Register the file control IOs callback notification for control filter
         /// to allow/modify/deny the file I/O
         /// </summary>
-        public ulong ControlFileIOEventFilter
+        public ControlFileIOEvents ControlFileIOEventFilter
         {
             get { return registerControlFileIOEvents; }
-            set { registerControlFileIOEvents = value;}
+            set { registerControlFileIOEvents = value; }
         }
 
-
         /// <summary>
-        /// set the access rights of the process based on the process name in the list
+        /// Add the access right to the process with the process name filter mask.
         /// </summary>
-        public Dictionary<string, uint> ProcessNameAccessRightList
+        /// <param name="processNameFilterMask"></param>
+        /// <param name="accessFlags"></param>
+        public void AddProcessNameAccessRight(string processNameFilterMask, uint accessFlags)
         {
-            get { return processNameAccessRightList; }
-            set { processNameAccessRightList = value; }
+            ProcessRightInfo processRightInfo =  new ProcessRightInfo(accessFlags, processNameFilterMask, "", "");
+            processNameRightList.Add(processNameFilterMask, processRightInfo);
         }
 
         /// <summary>
-        /// Set the access rights of the processes which have the sha26 hash.
-        /// You can allow only the trusted process to access your files.
+        /// Add the access rights to the process which was signed or has the same sha256 hash
         /// </summary>
-        public Dictionary<byte[], uint> Sha256ProcessAccessRightList
+        /// <param name="accessFlags">the access rights for the process</param>
+        /// <param name="processNameFilterMask">the process name filter mask</param>
+        /// <param name="certificateName">the certificate name to sign the process, it is optional</param>
+        /// <param name="ImageSha256Hash">the sha256 hash of the process, it is optional</param>
+        public void AddTrustedProcessRight(uint accessFlags, string processNameFilterMask, string certificateName, string imageSha256Hash)
         {
-            get { return sha256ProcessAccessRightList; }
-            set { sha256ProcessAccessRightList = value; }
+            processNameRightList.Add(processNameFilterMask, new ProcessRightInfo(accessFlags, processNameFilterMask, certificateName, imageSha256Hash));
         }
 
         /// <summary>
-        /// set the access rights of the process which was signed with the certificate in the list
+        /// The process access right list, you can define the trusted process which was signed with specific certificate name, or with the same sha256 hash.
+        /// You can set the access right to the sepecific processes.
         /// </summary>
-        public Dictionary<string, uint> SignedProcessAccessRightList
+        public Dictionary<string, ProcessRightInfo> TrustedProcessAccessRightList
         {
-            get { return signedProcessAccessRightList; }
-            set { signedProcessAccessRightList = value; }
+            get { return processNameRightList; }
+            set { processNameRightList = value; }
         }
 
         /// <summary>
-        /// set the access rights of the files for the process in the list
+        /// Get or set the process name access right list in string
+        /// the process access rights string format "accessFlags|processName|certificateName|image256Hash"
+        /// for example: "123456|notepad.exe|EaseFilter Technologies|A123234234BADSFSFASDFSFASFASDF"
+        /// seperate the multiple items with ';'
+        /// </summary>
+        public string ProcessNameAccessRightString
+        {
+            get
+            {
+                string ProcessNameRights = string.Empty;
+                foreach (ProcessRightInfo processRightInfo in TrustedProcessAccessRightList.Values)
+                {
+                    ProcessNameRights += processRightInfo.accessFlags.ToString() + "|" + processRightInfo.processNameFilterMask
+                        + "|" + processRightInfo.certificateName + "|" + processRightInfo.imageSha256Hash + ";";
+                }
+
+                return ProcessNameRights;
+            }
+            set
+            {
+                this.processNameRightList.Clear();
+
+                string[] processNameRightList = value.Split(new char[] { ';' });
+                if (processNameRightList.Length > 0)
+                {
+                    foreach (string ProcessNameRight in processNameRightList)
+                    {
+                        string[] entries = ProcessNameRight.Split(new char[] { '|' });
+                        if (entries.Length > 3)
+                        {
+                            uint accessFlags = uint.Parse(entries[0].Trim());
+                            string processName = entries[1].Trim();                            
+                            string certName = entries[2].Trim();
+                            string sha256Hash = entries[3].Trim();
+
+                            AddTrustedProcessRight(accessFlags, processName, certName, sha256Hash);
+                        }
+                    }
+                }
+            }
+        }
+
+
+        /// <summary>
+        /// Remove the process's access right from the file filter rule.
+        /// </summary>
+        /// <param name="processNameFilterMask"></param>
+        /// <returns></returns>
+        public bool RemoveProcessRights(string processNameFilterMask)
+        {
+            return FilterAPI.RemoveProcessRightsFromFilterRule(this.fileFilterMask, processNameFilterMask);
+        }
+
+        /// <summary>
+        /// set the access rights of the files to the process in the list
         /// </summary>
         public Dictionary<uint, uint> ProcessIdAccessRightList
         {
@@ -330,12 +416,144 @@ namespace EaseFilter.FilterControl
         }
 
         /// <summary>
-        /// set the access rights of the files for the users in the list
+        /// get or set the access rights of the files to the process list in string
+        /// the process Id access right string format: pid|accessRight;pid2|accessright
         /// </summary>
-        public Dictionary<string, uint> userAccessRightList
+        public string ProcessIdAccessRightString
+        {
+            get
+            {
+                string processIdAccessRights = string.Empty;
+                foreach (KeyValuePair<uint,uint> processIdAccessRight in processIdAccessRightList)
+                {
+                    processIdAccessRights += processIdAccessRight.Key.ToString() + "|" + processIdAccessRight.Value.ToString() + ";";
+                }
+
+                return processIdAccessRights;
+            }
+            set
+            {
+                processIdAccessRightList.Clear();
+                string[] processIdAccessRights = value.Split(new char[] { ';' });
+                if (processIdAccessRights.Length > 0)
+                {
+                    foreach (string processIdAccessRight in processIdAccessRights)
+                    {
+                        string[] entries = processIdAccessRight.Split(new char[] { '|' });
+                        if (entries.Length > 1)
+                        {
+                            uint processId = uint.Parse(entries[0]);
+                            uint accessFlags = uint.Parse(entries[1]);
+                            ProcessIdAccessRightList.Add(processId, accessFlags);
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// set the access rights of the files to the users in the list
+        /// </summary>
+        public Dictionary<string, uint> UserAccessRightList
         {
             get { return userNameAccessRightList; }
             set { userNameAccessRightList = value; }
+        }
+
+        /// <summary>
+        /// get or set the access rights of the files to the user list in string
+        /// the user access right string format: userName|accessright;userName2|accessRight
+        /// </summary>
+        public string UserAccessRightString
+        {
+            get
+            {
+                string userRights = string.Empty;
+                foreach (KeyValuePair<string, uint> userRight in UserAccessRightList)
+                {
+                    userRights += userRight.Key + "|" + userRight.Value.ToString() + ";";
+                }
+
+                return userRights;
+            }
+            set
+            {
+                userNameAccessRightList.Clear();
+                string[] userRights = value.Split(new char[] { ';' });
+                if (userRights.Length > 0)
+                {
+                    foreach (string userRight in userRights)
+                    {
+                        string[] entries = userRight.Split(new char[] { '|' });
+                        if (entries.Length > 1)
+                        {
+                            string userName = entries[0];
+                            uint accessFlags = uint.Parse(entries[1]);
+                            UserAccessRightList.Add(userName, accessFlags);
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Get or set the hidden file filter mask list,
+        /// hide the files if the file name matches the filter mask in directory browsing.
+        /// </summary>
+        public List<string> HiddenFileFilterMaskList
+        {
+            get { return hidenFileFilterMaskList; }
+            set { hidenFileFilterMaskList = value; }
+        }
+
+        /// <summary>
+        /// Get or set the hidden file filter mask list in string
+        /// </summary>
+        public string HiddenFileFilterMaskString
+        {
+            get
+            {
+                string hiddenFileFilterMaskString = string.Empty;
+                foreach (string hidenFileFilterMask in hidenFileFilterMaskList)
+                {
+                    if (hidenFileFilterMask.Trim().Length > 0)
+                    {
+                        hiddenFileFilterMaskString += hidenFileFilterMask + ";";
+                    }
+                }
+
+                return hiddenFileFilterMaskString;
+            }
+            set
+            {
+                hidenFileFilterMaskList.Clear();
+                string[] hidenFileFilterMasks = value.Split(new char[] { ';' });
+                if (hidenFileFilterMasks.Length > 0)
+                {
+                    foreach (string hidenFileFilterMask in hidenFileFilterMasks)
+                    {
+                        if (hidenFileFilterMask.Trim().Length > 0)
+                        {
+                            hidenFileFilterMaskList.Add(hidenFileFilterMask);
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        ///Get or set the reparse file filter mask list, 
+        ///reparse the file open to the new file which the file name will be replaced with the reparse filter mask.
+        /// 
+        ///For example:
+        ///FilterMask = c:\test\*txt
+        ///ReparseFilterMask = d:\reparse\*doc
+        ///If you open file c:\test\MyTest.txt, it will reparse to the file d:\reparse\MyTest.doc.
+        /// </summary>
+        public string ReparseFileFilterMask
+        {
+            get { return reparseFileFilterMask; }
+            set { reparseFileFilterMask = value; }
         }
 
         /// <summary>
@@ -357,7 +575,7 @@ namespace EaseFilter.FilterControl
                 return ((accessFlags & (uint)FilterAPI.AccessFlag.ALLOW_READ_ACCESS) > 0);
             }
 
-            set 
+            set
             {
                 if (value)
                 {
@@ -403,7 +621,7 @@ namespace EaseFilter.FilterControl
                 return ((accessFlags & (uint)FilterAPI.AccessFlag.ALLOW_WRITE_ACCESS) > 0);
             }
 
-            set 
+            set
             {
                 if (value)
                 {
@@ -427,7 +645,7 @@ namespace EaseFilter.FilterControl
                 return ((accessFlags & (uint)FilterAPI.AccessFlag.ALLOW_FILE_DELETE) > 0);
             }
 
-            set 
+            set
             {
                 if (value)
                 {
@@ -469,10 +687,10 @@ namespace EaseFilter.FilterControl
         {
             get
             {
-                return ((accessFlags & (uint)FilterAPI.AccessFlag.ALLOW_OPEN_WITH_CREATE_OR_OVERWRITE_ACCESS) > 0);                
+                return ((accessFlags & (uint)FilterAPI.AccessFlag.ALLOW_OPEN_WITH_CREATE_OR_OVERWRITE_ACCESS) > 0);
             }
 
-            set 
+            set
             {
                 if (value)
                 {
@@ -495,7 +713,7 @@ namespace EaseFilter.FilterControl
                 return ((accessFlags & (uint)FilterAPI.AccessFlag.ALLOW_DIRECTORY_LIST_ACCESS) > 0);
             }
 
-            set 
+            set
             {
                 if (value)
                 {
@@ -518,7 +736,7 @@ namespace EaseFilter.FilterControl
                 return ((accessFlags & (uint)FilterAPI.AccessFlag.ALLOW_FILE_ACCESS_FROM_NETWORK) > 0);
             }
 
-            set 
+            set
             {
                 if (value)
                 {
@@ -541,7 +759,7 @@ namespace EaseFilter.FilterControl
                 return ((accessFlags & (uint)FilterAPI.AccessFlag.ALLOW_SET_SECURITY_ACCESS) > 0);
             }
 
-            set 
+            set
             {
                 if (value)
                 {
@@ -564,7 +782,7 @@ namespace EaseFilter.FilterControl
                 return ((accessFlags & (uint)FilterAPI.AccessFlag.ALLOW_SET_INFORMATION) > 0);
             }
 
-            set 
+            set
             {
                 if (value)
                 {
@@ -587,7 +805,7 @@ namespace EaseFilter.FilterControl
                 return ((accessFlags & (uint)FilterAPI.AccessFlag.ALLOW_ALL_SAVE_AS) > 0);
             }
 
-            set 
+            set
             {
                 if (value)
                 {
@@ -610,7 +828,7 @@ namespace EaseFilter.FilterControl
                 return ((accessFlags & (uint)FilterAPI.AccessFlag.ALLOW_COPY_PROTECTED_FILES_OUT) > 0);
             }
 
-            set 
+            set
             {
                 if (value)
                 {
@@ -646,7 +864,7 @@ namespace EaseFilter.FilterControl
                 }
             }
         }
-     
+
 
         /// <summary>
         /// Enable reparse file open to the other file.
@@ -669,32 +887,7 @@ namespace EaseFilter.FilterControl
                     accessFlags &= ~(uint)FilterAPI.AccessFlag.ENABLE_REPARSE_FILE_OPEN;
                 }
             }
-        }
-
-        /// <summary>
-        /// Get or set the hidden file filter mask list,
-        /// hide the files if the file name matches the filter mask in directory browsing.
-        /// </summary>
-        public List<string> HiddenFileFilterMaskList
-        {
-            get { return hidenFileFilterMaskList; }
-            set { hidenFileFilterMaskList = value; }
-        }
-
-        /// <summary>
-        ///Get or set the reparse file filter mask list, 
-        ///reparse the file open to the new file which the file name will be replaced with the reparse filter mask.
-        /// 
-        ///For example:
-        ///FilterMask = c:\test\*txt
-        ///ReparseFilterMask = d:\reparse\*doc
-        ///If you open file c:\test\MyTest.txt, it will reparse to the file d:\reparse\MyTest.doc.
-        /// </summary>
-        public string ReparseFileFilterMask
-        {
-            get { return reparseFileFilterMask; }
-            set { reparseFileFilterMask = value; }
-        }
+        }      
 
         #endregion //control property
 
@@ -902,9 +1095,9 @@ namespace EaseFilter.FilterControl
                 {
                     FileCreateEventArgs fileCreateEventArgs = new FileCreateEventArgs(messageSend);
                     fileCreateEventArgs.Description = fileCreateEventArgs.ToString();
-                   
-                    if (    messageSend.MessageType == (uint)FilterAPI.MessageType.PRE_CREATE 
-                        &&  null != OnPreCreateFile && IsPreFileCreateRegister )
+
+                    if (messageSend.MessageType == (uint)FilterAPI.MessageType.PRE_CREATE
+                        && null != OnPreCreateFile && IsPreFileCreateRegister)
                     {
 
                         fileCreateEventArgs.EventName = "OnPreCreateFile";
@@ -929,7 +1122,7 @@ namespace EaseFilter.FilterControl
 
                     }
 
-                    if (fileCreateEventArgs.isDeleteOnClose && null != OnPreDeleteFile && IsPreDeleteFileRegister )
+                    if (fileCreateEventArgs.isDeleteOnClose && null != OnPreDeleteFile && IsPreDeleteFileRegister)
                     {
                         fileCreateEventArgs = new FileCreateEventArgs(messageSend);
                         fileCreateEventArgs.EventName = "OnPreDeleteFile";
@@ -937,14 +1130,14 @@ namespace EaseFilter.FilterControl
 
                         //you can deny the create file IO based on the return status.
                         messageReply.ReturnStatus = (uint)fileCreateEventArgs.ReturnStatus;
-                        if ( fileCreateEventArgs.ReturnStatus != NtStatus.Status.Success)
+                        if (fileCreateEventArgs.ReturnStatus != NtStatus.Status.Success)
                         {
                             messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION;
                         }
 
                     }
                 }
-                else if (messageSend.MessageType == (uint)FilterAPI.MessageType.POST_CREATE )
+                else if (messageSend.MessageType == (uint)FilterAPI.MessageType.POST_CREATE)
                 {
                     FileCreateEventArgs fileCreateEventArgs = new FileCreateEventArgs(messageSend);
                     fileCreateEventArgs.Description = fileCreateEventArgs.ToString();
@@ -1103,7 +1296,7 @@ namespace EaseFilter.FilterControl
 
                         }
                     }
-                    else if (messageSend.InfoClass == (uint)WinData.FileInfomationClass.FileInternalInformation )
+                    else if (messageSend.InfoClass == (uint)WinData.FileInfomationClass.FileInternalInformation)
                     {
                         //if the event was subscribed 
                         if (null != OnPreQueryFileId && IsPreQueryFileIdRegister)
@@ -1224,7 +1417,7 @@ namespace EaseFilter.FilterControl
 
                         }
                     }
-                    else if (null != OnPreQueryFileInfo )
+                    else if (null != OnPreQueryFileInfo)
                     {
                         FileInfoArgs fileInfoArgs = new FileInfoArgs(messageSend);
                         fileInfoArgs.EventName = "OnPreQueryFileInfo:" + fileInfoArgs.FileInfoClass.ToString();
@@ -1345,7 +1538,7 @@ namespace EaseFilter.FilterControl
                     else if (messageSend.InfoClass == (uint)WinData.FileInfomationClass.FileNetworkOpenInformation)
                     {
                         //if the event was subscribed 
-                        if (null != OnPostQueryFileNetworkInfo && IsPostQueryFileNetworkInfoRegister )
+                        if (null != OnPostQueryFileNetworkInfo && IsPostQueryFileNetworkInfoRegister)
                         {
                             FileNetworkInfoEventArgs fileNetworkInfoArgs = new FileNetworkInfoEventArgs(messageSend);
                             fileNetworkInfoArgs.EventName = "OnPostQueryFileNetworkInfo";
@@ -1418,7 +1611,7 @@ namespace EaseFilter.FilterControl
 
                         }
                     }
-                    else if (messageSend.InfoClass == (uint)WinData.FileInfomationClass.FileBasicInformation )
+                    else if (messageSend.InfoClass == (uint)WinData.FileInfomationClass.FileBasicInformation)
                     {
                         //if the event was subscribed 
                         if (null != OnPreSetFileBasicInfo && IsPreSetFileBasicInfoRegister)
@@ -1451,7 +1644,7 @@ namespace EaseFilter.FilterControl
                             }
                         }
                     }
-                    else if (messageSend.InfoClass == (uint)WinData.FileInfomationClass.FileStandardInformation )
+                    else if (messageSend.InfoClass == (uint)WinData.FileInfomationClass.FileStandardInformation)
                     {
                         //if the event was subscribed 
                         if (null != OnPreSetFileStandardInfo && IsPreSetFileStandardInfoRegister)
@@ -1631,10 +1824,10 @@ namespace EaseFilter.FilterControl
                         }
                     }
                     else if (messageSend.InfoClass == (uint)WinData.FileInfomationClass.FileRenameInformation
-                            || messageSend.InfoClass == (uint)WinData.FileInfomationClass.FileRenameInformationEx )
+                            || messageSend.InfoClass == (uint)WinData.FileInfomationClass.FileRenameInformationEx)
                     {
                         //if the event was subscribed 
-                        if (null != OnPostMoveOrRenameFile&& IsPostMoveOrRenameFileRegister)
+                        if (null != OnPostMoveOrRenameFile && IsPostMoveOrRenameFileRegister)
                         {
                             FileMoveOrRenameEventArgs fileRenameArgs = new FileMoveOrRenameEventArgs(messageSend);
                             fileRenameArgs.EventName = "OnPostMoveOrRenameFile";
@@ -1645,7 +1838,7 @@ namespace EaseFilter.FilterControl
                         }
                     }
                     else if (messageSend.InfoClass == (uint)WinData.FileInfomationClass.FileDispositionInformation
-                       || messageSend.InfoClass == (uint)WinData.FileInfomationClass.FileDispositionInformationEx) 
+                       || messageSend.InfoClass == (uint)WinData.FileInfomationClass.FileDispositionInformationEx)
                     {
                         //if the event was subscribed 
                         if (null != OnPostDeleteFile && IsPostDeleteFileRegister)

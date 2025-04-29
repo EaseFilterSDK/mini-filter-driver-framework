@@ -57,7 +57,7 @@ namespace EaseFilter.CommonObjects
 
         static int filterConnectionThreads = 5;
         static int connectionTimeOut = 10; //seconds
-        static private Dictionary<string, FileFilterRule> filterRules = new Dictionary<string, FileFilterRule>();
+        
         static List<uint> includePidList = new List<uint>();
         static List<uint> excludePidList = new List<uint>();
         static List<uint> protectPidList = new List<uint>();
@@ -100,7 +100,7 @@ namespace EaseFilter.CommonObjects
         //dont display the directory IO request if it is true.
         static bool disableDirIO = false;
 
-        static uint booleanConfig = (uint)FilterAPI.BooleanConfig.ENABLE_SEND_DENIED_EVENT;
+        static FilterAPI.BooleanConfig booleanConfig = FilterAPI.BooleanConfig.ENABLE_SEND_DENIED_EVENT|FilterAPI.BooleanConfig.ENABLE_SET_FILE_ID_INFO | FilterAPI.BooleanConfig.ENABLE_SET_USER_PROCESS_NAME;
 
         public static bool isRunning = true;
         public static ManualResetEvent stopEvent = new ManualResetEvent(false);
@@ -109,11 +109,10 @@ namespace EaseFilter.CommonObjects
 
         public static Stopwatch stopWatch = new Stopwatch();
 
-        //the process filter rule collection
-        static private Dictionary<string, ProcessFilterRule> processFilterRules = new Dictionary<string, ProcessFilterRule>();
-
+        static private Dictionary<string, FileFilter> fileFilters = new Dictionary<string, FileFilter>();
+        static private Dictionary<string, ProcessFilter> processFilters = new Dictionary<string, ProcessFilter>();
         //the registry filter rule collection
-        static private Dictionary<string, RegistryFilterRule> registryFilterRules = new Dictionary<string, RegistryFilterRule>();
+        static private Dictionary<string, RegistryFilter> registryFilters = new Dictionary<string, RegistryFilter>();
 
         static GlobalConfig()
         {
@@ -128,18 +127,18 @@ namespace EaseFilter.CommonObjects
 
         public static void Load()
         {
-            filterRules.Clear();
-            processFilterRules.Clear();
-            registryFilterRules.Clear();
+            fileFilters.Clear();
+            processFilters.Clear();
+            registryFilters.Clear();
 
             try
             {
 
-                filterRules = ConfigSetting.GetFilterRules();
-                processFilterRules = ConfigSetting.GetProcessFilterRules();
-                registryFilterRules = ConfigSetting.GetRegistryFilterRules();
+                fileFilters = ConfigSetting.GetFileFilters();
+                processFilters = ConfigSetting.GetProcessFilters();
+                registryFilters = ConfigSetting.GetRegistryFilters();
 
-                booleanConfig = ConfigSetting.Get("booleanConfig", booleanConfig);
+                booleanConfig =(FilterAPI.BooleanConfig)ConfigSetting.Get("booleanConfig", (uint)booleanConfig);
                 filterConnectionThreads = ConfigSetting.Get("filterConnectionThreads", filterConnectionThreads);
                 requestIORegistration = ConfigSetting.Get("requestIORegistration", requestIORegistration);
                 displayEvents = ConfigSetting.Get("displayEvents", displayEvents);
@@ -255,7 +254,7 @@ namespace EaseFilter.CommonObjects
         /// <summary>
         /// the globalboolean config setting, please reference the enumeration of FilterAPI.BooleanConfig
         /// </summary>
-        static public uint BooleanConfig
+        static public FilterAPI.BooleanConfig BooleanConfig
         {
             get { return booleanConfig; }
             set 
@@ -267,16 +266,16 @@ namespace EaseFilter.CommonObjects
 
         static public bool EnableSendDeniedEvent
         {
-            get { return (booleanConfig & (uint)FilterAPI.BooleanConfig.ENABLE_SEND_DENIED_EVENT) > 0; }
+            get { return (booleanConfig & FilterAPI.BooleanConfig.ENABLE_SEND_DENIED_EVENT) > 0; }
             set
             {
                 if (value)
                 {
-                    booleanConfig |= (uint)FilterAPI.BooleanConfig.ENABLE_SEND_DENIED_EVENT;
+                    booleanConfig |= FilterAPI.BooleanConfig.ENABLE_SEND_DENIED_EVENT;
                 }
                 else
                 {
-                    booleanConfig &= (~(uint)FilterAPI.BooleanConfig.ENABLE_SEND_DENIED_EVENT);
+                    booleanConfig &= (~FilterAPI.BooleanConfig.ENABLE_SEND_DENIED_EVENT);
                 }
             }
         }
@@ -534,12 +533,12 @@ namespace EaseFilter.CommonObjects
                 //Purchase a license key with the link: http://www.easefilter.com/Order.htm
                 //Email us to request a trial key: info@easefilter.com //free email is not accepted.
 
+                //for demo code.
                 if (string.IsNullOrEmpty(licenseKey))
                 {
                     System.Windows.Forms.MessageBox.Show("You don't have a valid license key, Please contact support@easefilter.com to get a trial key.", "LicenseKey",
                         System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
                 }
-
 
                 return licenseKey;
             }
@@ -698,108 +697,87 @@ namespace EaseFilter.CommonObjects
             }
         }
 
-        public static bool AddFileFilterRule( FileFilterRule newRule)
+        public static bool AddFileFilter( FileFilter fileFilter)
         {
-            if (filterRules.ContainsKey(newRule.IncludeFileFilterMask))
+            if (fileFilters.ContainsKey(fileFilter.IncludeFileFilterMask))
             {
                 //the exist filter rule already there,remove it
-                filterRules.Remove(newRule.IncludeFileFilterMask);
-                ConfigSetting.RemoveFilterRule(newRule.IncludeFileFilterMask);
+                fileFilters.Remove(fileFilter.IncludeFileFilterMask);
+                ConfigSetting.RemoveFileFilter(fileFilter.IncludeFileFilterMask);
             }
 
-            filterRules.Add(newRule.IncludeFileFilterMask, newRule);
+            fileFilters.Add(fileFilter.IncludeFileFilterMask, fileFilter);
 
-            ConfigSetting.AddFilterRule(newRule);
+            ConfigSetting.AddFileFilter(fileFilter);
 
             return true;
         }
 
-        public static void RemoveFilterRule(string includeFilterMask)
+        public static void RemoveFileFilter(string includeFilterMask)
         {
-            if (filterRules.ContainsKey(includeFilterMask))
+            if (fileFilters.ContainsKey(includeFilterMask))
             {
-                filterRules.Remove(includeFilterMask);
-                ConfigSetting.RemoveFilterRule(includeFilterMask);
+                fileFilters.Remove(includeFilterMask);
+                ConfigSetting.RemoveFileFilter(includeFilterMask);
             }
-
         }
 
-        public static void RemoveAllFilterRules()
+        public static Dictionary<string, FileFilter> FileFilters
         {
-            foreach (FileFilterRule filterRule in filterRules.Values)
-            {
-                ConfigSetting.RemoveFilterRule(filterRule.IncludeFileFilterMask);
-            }
-
-            filterRules.Clear();
+            get { return fileFilters; }
         }
 
-        public static bool IsFilterRuleExist(string includeFilterMask)
+        public static bool AddProcessFilter(ProcessFilter processFilter)
         {
-            if (filterRules.ContainsKey(includeFilterMask))
-            {
-                return true;
-            }
-
-            return false;
-        }
-
-        public static Dictionary<string, FileFilterRule> FilterRules
-        {
-            get { return filterRules; }
-        }
-
-        public static bool AddProcessFilterRule(ProcessFilterRule filterRule)
-        {
-            string key = filterRule.ProcessNameFilterMask;
+            string key = processFilter.ProcessNameFilterMask;
 
             if (key.Trim().Length == 0)
             {
-                key = filterRule.ProcessId;
+                key = processFilter.ProcessId.ToString();
             }
 
-            if (processFilterRules.ContainsKey(key))
+            if (processFilters.ContainsKey(key))
             {
-                processFilterRules.Remove(key);
-                ConfigSetting.RemoveProcessFilterRule(filterRule);
+                processFilters.Remove(key);
+                ConfigSetting.RemoveProcessFilter(processFilter);
             }
 
-            processFilterRules.Add(key, filterRule);
-            ConfigSetting.AddProcessFilterRule(filterRule);
+            processFilters.Add(key, processFilter);
+            ConfigSetting.AddProcessFilter(processFilter);
 
             return true;
         }
 
-        public static void RemoveProcessFilterRule(ProcessFilterRule filterRule)
+        public static void RemoveProcessFilter(ProcessFilter processFilter)
         {
-            string key = filterRule.ProcessNameFilterMask;
+            string key = processFilter.ProcessNameFilterMask;
 
             if (key.Trim().Length == 0)
             {
-                key = filterRule.ProcessId;
+                key = processFilter.ProcessId.ToString();
             }
 
-            if (processFilterRules.ContainsKey(key))
+            if (processFilters.ContainsKey(key))
             {
-                processFilterRules.Remove(key);
-                ConfigSetting.RemoveProcessFilterRule(filterRule);
+                processFilters.Remove(key);
+                ConfigSetting.RemoveProcessFilter(processFilter);
             }
         }
 
         public static void ClearProcessFilterRule()
         {
-            string[] filterKeys = new string[processFilterRules.Count];
-            processFilterRules.Keys.CopyTo( filterKeys,0);
+            string[] filterKeys = new string[processFilters.Count];
+            processFilters.Keys.CopyTo( filterKeys,0);
 
             foreach(string key in filterKeys)
             {
-                ProcessFilterRule processFilterRule = processFilterRules[key];
-                processFilterRules.Remove(key);
-                ConfigSetting.RemoveProcessFilterRule(processFilterRule);
+                ProcessFilter processFilter = processFilters[key];
+                processFilters.Remove(key);
+                ConfigSetting.RemoveProcessFilter(processFilter);
             }
         }
 
-        public static ProcessFilterRule GetProcessFilterRule(string processId, string processNameFilterMask)
+        public static ProcessFilter GetProcessFilter(string processId, string processNameFilterMask)
         {
             string key = processNameFilterMask;
 
@@ -808,57 +786,57 @@ namespace EaseFilter.CommonObjects
                 key = processId;
             }
 
-            if (processFilterRules.ContainsKey(key))
+            if (processFilters.ContainsKey(key))
             {
-                return processFilterRules[key];
+                return processFilters[key];
             }
 
             return null;
         }
 
-        public static Dictionary<string, ProcessFilterRule> ProcessFilterRules
+        public static Dictionary<string, ProcessFilter> ProcessFilters
         {
-            get { return processFilterRules; }
+            get { return processFilters; }
         }
 
-        public static bool AddRegistryFilterRule(RegistryFilterRule filterRule)
+        public static bool AddRegistryFilter(RegistryFilter registryFilter)
         {
-            string key = filterRule.ProcessNameFilterMask;
+            string key = registryFilter.ProcessNameFilterMask;
 
             if (key.Trim().Length == 0)
             {
-                key = filterRule.ProcessId;
+                key = registryFilter.ProcessId.ToString();
             }
 
-            if (registryFilterRules.ContainsKey(key))
+            if (registryFilters.ContainsKey(key))
             {
-                registryFilterRules.Remove(key);
-                ConfigSetting.RemoveRegistryFilterRule(filterRule.ProcessId, filterRule.ProcessNameFilterMask);
+                registryFilters.Remove(key);
+                ConfigSetting.RemoveRegistryFilterRule(registryFilter.ProcessId.ToString(), registryFilter.ProcessNameFilterMask);
             }
 
-            registryFilterRules.Add(key, filterRule);
-            ConfigSetting.AddRegistryFilterRule(filterRule);
+            registryFilters.Add(key, registryFilter);
+            ConfigSetting.AddRegistryFilter(registryFilter);
 
             return true;
         }
 
-        public static void RemoveRegistryFilterRule(RegistryFilterRule filterRule)
+        public static void RemoveRegistryFilter(RegistryFilter registryFilter)
         {
-            string key = filterRule.ProcessNameFilterMask;
+            string key = registryFilter.ProcessNameFilterMask;
 
             if (key.Trim().Length == 0)
             {
-                key = filterRule.ProcessId;
+                key = registryFilter.ProcessId.ToString();
             }
 
-            if (registryFilterRules.ContainsKey(key))
+            if (registryFilters.ContainsKey(key))
             {
-                registryFilterRules.Remove(key);
-                ConfigSetting.RemoveRegistryFilterRule(filterRule.ProcessId, filterRule.ProcessNameFilterMask);
+                registryFilters.Remove(key);
+                ConfigSetting.RemoveRegistryFilterRule(registryFilter.ProcessId.ToString(), registryFilter.ProcessNameFilterMask);
             }
         }
 
-        public static RegistryFilterRule GetRegistryFilterRule(string processId, string processNameFilterMask)
+        public static RegistryFilter GetRegistryFilter(string processId, string processNameFilterMask)
         {
             string key = processNameFilterMask;
 
@@ -867,17 +845,17 @@ namespace EaseFilter.CommonObjects
                 key = processId;
             }
 
-            if (registryFilterRules.ContainsKey(key))
+            if (registryFilters.ContainsKey(key))
             {
-                return registryFilterRules[key];
+                return registryFilters[key];
             }
 
             return null;
         }
 
-        public static Dictionary<string, RegistryFilterRule> RegistryFilterRules
+        public static Dictionary<string, RegistryFilter> RegistryFilters
         {
-            get { return registryFilterRules; }
+            get { return registryFilters; }
         }
     }
 }

@@ -36,6 +36,10 @@ SendProcessFilterNotification(PMESSAGE_SEND_DATA messageSend)
     {
         processEventArgs->EventName = L"NotifyThreadHandleInfo";
     }
+    else if (messageSend->FilterCommand == FILTER_SEND_LOAD_IMAGE_NOTIFICATION)
+    {
+        processEventArgs->EventName = L"NotifyImageWasLoaded";
+    }
    
 	DisplayProcessMessage(processEventArgs);
 

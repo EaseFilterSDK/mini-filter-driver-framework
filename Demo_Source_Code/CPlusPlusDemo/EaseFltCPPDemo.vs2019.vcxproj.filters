@@ -33,6 +33,9 @@
     <ClCompile Include="FilterControl.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="TestData.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FilterAPI.h">
@@ -78,6 +81,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="FilterRule.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ReparseFilterHandler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TestData.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

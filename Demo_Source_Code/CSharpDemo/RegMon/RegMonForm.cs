@@ -97,16 +97,14 @@ namespace RegMon
 
             GlobalConfig.Load();
 
-            if (GlobalConfig.RegistryFilterRules.Count == 0)
+            if (GlobalConfig.RegistryFilters.Count == 0)
             {
                 MessageBoxHelper.PrepToCenterMessageBoxOnForm(this);
                 MessageBox.Show("You don't have any registry filter setup, please go to the settings to add a new filter rule, or the filter driver won't intercept any process or IO.");
             }
 
-            foreach (RegistryFilterRule filterRule in GlobalConfig.RegistryFilterRules.Values)
+            foreach (RegistryFilter registryFilter in GlobalConfig.RegistryFilters.Values)
             {
-                RegistryFilter registryFilter = filterRule.ToRegistryFilter();
-
                 registryFilter.NotifyRegWasBlocked += registryHandler.NotifyRegWasBlocked;
 
                 registryFilter.OnPreDeleteKey += registryHandler.OnPreDeleteKey;
@@ -235,10 +233,7 @@ namespace RegMon
 
         private void toolStripButton_ApplyTrialKey_Click(object sender, EventArgs e)
         {
-            WebFormServices webForm = new WebFormServices();
-            webForm.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-
-            System.Threading.Tasks.Task.Factory.StartNew(() => { webForm.ShowDialog(); });
+           
         }
 
     

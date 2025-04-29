@@ -17,42 +17,37 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 
 using EaseFilter.FilterControl;
 using EaseFilter.CommonObjects;
 
 namespace EaseFilter.FolderLocker
-{
+{   
+
     public partial class FolderLockerSettigs : Form
     {
-        public FileFilterRule filterRule = new FileFilterRule();
+        public FileFilter fileFilter = new FileFilter("");
 
-        uint accessFlags = FilterAPI.ALLOW_MAX_RIGHT_ACCESS;
-        Dictionary<string, uint> userList = new Dictionary<string, uint>();
-        Dictionary<string, uint> processList = new Dictionary<string, uint>();
+        FilterAPI.AccessFlag accessFlags = (FilterAPI.AccessFlag)FilterAPI.ALLOW_MAX_RIGHT_ACCESS;
+        Dictionary<string, uint> userRightList = new Dictionary<string, uint>();
+        Dictionary<string, ProcessRightInfo> processNameAccessRightList = new Dictionary<string, ProcessRightInfo>();
         bool isFormInitialized = false;
 
-        public FolderLockerSettigs(FileFilterRule _filterRule)
+        public FolderLockerSettigs(FileFilter _fileFilter)
         {
             InitializeComponent();
 
-
-            if (null != _filterRule)
+            if (null != _fileFilter)
             {
-                filterRule = _filterRule;
-                accessFlags = filterRule.AccessFlag;
+                fileFilter = _fileFilter;
+                accessFlags = _fileFilter.AccessFlags;
 
                 textBox_FolderName.Enabled = false;
                 button_BrowseFolder.Enabled = false;
 
-                textBox_FolderName.Text = filterRule.IncludeFileFilterMask.Replace("\\*","");
-                textBox_PassPhrase.Text = filterRule.EncryptionPassPhrase;
+                textBox_FolderName.Text = fileFilter.IncludeFileFilterMask.Replace("\\*","");
+                textBox_PassPhrase.Text = fileFilter.EncryptionPassPhrase;
 
             }
             else
@@ -61,60 +56,16 @@ namespace EaseFilter.FolderLocker
                 button_BrowseFolder.Enabled = true;
             }
 
-            SetCheckBoxValue();
+            this.processNameAccessRightList = fileFilter.TrustedProcessAccessRightList;
+            this.userRightList = fileFilter.UserAccessRightList;
 
-            InitAccessList();
+            SetCheckBoxValue();
 
             InitAccessRightsListView();
 
             isFormInitialized = true;
         }
 
-        private void InitAccessList()
-        {
-            string[] processRights = filterRule.ProcessNameRights.Split(new char[] { ';' });
-            if (processRights.Length > 0)
-            {
-                foreach (string processRight in processRights)
-                {
-                    if (processRight.Trim().Length > 0)
-                    {
-                        string processName = processRight.Substring(0, processRight.IndexOf('!'));
-                        uint accessFlags = uint.Parse(processRight.Substring(processRight.IndexOf('!') + 1));
-
-                        if( processList.ContainsKey(processName.ToLower()))
-                        {
-                            processList.Remove(processName.ToLower());
-                        }
-
-                        processList.Add(processName.ToLower(), accessFlags);
-                    }
-                }
-
-            }
-
-            string[] userRights = filterRule.UserRights.Split(new char[] { ';' });
-            if (userRights.Length > 0)
-            {
-                foreach (string userRight in userRights)
-                {
-                    if (userRight.Trim().Length > 0)
-                    {
-                        string userName = userRight.Substring(0, userRight.IndexOf('!'));
-                        uint accessFlags = uint.Parse(userRight.Substring(userRight.IndexOf('!') + 1));
-
-                        if (userList.ContainsKey(userName.ToLower()))
-                        {
-                            userList.Remove(userName.ToLower());
-                        }
-
-                        userList.Add(userName.ToLower(), accessFlags);
-                    }
-                }
-
-            }
-
-        }
 
         private void InitAccessRightsListView()
         {
@@ -127,9 +78,10 @@ namespace EaseFilter.FolderLocker
             listView_AccessRights.Columns.Add("Writable", 70, System.Windows.Forms.HorizontalAlignment.Left);
             listView_AccessRights.Columns.Add("Deletable", 70, System.Windows.Forms.HorizontalAlignment.Left);
             listView_AccessRights.Columns.Add("Renamable", 70, System.Windows.Forms.HorizontalAlignment.Left);
+            listView_AccessRights.Columns.Add("CertName", 70, System.Windows.Forms.HorizontalAlignment.Left);
+            listView_AccessRights.Columns.Add("Sha256", 70, System.Windows.Forms.HorizontalAlignment.Left);
 
-
-            foreach (KeyValuePair<string, uint> entry in userList)
+            foreach (KeyValuePair<string, uint> entry in userRightList)
             {
                 string userName = entry.Key;
                 uint accessFlags = entry.Value;
@@ -150,10 +102,13 @@ namespace EaseFilter.FolderLocker
             }
 
 
-            foreach (KeyValuePair<string, uint> entry in processList)
+            foreach (KeyValuePair<string, ProcessRightInfo> entry in processNameAccessRightList)
             {
-                string processName = entry.Key;
-                uint accessFlags = entry.Value;
+                ProcessRightInfo processRight = entry.Value;
+                string processName = processRight.processNameFilterMask;
+                uint accessFlags = processRight.accessFlags;
+                string certname = processRight.certificateName;
+                string sha256 = processRight.imageSha256Hash;
 
                 string[] listEntry = new string[listView_AccessRights.Columns.Count];
                 int index = 0;
@@ -163,9 +118,11 @@ namespace EaseFilter.FolderLocker
                 listEntry[index++] = ((accessFlags & (uint)FilterAPI.AccessFlag.ALLOW_WRITE_ACCESS) > 0).ToString();
                 listEntry[index++] = ((accessFlags & (uint)FilterAPI.AccessFlag.ALLOW_FILE_DELETE) > 0).ToString();
                 listEntry[index++] = ((accessFlags & (uint)FilterAPI.AccessFlag.ALLOW_FILE_RENAME) > 0).ToString();
+                listEntry[index++] = certname;
+                listEntry[index++] = sha256;
 
                 ListViewItem item = new ListViewItem(listEntry, 0);
-                item.Tag = entry;
+                item.Tag = processRight;
                 listView_AccessRights.Items.Add(item);
 
             }
@@ -175,7 +132,7 @@ namespace EaseFilter.FolderLocker
         private void SetCheckBoxValue()
         {
 
-            if ((accessFlags & (uint)FilterAPI.AccessFlag.ENABLE_FILE_ENCRYPTION_RULE) > 0 )
+            if ((accessFlags & FilterAPI.AccessFlag.ENABLE_FILE_ENCRYPTION_RULE) > 0 )
             {
                 checkBox_Encryption.Checked = true;
                 textBox_PassPhrase.ReadOnly = false;
@@ -186,7 +143,7 @@ namespace EaseFilter.FolderLocker
                 textBox_PassPhrase.ReadOnly = true;
             }
 
-            if ((accessFlags & (uint)FilterAPI.AccessFlag.ALLOW_FILE_ACCESS_FROM_NETWORK) > 0)
+            if ((accessFlags & FilterAPI.AccessFlag.ALLOW_FILE_ACCESS_FROM_NETWORK) > 0)
             {
                 checkBox_AllowRemoteAccess.Checked = true;
             }
@@ -195,7 +152,7 @@ namespace EaseFilter.FolderLocker
                 checkBox_AllowRemoteAccess.Checked = false;
             }
 
-            if ((accessFlags & (uint)FilterAPI.AccessFlag.ALLOW_FILE_DELETE) > 0)
+            if ((accessFlags & FilterAPI.AccessFlag.ALLOW_FILE_DELETE) > 0)
             {
                 checkBox_AllowDelete.Checked = true;
             }
@@ -204,7 +161,7 @@ namespace EaseFilter.FolderLocker
                 checkBox_AllowDelete.Checked = false;
             }
 
-            if ((accessFlags & (uint)FilterAPI.AccessFlag.ALLOW_SET_SECURITY_ACCESS) > 0)
+            if ((accessFlags & FilterAPI.AccessFlag.ALLOW_SET_SECURITY_ACCESS) > 0)
             {
                 checkBox_AllowSetSecurity.Checked = true;
             }
@@ -213,7 +170,7 @@ namespace EaseFilter.FolderLocker
                 checkBox_AllowSetSecurity.Checked = false;
             }
 
-            if ((accessFlags & (uint)FilterAPI.AccessFlag.ALLOW_FILE_RENAME) > 0)
+            if ((accessFlags & FilterAPI.AccessFlag.ALLOW_FILE_RENAME) > 0)
             {
                 checkBox_AllowRename.Checked = true;
             }
@@ -222,7 +179,7 @@ namespace EaseFilter.FolderLocker
                 checkBox_AllowRename.Checked = false;
             }
 
-            if ( (accessFlags & (uint)FilterAPI.AccessFlag.ALLOW_WRITE_ACCESS) > 0 )
+            if ( (accessFlags & FilterAPI.AccessFlag.ALLOW_WRITE_ACCESS) > 0 )
             {
                 checkBox_AllowWrite.Checked = true;
             }
@@ -231,7 +188,7 @@ namespace EaseFilter.FolderLocker
                 checkBox_AllowWrite.Checked = false;
             }
 
-            if ((accessFlags & (uint)FilterAPI.AccessFlag.ALLOW_OPEN_WITH_CREATE_OR_OVERWRITE_ACCESS) > 0)
+            if ((accessFlags & FilterAPI.AccessFlag.ALLOW_OPEN_WITH_CREATE_OR_OVERWRITE_ACCESS) > 0)
             {
                 checkBox_AllowNewFileCreation.Checked = true;
             }
@@ -240,7 +197,7 @@ namespace EaseFilter.FolderLocker
                 checkBox_AllowNewFileCreation.Checked = false;
             }
 
-            if ((accessFlags & (uint)FilterAPI.AccessFlag.ENABLE_HIDE_FILES_IN_DIRECTORY_BROWSING) > 0)
+            if ((accessFlags & FilterAPI.AccessFlag.ENABLE_HIDE_FILES_IN_DIRECTORY_BROWSING) > 0)
             {
                 checkBox_HideFiles.Checked = true;
             }
@@ -249,7 +206,7 @@ namespace EaseFilter.FolderLocker
                 checkBox_HideFiles.Checked = false;
             }
 
-            if ((accessFlags & (uint)FilterAPI.AccessFlag.ALLOW_READ_ACCESS) > 0)
+            if ((accessFlags & FilterAPI.AccessFlag.ALLOW_READ_ACCESS) > 0)
             {
                 checkBox_AllowRead.Checked = true;
             }
@@ -259,7 +216,7 @@ namespace EaseFilter.FolderLocker
             }
 
 
-            if ((accessFlags & (uint)FilterAPI.AccessFlag.ALLOW_COPY_PROTECTED_FILES_OUT) > 0)
+            if ((accessFlags & FilterAPI.AccessFlag.ALLOW_COPY_PROTECTED_FILES_OUT) > 0)
             {
                 checkBox_AllowCopyout.Checked = true;
             }
@@ -267,19 +224,15 @@ namespace EaseFilter.FolderLocker
             {
                 checkBox_AllowCopyout.Checked = false;
             }
-
-          
         }
 
         private void button_SaveControlSettings_Click(object sender, EventArgs e)
         {
-            string encryptionPassPhrase = string.Empty;
+            fileFilter.IncludeFileFilterMask = textBox_FolderName.Text + "\\*";
+            fileFilter.EncryptionPassPhrase = textBox_PassPhrase.Text;
+            fileFilter.AccessFlags = accessFlags;
 
-            filterRule.IncludeFileFilterMask = textBox_FolderName.Text + "\\*";
-            filterRule.EncryptionPassPhrase = textBox_PassPhrase.Text;
-            filterRule.AccessFlag = accessFlags;
-
-            if ((accessFlags & (uint)FilterAPI.AccessFlag.ENABLE_FILE_ENCRYPTION_RULE) > 0 )
+            if ((accessFlags & FilterAPI.AccessFlag.ENABLE_FILE_ENCRYPTION_RULE) > 0 )
             {
                 if (textBox_PassPhrase.Text.Trim().Length == 0)
                 {
@@ -288,38 +241,16 @@ namespace EaseFilter.FolderLocker
                     return;
                 }
 
-                filterRule.EncryptMethod = (int)FilterAPI.EncryptionMethod.ENCRYPT_FILE_WITH_SAME_KEY_AND_UNIQUE_IV;
             }
 
-            if ((accessFlags & (uint)FilterAPI.AccessFlag.ENABLE_HIDE_FILES_IN_DIRECTORY_BROWSING) > 0)
+            if ((accessFlags & FilterAPI.AccessFlag.ENABLE_HIDE_FILES_IN_DIRECTORY_BROWSING) > 0)
             {
-                filterRule.HiddenFileFilterMasks = "*";
+                fileFilter.HiddenFileFilterMaskList.Add("*");
             }
 
-            if (userList.Count == 0)
-            {
-                filterRule.UserRights = "";
-            }
-            else
-            {
-                foreach (KeyValuePair<string, uint> entry in userList)
-                {
-                    filterRule.UserRights = entry.Key + "!" + entry.Value + ";";
-                }
-            }
+            fileFilter.UserAccessRightList = userRightList;
+            fileFilter.TrustedProcessAccessRightList = processNameAccessRightList;
 
-            if (processList.Count == 0)
-            {
-                filterRule.ProcessNameRights = "";
-            }
-            else
-            {
-                foreach (KeyValuePair<string, uint> entry in processList)
-                {
-                    filterRule.ProcessNameRights = entry.Key + "!" + entry.Value + ";";
-                }
-            }          
-            
         }
         
         private void checkBox_AllowDelete_CheckedChanged(object sender, EventArgs e)
@@ -327,11 +258,11 @@ namespace EaseFilter.FolderLocker
 
             if (!checkBox_AllowDelete.Checked)
             {
-                accessFlags = accessFlags & ((uint)~FilterAPI.AccessFlag.ALLOW_FILE_DELETE);
+                accessFlags = accessFlags & (~FilterAPI.AccessFlag.ALLOW_FILE_DELETE);
             }
             else
             {
-                accessFlags = accessFlags | ((uint)FilterAPI.AccessFlag.ALLOW_FILE_DELETE);
+                accessFlags = accessFlags | (FilterAPI.AccessFlag.ALLOW_FILE_DELETE);
             }
 
         }
@@ -340,11 +271,11 @@ namespace EaseFilter.FolderLocker
         {
             if (!checkBox_AllowWrite.Checked)
             {
-                accessFlags = accessFlags & ((uint)~FilterAPI.AccessFlag.ALLOW_WRITE_ACCESS);
+                accessFlags = accessFlags & (~FilterAPI.AccessFlag.ALLOW_WRITE_ACCESS);
             }
             else
             {
-                accessFlags = accessFlags | ((uint)FilterAPI.AccessFlag.ALLOW_WRITE_ACCESS);
+                accessFlags = accessFlags | (FilterAPI.AccessFlag.ALLOW_WRITE_ACCESS);
             }
 
         }
@@ -354,11 +285,11 @@ namespace EaseFilter.FolderLocker
 
             if (!checkBox_AllowRename.Checked)
             {
-                accessFlags = accessFlags & ((uint)~FilterAPI.AccessFlag.ALLOW_FILE_RENAME);
+                accessFlags = accessFlags & (~FilterAPI.AccessFlag.ALLOW_FILE_RENAME);
             }
             else
             {
-                accessFlags = accessFlags | ((uint)FilterAPI.AccessFlag.ALLOW_FILE_RENAME);
+                accessFlags = accessFlags | (FilterAPI.AccessFlag.ALLOW_FILE_RENAME);
             }
 
         }
@@ -367,11 +298,11 @@ namespace EaseFilter.FolderLocker
         {
             if (!checkBox_AllowRemoteAccess.Checked)
             {
-                accessFlags = accessFlags & ((uint)~FilterAPI.AccessFlag.ALLOW_FILE_ACCESS_FROM_NETWORK);
+                accessFlags = accessFlags & (~FilterAPI.AccessFlag.ALLOW_FILE_ACCESS_FROM_NETWORK);
             }
             else
             {
-                accessFlags = accessFlags | ((uint)FilterAPI.AccessFlag.ALLOW_FILE_ACCESS_FROM_NETWORK);
+                accessFlags = accessFlags | (FilterAPI.AccessFlag.ALLOW_FILE_ACCESS_FROM_NETWORK);
             }
 
         }
@@ -381,11 +312,11 @@ namespace EaseFilter.FolderLocker
 
             if (!checkBox_AllowNewFileCreation.Checked)
             {
-                accessFlags = accessFlags & ((uint)~FilterAPI.AccessFlag.ALLOW_OPEN_WITH_CREATE_OR_OVERWRITE_ACCESS);
+                accessFlags = accessFlags & (~FilterAPI.AccessFlag.ALLOW_OPEN_WITH_CREATE_OR_OVERWRITE_ACCESS);
             }
             else
             {
-                accessFlags = accessFlags | ((uint)FilterAPI.AccessFlag.ALLOW_OPEN_WITH_CREATE_OR_OVERWRITE_ACCESS);
+                accessFlags = accessFlags | (FilterAPI.AccessFlag.ALLOW_OPEN_WITH_CREATE_OR_OVERWRITE_ACCESS);
             }
 
         }
@@ -394,11 +325,11 @@ namespace EaseFilter.FolderLocker
         {
             if (!checkBox_AllowSetSecurity.Checked)
             {
-                accessFlags = accessFlags & ((uint)~FilterAPI.AccessFlag.ALLOW_SET_SECURITY_ACCESS);
+                accessFlags = accessFlags & (~FilterAPI.AccessFlag.ALLOW_SET_SECURITY_ACCESS);
             }
             else
             {
-                accessFlags = accessFlags | ((uint)FilterAPI.AccessFlag.ALLOW_SET_SECURITY_ACCESS);
+                accessFlags = accessFlags | (FilterAPI.AccessFlag.ALLOW_SET_SECURITY_ACCESS);
             }
 
         }
@@ -408,11 +339,11 @@ namespace EaseFilter.FolderLocker
         {
             if (!checkBox_HideFiles.Checked)
             {
-                accessFlags = accessFlags & ((uint)~FilterAPI.AccessFlag.ENABLE_HIDE_FILES_IN_DIRECTORY_BROWSING);
+                accessFlags = accessFlags & (~FilterAPI.AccessFlag.ENABLE_HIDE_FILES_IN_DIRECTORY_BROWSING);
             }
             else
             {
-                accessFlags = accessFlags | ((uint)FilterAPI.AccessFlag.ENABLE_HIDE_FILES_IN_DIRECTORY_BROWSING);
+                accessFlags = accessFlags | (FilterAPI.AccessFlag.ENABLE_HIDE_FILES_IN_DIRECTORY_BROWSING);
             }
 
         }
@@ -421,11 +352,11 @@ namespace EaseFilter.FolderLocker
         {
             if (!checkBox_AllowCopyout.Checked)
             {
-                accessFlags = accessFlags & ((uint)~FilterAPI.AccessFlag.ALLOW_COPY_PROTECTED_FILES_OUT);
+                accessFlags = accessFlags & (~FilterAPI.AccessFlag.ALLOW_COPY_PROTECTED_FILES_OUT);
             }
             else
             {
-                accessFlags = accessFlags | ((uint)FilterAPI.AccessFlag.ALLOW_COPY_PROTECTED_FILES_OUT);
+                accessFlags = accessFlags | (FilterAPI.AccessFlag.ALLOW_COPY_PROTECTED_FILES_OUT);
             }
         }
 
@@ -433,11 +364,11 @@ namespace EaseFilter.FolderLocker
         {
             if (!checkBox_AllowRead.Checked)
             {
-                accessFlags = accessFlags & ((uint)~FilterAPI.AccessFlag.ALLOW_READ_ACCESS);
+                accessFlags = accessFlags & (~FilterAPI.AccessFlag.ALLOW_READ_ACCESS);
             }
             else
             {
-                accessFlags = accessFlags | ((uint)FilterAPI.AccessFlag.ALLOW_READ_ACCESS);
+                accessFlags = accessFlags | (FilterAPI.AccessFlag.ALLOW_READ_ACCESS);
             }
 
         }
@@ -452,7 +383,7 @@ namespace EaseFilter.FolderLocker
             if (checkBox_Encryption.Checked)
             {
                 textBox_PassPhrase.ReadOnly = false;
-                accessFlags = accessFlags | ((uint)FilterAPI.AccessFlag.ENABLE_FILE_ENCRYPTION_RULE);
+                accessFlags = accessFlags | (FilterAPI.AccessFlag.ENABLE_FILE_ENCRYPTION_RULE);
 
                 MessageBoxHelper.PrepToCenterMessageBoxOnForm(this);
                 MessageBox.Show("Please note that the existing files won't be encrypted.", "encryption", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -460,7 +391,7 @@ namespace EaseFilter.FolderLocker
             else
             {
                 textBox_PassPhrase.ReadOnly = true;
-                accessFlags = accessFlags & ((uint)~FilterAPI.AccessFlag.ENABLE_FILE_ENCRYPTION_RULE);
+                accessFlags = accessFlags & (~FilterAPI.AccessFlag.ENABLE_FILE_ENCRYPTION_RULE);
 
                 MessageBoxHelper.PrepToCenterMessageBoxOnForm(this);
                 MessageBox.Show("Please note that the existing encrypted files won't be decrypted.", "encryption", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -478,12 +409,12 @@ namespace EaseFilter.FolderLocker
                 string userName = accessRightsForm.accessName;
                 uint accessFlags = accessRightsForm.accessFlags;
 
-                if( userList.ContainsKey(userName.ToLower()))
+                if( userRightList.ContainsKey(userName))
                 {
-                    userList.Remove(userName.ToLower());
+                    userRightList.Remove(userName);
                 }
 
-                userList.Add(userName, accessFlags);
+                userRightList.Add(userName, accessFlags);
                 InitAccessRightsListView();
             }
         }
@@ -496,13 +427,17 @@ namespace EaseFilter.FolderLocker
             {
                 string processName = accessRightsForm.accessName;
                 uint accessFlags = accessRightsForm.accessFlags;
+                string certName = accessRightsForm.certName;
+                string sha256Hash = accessRightsForm.imageSha256Name;
 
-                if (processList.ContainsKey(processName.ToLower()))
+                if (processNameAccessRightList.ContainsKey(processName))
                 {
-                    processList.Remove(processName.ToLower());
+                    processNameAccessRightList.Remove(processName);
                 }
 
-                processList.Add(processName.ToLower(), accessFlags);
+                ProcessRightInfo processRight = new ProcessRightInfo(accessFlags, processName, certName, sha256Hash);
+
+                processNameAccessRightList.Add(processName, processRight);
                 InitAccessRightsListView();
             }
         }
@@ -522,11 +457,11 @@ namespace EaseFilter.FolderLocker
 
             if (string.Compare(type, "user") == 0)
             {
-                userList.Remove(name.ToLower());
+                userRightList.Remove(name);
             }
             else
             {
-                processList.Remove(name.ToLower());
+                processNameAccessRightList.Remove(name);
             }
 
             InitAccessRightsListView();
@@ -543,10 +478,6 @@ namespace EaseFilter.FolderLocker
             }
         }
 
-        private void FolderLockerSettigs_Load(object sender, EventArgs e)
-        {
-
-        }
-               
+     
     }
 }

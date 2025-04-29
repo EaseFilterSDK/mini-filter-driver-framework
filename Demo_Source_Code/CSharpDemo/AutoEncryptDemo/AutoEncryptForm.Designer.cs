@@ -49,6 +49,10 @@
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.getTagDataOfEncryptedFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.applyTrialKeyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.button_DRMInfo = new System.Windows.Forms.Button();
+            this.button_DecryptInfo = new System.Windows.Forms.Button();
+            this.button_AuthorizedProcessInfo = new System.Windows.Forms.Button();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -209,7 +213,8 @@
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.getTagDataOfEncryptedFileToolStripMenuItem,
-            this.helpToolStripMenuItem});
+            this.helpToolStripMenuItem,
+            this.applyTrialKeyToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(402, 24);
@@ -219,8 +224,8 @@
             // getTagDataOfEncryptedFileToolStripMenuItem
             // 
             this.getTagDataOfEncryptedFileToolStripMenuItem.Name = "getTagDataOfEncryptedFileToolStripMenuItem";
-            this.getTagDataOfEncryptedFileToolStripMenuItem.Size = new System.Drawing.Size(158, 20);
-            this.getTagDataOfEncryptedFileToolStripMenuItem.Text = "Get encrypted file tag data";
+            this.getTagDataOfEncryptedFileToolStripMenuItem.Size = new System.Drawing.Size(92, 20);
+            this.getTagDataOfEncryptedFileToolStripMenuItem.Text = "Get DRM data";
             this.getTagDataOfEncryptedFileToolStripMenuItem.Click += new System.EventHandler(this.getTagDataOfEncryptedFileToolStripMenuItem_Click);
             // 
             // helpToolStripMenuItem
@@ -230,11 +235,51 @@
             this.helpToolStripMenuItem.Text = "Help";
             this.helpToolStripMenuItem.Click += new System.EventHandler(this.helpToolStripMenuItem_Click);
             // 
+            // applyTrialKeyToolStripMenuItem
+            // 
+            this.applyTrialKeyToolStripMenuItem.Name = "applyTrialKeyToolStripMenuItem";
+            this.applyTrialKeyToolStripMenuItem.Size = new System.Drawing.Size(94, 20);
+            this.applyTrialKeyToolStripMenuItem.Text = "Apply trial key";
+            this.applyTrialKeyToolStripMenuItem.Click += new System.EventHandler(this.applyTrialKeyToolStripMenuItem_Click);
+            // 
+            // button_DRMInfo
+            // 
+            this.button_DRMInfo.Image = global::AutoEncryptDemo.Properties.Resources.about;
+            this.button_DRMInfo.Location = new System.Drawing.Point(364, 171);
+            this.button_DRMInfo.Name = "button_DRMInfo";
+            this.button_DRMInfo.Size = new System.Drawing.Size(26, 23);
+            this.button_DRMInfo.TabIndex = 22;
+            this.button_DRMInfo.UseVisualStyleBackColor = true;
+            this.button_DRMInfo.Click += new System.EventHandler(this.button_DRMInfo_Click);
+            // 
+            // button_DecryptInfo
+            // 
+            this.button_DecryptInfo.Image = global::AutoEncryptDemo.Properties.Resources.about;
+            this.button_DecryptInfo.Location = new System.Drawing.Point(364, 282);
+            this.button_DecryptInfo.Name = "button_DecryptInfo";
+            this.button_DecryptInfo.Size = new System.Drawing.Size(26, 23);
+            this.button_DecryptInfo.TabIndex = 23;
+            this.button_DecryptInfo.UseVisualStyleBackColor = true;
+            this.button_DecryptInfo.Click += new System.EventHandler(this.button_DecryptInfo_Click);
+            // 
+            // button_AuthorizedProcessInfo
+            // 
+            this.button_AuthorizedProcessInfo.Image = global::AutoEncryptDemo.Properties.Resources.about;
+            this.button_AuthorizedProcessInfo.Location = new System.Drawing.Point(364, 97);
+            this.button_AuthorizedProcessInfo.Name = "button_AuthorizedProcessInfo";
+            this.button_AuthorizedProcessInfo.Size = new System.Drawing.Size(26, 23);
+            this.button_AuthorizedProcessInfo.TabIndex = 24;
+            this.button_AuthorizedProcessInfo.UseVisualStyleBackColor = true;
+            this.button_AuthorizedProcessInfo.Click += new System.EventHandler(this.button_AuthorizedProcessInfo_Click);
+            // 
             // AutoEncryptForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(402, 410);
+            this.Controls.Add(this.button_AuthorizedProcessInfo);
+            this.Controls.Add(this.button_DecryptInfo);
+            this.Controls.Add(this.button_DRMInfo);
             this.Controls.Add(this.button_DRMSetting);
             this.Controls.Add(this.button_EncryptFolder);
             this.Controls.Add(this.checkBox_EnableEncryptionWithDRM);
@@ -286,7 +331,11 @@
         private System.Windows.Forms.Button button_DRMSetting;
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem applyTrialKeyToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem getTagDataOfEncryptedFileToolStripMenuItem;
+        private System.Windows.Forms.Button button_DRMInfo;
+        private System.Windows.Forms.Button button_DecryptInfo;
+        private System.Windows.Forms.Button button_AuthorizedProcessInfo;
     }
 }
 

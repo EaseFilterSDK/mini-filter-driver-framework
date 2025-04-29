@@ -16,15 +16,8 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 using System;
-using System.Text;
 using System.IO;
-using System.Collections;
-using System.Collections.Generic;
-using Microsoft.Win32.SafeHandles;
 using System.Runtime.InteropServices;
-using System.Security.Principal;
-using System.Security.Cryptography;
-
 
 namespace EaseFilter.FilterControl
 {
@@ -37,7 +30,8 @@ namespace EaseFilter.FilterControl
         public const int MAX_MESSAGE_LENGTH = 65536;
         public const int MAX_PATH = 260;
         public const int MAX_ERROR_MESSAGE_SIZE = 1024;
-        public const uint MESSAGE_SEND_VERIFICATION_NUMBER = 0xFF000001;        
+        public const uint MESSAGE_SEND_VERIFICATION_NUMBER = 0xFF000001;
+        public const uint DATA_BUFFER_EX_VERIFICATION_NUMBER = 0xABcdFE33;
         public const uint GENERIC_WRITE = 0x40000000;
         public const uint AES_TAG_KEY = 0xccb76e80;
 
@@ -75,6 +69,10 @@ namespace EaseFilter.FilterControl
             /// File system process filter driver
             /// </summary>
             PROCESS_FILTER = 0x10,
+            /// <summary>
+            /// Reparse point filter filter driver
+            /// </summary>
+            FILE_SYSTEM_REPARSE = 0x20,
             /// <summary>
             /// File system hierarchical storage management filter driver
             /// </summary>
@@ -201,6 +199,19 @@ namespace EaseFilter.FilterControl
             ///which will block all new file creation of the process which was read the protected files.
             /// </summary>
             ENABLE_BLOCK_SAVE_AS_FLAG = 0x00040000,
+            /// <summary>
+            /// if it is true it will check the 8dot3 short file name for the filter rule.
+            /// </summary>
+            ENABLE_CHECK_SHORT_FILE_NAME = 0x00080000,
+            /// <summary>
+            /// if it is true it will set the fileId infomation for the message_send_data structure.
+            /// </summary>
+            ENABLE_SET_FILE_ID_INFO = 0x00100000,
+            /// <summary>
+            /// if it is true it will set the userName and processName for the message_send_data_structure.
+            /// </summary>
+            ENABLE_SET_USER_PROCESS_NAME = 0x00200000,
+
 
         }
 
@@ -301,7 +312,22 @@ namespace EaseFilter.FilterControl
             /// send process information before it was terminiated.
             /// </summary>
             FILTER_SEND_PRE_TERMINATE_PROCESS_INFO = 0x00010017,
-
+            /// <summary>
+            /// Send a notification when a driver image or a user image (for example, a DLL or EXE) is mapped into virtual memory.
+            /// </summary>
+            FILTER_SEND_LOAD_IMAGE_NOTIFICATION = 0x00010018,
+            /// <summary>
+            ///send the open request for a not encrypted file with the tag data header.
+            /// </summary>
+            FILTER_NO_ENCRYPT_FILE_OPEN_WITH_TAG = 0x00010021,
+            /// <summary>
+            /// Get tag data to create a new reparse file.
+            /// </summary>
+            FILTER_REPARSE_FILE_CREATE_REQUEST = 0x00010022,
+            /// <summary>
+            /// request the reparse file open.
+            /// </summary>
+            FILTER_REPARSE_FILE_OPEN_REQUEST = 0x00010023,
         }
 
         public enum IOEventName
@@ -892,11 +918,51 @@ namespace EaseFilter.FilterControl
             ///the data buffer which contains read/write/query information/set information data.
             /// </summary>
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = MAX_MESSAGE_LENGTH)]
-            public byte[] DataBuffer;       
+            public byte[] DataBufferEx;       
             
         }
 
-        
+        /// <summary>
+        /// the data structure to replace the field DataBuffer in MessageSendData
+        /// if boolean flag ENABLE_SET_FILE_ID_INFO or ENABLE_SET_USER_PROCESS_NAME was enabled, this data structure will be used 
+        /// </summary>
+        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
+        public struct DataBufferEx
+        {
+            /// <summary>
+            ///the verification number of the data structure.
+            /// </summary>
+            public uint VerificationNumber;
+            /// <summary>
+            /// The command that is used to execute the process.
+            /// </summary>
+            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = MAX_PATH)]
+            public string userName;
+            /// <summary>
+            /// The command that is used to execute the process.
+            /// </summary>
+            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = MAX_PATH)]
+            public string processName;
+            /// <summary>
+            /// the file system type of the volume.
+            /// </summary>
+            public uint fileSystemType;
+            /// <summary>
+            /// the serial Id of the volume.
+            /// </summary>
+            public ulong volumeId;
+            /// <summary>
+            /// The file Id of the file.
+            /// </summary>
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 16)]
+            public byte[] fileId;
+            /// <summary>
+            ///the data buffer which contains read/write/query information/set information data.
+            /// </summary>
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = MAX_MESSAGE_LENGTH)]
+            public byte[] DataBuffer;
+        }
+
         /// <summary>
         /// The attached volume control flag.
         /// </summary>
@@ -929,10 +995,11 @@ namespace EaseFilter.FilterControl
 
         }
 
-       /// <summary>
-      /// the structure of the attached volume information
-      /// </summary>
-      [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
+       
+        /// <summary>
+        /// the structure of the attached volume information
+        /// </summary>
+        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
       public struct VOLUME_INFO
       {
           /// <summary>
@@ -1354,17 +1421,35 @@ namespace EaseFilter.FilterControl
         uint filterByCreateOptions);
 
         /// <summary>
+        /// Get sha256 hash of the file, you need to allocate the 32 bytes array to get the sha256 hash.
+        /// hashBytesLength is the input byte array length, and the outpout length of the hash.
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <param name="hashBytes"></param>
+        /// <param name="hashBytesLength"></param>
+        /// <returns></returns>
+        [DllImport("FilterAPI.dll", SetLastError = true)]
+        public static extern bool Sha256HashFile(
+            [MarshalAs(UnmanagedType.LPWStr)] string fileName,
+            byte[] hashBytes,
+            ref uint hashBytesLength);
+
+        /// <summary>
         /// Set the access rights to the specific process
         /// </summary>
         /// <param name="filterMask">the file filter mask of the filter rule</param>
         /// <param name="processName">the process name will be added the access rights, e.g. notepad.exe or c:\windows\*.exe</param>
         /// <param name="accessFlags">the access rights</param>
+        /// <param name="certificateName">if this is not empty, the filter will check if the process was signed with this certificate</param>
+        /// <param name="imageSha256Hash">the image sha256 hash,if it is not empty, will check if the image hash match.</param>
         /// <returns>return true if it succeeds</returns>
         [DllImport("FilterAPI.dll", SetLastError = true)]
         public static extern bool AddProcessRightsToFilterRule(
         [MarshalAs(UnmanagedType.LPWStr)]string filterMask,
         [MarshalAs(UnmanagedType.LPWStr)]string processName,
-        uint accessFlags);
+        uint accessFlags,
+        [MarshalAs(UnmanagedType.LPWStr)] string certificateName,
+        [MarshalAs(UnmanagedType.LPStr)] string imageSha256Hash);
 
         /// <summary>
         /// Remove the acces right setting for specific processes from filter rule
@@ -1375,53 +1460,7 @@ namespace EaseFilter.FilterControl
         [DllImport("FilterAPI.dll", SetLastError = true)]
         public static extern bool RemoveProcessRightsFromFilterRule(
         [MarshalAs(UnmanagedType.LPWStr)]string filterMask,
-        [MarshalAs(UnmanagedType.LPWStr)]string processName);
-
-        /// <summary>
-        /// Get sha256 hash of the file, you need to allocate the 32 bytes array to get the sha256 hash.
-        /// hashBytesLength is the input byte array length, and the outpout length of the hash.
-        /// </summary>
-        /// <param name="fileName"></param>
-        /// <param name="hashBytes"></param>
-        /// <param name="hashBytesLength"></param>
-        /// <returns></returns>
-        [DllImport("FilterAPI.dll", SetLastError = true)]
-        public static extern bool Sha256HashFile(
-            [MarshalAs(UnmanagedType.LPWStr)]string fileName,
-            byte[] hashBytes,
-            ref uint hashBytesLength);
-
-        /// <summary>
-        /// Add the access rights of the process with the sha256 hash to the filter rule.
-        /// allows you to set the access rights to your trusted process.
-        /// </summary>
-        /// <param name="filterMask">The filter rule file filter mask.</param>
-        /// <param name="imageSha256">the sha256 hash of the executable binary file.</param>
-        /// <param name="hashLength">the length of the sha256 hash, by default is 32.</param>
-        /// <param name="accessFlags">the access flags for the setting process.</param>
-        /// <returns>return true if it is succeeded.</returns>
-        [DllImport("FilterAPI.dll", SetLastError = true)]
-        public static extern bool AddSha256ProcessAccessRightsToFilterRule(
-        [MarshalAs(UnmanagedType.LPWStr)]string filterMask,
-        byte[] imageSha256,
-        uint hashLength,
-        uint accessFlags);
-
-        /// <summary>
-        /// Add the access rights of the process which was signed with the certificate to the filter rule.
-        /// allows you to set the access rights to your trusted process.
-        /// </summary>
-        /// <param name="filterMask">The filter rule file filter mask.</param>
-        /// <param name="certificateName">the subject name of the code certificate to sign the process.</param>
-        /// <param name="lengthOfCertificate">the length of the certificate name</param>
-        /// <param name="accessFlags">the access flags for the setting process.</param>
-        /// <returns>return true if it is succeeded.</returns>
-        [DllImport("FilterAPI.dll", SetLastError = true)]
-        public static extern bool AddSignedProcessAccessRightsToFilterRule(
-        [MarshalAs(UnmanagedType.LPWStr)]string filterMask,
-        [MarshalAs(UnmanagedType.LPWStr)]string certificateName,
-        uint lengthOfCertificate,
-        uint accessFlags);
+        [MarshalAs(UnmanagedType.LPWStr)]string processName);     
 
         /// <summary>
         /// Set the access control flags to process with the processId
@@ -1789,6 +1828,10 @@ namespace EaseFilter.FilterControl
             /// you can block the process termination in the callback function.
             /// </summary>
             PROCESS_PRE_TERMINATION_REQUEST = 0x00000004,
+            /// <summary>
+            /// Get a notification when a driver image or a user image (for example, a DLL or EXE) is mapped into virtual memory.
+            /// </summary>
+            PROCESS_LOAD_IMAGE_NOTIFICATION = 0x00000008,
             /// <summary>
             /// Get a notification when a new process is being created.
             /// </summary>

@@ -19,6 +19,7 @@ namespace AutoEncryptDemo
 
         public AutoEncryptForm()
         {
+            this.StartPosition = FormStartPosition.CenterScreen;
             InitializeComponent();
         }
 
@@ -96,6 +97,9 @@ namespace AutoEncryptDemo
 
             //enable the encryption for the filter rule.
             fileFilter.EnableEncryption = true;
+            //It is optional to set the encrypted file attribute,if it was set,
+            //the encrypted attribute will be kept even it was copied out to another folder without the encryption.
+            fileFilter.BooleanConfig |= (uint)FilterAPI.BooleanConfig.ENABLE_SET_FILE_ATTRIBUTE_ENCRYPTED;
 
             //if we enable the encryption key from service, you can authorize the encryption or decryption for every file
             //in the callback function OnFilterRequestEncryptKey.
@@ -126,7 +130,7 @@ namespace AutoEncryptDemo
                         if (processName.Trim().Length > 0)
                         {
                             //authorized the process with the read encrypted data right.
-                            fileFilter.ProcessNameAccessRightList.Add(processName, FilterAPI.ALLOW_MAX_RIGHT_ACCESS);
+                            fileFilter.AddTrustedProcessRight(FilterAPI.ALLOW_MAX_RIGHT_ACCESS, processName,"","");
                         }
                     }
                 }
@@ -141,17 +145,17 @@ namespace AutoEncryptDemo
                             if (userName.Trim().Length > 0)
                             {
                                 //authorized the user with the read encrypted data right.
-                                fileFilter.userAccessRightList.Add(userName, FilterAPI.ALLOW_MAX_RIGHT_ACCESS);
+                                fileFilter.UserAccessRightList.Add(userName, FilterAPI.ALLOW_MAX_RIGHT_ACCESS);
                             }
                         }
                     }
 
-                    if (fileFilter.userAccessRightList.Count > 0)
+                    if (fileFilter.UserAccessRightList.Count > 0)
                     {
                         //set black list for all other users except the white list users.
                         uint accessFlag = FilterAPI.ALLOW_MAX_RIGHT_ACCESS & ~(uint)FilterAPI.AccessFlag.ALLOW_READ_ENCRYPTED_FILES;
                         //disable the decryption right, read the raw encrypted data for all except the authorized users.
-                        fileFilter.userAccessRightList.Add("*", accessFlag);
+                        fileFilter.UserAccessRightList.Add("*", accessFlag);
                     }
                 }
             }
@@ -169,7 +173,7 @@ namespace AutoEncryptDemo
             FileFilter decryptFileFilter = new FileFilter(decryptFolder);
 
             //enable the encryption for the filter rule.
-            decryptFileFilter.EnableEncryption = true;
+            decryptFileFilter.EnableEncryption = true;           
 
             //if we enable the encryption key from service, you can authorize the decryption for every file
             //in the callback function OnFilterRequestEncryptKey.
@@ -198,7 +202,7 @@ namespace AutoEncryptDemo
                     if (processName.Trim().Length > 0)
                     {
                         //authorized the process with the read encrypted data right.
-                        decryptFileFilter.ProcessNameAccessRightList.Add(processName, FilterAPI.ALLOW_MAX_RIGHT_ACCESS);
+                        decryptFileFilter.AddTrustedProcessRight(FilterAPI.ALLOW_MAX_RIGHT_ACCESS, processName, "", "");
                     }
                 }
             }
@@ -226,10 +230,10 @@ namespace AutoEncryptDemo
             {
                 if (e.IsNewCreatedFile)
                 {                   
-                    byte[] iv = Guid.NewGuid().ToByteArray();
+                    byte[] iv = Utils.GetIVByPassPhrase(GlobalConfig.MasterPassword);
                     //for the new created file, you can add your custom tag data to the header of the encyrpted file here.
                     //here we add the iv to the tag data.
-                    e.EncryptionTag = iv;
+                    e.EncryptionTag = DRMServer.GetDRMTagData(e.FileName);
 
                     //if you don't set the iv data, the filter driver will generate the new GUID as iv 
                     e.IV = iv;
@@ -261,8 +265,8 @@ namespace AutoEncryptDemo
                     //The encryption key must be the same one which you created the new encrypted file.
                     e.EncryptionKey = Utils.GetKeyByPassPhrase(GlobalConfig.MasterPassword, 32);
 
-                    //here is the iv key we saved in tag data.
-                    e.IV = tagData;
+                    //the iv key has to be the same one when you create the new file.
+                    e.IV = Utils.GetIVByPassPhrase(GlobalConfig.MasterPassword); ;
 
                     //if you want to block encrypted file being opened, you can return accessdenied status.
                     //e.ReturnStatus = NtStatus.Status.AccessDenied;
@@ -355,7 +359,7 @@ namespace AutoEncryptDemo
 
         private void applyTrialKeyToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            WebFormServices webForm = new WebFormServices();
+            RegisterForm webForm = new RegisterForm();
             webForm.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 
             System.Threading.Tasks.Task.Factory.StartNew(() => { webForm.ShowDialog(); });
@@ -381,8 +385,23 @@ namespace AutoEncryptDemo
                 }
 
                 MessageBoxHelper.PrepToCenterMessageBoxOnForm(this);
-                MessageBox.Show("Get encrypted file " + fileName + " tag data succeeded. return tag data length:" + tagDataLength, "tagData", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("Get encrypted file " + fileName + " tag data succeeded. return DRM data length:" + tagDataLength, "tagData", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
+        }
+
+        private void button_AuthorizedProcessInfo_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("By default all processes can't access the encrypted files, you can setup the authorized processes here if DRM is disabled.");
+        }
+
+        private void button_DRMInfo_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("Enable the DRM, you can embed the DRM control policies into the header of the encrypted file, or embed the custom data into the header of the encrypted file.");
+        }
+
+        private void button_DecryptInfo_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("To setup the decryption folder, it won't encrypt the new file, it only decrypts the encrypted files.");
         }
     }
 }

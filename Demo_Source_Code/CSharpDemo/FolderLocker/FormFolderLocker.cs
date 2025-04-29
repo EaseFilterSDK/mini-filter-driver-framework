@@ -44,9 +44,8 @@ namespace EaseFilter.FolderLocker
             {
                 filterControl.ClearFilters();
 
-                foreach (FileFilterRule filterRule in GlobalConfig.FilterRules.Values)
+                foreach (FileFilter fileFilter in GlobalConfig.FileFilters.Values)
                 {
-                    FileFilter fileFilter = filterRule.ToFileFilter();
                     filterControl.AddFilter(fileFilter);
                 }
 
@@ -112,10 +111,10 @@ namespace EaseFilter.FolderLocker
             listView_LockFolders.Columns.Add("Copyable", 70, System.Windows.Forms.HorizontalAlignment.Left);
             listView_LockFolders.Columns.Add("Visible", 70, System.Windows.Forms.HorizontalAlignment.Left);
 
-            foreach (FileFilterRule filterRule in GlobalConfig.FilterRules.Values)
+            foreach (FileFilter fileFilter in GlobalConfig.FileFilters.Values)
             {
-                string folderName = filterRule.IncludeFileFilterMask.Replace("\\*","");
-                uint accessFlags = filterRule.AccessFlag;
+                string folderName = fileFilter.IncludeFileFilterMask.Replace("\\*","");
+                uint accessFlags = (uint)fileFilter.AccessFlags;
 
                 if (!string.IsNullOrEmpty(GlobalConfig.ShareFolder) && folderName.StartsWith(GlobalConfig.ShareFolder))
                 {
@@ -134,7 +133,7 @@ namespace EaseFilter.FolderLocker
                 listEntry[index++] = ((accessFlags & (uint)FilterAPI.AccessFlag.ENABLE_HIDE_FILES_IN_DIRECTORY_BROWSING) == 0).ToString();
 
                 ListViewItem item = new ListViewItem(listEntry, 0);
-                item.Tag = filterRule;
+                item.Tag = fileFilter;
                 listView_LockFolders.Items.Add(item);
             }
 
@@ -157,65 +156,55 @@ namespace EaseFilter.FolderLocker
             listView_AccessRights.Columns.Add("Writable", 70, System.Windows.Forms.HorizontalAlignment.Left);
             listView_AccessRights.Columns.Add("Deletable", 70, System.Windows.Forms.HorizontalAlignment.Left);
             listView_AccessRights.Columns.Add("Renamable", 70, System.Windows.Forms.HorizontalAlignment.Left);
+            listView_AccessRights.Columns.Add("CertName", 70, System.Windows.Forms.HorizontalAlignment.Left);
+            listView_AccessRights.Columns.Add("Sha256", 70, System.Windows.Forms.HorizontalAlignment.Left);
 
             if (listView_LockFolders.SelectedItems.Count == 1)
             {
                 System.Windows.Forms.ListViewItem item = listView_LockFolders.SelectedItems[0];
-                FileFilterRule filterRule = (FileFilterRule)item.Tag;
+                FileFilter fileFilter = (FileFilter)item.Tag;
 
-                string[] processRights = filterRule.ProcessNameRights.Split(new char[] { ';' });
-                if (processRights.Length > 0)
+                foreach (KeyValuePair<string, ProcessRightInfo> entry in fileFilter.TrustedProcessAccessRightList)
                 {
-                    foreach (string processRight in processRights)
-                    {
-                        if (processRight.Trim().Length > 0)
-                        {
-                            string processName = processRight.Substring(0, processRight.IndexOf('!'));
-                            uint accessFlags = uint.Parse(processRight.Substring(processRight.IndexOf('!') + 1));
+                    uint accessFlags = entry.Value.accessFlags;
+                    string processName = entry.Value.processNameFilterMask;
+                    string certName = entry.Value.certificateName;
+                    string sha256Hash = entry.Value.imageSha256Hash;
 
-                            string[] listEntry = new string[listView_AccessRights.Columns.Count];
-                            int index = 0;
-                            listEntry[index++] = "process";
-                            listEntry[index++] = processName;
-                            listEntry[index++] = ((accessFlags & (uint)FilterAPI.AccessFlag.ALLOW_READ_ACCESS) > 0).ToString();
-                            listEntry[index++] = ((accessFlags & (uint)FilterAPI.AccessFlag.ALLOW_WRITE_ACCESS) > 0).ToString();
-                            listEntry[index++] = ((accessFlags & (uint)FilterAPI.AccessFlag.ALLOW_FILE_DELETE) > 0).ToString();
-                            listEntry[index++] = ((accessFlags & (uint)FilterAPI.AccessFlag.ALLOW_FILE_RENAME) > 0).ToString();
+                    string[] listEntry = new string[listView_AccessRights.Columns.Count];
+                    int index = 0;
+                    listEntry[index++] = "process";
+                    listEntry[index++] = processName;
+                    listEntry[index++] = ((accessFlags & (uint)FilterAPI.AccessFlag.ALLOW_READ_ACCESS) > 0).ToString();
+                    listEntry[index++] = ((accessFlags & (uint)FilterAPI.AccessFlag.ALLOW_WRITE_ACCESS) > 0).ToString();
+                    listEntry[index++] = ((accessFlags & (uint)FilterAPI.AccessFlag.ALLOW_FILE_DELETE) > 0).ToString();
+                    listEntry[index++] = ((accessFlags & (uint)FilterAPI.AccessFlag.ALLOW_FILE_RENAME) > 0).ToString();
+                    listEntry[index++] = certName;
+                    listEntry[index++] = sha256Hash;
 
-                            ListViewItem listItem = new ListViewItem(listEntry, 0);
-                            item.Tag = filterRule;
-                            listView_AccessRights.Items.Add(listItem);
-                          
-                        }
-                    }
+                    ListViewItem listItem = new ListViewItem(listEntry, 0);
+                    item.Tag = fileFilter;
+                    listView_AccessRights.Items.Add(listItem);
 
                 }
 
-                string[] userRights = filterRule.UserRights.Split(new char[] { ';' });
-                if (userRights.Length > 0)
+                foreach (KeyValuePair<string, uint> userRight in fileFilter.UserAccessRightList)
                 {
-                    foreach (string userRight in userRights)
-                    {
-                        if (userRight.Trim().Length > 0)
-                        {
-                            string userName = userRight.Substring(0, userRight.IndexOf('!'));
-                            uint accessFlags = uint.Parse(userRight.Substring(userRight.IndexOf('!') + 1));
+                    string userName = userRight.Key;
+                    uint accessFlags = userRight.Value;
 
-                            string[] listEntry = new string[listView_AccessRights.Columns.Count];
-                            int index = 0;
-                            listEntry[index++] = "user";
-                            listEntry[index++] = userName;
-                            listEntry[index++] = ((accessFlags & (uint)FilterAPI.AccessFlag.ALLOW_READ_ACCESS) > 0).ToString();
-                            listEntry[index++] = ((accessFlags & (uint)FilterAPI.AccessFlag.ALLOW_WRITE_ACCESS) > 0).ToString();
-                            listEntry[index++] = ((accessFlags & (uint)FilterAPI.AccessFlag.ALLOW_FILE_DELETE) > 0).ToString();
-                            listEntry[index++] = ((accessFlags & (uint)FilterAPI.AccessFlag.ALLOW_FILE_RENAME) > 0).ToString();
+                    string[] listEntry = new string[listView_AccessRights.Columns.Count];
+                    int index = 0;
+                    listEntry[index++] = "user";
+                    listEntry[index++] = userName;
+                    listEntry[index++] = ((accessFlags & (uint)FilterAPI.AccessFlag.ALLOW_READ_ACCESS) > 0).ToString();
+                    listEntry[index++] = ((accessFlags & (uint)FilterAPI.AccessFlag.ALLOW_WRITE_ACCESS) > 0).ToString();
+                    listEntry[index++] = ((accessFlags & (uint)FilterAPI.AccessFlag.ALLOW_FILE_DELETE) > 0).ToString();
+                    listEntry[index++] = ((accessFlags & (uint)FilterAPI.AccessFlag.ALLOW_FILE_RENAME) > 0).ToString();
 
-                            ListViewItem listItem = new ListViewItem(listEntry, 0);
-                            item.Tag = filterRule;
-                            listView_AccessRights.Items.Add(listItem);
-                        }
-                    }
-
+                    ListViewItem listItem = new ListViewItem(listEntry, 0);
+                    item.Tag = fileFilter;
+                    listView_AccessRights.Items.Add(listItem);
                 }
 
             }
@@ -246,9 +235,9 @@ namespace EaseFilter.FolderLocker
 
             if (folderLocker.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                FileFilterRule filterRule = folderLocker.filterRule;
+                FileFilter fileFilter = folderLocker.fileFilter;
 
-                GlobalConfig.AddFileFilterRule(filterRule);
+                GlobalConfig.AddFileFilter(fileFilter);
 
                 GlobalConfig.SaveConfigSetting();
 
@@ -274,7 +263,7 @@ namespace EaseFilter.FolderLocker
                 if (MessageBox.Show("Are you sure you want to remove a folder from locker?", "Delete Folder", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes)
                 {
                     System.Windows.Forms.ListViewItem item = listView_LockFolders.SelectedItems[0];
-                    GlobalConfig.RemoveFilterRule(((FileFilterRule)item.Tag).IncludeFileFilterMask);
+                    GlobalConfig.RemoveFileFilter(((FileFilter)item.Tag).IncludeFileFilterMask);
 
                     GlobalConfig.SaveConfigSetting();
 
@@ -295,14 +284,14 @@ namespace EaseFilter.FolderLocker
             }
 
             System.Windows.Forms.ListViewItem item = listView_LockFolders.SelectedItems[0];
-            FolderLockerSettigs folderLocker = new FolderLockerSettigs((FileFilterRule)item.Tag);
+            FolderLockerSettigs folderLocker = new FolderLockerSettigs((FileFilter)item.Tag);
 
             if (folderLocker.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                FileFilterRule filterRule = folderLocker.filterRule;
+                FileFilter fileFilter = folderLocker.fileFilter;
 
-                GlobalConfig.RemoveFilterRule(((FileFilterRule)item.Tag).IncludeFileFilterMask);
-                GlobalConfig.AddFileFilterRule(filterRule);
+                GlobalConfig.RemoveFileFilter(((FileFilter)item.Tag).IncludeFileFilterMask);
+                GlobalConfig.AddFileFilter(fileFilter);
                 GlobalConfig.SaveConfigSetting();
 
                 SendSettingsToFilter();
@@ -347,6 +336,10 @@ namespace EaseFilter.FolderLocker
 
             toolStripButton_StartFilter.Enabled = true;
             toolStripButton_Stop.Enabled = false;
+        }
+
+        private void toolStripButton_ApplyTrialKey_Click(object sender, EventArgs e)
+        {
         }
 
        

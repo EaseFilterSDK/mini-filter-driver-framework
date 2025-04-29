@@ -579,7 +579,7 @@ namespace FileProtector
             FileFilter blockAccessFilter = new FileFilter(unitTestFolder + "\\*");
 
             //Remove all access rights for the process "cmd".
-            blockAccessFilter.ProcessNameAccessRightList.Add("cmd.exe",((uint)FilterAPI.AccessFlag.LEAST_ACCESS_FLAG));
+            blockAccessFilter.AddTrustedProcessRight(((uint)FilterAPI.AccessFlag.LEAST_ACCESS_FLAG), "cmd.exe", "", "");
 
             try
             {
@@ -640,7 +640,7 @@ namespace FileProtector
             FileFilter blockAccessFilter = new FileFilter(unitTestFolder + "\\*");
 
             //Remove all access rights to the current user.
-            blockAccessFilter.userAccessRightList.Add(userName,((uint)FilterAPI.AccessFlag.LEAST_ACCESS_FLAG));
+            blockAccessFilter.UserAccessRightList.Add(userName,((uint)FilterAPI.AccessFlag.LEAST_ACCESS_FLAG));
 
             try
             {
@@ -685,7 +685,7 @@ namespace FileProtector
             //pros: the simplest way to prevent the protected files from being copied out.
             //cons: it only can block the specific files.     
 
-            GlobalConfig.FilterRules.Clear();
+            GlobalConfig.FileFilters.Clear();
             string lastError = string.Empty;
             string message = "Protect Files With Extension '.prt'";
             AppendText(message, Color.Black);
@@ -1063,7 +1063,7 @@ namespace FileProtector
             AppendText(message, Color.Gray);
 
             FileFilter callbackControlFilter = new FileFilter(unitTestCallbackFolder + "\\*");
-            callbackControlFilter.ControlFileIOEventFilter = (ulong)(ControlFileIOEvents.OnPreFileCreate | ControlFileIOEvents.OnPreMoveOrRenameFile| ControlFileIOEvents.OnPreDeleteFile);
+            callbackControlFilter.ControlFileIOEventFilter = ControlFileIOEvents.OnPreFileCreate | ControlFileIOEvents.OnPreMoveOrRenameFile| ControlFileIOEvents.OnPreDeleteFile;
             callbackControlFilter.OnPreCreateFile += OnPreCreateFile;
             callbackControlFilter.OnPreMoveOrRenameFile += OnPreMoveOrRenameFile;
             callbackControlFilter.OnPreDeleteFile += OnPreDeleteFile;
@@ -1149,7 +1149,7 @@ namespace FileProtector
             AppendText(message, Color.Gray);
 
             FileFilter deletionCallbackFilter = new FileFilter(unitTestCallbackFolder + "\\*");
-            deletionCallbackFilter.ControlFileIOEventFilter = (ulong)(ControlFileIOEvents.OnPreFileCreate | ControlFileIOEvents.OnPreDeleteFile);
+            deletionCallbackFilter.ControlFileIOEventFilter = ControlFileIOEvents.OnPreFileCreate | ControlFileIOEvents.OnPreDeleteFile;
             deletionCallbackFilter.OnPreDeleteFile += OnPreDeleteFile;
 
 
@@ -1214,7 +1214,7 @@ namespace FileProtector
             AppendText(message, Color.Gray);
 
             FileFilter reparseFileFilter = new FileFilter(unitTestCallbackFolder + "\\*");
-            reparseFileFilter.ControlFileIOEventFilter = (ulong)(ControlFileIOEvents.OnPreFileCreate);
+            reparseFileFilter.ControlFileIOEventFilter = ControlFileIOEvents.OnPreFileCreate;
             reparseFileFilter.OnPreCreateFile += OnPreCreateFile;
 
             try

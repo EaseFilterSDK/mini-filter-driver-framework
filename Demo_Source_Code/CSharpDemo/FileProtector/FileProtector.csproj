@@ -227,7 +227,7 @@
       <Name>CommonObjects</Name>
     </ProjectReference>
     <ProjectReference Include="..\FilterControl\FilterControl.csproj">
-      <Project>{21540012-A296-45CE-8D35-3EA5A07B32A6}</Project>
+      <Project>{21540012-a296-45ce-8d35-3ea5a07b32a6}</Project>
       <Name>FilterControl</Name>
     </ProjectReference>
   </ItemGroup>

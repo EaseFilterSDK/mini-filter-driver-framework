@@ -37,20 +37,8 @@ namespace EaseFltCSConsoleDemo
             {
                 filterControl.ClearFilters();
 
-                if (GlobalConfig.ProcessFilterRules.Count == 0)
+                foreach (ProcessFilter processFilter in GlobalConfig.ProcessFilters.Values)
                 {
-                    //there are no process filter rule in config file, here is the example to create a process filter rule.
-                    //ProcessFilterRule processFilterRule = new ProcessFilterRule();
-                    //processFilterRule.ProcessNameFilterMask = "*";
-                    //processFilterRule.ControlFlag = (uint)(FilterAPI.ProcessControlFlag.PROCESS_CREATION_NOTIFICATION | FilterAPI.ProcessControlFlag.PROCESS_TERMINATION_NOTIFICATION);
-
-                    //GlobalConfig.AddProcessFilterRule(processFilterRule);
-                }
-
-                foreach (ProcessFilterRule filterRule in GlobalConfig.ProcessFilterRules.Values)
-                {
-                    ProcessFilter processFilter = filterRule.ToProcessFilter();
-
                     processFilter.OnProcessCreation += processHandler.OnProcessCreation;
                     processFilter.NotifyProcessTerminated += processHandler.NotifyProcessTerminated;
                     processFilter.NotifyThreadCreation += processHandler.NotifyThreadCreation;
@@ -61,24 +49,8 @@ namespace EaseFltCSConsoleDemo
                     filterControl.AddFilter(processFilter);
                 }
 
-                if (GlobalConfig.FilterRules.Count == 0)
+                foreach (FileFilter fileFilter in GlobalConfig.FileFilters.Values)
                 {
-                    //there are no filter rule in config file, here is the example filter rule to create.
-
-                    //FileFilterRule fileFilterRule = new FileFilterRule();
-                    //fileFilterRule.IncludeFileFilterMask = "*";
-                    //fileFilterRule.EnableMonitorEventBuffer = true;
-                    //fileFilterRule.RegisterMonitorFileIOEvents = 0x28A8AAAAAAAAAAA;
-                    //fileFilterRule.RegisterControlFileIOEvents = 0x0;
-                    //fileFilterRule.AccessFlag = (uint)FilterAPI.ALLOW_MAX_RIGHT_ACCESS;
-
-                    //GlobalConfig.AddFileFilterRule(fileFilterRule);
-                }
-
-                foreach (FileFilterRule filterRule in GlobalConfig.FilterRules.Values)
-                {
-                    FileFilter fileFilter = filterRule.ToFileFilter();
-
                     //add the monitor event handler for the file filter.
                     fileFilter.OnFileOpen += monitorEventHandler.OnFileOpen;
                     fileFilter.OnNewFileCreate += monitorEventHandler.OnFileCreate;
@@ -150,22 +122,8 @@ namespace EaseFltCSConsoleDemo
                     filterControl.AddFilter(fileFilter);
                 }
 
-                if (GlobalConfig.RegistryFilterRules.Count == 0)
+                foreach (RegistryFilter registryFilter in GlobalConfig.RegistryFilters.Values)
                 {
-                    //there are no registry filter rule in config file, here is the example to create a registry filter rule.
-                    //RegistryFilterRule registryFilterRule = new RegistryFilterRule();
-                    //registryFilterRule.AccessFlag = FilterAPI.MAX_REGITRY_ACCESS_FLAG;
-                    //registryFilterRule.RegCallbackClass = 93092006832128; //by default only register post callback class
-                    //registryFilterRule.ProcessNameFilterMask = "*";
-                    //registryFilterRule.RegistryKeyNameFilterMask = "*Windows*"; //only display the key name includs 'Windows'.
-
-                    //GlobalConfig.AddRegistryFilterRule(registryFilterRule);
-                }
-
-                foreach (RegistryFilterRule filterRule in GlobalConfig.RegistryFilterRules.Values)
-                {
-                    RegistryFilter registryFilter = filterRule.ToRegistryFilter();
-
                     registryFilter.OnPreDeleteKey += registryHandler.OnPreDeleteKey;
                     registryFilter.OnPreSetValueKey += registryHandler.OnPreSetValueKey;
                     registryFilter.OnPreDeleteValueKey += registryHandler.OnPreDeleteValueKey;
@@ -247,7 +205,7 @@ namespace EaseFltCSConsoleDemo
         {
             //Purchase a license key with the link: http://www.easefilter.com/Order.htm
             //Email us to request a trial key: info@easefilter.com //free email is not accepted.
-            string licenseKey = "A93B4-B3D73-2C533-C186E-C3EC0-5BDE3";
+            string licenseKey = GlobalConfig.LicenseKey;// "*************************";
             bool ret = false;
                 
             lastError = string.Empty;
@@ -259,6 +217,11 @@ namespace EaseFltCSConsoleDemo
                 {
                     return ret;
                 }
+
+                FileFilter fileFilter = new FileFilter("c:\\test\\*");
+                fileFilter.FileChangeEventFilter = (FilterAPI.FileChangedEvents)FilterAPI.NotifyAllFileEvents;
+                fileFilter.MonitorFileIOEventFilter = (MonitorFileIOEvents)192118399729052330;//register all events
+                GlobalConfig.AddFileFilter(fileFilter);
 
                 ret = SendConfigSettingsToFilter(ref lastError);
 

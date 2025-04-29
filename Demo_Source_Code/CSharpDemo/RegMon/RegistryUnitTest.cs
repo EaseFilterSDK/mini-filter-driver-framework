@@ -205,7 +205,6 @@ namespace RegMon
 
         public  void RegistryFilterUnitTest(FilterControl _filterControl, RichTextBox richTextBox_TestResult, string licenseKey)
         {
-
             string lastError = string.Empty;
             string userName = Environment.UserDomainName + "\\" + Environment.UserName;
             string testRegistryKey = "SYSTEM\\CurrentControlSet\\Services\\EaseFilter";
@@ -217,6 +216,7 @@ namespace RegMon
             bool testPassed = true;
 
             unitTestResult = richTextBox_TestResult;
+
 
             try
             {
@@ -233,9 +233,9 @@ namespace RegMon
 
                 Thread.Sleep(3000);
 
-                
+
                 //registry access flag test,set full registry access rights for current process.
-                
+
                 RegistryFilter regFilter = new RegistryFilter();
                 regFilter.ControlFlag = accessFlag;
                 regFilter.RegCallbackClass = 0;
@@ -289,6 +289,44 @@ namespace RegMon
                 catch
                 {
                     AppendUnitTestResult("2.Test disable open registry key right in accessFlag passed.", Color.Green);
+                }
+            }
+
+            if (testPassed)
+            {
+                //disable registry delete key right test
+                filterControl.ClearFilters();
+                RegistryFilter regFilter = new RegistryFilter();
+                regFilter.ControlFlag = FilterAPI.MAX_REGITRY_ACCESS_FLAG & (uint)(~(FilterAPI.RegControlFlag.REG_ALLOW_DELETE_VALUE_KEY | FilterAPI.RegControlFlag.REG_ALLOW_DELETE_KEY)); ;
+                regFilter.RegCallbackClass = 0;
+                regFilter.ProcessId = FilterAPI.GetCurrentProcessId();
+
+                string testKey = "testDeleteKey";
+
+                using (Microsoft.Win32.RegistryKey regkey = Microsoft.Win32.Registry.LocalMachine.CreateSubKey(testRegistryKey + "\\" + testKey))
+                {
+                    AppendUnitTestResult("Test creating the test key " + testKey + " succedded.", Color.Green);
+                }
+
+                filterControl.AddFilter(regFilter);
+
+                if (!filterControl.SendConfigSettingsToFilter(ref lastError))
+                {
+                    AppendUnitTestResult("SendConfigSettingsToFilter failed:" + lastError, Color.Red);
+                    return;
+                }
+
+                try
+                {
+                    using (Microsoft.Win32.RegistryKey regkey = Microsoft.Win32.Registry.LocalMachine.OpenSubKey(testRegistryKey))
+                    {
+                        regkey.DeleteSubKey(testKey);
+                        AppendUnitTestResult("2.Test disable delete registry key right in accessFlag failed, delete key " + testKey + " succedded.", Color.Red);
+                    }
+                }
+                catch
+                {
+                    AppendUnitTestResult("2.Test disable delete registry key right in accessFlag passed.", Color.Green);
                 }
             }
 

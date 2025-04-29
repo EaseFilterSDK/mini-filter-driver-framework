@@ -44,29 +44,87 @@ namespace EaseFilter.CommonObjects
 
         public string accessRightText = string.Empty;
 
-        public Form_AccessRights(AccessRightType _type)
+        public Form_AccessRights(AccessRightType _type, string accessRights)
         {
             InitializeComponent();
 
             type = _type;
-            groupBox_AccessRights.Location = groupBox_ProcessSha256.Location;
-            groupBox_ProcessId.Location = groupBox_ProcessName.Location;
-            groupBox_ProcessSha256.Location = groupBox_ProcessName.Location;
-            groupBox_SignedProcess.Location = groupBox_ProcessName.Location;
-            groupBox_UserName.Location = groupBox_ProcessName.Location;
+            accessRightText = accessRights;
 
-            textBox_FileAccessFlags.Text = FilterAPI.ALLOW_MAX_RIGHT_ACCESS.ToString();
-            SetCheckBoxValue();
+            textBox_UserName.Text = Environment.UserDomainName + "\\" + Environment.UserName;
 
+           textBox_FileAccessFlags.Text = FilterAPI.ALLOW_MAX_RIGHT_ACCESS.ToString();
+          
             switch (type)
             {
-                case AccessRightType.ProcessNameRight: groupBox_ProcessName.Visible = true; break;
-                case AccessRightType.Sha256Process: groupBox_ProcessSha256.Visible = true; break;
-                case AccessRightType.SignedProcess: groupBox_SignedProcess.Visible = true; break;
-                case AccessRightType.ProccessIdRight: groupBox_ProcessId.Visible = true; break;
-                case AccessRightType.UserNameRight: groupBox_UserName.Visible = true; break;
+                case AccessRightType.ProcessNameRight:
+                    {
+                        groupBox_AccessRights.Location = groupBox_UserName.Location;
+                        groupBox_ProcessName.Visible = true;
+                        groupBox_ProcessSha256.Visible = true;
+                        groupBox_SignedProcess.Visible = true;
+
+                        string[] processNameRights = accessRightText.Split(new char[] { ';' });
+                        if (processNameRights.Length > 0)
+                        {
+                            string[] entries = processNameRights[0].Split(new char[] { '|' });
+                            if (entries.Length > 3)
+                            {
+                                uint accessFlags = uint.Parse(entries[0]);
+                                string processName = entries[1];
+                                string certName = entries[2];
+                                string sha256Hash = entries[3];
+
+                                textBox_FileAccessFlags.Text = accessFlags.ToString();
+                                textBox_ProcessName.Text = processName;
+                                textBox_ProcessCertificateName.Text = certName;
+                                textBox_ProcessSha256Hash.Text = sha256Hash;
+                            }
+                        }
+
+                        break;
+                    }
+                case AccessRightType.ProccessIdRight:
+                    {
+                        string[] processIdRights = accessRightText.Split(new char[] { ';' });
+                        if (processIdRights.Length > 0)
+                        {
+                            string[] entries = processIdRights[0].Split(new char[] { '|' });
+                            if (entries.Length > 1)
+                            {
+                                textBox_ProcessId.Text = entries[0];
+                                textBox_FileAccessFlags.Text = entries[1];
+                            }
+
+                            groupBox_AccessRights.Location = groupBox_ProcessSha256.Location;
+                            groupBox_ProcessId.Location = groupBox_ProcessName.Location;
+                            groupBox_ProcessId.Visible = true;
+                        }
+                        break;
+                    }
+                case AccessRightType.UserNameRight:
+                    {
+                        string[] userRights = accessRightText.Split(new char[] { ';' });
+                        if (userRights.Length > 0)
+                        {
+                            string[] entries = userRights[0].Split(new char[] { '|' });
+                            if (entries.Length > 1)
+                            {
+                                textBox_UserName.Text = entries[0];
+                                textBox_FileAccessFlags.Text = entries[1];
+                            }
+
+                            groupBox_AccessRights.Location = groupBox_ProcessSha256.Location;
+                            groupBox_UserName.Location = groupBox_ProcessName.Location;
+                            groupBox_UserName.Visible = true;
+                        }
+                        break;
+                    }
             }
-            
+
+            SetCheckBoxValue();
+
+
         }
 
         private void button_Add_Click(object sender, EventArgs e)
@@ -78,70 +136,8 @@ namespace EaseFilter.CommonObjects
                     {
                         if (textBox_ProcessName.Text.Trim().Length > 0)
                         {
-                            string[] processNames = textBox_ProcessName.Text.Trim().Split(new char[] { ';' });
-                            if (processNames.Length > 0)
-                            {
-                                foreach (string processName in processNames)
-                                {
-                                    if (processName.Trim().Length > 0)
-                                    {
-                                        if (accessRightText.Length > 0)
-                                        {
-                                            accessRightText += ";";
-                                        }
-
-                                        accessRightText += processName.Trim() + "!" + textBox_FileAccessFlags.Text;
-                                    }
-                                }
-                            }
-                        }
-                        break;
-                    }
-
-                case AccessRightType.Sha256Process:
-                    {
-                        if (textBox_ProcessSha256Hash.Text.Trim().Length > 0)
-                        {
-                            string[] processShaList = textBox_ProcessSha256Hash.Text.Trim().Split(new char[] { ';' });
-                            if (processShaList.Length > 0)
-                            {
-                                foreach (string processSha in processShaList)
-                                {
-                                    if (processSha.Trim().Length > 0)
-                                    {
-                                        if (accessRightText.Length > 0)
-                                        {
-                                            accessRightText += ";";
-                                        }
-
-                                        accessRightText += processSha.Trim() + "!" + textBox_FileAccessFlags.Text;
-                                    }
-                                }
-                            }
-                        }
-                        break;
-                    }
-
-                case AccessRightType.SignedProcess:
-                    {
-                        if (textBox_ProcessCertificateName.Text.Trim().Length > 0)
-                        {
-                            string[] certificateNameList = textBox_ProcessCertificateName.Text.Trim().Split(new char[] { ';' });
-                            if (certificateNameList.Length > 0)
-                            {
-                                foreach (string certificateName in certificateNameList)
-                                {
-                                    if (certificateName.Trim().Length > 0)
-                                    {
-                                        if (accessRightText.Length > 0)
-                                        {
-                                            accessRightText += ";";
-                                        }
-
-                                        accessRightText += certificateName.Trim() + "!" + textBox_FileAccessFlags.Text;
-                                    }
-                                }
-                            }
+                            accessRightText = textBox_FileAccessFlags.Text + "|" + textBox_ProcessName.Text.Trim() + "|" + textBox_ProcessCertificateName.Text.Trim() + "|" 
+                                + textBox_ProcessSha256Hash.Text.Trim();
                         }
                         break;
                     }
@@ -150,22 +146,7 @@ namespace EaseFilter.CommonObjects
                     {
                         if (textBox_UserName.Text.Trim().Length > 0)
                         {
-                            string[] userNames = textBox_UserName.Text.Trim().Split(new char[] { ';' });
-                            if (userNames.Length > 0)
-                            {
-                                foreach (string userName in userNames)
-                                {
-                                    if (userName.Trim().Length > 0)
-                                    {
-                                        if (accessRightText.Length > 0)
-                                        {
-                                            accessRightText += ";";
-                                        }
-
-                                        accessRightText += userName.Trim() + "!" + textBox_FileAccessFlags.Text;
-                                    }
-                                }
-                            }
+                            accessRightText = textBox_UserName.Text.Trim() + "|" + textBox_FileAccessFlags.Text;
                         }
 
                         break;
@@ -175,22 +156,7 @@ namespace EaseFilter.CommonObjects
                     {
                         if (textBox_ProcessId.Text.Trim().Length > 0)
                         {
-                            string[] processIds = textBox_ProcessId.Text.Trim().Split(new char[] { ';' });
-                            if (processIds.Length > 0)
-                            {
-                                foreach (string processId in processIds)
-                                {
-                                    if (processId.Trim().Length > 0)
-                                    {
-                                        if (accessRightText.Length > 0)
-                                        {
-                                            accessRightText += ";";
-                                        }
-
-                                        accessRightText += processId.Trim() + "!" + textBox_FileAccessFlags.Text;
-                                    }
-                                }
-                            }
+                            accessRightText = textBox_ProcessId.Text.Trim() + "|" + textBox_FileAccessFlags.Text;
                         }
 
                         break;
@@ -587,12 +553,14 @@ namespace EaseFilter.CommonObjects
 
         private void button_InfoProcessName_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Set the specific access rights to the process name list, seperate the process name with ';'.");
+            MessageBox.Show("The process name can be the binary path filter mask.\nThe certificate name of the signed process is optional, " +
+                "if it is not empty, then only the process signed with the certificate will have the access rights.\n " +
+                 "The imageSha256 is optional, if it is not empty, then only the process with same sha256 hash will have the access rights.\n");
         }
 
         private void button_InfoUserName_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Set the specific access rights to the user name list, seperate the user name with ';'.");
+            MessageBox.Show("Set the specific access rights to the user name list.");
         }
 
         private void button_InfoCopyout_Click(object sender, EventArgs e)

@@ -62,12 +62,6 @@
       <DependentUpon>InputForm.cs</DependentUpon>
     </Compile>
     <Compile Include="ProcessFilterRuleSection.cs" />
-    <Compile Include="ProcessFilterSetting.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ProcessFilterSetting.Designer.cs">
-      <DependentUpon>ProcessFilterSetting.cs</DependentUpon>
-    </Compile>
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -135,9 +129,6 @@
     <EmbeddedResource Include="OptionForm.resx">
       <DependentUpon>OptionForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ProcessFilterSetting.resx">
-      <DependentUpon>ProcessFilterSetting.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -157,7 +148,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\FilterControl\FilterControl.csproj">
-      <Project>{21540012-A296-45CE-8D35-3EA5A07B32A6}</Project>
+      <Project>{21540012-a296-45ce-8d35-3ea5a07b32a6}</Project>
       <Name>FilterControl</Name>
     </ProjectReference>
   </ItemGroup>

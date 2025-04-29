@@ -76,7 +76,27 @@
         /// set the status to AccessDenied if you want to block this IO.
         ULONG ReturnStatus;
         /// Set it to true, if the return data was modified. 
-        BOOL IsDataModified;      
+        BOOL IsDataModified;     
+
+        /// <summary>
+        /// The file system type of the volume.
+         /// </summary>
+        FLT_FILESYSTEM_TYPE FileSystemType;
+        /// <summary>
+        ///the serial number of the volume.
+        /// </summary>
+        ULONGLONG VolumeSerialNumber;
+        /// <summary>
+        /// the file Id info of the file.
+        /// </summary>
+        UCHAR FileId[16];
+
+        ///the data buffer length.
+        ULONG DataBufferLength;
+        /// <summary>
+        ///the data buffer which contains read/write/query information/set information data.
+        /// </summary>
+        std::vector<UCHAR> DataBuffer;
 
         std::wstring hex(uint32_t value)
         {
@@ -96,45 +116,71 @@
         };
 
         FileIOEventArgs(PMESSAGE_SEND_DATA messageSend)
-        {		
-           	if(messageSend->SidLength > 0 )
-			{
-				WCHAR userName[MAX_PATH];
-				WCHAR domainName[MAX_PATH];
+        {
+            DataBufferLength = messageSend->DataBufferLength;
 
-				int userNameSize = MAX_PATH;
-				int domainNameSize = MAX_PATH;
-				SID_NAME_USE snu;
+            if (messageSend->DataBuffer.DataEx.VerificationNumber == DATA_BUFFER_EX_VERIFICATION_NUMBER)
+            {
+                UserName.assign(messageSend->DataBuffer.DataEx.UserName);
+                ProcessName.assign(messageSend->DataBuffer.DataEx.ProcessName);
 
-				
-					BOOL ret = LookupAccountSid( NULL,
-										messageSend->Sid,
-										userName,
-										(LPDWORD)&userNameSize,
-										domainName,
-										(LPDWORD)&domainNameSize,
-										&snu); 
+                FileSystemType = (FLT_FILESYSTEM_TYPE)messageSend->DataBuffer.DataEx.FileSystemType;
+                VolumeSerialNumber = messageSend->DataBuffer.DataEx.VolumeSerialNumber;
+                memcpy(FileId, messageSend->DataBuffer.DataEx.FileId, 16);
 
-					UserName.assign(domainName);
-					UserName.append(L"\\");
-					UserName.append(userName);
-				
-			}	
+                if (DataBufferLength > 0)
+                {
+                    DataBuffer.resize(DataBufferLength);
+                    memcpy(DataBuffer.data(), messageSend->DataBuffer.DataEx.Buffer, DataBufferLength);
+                }
 
-			if( messageSend->ProcessId > 0)
-			{
-				WCHAR processName[MAX_PATH];
-				if( GetProcessNameByPid(messageSend->ProcessId,processName,MAX_PATH))
-				{
-					ProcessName.assign(processName);
-				}
-				else
-				{
-					ProcessName.assign(L"UNKNOWN");
-				}
-			}
+            }
 
-			FileName.assign(messageSend->FileName);
+            if (UserName.length() == 0)
+            {
+
+                if (messageSend->SidLength > 0)
+                {
+                    WCHAR userName[MAX_PATH];
+                    WCHAR domainName[MAX_PATH];
+
+                    int userNameSize = MAX_PATH;
+                    int domainNameSize = MAX_PATH;
+                    SID_NAME_USE snu;
+
+
+                    BOOL ret = LookupAccountSid(NULL,
+                        messageSend->Sid,
+                        userName,
+                        (LPDWORD)&userNameSize,
+                        domainName,
+                        (LPDWORD)&domainNameSize,
+                        &snu);
+
+                    UserName.assign(domainName);
+                    UserName.append(L"\\");
+                    UserName.append(userName);
+
+                }
+            }
+
+            if (ProcessName.length() == 0)
+            {
+                if (messageSend->ProcessId > 0)
+                {
+                    WCHAR processName[MAX_PATH];
+                    if (GetProcessNameByPid(messageSend->ProcessId, processName, MAX_PATH))
+                    {
+                        ProcessName.assign(processName);
+                    }
+                    else
+                    {
+                        ProcessName.assign(L"UNKNOWN");
+                    }
+                }
+            }
+
+            FileName.assign(messageSend->FileName);
 
             FileObject = messageSend->FileObject;
             FsContext = messageSend->FsContext;
@@ -144,7 +190,7 @@
             CreationTime = messageSend->CreationTime;
             LastWriteTime = messageSend->LastWriteTime;
             ProcessId = messageSend->ProcessId;
-            ThreadId = messageSend->ThreadId;           
+            ThreadId = messageSend->ThreadId;
             FileSize = messageSend->FileSize;
             FileAttributes = messageSend->FileAttributes;
             IoStatus = messageSend->Status;
@@ -155,15 +201,15 @@
             ShareAccess = messageSend->ShareAccess;
 
             IsRemoteAccess = false;
-			RemoteIp.assign(L"");
-            if ((messageSend->CreateOptions & FO_REMOTE_ORIGIN ) > 0)
+            RemoteIp.assign(L"");
+            if ((messageSend->CreateOptions & FO_REMOTE_ORIGIN) > 0)
             {
                 //this is the request comes from remote server
                 IsRemoteAccess = true;
-				RemoteIp.assign(messageSend->RemoteIP);
+                RemoteIp.assign(messageSend->RemoteIP);
             }
 
-		}
+        }
       
     };
 
@@ -212,7 +258,7 @@
             {
                 if (messageSend->DataBufferLength > 0)
                 {
-					newFileName.assign((WCHAR*)messageSend->DataBuffer);
+					newFileName.assign((WCHAR*)DataBuffer.data());
                 }
 
                 eventType |= FILE_WAS_RENAMED;
@@ -224,7 +270,7 @@
             {
                 if (messageSend->DataBufferLength > 0)
                 {
-                    newFileName.assign((WCHAR*)messageSend->DataBuffer);
+                    newFileName.assign((WCHAR*)DataBuffer.data());
                 }
 
                 eventType |= FILE_WAS_COPIED;
@@ -339,41 +385,158 @@
 		}
 	};
 
-    class FileReadEventArgs : public FileIOEventArgs
+    class EncryptEventArgs : public FileIOEventArgs
     {
 	public:
-		
+	
 		/// <summary>
+        /// it is new created file if it is true
+        /// </summary>
+        BOOLEAN isNewCreatedFile = FALSE;
+        /// <summary>
+        /// it is encrypted file if it is true
+        /// </summary>
+        BOOLEAN isFileEncrypted = FALSE;
+        /// <summary>
+        /// The encryption iv of the encrypted file
+        /// </summary>
+        std::vector<UCHAR> IV;
+        /// <summary>
+        /// The encryption key of the encrypted file
+        /// </summary>
+        std::vector<UCHAR> EncryptionKey;
+        /// <summary>
+        /// The length of the tag data buffer
+        /// </summary>
+        ULONG tagDataLength ;
+        /// <summary>
+        /// The tag data of the encrypted file's header
+        /// </summary>
+        std::vector<UCHAR> tagData ;
+		
+        EncryptEventArgs(PMESSAGE_SEND_DATA messageSend) : FileIOEventArgs(messageSend)
+        {
+            if (messageSend->DataBufferLength > 0 )
+            {
+                tagDataLength = messageSend->DataBufferLength;
+                tagData.resize(tagDataLength);
+				memcpy(tagData.data(), DataBuffer.data(), tagDataLength);
+            }
+
+            if (messageSend->MessageType == FILTER_REQUEST_ENCRYPTION_IV_AND_KEY_AND_TAGDATA)
+            {
+                /// <summary>
+                /// This is new created file, the filter driver requests the IV/KEY and tag data
+                /// to encrypt the new created file.
+                /// </summary>
+                /// <param name="messageSend"></param>
+                isNewCreatedFile = TRUE;
+            }
+            else if (messageSend->MessageType == FILTER_REQUEST_ENCRYPTION_IV_AND_KEY )
+            {
+                /// <summary>
+                /// This is encrypted file open request, the filter driver requests the IV/KEY to decrypt the file.
+                /// </summary>
+                /// <param name="messageSend"></param>
+                isFileEncrypted = TRUE;
+            }
+            else if (messageSend->MessageType == FILTER_NO_ENCRYPT_FILE_OPEN_WITH_TAG)
+            {
+                /// <summary>
+                /// this is not encrypted file with header embedded.
+                /// </summary>
+                /// <param name="messageSend"></param>
+                isFileEncrypted = FALSE;
+            }
+
+        }
+    };
+
+    class ReparseFileEventArgs : public FileIOEventArgs
+    {
+    public:
+
+        /// <summary>
+        /// it is new created file if it is true
+        /// </summary>
+        BOOLEAN isNewCreatedFile;
+        /// it is a file with reparse point attribute if it is true
+        /// </summary>
+        BOOLEAN isReparseFile;
+        /// <summary>
+        /// The length of the tag data buffer
+        /// </summary>
+        ULONG tagDataLength;
+        /// <summary>
+        /// The tag data of the encrypted file's header
+        /// </summary>
+        std::vector<UCHAR> tagData;
+
+        ReparseFileEventArgs(PMESSAGE_SEND_DATA messageSend) : FileIOEventArgs(messageSend)
+        {
+            if (messageSend->DataBufferLength > 0)
+            {
+                tagDataLength = messageSend->DataBufferLength;
+                tagData.resize(tagDataLength);
+                memcpy(tagData.data(), DataBuffer.data(), tagDataLength);
+            }
+
+            if (messageSend->MessageType == FILTER_REPARSE_FILE_CREATE_REQUEST)
+            {
+                /// <summary>
+                /// This is new created file, the filter driver requests the tag data
+                /// to create the reparse tag.
+                /// </summary>
+                /// <param name="messageSend"></param>
+                isNewCreatedFile = TRUE;
+            }
+            else if (messageSend->MessageType == FILTER_REPARSE_FILE_OPEN_REQUEST)
+            {
+                /// <summary>
+                /// This is reparse point file open request with the tag data.
+                /// </summary>
+                /// <param name="messageSend"></param>
+                isReparseFile = TRUE;
+            }
+
+        }
+    };
+
+    class FileReadEventArgs : public FileIOEventArgs
+    {
+    public:
+
+        /// <summary>
         /// The read offset
         /// </summary>
-        LONGLONG offset ;
+        LONGLONG offset;
         /// <summary>
         /// The length of the read
         /// </summary>
-        ULONG readLength ;
+        ULONG readLength;
         /// <summary>
         /// The return length of the read
         /// </summary>
-        ULONG returnReadLength ;
+        ULONG returnReadLength;
         /// <summary>
         /// The read data buffer
         /// </summary>
-        std::vector<UCHAR> buffer ;
+        std::vector<UCHAR> buffer;
         /// <summary>
         /// The read type
         /// </summary>
-        std::wstring readType ;
-		
-		FileReadEventArgs(PMESSAGE_SEND_DATA messageSend) : FileIOEventArgs(messageSend)
+        std::wstring readType;
+
+        FileReadEventArgs(PMESSAGE_SEND_DATA messageSend) : FileIOEventArgs(messageSend)
         {
             offset = messageSend->Offset;
             readLength = messageSend->Length;
             returnReadLength = messageSend->ReturnLength;
 
-            if (messageSend->DataBufferLength > 0 && messageSend->DataBufferLength <= sizeof(messageSend->DataBuffer))
+            if (messageSend->DataBufferLength > 0)
             {
-				/*buffer.resize(messageSend->DataBufferLength);
-				memcpy(buffer.data(), messageSend->DataBuffer, messageSend->DataBufferLength);*/
+                buffer.resize(messageSend->DataBufferLength);
+                memcpy(buffer.data(), DataBuffer.data(), messageSend->DataBufferLength);
             }
 
             if (messageSend->MessageType == POST_NOCACHE_READ
@@ -381,8 +544,8 @@
             {
                 readType = L"NonCacheRead";
             }
-            else if (   messageSend->MessageType == PRE_PAGING_IO_READ
-                       || messageSend->MessageType == POST_PAGING_IO_READ)
+            else if (messageSend->MessageType == PRE_PAGING_IO_READ
+                || messageSend->MessageType == POST_PAGING_IO_READ)
             {
                 readType = L"PagingIORead";
             }
@@ -391,14 +554,14 @@
                 readType = L"CacheRead";
             }
 
-			Description =  L"ReadType:" + readType + L",ReadOffset:" + std::to_wstring(offset) + L",ReadLength:" + std::to_wstring((ULONGLONG)readLength) 
-				+ L",returnReadLength:" + std::to_wstring((ULONGLONG)returnReadLength);
+            Description = L"ReadType:" + readType + L",ReadOffset:" + std::to_wstring(offset) + L",ReadLength:" + std::to_wstring((ULONGLONG)readLength)
+                + L",returnReadLength:" + std::to_wstring((ULONGLONG)returnReadLength);
 
             if ((messageSend->InfoClass & READ_FLAG_FILE_SOURCE_FOR_COPY) > 0)
             {
                 Description = L"FileCopy source file read." + Description;
             }
-            
+
         }
     };
 
@@ -438,10 +601,10 @@
             writtenLength = messageSend->ReturnLength;
             bufferLength = messageSend->DataBufferLength;
 
-            if (messageSend->DataBufferLength > 0 && messageSend->DataBufferLength <= sizeof(messageSend->DataBuffer))
+            if (messageSend->DataBufferLength > 0 )
             {
-				/*buffer.resize(messageSend->DataBufferLength);
-				memcpy(buffer.data(), messageSend->DataBuffer, messageSend->DataBufferLength);*/
+				buffer.resize(messageSend->DataBufferLength);
+				memcpy(buffer.data(), DataBuffer.data(), messageSend->DataBufferLength);
             }
 
             if (	messageSend->MessageType == POST_NOCACHE_READ
@@ -482,7 +645,7 @@
         {
             if (messageSend->DataBufferLength > 0)
             {
-                fileSizeToQueryOrSet = *(LONGLONG*)messageSend->DataBuffer;
+                fileSizeToQueryOrSet = *(LONGLONG*)DataBuffer.data();
             }
 
 			Description = L"FileSize:" + std::to_wstring(fileSizeToQueryOrSet);
@@ -502,7 +665,7 @@
         {
             if (messageSend->DataBufferLength > 0)
             {
-                fileId = *(LONGLONG*)messageSend->DataBuffer;
+                fileId = *(LONGLONG*)DataBuffer.data();
             }
 
 			Description = L"FileId:" + std::to_wstring(fileId);
@@ -523,7 +686,7 @@
         {
             if (messageSend->DataBufferLength > 0)
             {
-                basicInfo = *(FILE_BASIC_INFORMATION*)messageSend->DataBuffer;
+                basicInfo = *(FILE_BASIC_INFORMATION*)DataBuffer.data();
             
 				Description = L"FileBasicInformation,creation time:" + GetFileTimeStr(basicInfo.CreationTime.QuadPart);
 				Description += L",last access time:" +  GetFileTimeStr(basicInfo.LastAccessTime.QuadPart);
@@ -547,7 +710,7 @@
         {
             if (messageSend->DataBufferLength > 0)
             {
-                standardInfo = *(FILE_STANDARD_INFORMATION*)messageSend->DataBuffer;
+                standardInfo = *(FILE_STANDARD_INFORMATION*)DataBuffer.data();
            
 				Description = L"FileStandardInformation,file size:" + std::to_wstring(standardInfo.EndOfFile.QuadPart);
 				Description += L",lallocation size:" +  std::to_wstring(standardInfo.AllocationSize.QuadPart);
@@ -568,7 +731,7 @@
         {
             if (messageSend->DataBufferLength > 0)
             {
-                networkInfo = *(FILE_NETWORK_OPEN_INFORMATION*)messageSend->DataBuffer;
+                networkInfo = *(FILE_NETWORK_OPEN_INFORMATION*)DataBuffer.data();
            
 				Description = L"FileNetworkOpenInformation,file size:" + std::to_wstring(networkInfo.EndOfFile.QuadPart);
 				Description +=  L",file attributes:" + hex((ULONG)networkInfo.FileAttributes);
@@ -590,7 +753,7 @@
         {
             if (messageSend->DataBufferLength > 0)
             {
-				newFileName.assign((WCHAR*)messageSend->DataBuffer);
+				newFileName.assign((WCHAR*)DataBuffer.data());
 
                 if (messageSend->MessageType == PRE_SET_INFORMATION)
                 {
@@ -673,10 +836,10 @@
         {
             securityInformation = messageSend->InfoClass;
 
-           if (messageSend->DataBufferLength > 0 && messageSend->DataBufferLength <= sizeof(messageSend->DataBuffer))
+           if (messageSend->DataBufferLength > 0 )
             {
-				/*buffer.resize(messageSend->DataBufferLength);
-				memcpy(buffer.data(), messageSend->DataBuffer, messageSend->DataBufferLength);*/
+				buffer.resize(messageSend->DataBufferLength);
+				memcpy(buffer.data(), DataBuffer.data(), messageSend->DataBufferLength);
             }
        
 			Description +=  L"SecurityInformation:" +  std::to_wstring((ULONGLONG)securityInformation);
@@ -702,10 +865,10 @@
         {
             fileInfomationClass = messageSend->InfoClass;
 
-           if (messageSend->DataBufferLength > 0 && messageSend->DataBufferLength <= sizeof(messageSend->DataBuffer))
+           if (messageSend->DataBufferLength > 0)
             {
-				/*buffer.resize(messageSend->DataBufferLength);
-				memcpy(buffer.data(), messageSend->DataBuffer, messageSend->DataBufferLength);*/
+				buffer.resize(messageSend->DataBufferLength);
+				memcpy(buffer.data(), DataBuffer.data(), messageSend->DataBufferLength);
             }
        
 			Description +=  L"Query directory fileInfomationClass:" +  std::to_wstring((ULONGLONG)fileInfomationClass);
@@ -723,7 +886,7 @@
             if (messageSend->DataBufferLength > 0 && messageSend->InfoClass == ALLOW_FILE_RENAME)
             {
                 std::wstring newFileName;
-				newFileName.assign((WCHAR*)messageSend->DataBuffer);
+				newFileName.assign((WCHAR*)DataBuffer.data());
 
                 Description = L"Rename file to " + newFileName + L" was blocked by the setting.";
             }
@@ -823,7 +986,7 @@
         {
             if (messageSend->DataBufferLength > 0)
             {
-				PVOLUME_INFO volumeInfo = (PVOLUME_INFO)messageSend->DataBuffer;
+				PVOLUME_INFO volumeInfo = (PVOLUME_INFO)&(messageSend->DataBuffer.VolumeData.VolumeInfo);
                 
 				VolumeName.assign(volumeInfo->VolumeName);
 				VolumeDosName.assign(volumeInfo->VolumeDosName);
@@ -880,7 +1043,7 @@
 
             if (messageSend->DataBufferLength > 0)
             {
-                PROCESS_INFO* processInfo = (PROCESS_INFO*)messageSend->DataBuffer;
+                PROCESS_INFO* processInfo = (PROCESS_INFO*)&(messageSend->DataBuffer.ProcessData.ProcessInfo);
 
                 ParentProcessId = processInfo->ParentProcessId;
                 CreatingProcessId = processInfo->CreatingProcessId;
@@ -895,13 +1058,18 @@
                     case FILTER_SEND_PROCESS_CREATION_INFO:
                         {
                             Description = L"New process was created, parentPid:" + std::to_wstring((ULONGLONG)ParentProcessId) + L";CreatingPid:" + std::to_wstring((ULONGLONG)CreatingProcessId) 
-								+ L";CreatingTheadId:" + std::to_wstring((ULONGLONG)CreatingThreadId) + L";CommandLine:" + CommandLine;
+								+ L";CreatingThreadId:" + std::to_wstring((ULONGLONG)CreatingThreadId) + L";CommandLine:" + CommandLine;
 
                             break;
                         }
-					case FILTER_SEND_PROCESS_TERMINATION_INFO:
+                    case FILTER_SEND_PROCESS_TERMINATION_INFO:
+                    {
+                        Description = L"The process was terminated.";
+                        break;
+                    }
+					case FILTER_SEND_LOAD_IMAGE_NOTIFICATION:
 						{
-							Description = L"The process was terminated.";
+							Description = L"The image " + ImageFileName + L" was loaded.";
 							break;
 						}
 					case FILTER_SEND_THREAD_CREATION_INFO:
@@ -956,7 +1124,7 @@
 
             if (messageSend->Status != STATUS_SUCCESS)
             {
-                Description = L"Registry access failed, RegCallbackClass " + hex(RegCallbackClass) + L", status: " + hex(messageSend->Status);
+                Description = L"Registry access failed, RegCallbackClass " + hex((ULONG)RegCallbackClass) + L", status: " + hex(messageSend->Status);
             }
             else
             {
@@ -997,7 +1165,7 @@
                     case Reg_Pre_Rename_Key:
                     case Reg_Post_Rename_Key:
                         {
-                            std::wstring newName((WCHAR*)messageSend->DataBuffer);
+                            std::wstring newName((WCHAR*)messageSend->DataBuffer.RegData.Buffer);
                             Description = L"registry key's name is being changed to " + newName;
                             break;
                         }
@@ -1114,7 +1282,8 @@ public:
 	// Private constructor so that no objects can be created.
 	FilterControl()
 	{
-		globalBooleanConfig = 0;
+		globalBooleanConfig = ENABLE_SET_FILE_ID_INFO | ENABLE_SET_USER_PROCESS_NAME;
+
 		VolumeControlSettings = 0;
 		isFilterStarted = false;
 		filterType = FILE_SYSTEM_MONITOR;

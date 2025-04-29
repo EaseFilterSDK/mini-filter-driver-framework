@@ -43,6 +43,12 @@
             this.label17 = new System.Windows.Forms.Label();
             this.button_SelectControlFlag = new System.Windows.Forms.Button();
             this.textBox_ProcessName = new System.Windows.Forms.TextBox();
+            this.label20 = new System.Windows.Forms.Label();
+            this.label13 = new System.Windows.Forms.Label();
+            this.textBox_ExcludeUserNames = new System.Windows.Forms.TextBox();
+            this.label14 = new System.Windows.Forms.Label();
+            this.textBox_ExcludeProcessNames = new System.Windows.Forms.TextBox();
+            this.label11 = new System.Windows.Forms.Label();
             this.groupBox_AccessControl.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
@@ -54,7 +60,7 @@
             this.groupBox_AccessControl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox_AccessControl.Location = new System.Drawing.Point(0, 0);
             this.groupBox_AccessControl.Name = "groupBox_AccessControl";
-            this.groupBox_AccessControl.Size = new System.Drawing.Size(537, 246);
+            this.groupBox_AccessControl.Size = new System.Drawing.Size(537, 349);
             this.groupBox_AccessControl.TabIndex = 26;
             this.groupBox_AccessControl.TabStop = false;
             // 
@@ -62,7 +68,7 @@
             // 
             this.button_Save.BackColor = System.Drawing.SystemColors.GradientActiveCaption;
             this.button_Save.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.button_Save.Location = new System.Drawing.Point(407, 211);
+            this.button_Save.Location = new System.Drawing.Point(407, 314);
             this.button_Save.Name = "button_Save";
             this.button_Save.Size = new System.Drawing.Size(116, 23);
             this.button_Save.TabIndex = 85;
@@ -72,6 +78,12 @@
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.label20);
+            this.groupBox2.Controls.Add(this.label13);
+            this.groupBox2.Controls.Add(this.textBox_ExcludeUserNames);
+            this.groupBox2.Controls.Add(this.label14);
+            this.groupBox2.Controls.Add(this.textBox_ExcludeProcessNames);
+            this.groupBox2.Controls.Add(this.label11);
             this.groupBox2.Controls.Add(this.button_SelectPid);
             this.groupBox2.Controls.Add(this.textBox_ProcessId);
             this.groupBox2.Controls.Add(this.radioButton_Name);
@@ -85,7 +97,7 @@
             this.groupBox2.Controls.Add(this.textBox_ProcessName);
             this.groupBox2.Location = new System.Drawing.Point(6, 12);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(517, 187);
+            this.groupBox2.Size = new System.Drawing.Size(517, 296);
             this.groupBox2.TabIndex = 76;
             this.groupBox2.TabStop = false;
             // 
@@ -134,7 +146,7 @@
             // button_ConfigFileAccessRights
             // 
             this.button_ConfigFileAccessRights.BackColor = System.Drawing.SystemColors.GradientActiveCaption;
-            this.button_ConfigFileAccessRights.Location = new System.Drawing.Point(201, 145);
+            this.button_ConfigFileAccessRights.Location = new System.Drawing.Point(201, 245);
             this.button_ConfigFileAccessRights.Name = "button_ConfigFileAccessRights";
             this.button_ConfigFileAccessRights.Size = new System.Drawing.Size(241, 20);
             this.button_ConfigFileAccessRights.TabIndex = 98;
@@ -146,7 +158,7 @@
             // 
             this.button_ProcessInfo.BackColor = System.Drawing.Color.AntiqueWhite;
             this.button_ProcessInfo.Image = global::ProcessMon.Properties.Resources.about;
-            this.button_ProcessInfo.Location = new System.Drawing.Point(463, 145);
+            this.button_ProcessInfo.Location = new System.Drawing.Point(463, 245);
             this.button_ProcessInfo.Name = "button_ProcessInfo";
             this.button_ProcessInfo.Size = new System.Drawing.Size(41, 20);
             this.button_ProcessInfo.TabIndex = 97;
@@ -156,7 +168,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(199, 72);
+            this.label2.Location = new System.Drawing.Point(199, 70);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(209, 13);
             this.label2.TabIndex = 90;
@@ -164,7 +176,7 @@
             // 
             // textBox_ControlFlag
             // 
-            this.textBox_ControlFlag.Location = new System.Drawing.Point(201, 95);
+            this.textBox_ControlFlag.Location = new System.Drawing.Point(201, 203);
             this.textBox_ControlFlag.Name = "textBox_ControlFlag";
             this.textBox_ControlFlag.ReadOnly = true;
             this.textBox_ControlFlag.Size = new System.Drawing.Size(242, 20);
@@ -174,7 +186,7 @@
             // label17
             // 
             this.label17.AutoSize = true;
-            this.label17.Location = new System.Drawing.Point(6, 95);
+            this.label17.Location = new System.Drawing.Point(6, 203);
             this.label17.Name = "label17";
             this.label17.Size = new System.Drawing.Size(142, 13);
             this.label17.TabIndex = 72;
@@ -182,7 +194,7 @@
             // 
             // button_SelectControlFlag
             // 
-            this.button_SelectControlFlag.Location = new System.Drawing.Point(463, 95);
+            this.button_SelectControlFlag.Location = new System.Drawing.Point(463, 203);
             this.button_SelectControlFlag.Name = "button_SelectControlFlag";
             this.button_SelectControlFlag.Size = new System.Drawing.Size(41, 20);
             this.button_SelectControlFlag.TabIndex = 74;
@@ -199,11 +211,63 @@
             this.textBox_ProcessName.TabIndex = 77;
             this.textBox_ProcessName.Text = "notepad.exe";
             // 
+            // label20
+            // 
+            this.label20.AutoSize = true;
+            this.label20.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label20.Location = new System.Drawing.Point(200, 119);
+            this.label20.Name = "label20";
+            this.label20.Size = new System.Drawing.Size(168, 12);
+            this.label20.TabIndex = 128;
+            this.label20.Text = "( split with \';\' i.e \"*test1.exe;*test2.exe\")";
+            // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label13.Location = new System.Drawing.Point(200, 171);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(245, 12);
+            this.label13.TabIndex = 127;
+            this.label13.Text = "(split with \';\' for multiple items, format \"domain\\username\" )";
+            // 
+            // textBox_ExcludeUserNames
+            // 
+            this.textBox_ExcludeUserNames.Location = new System.Drawing.Point(202, 148);
+            this.textBox_ExcludeUserNames.Name = "textBox_ExcludeUserNames";
+            this.textBox_ExcludeUserNames.Size = new System.Drawing.Size(242, 20);
+            this.textBox_ExcludeUserNames.TabIndex = 126;
+            // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
+            this.label14.Location = new System.Drawing.Point(6, 152);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(102, 13);
+            this.label14.TabIndex = 125;
+            this.label14.Text = "Exclude user names";
+            // 
+            // textBox_ExcludeProcessNames
+            // 
+            this.textBox_ExcludeProcessNames.Location = new System.Drawing.Point(201, 96);
+            this.textBox_ExcludeProcessNames.Name = "textBox_ExcludeProcessNames";
+            this.textBox_ExcludeProcessNames.Size = new System.Drawing.Size(242, 20);
+            this.textBox_ExcludeProcessNames.TabIndex = 122;
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(5, 99);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(119, 13);
+            this.label11.TabIndex = 121;
+            this.label11.Text = "Exclude process names";
+            // 
             // ProcessFilterSetting
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(537, 246);
+            this.ClientSize = new System.Drawing.Size(537, 349);
             this.Controls.Add(this.groupBox_AccessControl);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "ProcessFilterSetting";
@@ -231,5 +295,11 @@
         private System.Windows.Forms.RadioButton radioButton_Pid;
         private System.Windows.Forms.Button button_ConfigFileAccessRights;
         private System.Windows.Forms.Button button_Save;
+        private System.Windows.Forms.Label label20;
+        private System.Windows.Forms.Label label13;
+        private System.Windows.Forms.TextBox textBox_ExcludeUserNames;
+        private System.Windows.Forms.Label label14;
+        private System.Windows.Forms.TextBox textBox_ExcludeProcessNames;
+        private System.Windows.Forms.Label label11;
     }
 }

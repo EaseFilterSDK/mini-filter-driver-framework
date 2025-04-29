@@ -101,6 +101,7 @@ namespace EaseFilter.FilterControl
         public string IncludeFileFilterMask
         {
             get { return fileFilterMask; }
+            set { fileFilterMask = value; }
         }
 
         /// <summary>
@@ -124,6 +125,42 @@ namespace EaseFilter.FilterControl
         }
 
         /// <summary>
+        /// Get or set the exclude file filter mask list in string
+        /// the exclude file filtermask string format: excludeFileFilterMask1; excludeFileFilterMask2
+        /// </summary>
+        public string ExcludeFileFilterMaskString
+        {
+            get 
+            {
+                string excludeFileFilterMasks = string.Empty;
+                foreach (string excludeFileFilterMask in ExcludeFileFilterMaskList)
+                {
+                    if (excludeFileFilterMask.Trim().Length > 0)
+                    {
+                        excludeFileFilterMasks += excludeFileFilterMask + ";";
+                    }
+                }
+
+                return excludeFileFilterMasks;
+            }
+            set 
+            {
+                ExcludeFileFilterMaskList.Clear();
+                string[] excludeFileFilterMasks = value.Split(new char[] { ';' });
+                if (excludeFileFilterMasks.Length > 0)
+                {
+                    foreach (string excludeFileFilterMask in excludeFileFilterMasks)
+                    {
+                        if (excludeFileFilterMask.Trim().Length > 0)
+                        {
+                            ExcludeFileFilterMaskList.Add(excludeFileFilterMask);
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
         /// Manage the IOs only from the include process name list when it is not empty.
         /// i.e. explorer.exe, only the IO from process explorer will be intercepted by this filter.
         /// </summary>
@@ -134,6 +171,42 @@ namespace EaseFilter.FilterControl
         }
 
         /// <summary>
+        /// Get or set the include process name filter mask list in string
+        /// the include process name string format: processName1; processName2
+        /// </summary>
+        public string IncludeProcessNameString
+        {
+            get
+            {
+                string includeProcessNames = string.Empty;
+                foreach (string includeFileFilterMask in IncludeProcessNameList)
+                {
+                    if (includeFileFilterMask.Trim().Length > 0)
+                    {
+                        includeProcessNames += includeFileFilterMask + ";";
+                    }
+                }
+
+                return includeProcessNames;
+            }
+            set
+            {
+                IncludeProcessNameList.Clear();
+                string[] includeProcessNames = value.Split(new char[] { ';' });
+                if (includeProcessNames.Length > 0)
+                {
+                    foreach (string includeProcessName in includeProcessNames)
+                    {
+                        if (includeProcessName.Trim().Length > 0)
+                        {
+                            IncludeProcessNameList.Add(includeProcessName);
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
         /// Skip all the IOs which are from the exclude process name list when it is not empty.
         /// i.e. explorer.exe, all the IO from process explorer will be excluded by this filter.
         /// </summary>
@@ -141,6 +214,42 @@ namespace EaseFilter.FilterControl
         {
             get { return excludeProcessNameList; }
             set { excludeProcessNameList = value; }
+        }
+
+        /// <summary>
+        /// Get or set the exclude process name filter mask list in string
+        /// the exclude process name string format: processName1;processName2
+        /// </summary>
+        public string ExcludeProcessNameString
+        {
+            get
+            {
+                string excludeProcessNames = string.Empty;
+                foreach (string excludeFileFilterMask in ExcludeProcessNameList)
+                {
+                    if (excludeFileFilterMask.Trim().Length > 0)
+                    {
+                        excludeProcessNames += excludeFileFilterMask + ";";
+                    }
+                }
+
+                return excludeProcessNames;
+            }
+            set
+            {
+                ExcludeProcessNameList.Clear();
+                string[] excludeProcessNames = value.Split(new char[] { ';' });
+                if (excludeProcessNames.Length > 0)
+                {
+                    foreach (string excludeProcessName in excludeProcessNames)
+                    {
+                        if (excludeProcessName.Trim().Length > 0)
+                        {
+                            ExcludeProcessNameList.Add(excludeProcessName);
+                        }
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -155,6 +264,40 @@ namespace EaseFilter.FilterControl
         }
 
         /// <summary>
+        /// Get or set the include process Id list in string
+        /// the include process Id string format: pid1;pid2
+        /// </summary>
+        public string IncludeProcessIdString
+        {
+            get
+            {
+                string includeProcessIds = string.Empty;
+                foreach (uint includeProcessId in includeProcessIdList)
+                {
+                    includeProcessIds += includeProcessId.ToString() + ";";
+                }
+
+                return includeProcessIds;
+            }
+            set
+            {
+                includeProcessIdList.Clear();
+                string[] includeProcessIds = value.Split(new char[] { ';' });
+                if (includeProcessIds.Length > 0)
+                {
+                    foreach (string includeProcessId in includeProcessIds)
+                    {
+                        if (includeProcessId.Trim().Length > 0)
+                        {
+                            uint pid = uint.Parse(includeProcessId);
+                            includeProcessIdList.Add(pid);
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
         /// Skip all the IOs which are from the exclude process Id list when it is not empty.
         /// i.e. 1234, all the IO from the process Id 1234 will be excluded by this filter.
         /// </summary>
@@ -163,6 +306,41 @@ namespace EaseFilter.FilterControl
             get { return excludeProcessIdList; }
             set { excludeProcessIdList = value; }
         }
+
+        /// <summary>
+        /// Get or set the exclude process Id list in string
+        /// the exclude process Id string format: pid1;pid2
+        /// </summary>
+        public string ExcludeProcessIdString
+        {
+            get
+            {
+                string excludeProcessIds = string.Empty;
+                foreach (uint excludeProcessId in excludeProcessIdList)
+                {
+                    excludeProcessIds += excludeProcessId.ToString() + ";";
+                }
+
+                return excludeProcessIds;
+            }
+            set
+            {
+                excludeProcessIdList.Clear();
+                string[] excludeProcessIds = value.Split(new char[] { ';' });
+                if (excludeProcessIds.Length > 0)
+                {
+                    foreach (string excludeProcessId in excludeProcessIds)
+                    {
+                        if (excludeProcessId.Trim().Length > 0)
+                        {
+                            uint pid = uint.Parse(excludeProcessId);
+                            excludeProcessIdList.Add(pid);
+                        }
+                    }
+                }
+            }
+        }
+
 
         /// <summary>
         /// Manage the IOs only from the include user name list when it is not empty.
@@ -175,6 +353,39 @@ namespace EaseFilter.FilterControl
         }
 
         /// <summary>
+        /// Get or set the include user name list in string
+        /// the include user name string format: userName1;userName2
+        /// </summary>
+        public string IncludeUserNameString
+        {
+            get
+            {
+                string includeUserNames = string.Empty;
+                foreach (string includeUserName in includeUserNameList)
+                {
+                    includeUserNames += includeUserName.ToString() + ";";
+                }
+
+                return includeUserNames;
+            }
+            set
+            {
+                includeUserNameList.Clear();
+                string[] includeUserNames = value.Split(new char[] { ';' });
+                if (includeUserNames.Length > 0)
+                {
+                    foreach (string includeUserName in includeUserNames)
+                    {
+                        if (includeUserName.Trim().Length > 0)
+                        {
+                            includeUserNameList.Add(includeUserName.Trim());
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
         /// Skip all the IOs which are from the exclude user name list when it is not empty.
         /// i.e. myDomainName\myUserName, all the IO from this user myDomainName\myUserName will be excluded by this filter.
         /// </summary>
@@ -182,6 +393,39 @@ namespace EaseFilter.FilterControl
         {
             get { return excludeUserNameList; }
             set { excludeUserNameList = value; }
+        }
+
+        /// <summary>
+        /// Get or set the exclude user name list in string
+        /// the exclude user name string format: userName1;userName2
+        /// </summary>
+        public string ExcludeUserNameString
+        {
+            get
+            {
+                string excludeUserNames = string.Empty;
+                foreach (string excludeUserName in excludeUserNameList)
+                {
+                    excludeUserNames += excludeUserName.ToString() + ";";
+                }
+
+                return excludeUserNames;
+            }
+            set
+            {
+                excludeUserNameList.Clear();
+                string[] excludeUserNames = value.Split(new char[] { ';' });
+                if (excludeUserNames.Length > 0)
+                {
+                    foreach (string excludeUserName in excludeUserNames)
+                    {
+                        if (excludeUserName.Trim().Length > 0)
+                        {
+                            excludeUserNameList.Add(excludeUserName.Trim());
+                        }
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -272,7 +516,28 @@ namespace EaseFilter.FilterControl
             }
         }
 
+        /// <summary>
+        /// If it is true, it will check the 8dot3 short file name for the filter rule.
+        /// </summary>
+        public bool EnableCheckShortFileName
+        {
+            get
+            {
+                return (booleanConfig & (uint)FilterAPI.BooleanConfig.ENABLE_CHECK_SHORT_FILE_NAME) > 0;
+            }
 
+            set
+            {
+                if (value)
+                {
+                    booleanConfig |= (uint)FilterAPI.BooleanConfig.ENABLE_CHECK_SHORT_FILE_NAME;
+                }
+                else
+                {
+                    booleanConfig &= ~(uint)FilterAPI.BooleanConfig.ENABLE_CHECK_SHORT_FILE_NAME;
+                }
+            }
+        }
 
         public override bool ReplyMessage(FilterAPI.MessageSendData messageSend, IntPtr replyDataPtr)
         {
@@ -285,6 +550,11 @@ namespace EaseFilter.FilterControl
                     || messageSend.FilterCommand == (uint)FilterAPI.FilterCommand.FILTER_REQUEST_ENCRYPTION_IV_AND_KEY_AND_TAGDATA)
                 {
                     RequestEncryptionKey(messageSend, ref messageReply);
+                }
+                else if (messageSend.FilterCommand == (uint)FilterAPI.FilterCommand.FILTER_REPARSE_FILE_CREATE_REQUEST
+                        || messageSend.FilterCommand == (uint)FilterAPI.FilterCommand.FILTER_REPARSE_FILE_OPEN_REQUEST)
+                {
+                    retVal = ReparseFilterHandler(messageSend, ref messageReply);
                 }
                 else
                 {
@@ -336,11 +606,50 @@ namespace EaseFilter.FilterControl
     {
         public FileIOEventArgs(FilterAPI.MessageSendData messageSend)
         {
+            GCHandle pinnedPacket = GCHandle.Alloc(messageSend.DataBufferEx, GCHandleType.Pinned);
+            FilterAPI.DataBufferEx dataBufferEx = (FilterAPI.DataBufferEx)Marshal.PtrToStructure(
+                pinnedPacket.AddrOfPinnedObject(), typeof(FilterAPI.DataBufferEx));
+
             string userName = string.Empty;
             string processName = string.Empty;
 
-            Utils.DecodeUserName(messageSend.Sid, out userName);
-            Utils.DecodeProcessName(messageSend.ProcessId, out processName);
+            DataBufferLength = messageSend.DataBufferLength;
+
+            if (dataBufferEx.VerificationNumber == FilterAPI.DATA_BUFFER_EX_VERIFICATION_NUMBER)
+            {
+                //the data buffer was replaced with DataBuffEx structure.
+                userName = dataBufferEx.userName;
+                processName = dataBufferEx.processName;
+
+                VolumeId = dataBufferEx.volumeId;
+                FileSystemType = dataBufferEx.fileSystemType;
+                FileId128Bit = dataBufferEx.fileId;
+
+                if (DataBufferLength > 0)
+                {
+                    DataBuffer = dataBufferEx.DataBuffer;
+                }
+
+            }
+            else
+            {
+                if (DataBufferLength > 0)
+                {
+                    DataBuffer = messageSend.DataBufferEx;
+                }
+            }
+
+            pinnedPacket.Free();
+
+            if (userName.Trim().Length == 0)
+            {
+                Utils.DecodeUserName(messageSend.Sid, out userName);
+            }
+
+            if(processName.Trim().Length == 0 )
+            { 
+                Utils.DecodeProcessName(messageSend.ProcessId, out processName);
+            }
 
             UserName = userName;
             ProcessName = processName;
@@ -367,6 +676,7 @@ namespace EaseFilter.FilterControl
             CreateOptions = createOptions;
 
             IsRemoteAccess = false;
+
             RemoteIp = "LocalHost";
             if ((messageSend.CreateOptions & (uint)WinData.CreateOptions.FO_REMOTE_ORIGIN) > 0)
             {
@@ -374,6 +684,7 @@ namespace EaseFilter.FilterControl
                 IsRemoteAccess = true;
                 RemoteIp = Encoding.Unicode.GetString(messageSend.RemoteIP);
             }
+
         }
 
         public string IOStatusToString()
@@ -499,6 +810,27 @@ namespace EaseFilter.FilterControl
         /// Set it to true, if the return data was modified. 
         /// </summary>
         public bool IsDataModified { get; set; }
+        /// <summary>
+        /// the volumeId of the file, it requres boolean flag ENABLE_SET_FILE_ID_INFO was enabled.
+        /// </summary>
+        public ulong VolumeId { get; set; }
+        /// <summary>
+        /// the file system type of the volume, it requres boolean flag ENABLE_SET_FILE_ID_INFO was enabled.
+        /// </summary>
+        public uint FileSystemType { get; set; }
+        /// <summary>
+        /// the 128-bit file Id, it requres boolean flag ENABLE_SET_FILE_ID_INFO was enabled.
+        /// </summary>
+        public byte[] FileId128Bit { get; set; }
+        /// <summary>
+        ///the data buffer length.
+        /// </summary>
+        public uint DataBufferLength;
+        /// <summary>
+        ///the data buffer for the read I/O, write I/O, query information I/O, set information I/O, directory I/O.
+        /// </summary>
+        public byte[] DataBuffer;
+
     }
 
     /// <summary>
@@ -540,9 +872,9 @@ namespace EaseFilter.FilterControl
 
             if ((messageSend.InfoClass & (uint)FilterAPI.FileChangedEvents.NotifyFileWasCopied) > 0)
             {
-                if (messageSend.DataBufferLength > 0)
+                if (DataBufferLength > 0)
                 {
-                    newFileName = Encoding.Unicode.GetString(messageSend.DataBuffer);
+                    newFileName = Encoding.Unicode.GetString(DataBuffer);
                     if (newFileName.IndexOf((char)0) > 0)
                     {
                         newFileName = newFileName.Remove(newFileName.IndexOf((char)0));
@@ -558,7 +890,7 @@ namespace EaseFilter.FilterControl
             {
                 if (messageSend.DataBufferLength > 0)
                 {
-                    newFileName = Encoding.Unicode.GetString(messageSend.DataBuffer);
+                    newFileName = Encoding.Unicode.GetString(DataBuffer);
                     if (newFileName.IndexOf((char)0) > 0)
                     {
                         newFileName = newFileName.Remove(newFileName.IndexOf((char)0));
@@ -701,10 +1033,9 @@ namespace EaseFilter.FilterControl
             readLength = messageSend.Length;
             returnReadLength = messageSend.ReturnLength;
        
-            if (messageSend.DataBufferLength > 0 && messageSend.DataBufferLength <= messageSend.DataBuffer.Length)
+            if (DataBufferLength > 0 )
             {
-                buffer = new byte[messageSend.DataBufferLength];
-                Array.Copy(messageSend.DataBuffer, buffer, buffer.Length);
+                buffer = DataBuffer;
             }
 
             if (messageSend.MessageType == (uint)FilterAPI.MessageType.POST_NOCACHE_READ
@@ -813,12 +1144,11 @@ namespace EaseFilter.FilterControl
             offset = messageSend.Offset;
             writeLength = messageSend.Length;
             writtenLength = messageSend.ReturnLength;
-            bufferLength = messageSend.DataBufferLength;
+            bufferLength = DataBufferLength;
 
-            if (messageSend.DataBufferLength > 0 && messageSend.DataBufferLength <= messageSend.DataBuffer.Length )
+            if (DataBufferLength > 0  )
             {
-                buffer = new byte[messageSend.DataBufferLength];
-                Array.Copy(messageSend.DataBuffer, buffer, buffer.Length);
+                buffer = DataBuffer;
             }
 
             if (    messageSend.MessageType == (uint)FilterAPI.MessageType.POST_NOCACHE_WRITE
@@ -929,7 +1259,7 @@ namespace EaseFilter.FilterControl
         {
             if (messageSend.DataBufferLength > 0)
             {
-                fileSizeToQueryOrSet = BitConverter.ToInt64(messageSend.DataBuffer, 0);
+                fileSizeToQueryOrSet = BitConverter.ToInt64(DataBuffer, 0);
             }
         }
 
@@ -956,9 +1286,9 @@ namespace EaseFilter.FilterControl
         public FileIdEventArgs(FilterAPI.MessageSendData messageSend)
             : base(messageSend)
         {
-            if (messageSend.DataBufferLength > 0)
+            if (DataBufferLength > 0)
             {
-                fileId = BitConverter.ToInt64(messageSend.DataBuffer, 0);
+                fileId = BitConverter.ToInt64(DataBuffer, 0);
             }
         }
         /// <summary>
@@ -990,9 +1320,9 @@ namespace EaseFilter.FilterControl
         public FileBasicInfoEventArgs(FilterAPI.MessageSendData messageSend)
             : base(messageSend)
         {
-            if (messageSend.DataBufferLength > 0)
+            if (DataBufferLength > 0)
             {
-                GCHandle pinnedPacket = GCHandle.Alloc(messageSend.DataBuffer, GCHandleType.Pinned);
+                GCHandle pinnedPacket = GCHandle.Alloc(DataBuffer, GCHandleType.Pinned);
                 basicInfo = (WinData.FileBasicInformation)Marshal.PtrToStructure(
                     pinnedPacket.AddrOfPinnedObject(), typeof(WinData.FileBasicInformation));
                 pinnedPacket.Free();
@@ -1028,9 +1358,9 @@ namespace EaseFilter.FilterControl
         public FileStandardInfoEventArgs(FilterAPI.MessageSendData messageSend)
             : base(messageSend)
         {
-            if (messageSend.DataBufferLength > 0)
+            if (DataBufferLength > 0)
             {
-                GCHandle pinnedPacket = GCHandle.Alloc(messageSend.DataBuffer, GCHandleType.Pinned);
+                GCHandle pinnedPacket = GCHandle.Alloc(DataBuffer, GCHandleType.Pinned);
                 standardInfo = (WinData.FileStandardInformation)Marshal.PtrToStructure(
                     pinnedPacket.AddrOfPinnedObject(), typeof(WinData.FileStandardInformation));
                 pinnedPacket.Free();
@@ -1065,9 +1395,9 @@ namespace EaseFilter.FilterControl
         public FileNetworkInfoEventArgs(FilterAPI.MessageSendData messageSend)
             : base(messageSend)
         {
-            if (messageSend.DataBufferLength > 0)
+            if (DataBufferLength > 0)
             {
-                GCHandle pinnedPacket = GCHandle.Alloc(messageSend.DataBuffer, GCHandleType.Pinned);
+                GCHandle pinnedPacket = GCHandle.Alloc(DataBuffer, GCHandleType.Pinned);
                 networkInfo = (WinData.FileNetworkInformation)Marshal.PtrToStructure(
                     pinnedPacket.AddrOfPinnedObject(), typeof(WinData.FileNetworkInformation));
                 pinnedPacket.Free();
@@ -1105,9 +1435,9 @@ namespace EaseFilter.FilterControl
         public FileMoveOrRenameEventArgs(FilterAPI.MessageSendData messageSend)
             : base(messageSend)
         {
-            if (messageSend.DataBufferLength > 0)
+            if (DataBufferLength > 0)
             {
-                newFileName = Encoding.Unicode.GetString(messageSend.DataBuffer);
+                newFileName = Encoding.Unicode.GetString(DataBuffer);
                 if (newFileName.IndexOf((char)0) > 0)
                 {
                     newFileName = newFileName.Remove(newFileName.IndexOf((char)0));
@@ -1145,10 +1475,9 @@ namespace EaseFilter.FilterControl
         {
             FileInfoClass = (WinData.FileInfomationClass)messageSend.InfoClass;
 
-            if (messageSend.DataBufferLength > 0)
+            if (DataBufferLength > 0)
             {
-                DataBuffer = new byte[messageSend.DataBufferLength];
-                Array.Copy(messageSend.DataBuffer, DataBuffer, messageSend.DataBufferLength);
+                FileInfoData = DataBuffer;
             }
         }
         /// <summary>
@@ -1158,7 +1487,7 @@ namespace EaseFilter.FilterControl
         /// <summary>
         /// The information data of the file associated to the info class.
         /// </summary>
-        public byte[] DataBuffer { get; set; }
+        public byte[] FileInfoData { get; set; }
 
         /// <summary>
         /// The description of the event args
@@ -1180,10 +1509,9 @@ namespace EaseFilter.FilterControl
             : base(messageSend)
         {
             securityInformation = (WinData.SecurityInformation)messageSend.InfoClass;
-            if (messageSend.DataBufferLength > 0)
+            if (DataBufferLength > 0)
             {
-                securityBuffer = new byte[messageSend.DataBufferLength];
-                Array.Copy(messageSend.DataBuffer, securityBuffer, messageSend.DataBufferLength);
+                securityBuffer = DataBuffer;
             }
 
         }
@@ -1227,10 +1555,9 @@ namespace EaseFilter.FilterControl
             : base(messageSend)
         {
             fileInfomationClass = (WinData.FileInfomationClass)messageSend.InfoClass;
-            if (messageSend.DataBufferLength > 0)
+            if (DataBufferLength > 0)
             {
-                directoryBuffer = new byte[messageSend.DataBufferLength];
-                Array.Copy(messageSend.DataBuffer, directoryBuffer, messageSend.DataBufferLength);
+                directoryBuffer = DataBuffer;
             }
         }
 
@@ -1264,9 +1591,9 @@ namespace EaseFilter.FilterControl
         {
             EventName = ((FilterAPI.MessageType)messageSend.MessageType).ToString() + " was blocked.";
 
-            if (messageSend.DataBufferLength > 0 && (FilterAPI.AccessFlag)messageSend.InfoClass == FilterAPI.AccessFlag.ALLOW_FILE_RENAME)
+            if (DataBufferLength > 0 && (FilterAPI.AccessFlag)messageSend.InfoClass == FilterAPI.AccessFlag.ALLOW_FILE_RENAME)
             {
-                string newFileName = Encoding.Unicode.GetString(messageSend.DataBuffer);
+                string newFileName = Encoding.Unicode.GetString(DataBuffer);
                 if (newFileName.IndexOf((char)0) > 0)
                 {
                     newFileName = newFileName.Remove(newFileName.IndexOf((char)0));
@@ -1327,9 +1654,9 @@ namespace EaseFilter.FilterControl
         public VolumeInfoEventArgs(FilterAPI.MessageSendData messageSend)
             : base(messageSend)
         {
-            if (messageSend.DataBufferLength > 0)
+            if (DataBufferLength > 0)
             {
-                GCHandle pinnedPacket = GCHandle.Alloc(messageSend.DataBuffer, GCHandleType.Pinned);
+                GCHandle pinnedPacket = GCHandle.Alloc(DataBuffer, GCHandleType.Pinned);
                 FilterAPI.VOLUME_INFO volumeInfo = (FilterAPI.VOLUME_INFO)Marshal.PtrToStructure(
                     pinnedPacket.AddrOfPinnedObject(), typeof(FilterAPI.VOLUME_INFO));
                 pinnedPacket.Free();

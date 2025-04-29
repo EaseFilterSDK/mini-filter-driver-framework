@@ -48,9 +48,10 @@ DisplayFileIOMessage(FileIOEventArgs* fileIOEventArgs)
 		ChangeColour(FOREGROUND_RED|FOREGROUND_GREEN|FOREGROUND_BLUE);  
 	}
 
-	PrintMessage( L"\n\nMessageId:%d  IOName:%ws, return status:0x%0x\nUserName[%ws], ProcessImagePath:%ws,ProcessId:%d, ThreadId:%d\nFileName:%ws\nFileSize:%I64d, FileAttributes:0x%0x\nDescription:%ws\n",
+	PrintMessage( L"\n\nMessageId:%d  IOName:%ws, return status:0x%0x\nUserName[%ws]\nProcessImagePath:%ws\nProcessId:%d, ThreadId:%d\nFileName:%ws\nFileSize:%I64d, FileAttributes:0x%0x\nDescription:%ws\n",
 		fileIOEventArgs->MessageId,fileIOEventArgs->EventName.c_str(),fileIOEventArgs->IoStatus,fileIOEventArgs->UserName.c_str(),fileIOEventArgs->ProcessName.c_str(),
-		fileIOEventArgs->ProcessId,fileIOEventArgs->ThreadId,fileIOEventArgs->FileName.c_str(), fileIOEventArgs->FileSize,fileIOEventArgs->FileAttributes,fileIOEventArgs->Description.c_str()); 
+		fileIOEventArgs->ProcessId,fileIOEventArgs->ThreadId,
+		fileIOEventArgs->FileName.c_str(), fileIOEventArgs->FileSize,fileIOEventArgs->FileAttributes,fileIOEventArgs->Description.c_str()); 
 
 	ChangeColour(FOREGROUND_RED|FOREGROUND_GREEN|FOREGROUND_BLUE);  
 
@@ -73,7 +74,7 @@ DisplayProcessMessage(ProcessEventArgs* processEventArgs)
 		ChangeColour(FOREGROUND_RED|FOREGROUND_GREEN|FOREGROUND_BLUE);  
 	}
 
-	PrintMessage( L"\n\nMessageId:%d  IOName:%ws, return status:0x%0x\nUserName[%ws], ProcessImagePath:%ws,ProcessId:%d, ThreadId:%d\nDescription:%ws\n",
+	PrintMessage( L"\n\nMessageId:%d  IOName:%ws, return status:0x%0x\nUserName[%ws]\nProcessImagePath:%ws\nProcessId:%d, ThreadId:%d\nDescription:%ws\n",
 		processEventArgs->MessageId,processEventArgs->EventName.c_str(),processEventArgs->IoStatus,processEventArgs->UserName.c_str(),processEventArgs->ProcessName.c_str(),
 		processEventArgs->ProcessId,processEventArgs->ThreadId,processEventArgs->Description.c_str()); 
 

@@ -52,6 +52,7 @@
             this.toolStripButton_ModifyFolder = new System.Windows.Forms.ToolStripButton();
             this.listView_AccessRights = new System.Windows.Forms.ListView();
             this.tabControl1 = new System.Windows.Forms.TabControl();
+            this.toolStripButton_ApplyTrialKey = new System.Windows.Forms.ToolStripButton();
             this.tabPage_Help.SuspendLayout();
             this.tabPage_Folder.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -196,7 +197,8 @@
             this.toolStripSeparator5,
             this.toolStripButton_RemoveFolder,
             this.toolStripSeparator4,
-            this.toolStripButton_ModifyFolder});
+            this.toolStripButton_ModifyFolder,
+            this.toolStripButton_ApplyTrialKey});
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.Size = new System.Drawing.Size(695, 25);
@@ -292,6 +294,15 @@
             this.tabControl1.Size = new System.Drawing.Size(707, 347);
             this.tabControl1.TabIndex = 0;
             // 
+            // toolStripButton_ApplyTrialKey
+            // 
+            this.toolStripButton_ApplyTrialKey.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton_ApplyTrialKey.Image")));
+            this.toolStripButton_ApplyTrialKey.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButton_ApplyTrialKey.Name = "toolStripButton_ApplyTrialKey";
+            this.toolStripButton_ApplyTrialKey.Size = new System.Drawing.Size(102, 22);
+            this.toolStripButton_ApplyTrialKey.Text = "Apply trial key";
+            this.toolStripButton_ApplyTrialKey.Click += new System.EventHandler(this.toolStripButton_ApplyTrialKey_Click);
+            // 
             // Form_FolderLocker
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -345,6 +356,7 @@
         private System.Windows.Forms.TabControl tabControl1;
         private System.Windows.Forms.ToolStripButton toolStripButton_StartFilter;
         private System.Windows.Forms.ToolStripButton toolStripButton_Stop;
+        private System.Windows.Forms.ToolStripButton toolStripButton_ApplyTrialKey;
     }
 }
 

@@ -88,19 +88,17 @@ namespace  SecureShare
             string[] whiteList = null;
             string[] blacklist = null;
 
-            FileFilterRule filterRuleShareFolder = new FileFilterRule();
-            filterRuleShareFolder.IncludeFileFilterMask = GlobalConfig.ShareFolder + "\\*";
-            filterRuleShareFolder.AccessFlag |= (uint)FilterAPI.AccessFlag.ENABLE_FILE_ENCRYPTION_RULE | FilterAPI.ALLOW_MAX_RIGHT_ACCESS;
-            filterRuleShareFolder.AccessFlag &= (uint)(~FilterAPI.AccessFlag.ALLOW_ENCRYPT_NEW_FILE);// this folder won't encrypt the new file.
-            filterRuleShareFolder.AccessFlag &= (uint)(~FilterAPI.AccessFlag.ALLOW_READ_ENCRYPTED_FILES);// all process can't read the encyrpted file except the authorized processes.
-            filterRuleShareFolder.EncryptMethod = (int)FilterAPI.EncryptionMethod.ENCRYPT_FILE_WITH_SAME_KEY_AND_UNIQUE_IV;
-            filterRuleShareFolder.EncryptionPassPhrase = GlobalConfig.MasterPassword;
+            FileFilter shareFolderFileFilter = new FileFilter(GlobalConfig.ShareFolder + "\\*");
+            shareFolderFileFilter.AccessFlags |= FilterAPI.AccessFlag.ENABLE_FILE_ENCRYPTION_RULE | (FilterAPI.AccessFlag)FilterAPI.ALLOW_MAX_RIGHT_ACCESS;//enable the encryption feature.
+            shareFolderFileFilter.AccessFlags &= (~FilterAPI.AccessFlag.ALLOW_ENCRYPT_NEW_FILE);// this folder won't encrypt the new file.
+            shareFolderFileFilter.AccessFlags &= (~FilterAPI.AccessFlag.ALLOW_READ_ENCRYPTED_FILES);// all process can't read the encyrpted file except the authorized processes.
+            shareFolderFileFilter.EncryptionPassPhrase = GlobalConfig.MasterPassword;
 
             //for whitelist process, it has maximum acess rights.
             if (GlobalConfig.ProtectFolderWhiteList == "*")
             {
                 //allow all processes to read the encrypted file except the black list processes.
-                filterRuleShareFolder.AccessFlag |= (uint)(FilterAPI.AccessFlag.ALLOW_READ_ENCRYPTED_FILES);
+                shareFolderFileFilter.AccessFlags |= (FilterAPI.AccessFlag.ALLOW_READ_ENCRYPTED_FILES);
             }
             else
             {
@@ -108,13 +106,13 @@ namespace  SecureShare
                 whiteList = GlobalConfig.ShareFolderWhiteList.Split(new char[] { ';' });
                 if (whiteList.Length > 0)
                 {
-                    foreach (string authorizedUser in whiteList)
+                    foreach (string authorizedProcess in whiteList)
                     {
-                        if (authorizedUser.Trim().Length > 0)
+                        if (authorizedProcess.Trim().Length > 0)
                         {
                             //not allow to encrypt the new file
-                            uint accessFlag = filterRuleShareFolder.AccessFlag | (uint)(FilterAPI.AccessFlag.ALLOW_READ_ENCRYPTED_FILES);
-                            filterRuleShareFolder.ProcessNameRights += ";" + authorizedUser + "!" + accessFlag.ToString();
+                            uint accessFlag =(uint)(shareFolderFileFilter.AccessFlags | (FilterAPI.AccessFlag.ALLOW_READ_ENCRYPTED_FILES));
+                            shareFolderFileFilter.AddTrustedProcessRight(accessFlag, authorizedProcess, "", "");
                         }
                     }
                 }
@@ -125,33 +123,30 @@ namespace  SecureShare
             blacklist = GlobalConfig.ShareFolderBlackList.Split(new char[] { ';' });
             if (blacklist.Length > 0)
             {
-                foreach (string unAuthorizedUser in blacklist)
+                foreach (string unAuthorizedProcess in blacklist)
                 {
-                    if (unAuthorizedUser.Trim().Length > 0)
+                    if (unAuthorizedProcess.Trim().Length > 0)
                     {
                         //can't read the encrypted files, not allow to encrypt the new file
-                        uint accessFlag = filterRuleShareFolder.AccessFlag;
-                        filterRuleShareFolder.ProcessNameRights += ";" + unAuthorizedUser + "!" + accessFlag.ToString();
+                        uint accessFlag = (uint)shareFolderFileFilter.AccessFlags;
+                        shareFolderFileFilter.AddTrustedProcessRight(accessFlag, unAuthorizedProcess, "", "");
                     }
                 }
             }
 
-            FileFilter shareFolderFileFilter = filterRuleShareFolder.ToFileFilter();
             shareFolderFileFilter.OnFilterRequestEncryptKey += encryptEventHandler.OnFilterRequestEncryptKey;
             filterControl.AddFilter(shareFolderFileFilter);
 
-            FileFilterRule filterRuleProtectFolder = new FileFilterRule();
-            filterRuleProtectFolder.IncludeFileFilterMask = GlobalConfig.ProtectFolder + "\\*";
-            filterRuleProtectFolder.AccessFlag |= (uint)FilterAPI.AccessFlag.ENABLE_FILE_ENCRYPTION_RULE | FilterAPI.ALLOW_MAX_RIGHT_ACCESS;
-            filterRuleProtectFolder.AccessFlag &= (uint)(~FilterAPI.AccessFlag.ALLOW_READ_ENCRYPTED_FILES);// all process can't read the encyrpted file except the authorized processes.
-            filterRuleProtectFolder.EncryptMethod = (int)FilterAPI.EncryptionMethod.ENCRYPT_FILE_WITH_SAME_KEY_AND_UNIQUE_IV;
-            filterRuleProtectFolder.EncryptionPassPhrase = GlobalConfig.MasterPassword;
+            FileFilter protectedFolderFileFilter = new FileFilter(GlobalConfig.ProtectFolder + "\\*");
+            protectedFolderFileFilter.AccessFlags |= FilterAPI.AccessFlag.ENABLE_FILE_ENCRYPTION_RULE | (FilterAPI.AccessFlag)FilterAPI.ALLOW_MAX_RIGHT_ACCESS;
+            protectedFolderFileFilter.AccessFlags &= (~FilterAPI.AccessFlag.ALLOW_READ_ENCRYPTED_FILES);// all process can't read the encyrpted file except the authorized processes.
+            protectedFolderFileFilter.EncryptionPassPhrase = GlobalConfig.MasterPassword;
 
             //for whitelist process, it has maximum acess rights.
             if (GlobalConfig.ProtectFolderWhiteList == "*")
             {
                 //allow all processes to read the encrypted file except the black list processes.
-                filterRuleProtectFolder.AccessFlag |= (uint)(FilterAPI.AccessFlag.ALLOW_READ_ENCRYPTED_FILES);
+                protectedFolderFileFilter.AccessFlags |= (FilterAPI.AccessFlag.ALLOW_READ_ENCRYPTED_FILES);
             }
             else
             {
@@ -159,11 +154,11 @@ namespace  SecureShare
                 whiteList = GlobalConfig.ProtectFolderWhiteList.Split(new char[] { ';' });
                 if (whiteList.Length > 0)
                 {
-                    foreach (string authorizedUser in whiteList)
+                    foreach (string authorizedProcess in whiteList)
                     {
-                        if (authorizedUser.Trim().Length > 0)
+                        if (authorizedProcess.Trim().Length > 0)
                         {
-                            filterRuleProtectFolder.ProcessNameRights += ";" + authorizedUser + "!" + FilterAPI.ALLOW_MAX_RIGHT_ACCESS.ToString();
+                            protectedFolderFileFilter.AddTrustedProcessRight(FilterAPI.ALLOW_MAX_RIGHT_ACCESS, authorizedProcess, "", "");
                         }
                     }
                 }
@@ -173,20 +168,20 @@ namespace  SecureShare
             blacklist = GlobalConfig.ProtectFolderBlackList.Split(new char[] { ';' });
             if (blacklist.Length > 0)
             {
-                foreach (string unAuthorizedUser in blacklist)
+                foreach (string unAuthorizedProcess in blacklist)
                 {
-                    if (unAuthorizedUser.Trim().Length > 0)
+                    if (unAuthorizedProcess.Trim().Length > 0)
                     {
                         //can't read the encrypted files
                         uint accessFlag = FilterAPI.ALLOW_MAX_RIGHT_ACCESS & (uint)(~FilterAPI.AccessFlag.ALLOW_READ_ENCRYPTED_FILES);
-                        filterRuleProtectFolder.ProcessNameRights += ";" + unAuthorizedUser + "!" + accessFlag.ToString();
+                        protectedFolderFileFilter.AddTrustedProcessRight(accessFlag, unAuthorizedProcess, "", "");
+
                     }
                 }
             }
 
-            FileFilter protectFolderFileFilter = filterRuleProtectFolder.ToFileFilter();
-            protectFolderFileFilter.OnFilterRequestEncryptKey += encryptEventHandler.OnFilterRequestEncryptKey;
-            filterControl.AddFilter(protectFolderFileFilter);
+            protectedFolderFileFilter.OnFilterRequestEncryptKey += encryptEventHandler.OnFilterRequestEncryptKey;
+            filterControl.AddFilter(protectedFolderFileFilter);
 
             string lastError = string.Empty;
             if (!filterControl.SendConfigSettingsToFilter(ref lastError))

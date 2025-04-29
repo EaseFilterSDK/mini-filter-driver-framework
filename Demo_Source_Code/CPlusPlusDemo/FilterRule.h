@@ -7,6 +7,13 @@
 
 static ULONG g_FilterRuleId = 0;
 
+typedef struct _PROCESS_RIGHT_INFO
+{
+	std::wstring CertificateName;
+	std::string ImageSha256Hash;
+	ULONG AccessFlags;
+}PROCESS_RIGHT_INFO, * PPROCESS_RIGHT_INFO;
+
  class ProcessFilterRule
  {
 		public:
@@ -245,7 +252,7 @@ public:
     /// <summary>
     /// the access right of the process 
     /// </summary>
-    std::map<std::wstring, ULONG> ProcessNameAccessRightList;
+    std::map<std::wstring, PROCESS_RIGHT_INFO> ProcessNameAccessRightList;
     std::map<ULONG, ULONG> ProcessIdAccessRightList;
 
     /// <summary>
@@ -446,15 +453,33 @@ public:
 	}
 
 
-	bool AddAccessRightsToProcessName(WCHAR* _processName, ULONG accessFlag)
+	bool AddAccessRightsToProcessName(WCHAR* _processName, ULONG accessFlag, WCHAR* certificateName = NULL, CHAR* imageSha256Hash = NULL )
 	{
 		if( NULL == _processName )
 		{
 			return false;
 		}
+		
+		std::wstring processName(_processName);		
+		
+		
+		PROCESS_RIGHT_INFO processRight;		
 
-		std::wstring processName(_processName);
-		ProcessNameAccessRightList.insert(std::pair<std::wstring, ULONG >(processName, accessFlag));
+		if (certificateName)
+		{
+			std::wstring certName(certificateName);
+			processRight.CertificateName = certName;
+		}
+
+		if (imageSha256Hash)
+		{
+			std::string imageSha256(imageSha256Hash);
+			processRight.ImageSha256Hash = imageSha256;			
+		}
+
+		processRight.AccessFlags = accessFlag;
+
+		ProcessNameAccessRightList.insert(std::pair<std::wstring, PROCESS_RIGHT_INFO >(processName, processRight));
 
 		return true;
 	}

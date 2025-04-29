@@ -7,7 +7,7 @@
 //
 // Generated from the TEXTINCLUDE 2 resource.
 //
-#include<windows.h>
+#include "windows.h"
 
 /////////////////////////////////////////////////////////////////////////////
 #undef APSTUDIO_READONLY_SYMBOLS
@@ -29,8 +29,8 @@ LANGUAGE LANG_NEUTRAL, SUBLANG_ENGLISH_US
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 5,2,1,1
- PRODUCTVERSION 5,2,2,1
+ FILEVERSION 5,1,5,2
+ PRODUCTVERSION 5,1,5,2
  FILEFLAGSMASK 0x17L
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -46,12 +46,12 @@ BEGIN
         BLOCK "100904b0"
         BEGIN
             VALUE "FileDescription", "Filter Driver SDK Demo Application"
-            VALUE "FileVersion", "5, 2, 2, 1"
+            VALUE "FileVersion", "5, 2, 3, 2"
             VALUE "InternalName", "EaseFltCppDemo"
-            VALUE "LegalCopyright", "Copyright (C) 2022"
+            VALUE "LegalCopyright", "Copyright (C) 2023"
             VALUE "OriginalFilename", "EaseFltCppDemo.exe"
             VALUE "ProductName", "EaseFltCppDemo Application"
-            VALUE "ProductVersion", "5, 2, 2, 1"
+            VALUE "ProductVersion", "5,2,3, 2"
         END
     END
     BLOCK "VarFileInfo"

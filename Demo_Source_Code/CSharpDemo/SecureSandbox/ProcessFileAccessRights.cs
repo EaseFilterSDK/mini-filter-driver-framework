@@ -1,10 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 
 using EaseFilter.FilterControl;
@@ -20,47 +15,39 @@ namespace SecureSandbox
             public uint AccessFlag;
         }
 
-        ProcessFilterRule currentFilterRule = null;
+        ProcessFilter currentProcessFilter = null;
         Dictionary<string, FileAccessRight> processFileAccessRightsList = new Dictionary<string, FileAccessRight>();
         FileAccessRight currentFileAccessRight = new FileAccessRight();
 
-        public ProcessFileAccessRights(ProcessFilterRule filterRule)
+        public ProcessFileAccessRights(ProcessFilter processFilter)
         {
-            InitializeComponent();           
+            InitializeComponent();
 
             StartPosition = FormStartPosition.CenterParent;
 
-            currentFilterRule = filterRule;
-            string processFileAccessRights = filterRule.FileAccessRights; 
-
-            string[] accessRightList = processFileAccessRights.ToLower().Split(new char[] { ';' });
-            if (accessRightList.Length > 0)
+            currentProcessFilter = processFilter;
+            foreach (KeyValuePair<string, uint> entry in processFilter.FileAccessRightList)
             {
-                foreach (string processFileAccessRightStr in accessRightList)
+                string fileMask = entry.Key;
+                uint accessFlag = entry.Value;
+
+                if (!processFileAccessRightsList.ContainsKey(fileMask))
                 {
-                    if (processFileAccessRightStr.Trim().Length > 0)
-                    {
-                        string fileMask = processFileAccessRightStr.Substring(0, processFileAccessRightStr.IndexOf('!'));
-                        uint accessFlag = uint.Parse(processFileAccessRightStr.Substring(processFileAccessRightStr.IndexOf('!') + 1));
+                    FileAccessRight fileAccessRight = new FileAccessRight();
+                    fileAccessRight.FileNameMask = fileMask;
+                    fileAccessRight.AccessFlag = accessFlag;
 
-                        if (!processFileAccessRightsList.ContainsKey(fileMask))
-                        {
-                            FileAccessRight fileAccessRight = new FileAccessRight();
-                            fileAccessRight.FileNameMask = fileMask;
-                            fileAccessRight.AccessFlag = accessFlag;
+                    processFileAccessRightsList.Add(fileMask, fileAccessRight);
 
-                            processFileAccessRightsList.Add(fileMask, fileAccessRight);
-                            currentFileAccessRight = fileAccessRight;
-                        }
-
-                        textBox_FileMask.Text = fileMask;
-                        textBox_AccessFlag.Text = accessFlag.ToString();
-                    }
+                    currentFileAccessRight = fileAccessRight;
                 }
 
+                textBox_FileMask.Text = fileMask;
+                textBox_AccessFlag.Text = accessFlag.ToString();
             }
 
-            groupBox_ProcessRights.Text = "The file access rights for processes which match " + filterRule.ProcessNameFilterMask;
+
+            groupBox_ProcessRights.Text = "The file access rights for processes which match " + processFilter.ProcessNameFilterMask;
 
             InitListView();
             SetCheckBoxValue();
@@ -180,7 +167,7 @@ namespace SecureSandbox
                 checkBox_SetSecurity.Checked = false;
             }
 
-        
+
         }
 
         private void button_AccessFlag_Click(object sender, EventArgs e)
@@ -223,11 +210,11 @@ namespace SecureSandbox
             uint accessFlags = uint.Parse(textBox_AccessFlag.Text.Trim());
             if (checkBox_Write.Checked)
             {
-                accessFlags |= (uint)FilterAPI.AccessFlag.ALLOW_WRITE_ACCESS | (uint)FilterAPI.AccessFlag.ALLOW_OPEN_WITH_WRITE_ACCESS;
+                accessFlags |= (uint)FilterAPI.AccessFlag.ALLOW_WRITE_ACCESS;
             }
             else
             {
-                accessFlags &= ~((uint)FilterAPI.AccessFlag.ALLOW_WRITE_ACCESS | (uint)FilterAPI.AccessFlag.ALLOW_OPEN_WITH_WRITE_ACCESS);
+                accessFlags &= ~(uint)FilterAPI.AccessFlag.ALLOW_WRITE_ACCESS;
             }
 
             textBox_AccessFlag.Text = accessFlags.ToString();
@@ -348,11 +335,16 @@ namespace SecureSandbox
                 MessageBox.Show("The file name mask can't be empty.", "Add file entry", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-         
+
 
             FileAccessRight fileAccessRight = new FileAccessRight();
             fileAccessRight.FileNameMask = textBox_FileMask.Text;
             fileAccessRight.AccessFlag = uint.Parse(textBox_AccessFlag.Text);
+
+            if (0 == fileAccessRight.AccessFlag)
+            {
+                fileAccessRight.AccessFlag = (uint)FilterAPI.AccessFlag.LEAST_ACCESS_FLAG;
+            }
 
             processFileAccessRightsList.Remove(fileAccessRight.FileNameMask);
 
@@ -379,11 +371,11 @@ namespace SecureSandbox
 
         private void button_ApplyAll_Click(object sender, EventArgs e)
         {
-            currentFilterRule.FileAccessRights = string.Empty;
+            currentProcessFilter.FileAccessRightString = string.Empty;
 
             foreach (FileAccessRight fileAccessRight in processFileAccessRightsList.Values)
             {
-                currentFilterRule.FileAccessRights += fileAccessRight.FileNameMask + "!" + fileAccessRight.AccessFlag + ";";
+                currentProcessFilter.FileAccessRightString += fileAccessRight.FileNameMask + "|" + fileAccessRight.AccessFlag + ";";
             }
         }
 
@@ -399,8 +391,8 @@ namespace SecureSandbox
 
         private void button_Info_Click(object sender, EventArgs e)
         {
-            string information = "Set up the file access rights with the file filter mask to the processes which were launched from the sandbox.\r\n\r\n";
-            information += "you can restrict the process's file access rights to the specific folders, prevent the files being read or changed by the processes inside the sandbox.\r\n\r\n";
+            string information = "Set up the file access rights with the file filter mask to the processe.\r\n\r\n";
+            information += "you can restrict the process's file access rights to the specific folders, prevent the files being read or changed by the processes.\r\n\r\n";
 
             MessageBoxHelper.PrepToCenterMessageBoxOnForm(this);
             MessageBox.Show(information, "File access rights", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -410,12 +402,9 @@ namespace SecureSandbox
         {
             if (listView_ProcessFileAccessRights.SelectedItems.Count > 0)
             {
-
                 currentFileAccessRight = (FileAccessRight)listView_ProcessFileAccessRights.SelectedItems[0].Tag;
-
                 textBox_FileMask.Text = currentFileAccessRight.FileNameMask;
                 textBox_AccessFlag.Text = currentFileAccessRight.AccessFlag.ToString();
-               
                 SetCheckBoxValue();
             }
         }

@@ -23,8 +23,9 @@
 #include "FilterAPI.h"
 #include "WindowsService.h"
 #include "FilterControl.h"
-
 #include <Sddl.h>
+
+#include "TestData.h"
 
 #define	MAX_ERROR_MESSAGE_SIZE	1024
 
@@ -65,7 +66,8 @@ Return Value
 	printf( "		t ----- Driver UnitTest\n" );
 	printf( "		m ----- Start monitor filter.\n" );
 	printf( "		c ----- Start control filter.\n" );
-	printf( "		e ----- Start encryption filter driver test.\n" );
+	printf( "		d ----- Start DRM encryption filter driver test.\n" );
+	printf("		e ----- Start encryption filter driver test.\n");
 	printf( "		p ----- Start process filter driver test.\n" );
 	printf( "		r ----- Start registry filter driver test.\n" );
 	printf( "\n		[FilterFolder]---- the folder mask which will be monitored.\n" );
@@ -75,6 +77,7 @@ Return Value
 	printf( "EaseFltCPPDemo u   ----- UnInstall Driver\r\n" ); 
 	printf( "EaseFltCPPDemo t   ----- Driver UnitTest\r\n" ); 
 	printf( "EaseFltCPPDemo p * 16128 c:\\filterTest\\* 22554420----- run process filter driver: processFilterMask controlFlag fileFilterMask accessFlag.\r\n" );
+	printf( "EaseFltCPPDemo d c:\\filterTest\\* notepad.exe;wordpade.xe  ----- encrypt file with DRM data embedding, authorized process notepad and wordpad.\r\n");
 	printf( "EaseFltCPPDemo e c:\\filterTest\\*  ----- encrypt filter driver with default settings.\r\n" );
 	printf( "EaseFltCPPDemo m c:\\filterTest\\*  ----- monitor filter driver with default settings.\r\n" );
 	printf( "EaseFltCPPDemo c c:\\filterTest\\*  ----- control filter driver with default settings.\r\n" );
@@ -216,8 +219,8 @@ int _tmain(int argc, _TCHAR* argv[])
 			FileFilterRule fileFilterRule(fileFilterMask);
 			fileFilterRule.AccessFlag = accessFlag;
 
-			//block the new file cration/rename/delete/write in the filter driver
-			/*fileFilterRule.AccessFlag = ALLOW_MAX_RIGHT_ACCESS & (~(ALLOW_OPEN_WITH_CREATE_OR_OVERWRITE_ACCESS|ALLOW_FILE_RENAME|ALLOW_FILE_DELETE|ALLOW_WRITE_ACCESS));*/
+			//block the new file read/rename/delete/write in the filter driver
+			//fileFilterRule.AccessFlag = ALLOW_MAX_RIGHT_ACCESS & (~(ALLOW_READ_ACCESS |ALLOW_FILE_RENAME|ALLOW_FILE_DELETE|ALLOW_WRITE_ACCESS));
 
 			fileFilterRule.BooleanConfig = ENABLE_MONITOR_EVENT_BUFFER;
 			fileFilterRule.FileChangeEventFilter = FILE_WAS_CREATED|FILE_WAS_WRITTEN|FILE_WAS_RENAMED|FILE_WAS_DELETED|FILE_WAS_READ;
@@ -244,8 +247,8 @@ int _tmain(int argc, _TCHAR* argv[])
 				fileFilterRule.ControlFileIOEventFilter = ioCallbackClass;
 
 				//You can allow/block the file rename/delete in the callback handler by register PRE_RENAME_FILE|PRE_DELETE_FILE.
-				//ULONGLONG preIOCallbackClass = PRE_RENAME_FILE|PRE_DELETE_FILE;
-				//fileFilterRule.ControlFileIOEventFilter = preIOCallbackClass;
+				/*ULONGLONG preIOCallbackClass = PRE_RENAME_FILE | PRE_DELETE_FILE;
+				fileFilterRule.ControlFileIOEventFilter = preIOCallbackClass;*/
 
 				//disable the file being renamed, deleted and written access rights.
 				ULONG processAccessRights = accessFlag & (~(ALLOW_FILE_RENAME|ALLOW_FILE_DELETE|ALLOW_WRITE_ACCESS));
@@ -263,8 +266,7 @@ int _tmain(int argc, _TCHAR* argv[])
 
 			//you can get the block message notification by the access flag with below setting.
 			//set global boolean config
-			ULONG globalBooleanConfig = ENABLE_SEND_DENIED_EVENT;
-			filterControl->globalBooleanConfig = globalBooleanConfig;
+			filterControl->globalBooleanConfig |= ENABLE_SEND_DENIED_EVENT;
 
 			if (!filterControl->StartFilter(filterType, threadCount, connectionTimeout, registerKey))
 			{
@@ -287,6 +289,64 @@ int _tmain(int argc, _TCHAR* argv[])
 
 			//the process can be terminated now.
 			//RemoveProtectedProcessId(GetCurrentProcessId());
+
+			break;
+
+		}
+		case 'd':  //DRM encryption filter driver test
+		{
+
+			UnInstallDriver();
+			Sleep(2000);
+
+			ret = InstallDriver();
+			if (!ret)
+			{
+				PrintLastErrorMessage(L"InstallDriver failed.");
+				break;
+			}
+
+			WCHAR* fileFilterMask = L"c:\\test\\*";
+
+			if (argc >= 3)
+			{
+				fileFilterMask = argv[2];
+			}
+
+			if (argc >= 4)
+			{
+				SetAuthorizedProcess(argv[3]);
+			}
+
+			//by default all users/processes will get the decrypted data
+			//it meant by default all users/processes are in whitelist
+			ULONG accessFlag = (ALLOW_MAX_RIGHT_ACCESS | ENABLE_FILE_ENCRYPTION_RULE);
+
+			filterType = FILE_SYSTEM_ENCRYPTION | FILE_SYSTEM_CONTROL | FILE_SYSTEM_PROCESS;
+
+			FileFilterRule fileFilterRule(fileFilterMask);
+			fileFilterRule.AccessFlag = accessFlag;
+
+			//if we enable the encryption key from service, you can authorize the decryption for every file
+			//in the callback function OnFilterRequestEncryptKey, with this flag enabled.
+			fileFilterRule.BooleanConfig |= REQUEST_ENCRYPT_KEY_IV_AND_TAGDATA_FROM_SERVICE;
+
+			//Add the FILE_ATTRIBUTE_ENCRYPTED to the encrypted file. The attribute will be kept if you copy&paste to another folder
+			//even the file was not encrypted anymore by Windows explorer.
+			//fileFilterRule.BooleanConfig |= ENABLE_SET_FILE_ATTRIBUTE_ENCRYPTED;
+
+			filterControl->AddFileFilter(fileFilterRule);
+			
+			if (!filterControl->StartFilter(filterType, threadCount, connectionTimeout, registerKey))
+			{
+				break;
+			}			
+
+			_tprintf(_T("\n\nStart DRM Encryption for folder %ws,\r\nThe new created file will be encrypted, the encrypted file can be decrypted automatically in this folder\
+				.\r\n Press any key to stop the filter driver.\n"),fileFilterMask);
+
+			system("pause");
+			getchar();
 
 			break;
 
@@ -319,7 +379,7 @@ int _tmain(int argc, _TCHAR* argv[])
 			//it meant by default all users/processes are in whitelist
 			//ULONG accessFlag = (ALLOW_MAX_RIGHT_ACCESS | ENABLE_FILE_ENCRYPTION_RULE);
 
-			filterType = FILE_SYSTEM_ENCRYPTION | FILE_SYSTEM_PROCESS;
+			filterType = FILE_SYSTEM_ENCRYPTION | FILE_SYSTEM_CONTROL | FILE_SYSTEM_PROCESS;
 
 			FileFilterRule fileFilterRule(fileFilterMask);
 			fileFilterRule.AccessFlag = accessFlag;
@@ -327,6 +387,10 @@ int _tmain(int argc, _TCHAR* argv[])
 			//if we enable the encryption key from service, you can authorize the decryption for every file
 			//in the callback function OnFilterRequestEncryptKey, with this flag enabled, you don't need to set the encryption key.
 			//fileFilterRule.BooleanConfig |= REQUEST_ENCRYPT_KEY_IV_AND_TAGDATA_FROM_SERVICE;
+
+			//Add the FILE_ATTRIBUTE_ENCRYPTED to the encrypted file. The attribute will be kept if you copy&paste to another folder
+			//even the file was not encrypted anymore by Windows explorer.
+			//fileFilterRule.BooleanConfig |= ENABLE_SET_FILE_ATTRIBUTE_ENCRYPTED;
 
 			//if you have a master key, you can set it here, or if you want to get the encryption key from the callback function then don't set the key here.
 			//256 bit,32bytes encryption key
@@ -338,28 +402,73 @@ int _tmain(int argc, _TCHAR* argv[])
 
 			//set the blacklist of the process, if the default filter rule is whitelist to all users/processes.
 			//ULONG rawEncryptionRights = ALLOW_MAX_RIGHT_ACCESS & (~ALLOW_READ_ENCRYPTED_FILES);
-			//fileFilterRule.AddAccessRightsToProcessName(L"explorer.exe", rawEncryptionRights);
+			//fileFilterRule.AddAccessRightsToProcessName(L"explorer.exe", rawEncryptionRights,NULL,NULL);
 
 			//set the whitelist for the user "AzureAD\\Alice"
 			//fileFilterRule.AddAccessRightsToUserName(L"AzureAD\\Alice", ALLOW_MAX_RIGHT_ACCESS);
 
 			//set the whitelist for the process "wordpad.exe"
-			fileFilterRule.AddAccessRightsToProcessName(L"wordpad.exe", ALLOW_MAX_RIGHT_ACCESS);
+			fileFilterRule.AddAccessRightsToProcessName(L"wordpad.exe", ALLOW_MAX_RIGHT_ACCESS, NULL, NULL);
 
 			//set the whitelist for the process "notepad.exe"
-			fileFilterRule.AddAccessRightsToProcessName(L"notepad.exe", ALLOW_MAX_RIGHT_ACCESS);
+			fileFilterRule.AddAccessRightsToProcessName(L"notepad.exe", ALLOW_MAX_RIGHT_ACCESS, NULL, NULL);
 
 			filterControl->AddFileFilter(fileFilterRule);
-			
+
 			if (!filterControl->StartFilter(filterType, threadCount, connectionTimeout, registerKey))
 			{
 				break;
 			}
 
 			_tprintf(_T("\n\nStart Encryption for folder %ws,\r\nThe new created file will be encrypted, the encrypted file can be decrypted automatically in this folder\
-				.\r\n Press any key to stop the filter driver.\n"),fileFilterMask);
+				.\r\n Press any key to stop the filter driver.\n"), fileFilterMask);
 
 			system("pause");
+			getchar();
+
+			break;
+
+		}
+		case 'l':  //reparse file filter driver test
+		{
+
+			UnInstallDriver();
+			Sleep(2000);
+
+			ret = InstallDriver();
+			if (!ret)
+			{
+				PrintLastErrorMessage(L"InstallDriver failed.");
+				return 1;
+			}
+
+			_tprintf(_T("Start reparse filter driver test. press any key to stop.\n\n"));
+
+			filterType = FILE_SYSTEM_REGISTRY;
+
+			WCHAR* fileFilterMask = L"c:\\test\\*";
+
+			if (argc >= 3)
+			{
+				fileFilterMask = argv[2];
+			}
+
+			ULONG accessFlag = (ALLOW_MAX_RIGHT_ACCESS | ENABLE_REPARSE_FILE_OPEN);
+			filterType = FILE_SYSTEM_REPARSE;
+
+			FileFilterRule fileFilterRule(fileFilterMask);
+			fileFilterRule.AccessFlag = accessFlag;
+
+			filterControl->AddFileFilter(fileFilterRule);
+
+			if (!filterControl->StartFilter(filterType, threadCount, connectionTimeout, registerKey))
+			{
+				break;
+			}
+
+			_tprintf(_T("\n\nStart reparse file filter for folder %ws,\r\nThe new created file will be embedded with tag data.\
+				.\r\n Press any key to stop the filter driver.\n"), fileFilterMask);
+
 			getchar();
 
 			break;

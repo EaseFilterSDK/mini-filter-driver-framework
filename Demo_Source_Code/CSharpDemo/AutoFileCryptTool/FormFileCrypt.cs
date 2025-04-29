@@ -60,15 +60,15 @@ namespace AutoFileCryptTool
             int numberOfAutoEncryptFolders = 0;
             int numberOfEncryptOnReadFolders = 0;
 
-            foreach (FileFilterRule filterRule in GlobalConfig.FilterRules.Values)
+            foreach (FileFilter fileFilter in GlobalConfig.FileFilters.Values)
             {
-                if (filterRule.Type == (int)FilterRuleType.AutoEncryption)
-                {
-                    numberOfAutoEncryptFolders++;
-                }
-                else if (filterRule.Type == (int)FilterRuleType.EncryptionOnRead)
+                if ( (fileFilter.AccessFlags & FilterAPI.AccessFlag.DISABLE_ENCRYPT_DATA_ON_READ) == 0  )
                 {
                     numberOfEncryptOnReadFolders++;
+                }
+                else
+                {
+                    numberOfAutoEncryptFolders++;
                 }
             }
 
@@ -86,25 +86,13 @@ namespace AutoFileCryptTool
                 AddDefaultItemsToEncryptOnReadList();
             }
 
-            foreach (FileFilterRule filterRule in GlobalConfig.FilterRules.Values)
+            foreach (FileFilter fileFilter in GlobalConfig.FileFilters.Values)
             {
-                if (filterRule.Type == (int)FilterRuleType.AutoEncryption)
+              
+                if ((fileFilter.AccessFlags & FilterAPI.AccessFlag.DISABLE_ENCRYPT_DATA_ON_READ) == 0)
                 {
 
-                    string folderName = filterRule.IncludeFileFilterMask;
-                    if (folderName.EndsWith("\\*"))
-                    {
-                        folderName = folderName.Substring(0, folderName.Length - 2);
-                    }
-
-                    ListViewItem item = new ListViewItem(folderName);
-                    item.ImageIndex = 0;
-                    listView_AutoEncryptFolders.Items.Add(item);
-                }
-                else if (filterRule.Type == (int)FilterRuleType.EncryptionOnRead)
-                {
-
-                    string folderName = filterRule.IncludeFileFilterMask;
+                    string folderName = fileFilter.IncludeFileFilterMask;
                     if (folderName.EndsWith("\\*"))
                     {
                         folderName = folderName.Substring(0, folderName.Length - 2);
@@ -114,6 +102,18 @@ namespace AutoFileCryptTool
                     item.ImageIndex = 0;
                     listView_EncryptOnReadFolders.Items.Add(item);
                 }
+                else
+                {
+                    string folderName = fileFilter.IncludeFileFilterMask;
+                    if (folderName.EndsWith("\\*"))
+                    {
+                        folderName = folderName.Substring(0, folderName.Length - 2);
+                    }
+
+                    ListViewItem item = new ListViewItem(folderName);
+                    item.ImageIndex = 0;
+                    listView_AutoEncryptFolders.Items.Add(item);
+                }
             }
 
             GlobalConfig.SaveConfigSetting();
@@ -122,9 +122,8 @@ namespace AutoFileCryptTool
         public void SendConfigSettingsToFilter()
         {
             filterControl.ClearFilters();
-            foreach (FileFilterRule filterRule in GlobalConfig.FilterRules.Values)
+            foreach (FileFilter fileFilter in GlobalConfig.FileFilters.Values)
             {
-                FileFilter fileFilter = filterRule.ToFileFilter();
                 filterControl.AddFilter(fileFilter);
             }
 
@@ -158,30 +157,7 @@ namespace AutoFileCryptTool
            
             string includeFilterMask = folderName + "\\*";
             string blackProcessList = string.Empty;
-            string passPhrase = string.Empty;
-
-            BlackListForm blackListForm = new BlackListForm();
-
-            if (blackListForm.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-            {
-                blackProcessList = blackListForm.BlackList;
-            }
-
-            //for blacklist process for autoencryption, it has maximum acess rights.
-            string blackListProcessRights = "";
-            string[] blacklist = blackProcessList.Split(new char[] { ';' });
-            if (blacklist.Length > 0)
-            {
-                foreach (string unAuthorizedUser in blacklist)
-                {
-                    if (unAuthorizedUser.Trim().Length > 0)
-                    {
-                        //can't read the encrypted files
-                        uint accessFlag = FilterAPI.ALLOW_MAX_RIGHT_ACCESS & (uint)(~FilterAPI.AccessFlag.ALLOW_READ_ENCRYPTED_FILES);
-                        blackListProcessRights += ";" + unAuthorizedUser + "!" + accessFlag.ToString();
-                    }
-                }
-            }
+            string passPhrase = string.Empty;                   
 
             PasswordForm passwordForm = new PasswordForm();
 
@@ -196,15 +172,35 @@ namespace AutoFileCryptTool
                 passPhrase = "test";
             }
 
-            FileFilterRule autoEncrytFilterRule = new FileFilterRule();
-            autoEncrytFilterRule.Type = (int)FilterRuleType.AutoEncryption;
-            autoEncrytFilterRule.IncludeFileFilterMask = folderName + "\\*";
-            autoEncrytFilterRule.EncryptionPassPhrase = passPhrase;
-            autoEncrytFilterRule.AccessFlag = (uint)FilterAPI.ALLOW_MAX_RIGHT_ACCESS | (uint)FilterAPI.AccessFlag.ENABLE_FILE_ENCRYPTION_RULE;
-            autoEncrytFilterRule.EncryptMethod = (int)FilterAPI.EncryptionMethod.ENCRYPT_FILE_WITH_SAME_KEY_AND_UNIQUE_IV;
-            autoEncrytFilterRule.ProcessNameRights = blackListProcessRights;
+            FileFilter autoEncrytFilter = new FileFilter(folderName + "\\*");
+            autoEncrytFilter.EncryptionPassPhrase = passPhrase;
+            //enable the encryption for the filter rule.
+            autoEncrytFilter.EnableEncryption = true;
+            //It is optional to set the encrypted file attribute,if it was set,
+            //the encrypted attribute will be kept even it was copied out to another folder without the encryption.
+            autoEncrytFilter.BooleanConfig |= (uint)FilterAPI.BooleanConfig.ENABLE_SET_FILE_ATTRIBUTE_ENCRYPTED;
 
-            GlobalConfig.AddFileFilterRule(autoEncrytFilterRule);
+            BlackListForm blackListForm = new BlackListForm();
+            if (blackListForm.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                blackProcessList = blackListForm.BlackList;
+            }
+            //for blacklist process for autoencryption, it has maximum acess rights.
+            string[] blacklist = blackProcessList.Split(new char[] { ';' });
+            if (blacklist.Length > 0)
+            {
+                foreach (string unAuthorizedProcess in blacklist)
+                {
+                    if (unAuthorizedProcess.Trim().Length > 0)
+                    {
+                        //can't read the encrypted files
+                        uint accessFlag = FilterAPI.ALLOW_MAX_RIGHT_ACCESS & (uint)(~FilterAPI.AccessFlag.ALLOW_READ_ENCRYPTED_FILES);
+                        autoEncrytFilter.AddTrustedProcessRight(accessFlag, unAuthorizedProcess.Trim(), "", "");
+                    }
+                }
+            }
+
+            GlobalConfig.AddFileFilter(autoEncrytFilter);
            
             InitializeFileCrypt();
 
@@ -231,7 +227,7 @@ namespace AutoFileCryptTool
             foreach (ListViewItem item in listView_AutoEncryptFolders.SelectedItems)
             {
                 string folderName = item.Text + "\\*";
-                GlobalConfig.RemoveFilterRule(folderName);
+                GlobalConfig.RemoveFileFilter(folderName);
             }
 
             InitializeFileCrypt();
@@ -452,17 +448,20 @@ namespace AutoFileCryptTool
         private bool AddEncryptOnReadFolder(string folderName)
         {
 
-            string includeFilterMask = folderName + "\\*";
+            FileFilter encryptOnReadFilter = new FileFilter(folderName + "\\*");
 
-            FileFilterRule EncryptOnReadFilterRule = new FileFilterRule();
-            EncryptOnReadFilterRule.Type = (int)FilterRuleType.EncryptionOnRead;
-            EncryptOnReadFilterRule.IncludeFileFilterMask = folderName + "\\*";
-            EncryptOnReadFilterRule.EncryptionPassPhrase = GlobalConfig.MasterPassword;
-            EncryptOnReadFilterRule.AccessFlag = (uint)FilterAPI.ALLOW_MAX_RIGHT_ACCESS | (uint)FilterAPI.AccessFlag.ENABLE_FILE_ENCRYPTION_RULE;
-            EncryptOnReadFilterRule.AccessFlag &= (uint)(~FilterAPI.AccessFlag.ALLOW_ENCRYPT_NEW_FILE); //disable new created file encryption
-            EncryptOnReadFilterRule.EncryptMethod = (int)FilterAPI.EncryptionMethod.ENCRYPT_FILE_WITH_SAME_KEY_AND_IV;
+            //enable encryption filter rule.
+            FilterAPI.AccessFlag accessFlag = (FilterAPI.AccessFlag)FilterAPI.ALLOW_MAX_RIGHT_ACCESS | FilterAPI.AccessFlag.ENABLE_FILE_ENCRYPTION_RULE;
+            //disable new created file encryption, the file on disk won't be encrypted.
+            accessFlag &= ~FilterAPI.AccessFlag.ALLOW_ENCRYPT_NEW_FILE; 
+            //the file data will be encrypted when it was read.
+            accessFlag &= ~FilterAPI.AccessFlag.DISABLE_ENCRYPT_DATA_ON_READ;
 
-            GlobalConfig.AddFileFilterRule(EncryptOnReadFilterRule);
+            encryptOnReadFilter.AccessFlags = accessFlag;
+            encryptOnReadFilter.EncryptionKey = Utils.GetKeyByPassPhrase(GlobalConfig.MasterPassword, 32);
+            encryptOnReadFilter.EncryptionIV = Utils.GetIVByPassPhrase(GlobalConfig.MasterPassword);
+
+            GlobalConfig.AddFileFilter(encryptOnReadFilter);
 
             GlobalConfig.SaveConfigSetting();
 
@@ -492,7 +491,7 @@ namespace AutoFileCryptTool
             foreach (ListViewItem item in listView_EncryptOnReadFolders.SelectedItems)
             {
                 string folderName = item.Text + "\\*";
-                GlobalConfig.RemoveFilterRule(folderName);
+                GlobalConfig.RemoveFileFilter(folderName);
             }
 
             InitializeFileCrypt();

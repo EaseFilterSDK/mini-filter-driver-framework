@@ -14,40 +14,42 @@ namespace ProcessMon
 {
     public partial class ProcessFilterSetting : Form
     {
-        public ProcessFilterRule  selectedFilterRule = null;
+        public ProcessFilter  selectedProcessFilter = null;
         bool isNewFilterRule = false;
 
-        public ProcessFilterSetting(ProcessFilterRule _selectedFilterRule)
+        public ProcessFilterSetting(ProcessFilter _selectedFilterRule)
         {
             StartPosition = FormStartPosition.CenterParent;
             InitializeComponent();
-            selectedFilterRule = _selectedFilterRule;
+            selectedProcessFilter = _selectedFilterRule;
 
             InitSelectedFilterRule();
         }
 
         private void InitSelectedFilterRule()
         {
-            if (null == selectedFilterRule)
+            if (null == selectedProcessFilter)
             {
-                selectedFilterRule = new ProcessFilterRule();
-                selectedFilterRule.ProcessNameFilterMask = "*";
-                selectedFilterRule.ControlFlag = 16130;
+                selectedProcessFilter = new ProcessFilter("*");
+                selectedProcessFilter.ControlFlag = 6922;
 
                 isNewFilterRule = true;
             }
 
-            if (selectedFilterRule.ProcessId.Length > 0 && selectedFilterRule.ProcessId != "0" )
+            if (selectedProcessFilter.ProcessId > 0 )
             {
-                textBox_ProcessId.Text = selectedFilterRule.ProcessId; 
+                textBox_ProcessId.Text = selectedProcessFilter.ProcessId.ToString(); 
                 radioButton_Pid_Click(null,null);
             }
             else
             {
                 radioButton_Name_Click(null, null);
-                textBox_ProcessName.Text = selectedFilterRule.ProcessNameFilterMask;
-                textBox_ControlFlag.Text = selectedFilterRule.ControlFlag.ToString();
+                textBox_ProcessName.Text = selectedProcessFilter.ProcessNameFilterMask;
+                textBox_ControlFlag.Text = selectedProcessFilter.ControlFlag.ToString();
             }
+
+            textBox_ExcludeProcessNames.Text = selectedProcessFilter.ExcludeProcessNameString;
+            textBox_ExcludeUserNames.Text = selectedProcessFilter.ExcludeUserNameString;
         }     
 
         private void button_SelectControlFlag_Click(object sender, EventArgs e)
@@ -114,24 +116,24 @@ namespace ProcessMon
 
             if (textBox_ProcessId.Text.Trim().Length > 0 && textBox_ProcessId.Text != "0" )
             {
-                if (selectedFilterRule.ProcessId != textBox_ProcessId.Text)
+                if (selectedProcessFilter.ProcessId != uint.Parse(textBox_ProcessId.Text))
                 {
-                    selectedFilterRule = new ProcessFilterRule();
+                    selectedProcessFilter = new ProcessFilter("");
                     isNewFilterRule = true;
                 }
 
-                selectedFilterRule.ProcessId = textBox_ProcessId.Text;
+                selectedProcessFilter.ProcessId = uint.Parse(textBox_ProcessId.Text);
                 
             }
             else if (textBox_ProcessName.Text.Trim().Length > 0)
             {
-                if (selectedFilterRule.ProcessNameFilterMask != textBox_ProcessName.Text)
+                if (selectedProcessFilter.ProcessNameFilterMask != textBox_ProcessName.Text)
                 {
                     isNewFilterRule = true;
-                    selectedFilterRule = new ProcessFilterRule();
+                    selectedProcessFilter = new ProcessFilter(textBox_ProcessName.Text);
                 }
 
-                selectedFilterRule.ProcessNameFilterMask = textBox_ProcessName.Text;
+                selectedProcessFilter.ProcessNameFilterMask = textBox_ProcessName.Text;
                
             }
             else
@@ -155,11 +157,11 @@ namespace ProcessMon
                 //default file access rights setting for new process filter rule
 
                 //allow the windows dll or exe to be read by the process, or it can't be loaded.
-                selectedFilterRule.FileAccessRights = "c:\\test\\*!" + FilterAPI.ALLOW_FILE_READ_ACCESS + ";";
+                selectedProcessFilter.FileAccessRightString = "c:\\test\\*|" + FilterAPI.ALLOW_FILE_READ_ACCESS + ";";
 
             }
 
-            ProcessFileAccessRights processFileAccessRights = new ProcessFileAccessRights(selectedFilterRule);
+            ProcessFileAccessRights processFileAccessRights = new ProcessFileAccessRights(selectedProcessFilter);
             processFileAccessRights.ShowDialog();
         }
 
@@ -168,13 +170,13 @@ namespace ProcessMon
             if (textBox_ProcessId.Text.Trim().Length > 0 && textBox_ProcessId.Text != "0")
             {
                 //please note that the process Id will be changed when the process launch every time.
-                selectedFilterRule.ProcessId = textBox_ProcessId.Text;
-                selectedFilterRule.ProcessNameFilterMask = "";
+                selectedProcessFilter.ProcessId = uint.Parse(textBox_ProcessId.Text);
+                selectedProcessFilter.ProcessNameFilterMask = "";
             }
             else if (textBox_ProcessName.Text.Trim().Length > 0)
             {
-                selectedFilterRule.ProcessId = "";
-                selectedFilterRule.ProcessNameFilterMask = textBox_ProcessName.Text;
+                selectedProcessFilter.ProcessId = 0;
+                selectedProcessFilter.ProcessNameFilterMask = textBox_ProcessName.Text;
             }
             else
             {
@@ -183,11 +185,14 @@ namespace ProcessMon
                 return;
             }
 
+            selectedProcessFilter.ExcludeProcessNameString = textBox_ExcludeProcessNames.Text;
+            selectedProcessFilter.ExcludeUserNameString = textBox_ExcludeUserNames.Text;
+
             uint controlFlag = 0;
             uint.TryParse(textBox_ControlFlag.Text, out controlFlag);
-            selectedFilterRule.ControlFlag = controlFlag;
+            selectedProcessFilter.ControlFlag = controlFlag;
 
-            GlobalConfig.AddProcessFilterRule(selectedFilterRule);
+            GlobalConfig.AddProcessFilter(selectedProcessFilter);
 
         }
 

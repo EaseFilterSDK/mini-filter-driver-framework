@@ -80,16 +80,14 @@ namespace FileProtector
 
             GlobalConfig.Load();
 
-            if (GlobalConfig.FilterRules.Count == 0)
+            if (GlobalConfig.FileFilters.Count == 0)
             {
                 MessageBoxHelper.PrepToCenterMessageBoxOnForm(this);
                 MessageBox.Show("You don't have any filter folder setup, please go to the settings to add a new filter rule, or the filter driver won't intercept any IOs.");
             }
 
-            foreach (FileFilterRule filterRule in GlobalConfig.FilterRules.Values)
+            foreach (FileFilter fileFilter in GlobalConfig.FileFilters.Values)
             {
-                FileFilter fileFilter = filterRule.ToFileFilter();
-
                 //add the monitor event handler for the file filter.
                 fileFilter.OnFileOpen += monitorEventHandler.OnFileOpen;
                 fileFilter.OnNewFileCreate += monitorEventHandler.OnNewFileCreate;
@@ -163,23 +161,6 @@ namespace FileProtector
 
                 filterControl.AddFilter(fileFilter);
             }
-
-            foreach (ProcessFilterRule filterRule in GlobalConfig.ProcessFilterRules.Values)
-            {
-                ProcessFilter processFilter = filterRule.ToProcessFilter();
-
-                processFilter.OnProcessCreation += processEventHandler.OnProcessCreation;
-                processFilter.OnProcessPreTermination += processEventHandler.OnProcessPreTermination;
-                processFilter.NotifyProcessWasBlocked += processEventHandler.NotifyProcessWasBlocked;
-                processFilter.NotifyProcessTerminated += processEventHandler.NotifyProcessTerminated;
-                processFilter.NotifyThreadCreation += processEventHandler.NotifyThreadCreation;
-                processFilter.NotifyThreadTerminated += processEventHandler.NotifyThreadTerminated;
-                processFilter.NotifyProcessHandleInfo += processEventHandler.NotifyProcessHandleInfo;
-                processFilter.NotifyThreadHandleInfo += processEventHandler.NotifyThreadHandleInfo;
-
-                filterControl.AddFilter(processFilter);
-            }
-
 
             filterControl.ProtectedProcessIdList = GlobalConfig.ProtectPidList;
             filterControl.IncludeProcessIdList = GlobalConfig.IncludePidList;
@@ -372,10 +353,6 @@ namespace FileProtector
 
         private void toolStripButton_ApplyTrialKey_Click(object sender, EventArgs e)
         {
-            WebFormServices webForm = new WebFormServices();
-            webForm.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-
-            System.Threading.Tasks.Task.Factory.StartNew(() => { webForm.ShowDialog(); });
         }
        
     }

@@ -160,6 +160,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Properties\about.png" />
     <Content Include="Lock Folder.ico" />
   </ItemGroup>
   <ItemGroup>

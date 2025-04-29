@@ -38,20 +38,13 @@ namespace FileMonitor
     {
         FilterControl filterControl = new FilterControl();
         bool isUnitTestStarted = false;
-
-        /// <summary>
-        ///  To manage your files, you need to create at least one filter rule, you can have multiple filter rules. 
-        ///  A filter rule only can have one unique include file mask,
-        ///  A filter rule can have multiple exclude file masks, multiple include process names and exclude process names, 
-        ///  multiple include process Ids and exclude process Ids, multiple include user names and exclude user names. 
-        /// </summary>
-
+        static string binaryPath = GlobalConfig.AssemblyPath;
 
         /// <summary>
         /// Test monitor feature with registering the IO events, get notification after the file was closed.
         /// </summary>
-        private  string unitTestMonitorTestFolder = "c:\\EaseFilterUnitTest\\monitorFolder";
-        private  string unitTestMonitorTestFile = "c:\\EaseFilterUnitTest\\monitorFolder\\unitTestMonitorTestFile.txt";
+        private  string unitTestMonitorTestFolder = Path.Combine(binaryPath, "EaseFilterUnitTest\\monitorFolder");
+        private  string unitTestMonitorTestFile = Path.Combine(binaryPath, "EaseFilterUnitTest\\monitorFolder") + "\\unitTestMonitorTestFile.txt";
         private  bool isTestMonitorFileCreated = false;
         private  bool isTestMonitorFileReanmed = false;
         private  bool isTestMonitorFileDeleted = false;
@@ -69,13 +62,13 @@ namespace FileMonitor
         /// <summary>
         /// Unit test folder
         /// </summary>
-        private  string unitTestFolder = "c:\\EaseFilterUnitTest";
+        private  string unitTestFolder = Path.Combine(binaryPath, "EaseFilterUnitTest");
 
         /// <summary>
         /// Test Control IO feature with callback function
         /// </summary>
-        private  string unitTestCallbackFolder = "c:\\EaseFilterUnitTest\\callbackFolder";
-        private  string unitTestCallbackFile = "c:\\EaseFilterUnitTest\\callbackFolder\\unitTestFile.txt";
+        private  string unitTestCallbackFolder = Path.Combine(binaryPath, "EaseFilterUnitTest") + "\\callbackFolder";
+        private  string unitTestCallbackFile = Path.Combine(binaryPath, "EaseFilterUnitTest") + "\\callbackFolder\\unitTestFile.txt";
 
         //Purchase a license key with the link: http://www.easefilter.com/Order.htm
         //Email us to request a trial key: info@easefilter.com //free email is not accepted.
@@ -297,7 +290,7 @@ namespace FileMonitor
             AppendText(message, Color.Gray);
 
             FileFilter fileMonitorFilter = new FileFilter(unitTestCallbackFolder + "\\*");
-            fileMonitorFilter.MonitorFileIOEventFilter = (ulong)(MonitorFileIOEvents.OnFileOpen | MonitorFileIOEvents.OnSetFileSize);
+            fileMonitorFilter.MonitorFileIOEventFilter = (MonitorFileIOEvents.OnFileOpen | MonitorFileIOEvents.OnSetFileSize);
 
             fileMonitorFilter.OnFileOpen += OnFileOpen;
             fileMonitorFilter.OnSetFileSize += OnSetFileSize;

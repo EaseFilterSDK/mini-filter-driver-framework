@@ -52,12 +52,13 @@
     <Compile Include="EncryptionFilter.cs" />
     <Compile Include="FileFilter.cs" />
     <Compile Include="FilterAPI.cs" />
-    <Compile Include="FilterComponent.cs" />
+    <Compile Include="FilterControl.cs" />
     <Compile Include="MonitorFilter.cs" />
     <Compile Include="NtStatus.cs" />
     <Compile Include="ProcessFilter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RegistryFilter.cs" />
+    <Compile Include="ReparseFilter.cs" />
     <Compile Include="Utils.cs" />
     <Compile Include="WinDataStructures.cs" />
   </ItemGroup>

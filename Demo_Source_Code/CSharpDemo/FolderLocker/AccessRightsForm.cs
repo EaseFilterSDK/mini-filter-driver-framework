@@ -29,12 +29,15 @@ using EaseFilter.CommonObjects;
 
 namespace EaseFilter.FolderLocker
 {
+   
     public partial class Form_AccessRights : Form
     {
         bool isProcessRights = true;
 
         public string accessName = string.Empty;
         public uint accessFlags = FilterAPI.ALLOW_MAX_RIGHT_ACCESS;
+        public string certName = string.Empty;
+        public string imageSha256Name = string.Empty;
 
         public Form_AccessRights(bool _isProcessRights, uint accessRights, string name)
         {
@@ -47,10 +50,12 @@ namespace EaseFilter.FolderLocker
             if (isProcessRights)
             {
                 label_Name.Text = "Process Name";
+                
             }
             else
             {
                 label_Name.Text = "User Name";
+                groupBox_TrustedProcess.Visible = false;
             }
 
             SetCheckBoxValue();
@@ -59,6 +64,8 @@ namespace EaseFilter.FolderLocker
         private void button_Apply_Click(object sender, EventArgs e)
         {
             accessName = textBox_AccessName.Text;
+            certName = textBox_CertificatName.Text;
+            imageSha256Name = textBox_ImageSha256.Text;
         }
 
 
@@ -373,6 +380,55 @@ namespace EaseFilter.FolderLocker
 
         }
 
-       
+        private void button_Info_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("The certificate name of the signed process is optional, " +
+               "if it is not empty, then only the process signed with the certificate will have the access rights.\n " +
+                "The process sha256 hash is optional, if it is not empty, then only the process with same sha256 hash will have the access rights.\n");
+        }
+
+        private void button_GetCertificateName_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog fileDialog = new OpenFileDialog();
+            if (fileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                string fileName = fileDialog.FileName;
+                uint len = 1024;
+                long signedTime = 0;
+                string subjectName = new string((char)0, (int)len);
+
+                if (FilterAPI.GetSignerInfo(fileName, subjectName, ref len, ref signedTime))
+                {
+                    subjectName = subjectName.Substring(0, (int)len / 2);
+                    textBox_CertificatName.Text = subjectName;
+                }
+                else
+                {
+                    string lastError = "Get process's certificate name failed with error:" + FilterAPI.GetLastErrorMessage();
+                    MessageBox.Show(lastError, "Get process's certificate name", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+        }
+
+        private void button_GetSha256_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog fileDialog = new OpenFileDialog();
+            if (fileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                string fileName = fileDialog.FileName;
+                byte[] hashBytes = new byte[32];
+                uint hashBytesLength = 32;
+
+                if (FilterAPI.Sha256HashFile(fileName, hashBytes, ref hashBytesLength))
+                {
+                    textBox_ImageSha256.Text = Utils.ByteArrayToHex(hashBytes);
+                }
+                else
+                {
+                    string lastError = "Get file sha256 hash failed with error:" + FilterAPI.GetLastErrorMessage();
+                    MessageBox.Show(lastError, "Get sha256 hash", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+        }
     }
 }

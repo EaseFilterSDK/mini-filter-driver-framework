@@ -349,7 +349,6 @@ namespace EaseFilter.FolderLocker
             this.Name = "FolderLockerSettigs";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Folder Locker Settings";
-            this.Load += new System.EventHandler(this.FolderLockerSettigs_Load);
             this.groupBox1.ResumeLayout(false);
             this.groupBox_AccessControl.ResumeLayout(false);
             this.groupBox_AccessControl.PerformLayout();

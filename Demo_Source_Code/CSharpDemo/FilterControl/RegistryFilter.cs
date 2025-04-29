@@ -35,12 +35,44 @@ namespace EaseFilter.FilterControl
         List<string> excludeKeyNameList = new List<string>();
 
         /// <summary>
-        /// Exclude the process name to the registry filter rule.
+        /// Exclude the process name collection to the registry filter rule .
         /// </summary>
         public List<string> ExcludeProcessNameList
         {
             get { return excludeProcessNameList; }
             set { excludeProcessNameList = value; }
+        }
+
+        /// <summary>
+        /// Exclude the process name to the registry filter list in string.
+        /// </summary>
+        public string ExcludeProcessNameString
+        {
+            get 
+            {
+                string excludeProcessNameString = string.Empty;
+                foreach (string excludeProcessName in ExcludeProcessNameList)
+                {
+                    excludeProcessNameString += excludeProcessName + ";";
+                }
+
+                return excludeProcessNameString;
+            }
+            set 
+            {
+                ExcludeProcessNameList.Clear();
+                string[] excludeProcessNames = value.Split(new char[] { ';' });
+                if (excludeProcessNames.Length > 0)
+                {
+                    foreach (string excludeProcessName in excludeProcessNames)
+                    {
+                        if (excludeProcessName.Trim().Length > 0)
+                        {
+                            ExcludeProcessNameList.Add(excludeProcessName);
+                        }
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -53,12 +85,78 @@ namespace EaseFilter.FilterControl
         }
 
         /// <summary>
+        /// Get or set the exclude user name list in string
+        /// the exclude user name string format: userName1;userName2
+        /// </summary>
+        public string ExcludeUserNameString
+        {
+            get
+            {
+                string excludeUserNames = string.Empty;
+                foreach (string excludeUserName in excludeUserNameList)
+                {
+                    excludeUserNames += excludeUserName.ToString() + ";";
+                }
+
+                return excludeUserNames;
+            }
+            set
+            {
+                excludeUserNameList.Clear();
+                string[] excludeUserNames = value.Split(new char[] { ';' });
+                if (excludeUserNames.Length > 0)
+                {
+                    foreach (string excludeUserName in excludeUserNames)
+                    {
+                        if (excludeUserName.Trim().Length > 0)
+                        {
+                            excludeUserNameList.Add(excludeUserName.Trim());
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
         /// Exclude the key name to the registry filter rule.
         /// </summary>
         public List<string> ExcludeKeyNameList
         {
             get { return excludeKeyNameList; }
             set { excludeKeyNameList = value; }
+        }
+
+        /// <summary>
+        /// Get or set the registry key name list in string
+        /// the exclude key name string format: keyName1;keyName2
+        /// </summary>
+        public string ExcludeKeyNameString
+        {
+            get
+            {
+                string excludeKeyNames = string.Empty;
+                foreach (string excludeKeyName in excludeKeyNameList)
+                {
+                    excludeKeyNames += excludeKeyName.ToString() + ";";
+                }
+
+                return excludeKeyNames;
+            }
+            set
+            {
+                excludeKeyNameList.Clear();
+                string[] excludeKeyNames = value.Split(new char[] { ';' });
+                if (excludeKeyNames.Length > 0)
+                {
+                    foreach (string excludeKeyName in excludeKeyNames)
+                    {
+                        if (excludeKeyName.Trim().Length > 0)
+                        {
+                            excludeKeyNameList.Add(excludeKeyName.Trim());
+                        }
+                    }
+                }
+            }
         }
         /// <summary>
         /// Control the registry access for the process with this process Id. 
@@ -68,17 +166,29 @@ namespace EaseFilter.FilterControl
         /// <summary>
         /// Control the registry access for the process with this process name if the process Id is 0, or it will skip it. 
         /// </summary>
-        public string ProcessNameFilterMask { get { return processNameFilterMask; } set { processNameFilterMask = value; } }
+        public string ProcessNameFilterMask 
+        {
+            get { return processNameFilterMask; } 
+            set { processNameFilterMask = value; } 
+        }
 
         /// <summary>
         /// Control the registry access for the process with this user name
         /// </summary>
-        public string UserName { get { return userName; } set { userName = value; } }
+        public string UserName 
+        { 
+            get { return userName; } 
+            set { userName = value; } 
+        }
 
         /// <summary>
         /// Filter the registry access based on the key name filter mask if it was set
         /// </summary>
-        public string RegistryKeyNameFilterMask { get { return registryKeyNameFilterMask; } set { registryKeyNameFilterMask = value; } }
+        public string RegistryKeyNameFilterMask 
+        { 
+            get { return registryKeyNameFilterMask; } 
+            set { registryKeyNameFilterMask = value; } 
+        }
 
         /// <summary>
         /// The the flag to control how to access the registry for the matched process or user
@@ -1197,7 +1307,7 @@ namespace EaseFilter.FilterControl
                         {
                             VALUE_DATA_TYPE valueType = (VALUE_DATA_TYPE)messageSend.InfoClass;
                             description = "Type:" + valueType.ToString();
-                            description += " Data:" + ValueTypeData(valueType, (int)messageSend.DataBufferLength, messageSend.DataBuffer);
+                            description += " Data:" + ValueTypeData(valueType, (int)messageSend.DataBufferLength, DataBuffer);
                             break;
                         }
                     case FilterAPI.RegCallbackClass.Reg_Pre_Delete_Value_Key:
@@ -1216,7 +1326,7 @@ namespace EaseFilter.FilterControl
                     case FilterAPI.RegCallbackClass.Reg_Pre_Rename_Key:
                     case FilterAPI.RegCallbackClass.Reg_Post_Rename_Key:
                         {
-                            string newName = Encoding.Unicode.GetString(messageSend.DataBuffer);
+                            string newName = Encoding.Unicode.GetString(DataBuffer);
                             description = "registry key's name is being changed to " + newName;
                             break;
                         }
@@ -1230,7 +1340,7 @@ namespace EaseFilter.FilterControl
                     case FilterAPI.RegCallbackClass.Reg_Post_Enumerate_Key:
                         {
                             KEY_INFORMATION_CLASS keyInformationClass = (KEY_INFORMATION_CLASS)messageSend.InfoClass;
-                            description += KeyInformation(keyInformationClass, messageSend.DataBuffer);
+                            description += KeyInformation(keyInformationClass, DataBuffer);
 
                             break;
                         }
@@ -1244,7 +1354,7 @@ namespace EaseFilter.FilterControl
                     case FilterAPI.RegCallbackClass.Reg_Post_Enumerate_Value_Key:
                         {
                             KEY_VALUE_INFORMATION_CLASS keyValuseInformationClass = (KEY_VALUE_INFORMATION_CLASS)messageSend.InfoClass;
-                            description += KeyValueInformation(keyValuseInformationClass, messageSend.DataBuffer);
+                            description += KeyValueInformation(keyValuseInformationClass, DataBuffer);
 
                             break;
                         }
@@ -1258,7 +1368,7 @@ namespace EaseFilter.FilterControl
                     case FilterAPI.RegCallbackClass.Reg_Post_Query_Key:
                         {
                             KEY_INFORMATION_CLASS keyInformationClass = (KEY_INFORMATION_CLASS)messageSend.InfoClass;
-                            description += KeyInformation(keyInformationClass, messageSend.DataBuffer);
+                            description += KeyInformation(keyInformationClass, DataBuffer);
 
                             break;
                         }
@@ -1272,7 +1382,7 @@ namespace EaseFilter.FilterControl
                     case FilterAPI.RegCallbackClass.Reg_Post_Query_Value_Key:
                         {
                             KEY_VALUE_INFORMATION_CLASS keyValuseInformationClass = (KEY_VALUE_INFORMATION_CLASS)messageSend.InfoClass;
-                            description += KeyValueInformation(keyValuseInformationClass, messageSend.DataBuffer);
+                            description += KeyValueInformation(keyValuseInformationClass, DataBuffer);
 
                             break;
                         }
@@ -1284,7 +1394,7 @@ namespace EaseFilter.FilterControl
                         {
                             uint entryCount = messageSend.InfoClass;
 
-                            MemoryStream ms = new MemoryStream(messageSend.DataBuffer);
+                            MemoryStream ms = new MemoryStream(DataBuffer);
                             BinaryReader br = new BinaryReader(ms);
 
                             for (int i = 0; i < entryCount && ms.Position < ms.Length; i++)
@@ -1312,13 +1422,13 @@ namespace EaseFilter.FilterControl
                     case FilterAPI.RegCallbackClass.Reg_Pre_Load_Key:
                     case FilterAPI.RegCallbackClass.Reg_Post_Load_Key:
                         {
-                            description += "SourceFile:" + Encoding.Unicode.GetString(messageSend.DataBuffer, 0, (int)messageSend.DataBufferLength);
+                            description += "SourceFile:" + Encoding.Unicode.GetString(DataBuffer, 0, (int)messageSend.DataBufferLength);
                             break;
                         }
                     case FilterAPI.RegCallbackClass.Reg_Pre_Replace_Key:
                     case FilterAPI.RegCallbackClass.Reg_Post_Replace_Key:
                         {
-                            description += "NewFileName:" + Encoding.Unicode.GetString(messageSend.DataBuffer, 0, (int)messageSend.DataBufferLength);
+                            description += "NewFileName:" + Encoding.Unicode.GetString(DataBuffer, 0, (int)messageSend.DataBufferLength);
                             break;
                         }
 

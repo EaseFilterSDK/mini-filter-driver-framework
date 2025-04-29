@@ -34,8 +34,9 @@ namespace EaseFilter.FilterControl
         public event EventHandler<ProcessEventArgs> NotifyThreadTerminated;
         public event EventHandler<ProcessEventArgs> NotifyProcessHandleInfo;
         public event EventHandler<ProcessEventArgs> NotifyThreadHandleInfo;
+        public event EventHandler<ProcessEventArgs> NotifyImageWasLoaded;
 
-        Dictionary<string, uint> fileAccessRights = new Dictionary<string, uint>();
+        Dictionary<string, uint> fileAccessRightList = new Dictionary<string, uint>();
         /// <summary>
         /// the process name filter mask, i.e. "notepad.exe","c:\\windows\\*.exe" 
         /// </summary>
@@ -49,23 +50,58 @@ namespace EaseFilter.FilterControl
         /// <summary>
         /// Using the process Id to monitor or control the file access rights instead of the process name if it is not 0.
         /// </summary>
-        public uint ProcessId { get; set; }
-
-        /// <summary>
-        /// The file access rights to the processes,the key is the FileFilterMask, the value is the access flag.
-        /// i.e. <c:\myfolder\*,ALLOW_MAX_RIGHT_ACCESS>
-        /// </summary>
-        public Dictionary<string, uint> FileAccessRights
-        {
-            get { return fileAccessRights; }
-            set { fileAccessRights = value; }
-        }
+        public uint ProcessId { get; set; }       
 
         public ProcessFilter(string processNameFilterMask)
             : base(processNameFilterMask)
         {
             ProcessNameFilterMask = processNameFilterMask;
             this.FilterType = FilterAPI.FilterType.PROCESS_FILTER;
+        }
+
+        /// <summary>
+        /// The file access rights to the processes,the key is the FileFilterMask, the value is the access flag.
+        /// i.e. <c:\myfolder\*,ALLOW_MAX_RIGHT_ACCESS>
+        /// </summary>
+        public Dictionary<string, uint> FileAccessRightList
+        {
+            get { return fileAccessRightList; }
+            set { fileAccessRightList = value; }
+        }
+
+        /// <summary>
+        /// process access right list in string.
+        ///the format is "FileMask|accessFalg;" e.g. "c:\sandbox\*|12356;"
+        /// </summary>
+        public string FileAccessRightString
+        {
+            get 
+            {
+                string fileAccessRightString = string.Empty;
+                foreach (KeyValuePair<string, uint> fileAccessRight in FileAccessRightList)
+                {
+                    fileAccessRightString += fileAccessRight.Key + "|" + fileAccessRight.Value.ToString() + ";";
+                }
+                return fileAccessRightString; 
+            }
+            set 
+            {
+                FileAccessRightList.Clear();
+                string[] fileAccessRights = value.Split(new char[] { ';' });
+                if (fileAccessRights.Length > 0)
+                {
+                    foreach (string fileAccessRight in fileAccessRights)
+                    {
+                        string[] entry = fileAccessRight.Split(new char[] { '|' });
+                        if(entry.Length > 1)
+                        {
+                            string fileNamFilterMask = entry[0];
+                            uint accessFlags = uint.Parse(entry[1]);
+                            FileAccessRightList.Add(fileNamFilterMask, accessFlags);
+                        }
+                    }
+                }
+            }
         }
 
         public override void SendNotification(FilterAPI.MessageSendData messageSend)
@@ -128,6 +164,14 @@ namespace EaseFilter.FilterControl
                     NotifyThreadHandleInfo(this, processEventArgs);
                 }
             }
+            else if (messageSend.FilterCommand == (uint)(uint)FilterAPI.FilterCommand.FILTER_SEND_LOAD_IMAGE_NOTIFICATION)
+            {
+                if (null != NotifyImageWasLoaded)
+                {
+                    processEventArgs.EventName = "NotifyImageWasLoaded";
+                    NotifyImageWasLoaded(this, processEventArgs);
+                }
+            }
             else
             {
                 base.SendNotification(messageSend);
@@ -184,7 +228,7 @@ namespace EaseFilter.FilterControl
 
             if (messageSend.DataBufferLength > 0)
             {
-                GCHandle pinnedPacket = GCHandle.Alloc(messageSend.DataBuffer, GCHandleType.Pinned);
+                GCHandle pinnedPacket = GCHandle.Alloc(DataBuffer, GCHandleType.Pinned);
                 FilterAPI.PROCESS_INFO processInfo = (FilterAPI.PROCESS_INFO)Marshal.PtrToStructure(
                     pinnedPacket.AddrOfPinnedObject(), typeof(FilterAPI.PROCESS_INFO));
 
@@ -203,6 +247,13 @@ namespace EaseFilter.FilterControl
                             Description = "ParentPid:" + ParentProcessId + ";CreatingPid:" + CreatingProcessId + ";CreatingThreadId:" + CreatingThreadId
                                 + ";FileOpenNameAvailable:" + FileOpenNameAvailable + ";CommandLine:" + CommandLine;
 
+                            break;
+                        }
+                    case (uint)FilterAPI.FilterCommand.FILTER_SEND_LOAD_IMAGE_NOTIFICATION:
+                        {
+                            ImageFileName = ProcessName;
+
+                            Description = "The image " + FileName + " was loaded.";
                             break;
                         }
                     case (uint)FilterAPI.FilterCommand.FILTER_SEND_PROCESS_HANDLE_INFO:
@@ -260,7 +311,8 @@ namespace EaseFilter.FilterControl
         /// The command that is used to execute the process.
         /// </summary>
         public string CommandLine { get; set; }
-     
+      
+
     }
 
 
