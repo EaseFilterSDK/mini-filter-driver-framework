@@ -325,6 +325,8 @@
             // checkBox_DisableDir
             // 
             this.checkBox_DisableDir.AutoSize = true;
+            this.checkBox_DisableDir.Checked = true;
+            this.checkBox_DisableDir.CheckState = System.Windows.Forms.CheckState.Checked;
             this.checkBox_DisableDir.Location = new System.Drawing.Point(13, 219);
             this.checkBox_DisableDir.Name = "checkBox_DisableDir";
             this.checkBox_DisableDir.Size = new System.Drawing.Size(155, 17);
@@ -425,6 +427,7 @@
             // 
             this.listView_FilterRules.Dock = System.Windows.Forms.DockStyle.Fill;
             this.listView_FilterRules.FullRowSelect = true;
+            this.listView_FilterRules.HideSelection = false;
             this.listView_FilterRules.Location = new System.Drawing.Point(3, 16);
             this.listView_FilterRules.Name = "listView_FilterRules";
             this.listView_FilterRules.Size = new System.Drawing.Size(566, 148);

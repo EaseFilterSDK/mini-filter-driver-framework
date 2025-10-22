@@ -151,6 +151,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="registry-icon.ico" />
+    <None Include="Resources\about.png" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CommonObjects\CommonObjects.csproj">

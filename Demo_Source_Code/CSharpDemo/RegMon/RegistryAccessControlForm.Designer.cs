@@ -35,6 +35,8 @@
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.listView_FilterRules = new System.Windows.Forms.ListView();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.textBox_ExcludeKeyNames = new System.Windows.Forms.TextBox();
+            this.label6 = new System.Windows.Forms.Label();
             this.label20 = new System.Windows.Forms.Label();
             this.label13 = new System.Windows.Forms.Label();
             this.textBox_ExcludeUserNames = new System.Windows.Forms.TextBox();
@@ -59,8 +61,6 @@
             this.label17 = new System.Windows.Forms.Label();
             this.button_SelectRegistryAccessFlags = new System.Windows.Forms.Button();
             this.textBox_ProcessName = new System.Windows.Forms.TextBox();
-            this.textBox_ExcludeKeyNames = new System.Windows.Forms.TextBox();
-            this.label6 = new System.Windows.Forms.Label();
             this.groupBox_AccessControl.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -70,20 +70,19 @@
             // 
             this.groupBox_AccessControl.Controls.Add(this.button_Apply);
             this.groupBox_AccessControl.Controls.Add(this.button_DeleteFilter);
-            this.groupBox_AccessControl.Controls.Add(this.button_AddFilter);
             this.groupBox_AccessControl.Controls.Add(this.groupBox1);
             this.groupBox_AccessControl.Controls.Add(this.groupBox2);
             this.groupBox_AccessControl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox_AccessControl.Location = new System.Drawing.Point(0, 0);
             this.groupBox_AccessControl.Name = "groupBox_AccessControl";
-            this.groupBox_AccessControl.Size = new System.Drawing.Size(546, 541);
+            this.groupBox_AccessControl.Size = new System.Drawing.Size(546, 603);
             this.groupBox_AccessControl.TabIndex = 25;
             this.groupBox_AccessControl.TabStop = false;
             // 
             // button_Apply
             // 
             this.button_Apply.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.button_Apply.Location = new System.Drawing.Point(375, 501);
+            this.button_Apply.Location = new System.Drawing.Point(375, 555);
             this.button_Apply.Name = "button_Apply";
             this.button_Apply.Size = new System.Drawing.Size(138, 23);
             this.button_Apply.TabIndex = 80;
@@ -93,7 +92,7 @@
             // 
             // button_DeleteFilter
             // 
-            this.button_DeleteFilter.Location = new System.Drawing.Point(190, 501);
+            this.button_DeleteFilter.Location = new System.Drawing.Point(17, 555);
             this.button_DeleteFilter.Name = "button_DeleteFilter";
             this.button_DeleteFilter.Size = new System.Drawing.Size(103, 23);
             this.button_DeleteFilter.TabIndex = 79;
@@ -103,18 +102,18 @@
             // 
             // button_AddFilter
             // 
-            this.button_AddFilter.Location = new System.Drawing.Point(6, 501);
+            this.button_AddFilter.Location = new System.Drawing.Point(204, 386);
             this.button_AddFilter.Name = "button_AddFilter";
-            this.button_AddFilter.Size = new System.Drawing.Size(116, 23);
+            this.button_AddFilter.Size = new System.Drawing.Size(241, 23);
             this.button_AddFilter.TabIndex = 78;
-            this.button_AddFilter.Text = "Add New Filter Rule";
+            this.button_AddFilter.Text = "Add or Modify Filter Rule";
             this.button_AddFilter.UseVisualStyleBackColor = true;
             this.button_AddFilter.Click += new System.EventHandler(this.button_AddFilter_Click);
             // 
             // groupBox1
             // 
             this.groupBox1.Controls.Add(this.listView_FilterRules);
-            this.groupBox1.Location = new System.Drawing.Point(6, 396);
+            this.groupBox1.Location = new System.Drawing.Point(6, 450);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(517, 93);
             this.groupBox1.TabIndex = 77;
@@ -138,7 +137,9 @@
             // 
             this.groupBox2.Controls.Add(this.textBox_ExcludeKeyNames);
             this.groupBox2.Controls.Add(this.label6);
+            this.groupBox2.Controls.Add(this.button_AddFilter);
             this.groupBox2.Controls.Add(this.label20);
+            this.groupBox2.Controls.Add(this.button_Info);
             this.groupBox2.Controls.Add(this.label13);
             this.groupBox2.Controls.Add(this.textBox_ExcludeUserNames);
             this.groupBox2.Controls.Add(this.label14);
@@ -150,7 +151,6 @@
             this.groupBox2.Controls.Add(this.radioButton_Name);
             this.groupBox2.Controls.Add(this.radioButton_Pid);
             this.groupBox2.Controls.Add(this.label4);
-            this.groupBox2.Controls.Add(this.button_Info);
             this.groupBox2.Controls.Add(this.label2);
             this.groupBox2.Controls.Add(this.checkBox_isExcludeFilter);
             this.groupBox2.Controls.Add(this.button_SelectRegistryCallbackClass);
@@ -164,10 +164,26 @@
             this.groupBox2.Controls.Add(this.textBox_ProcessName);
             this.groupBox2.Location = new System.Drawing.Point(6, 19);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(517, 371);
+            this.groupBox2.Size = new System.Drawing.Size(517, 425);
             this.groupBox2.TabIndex = 76;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Add or Edit The Registry Filter Rule Entry";
+            // 
+            // textBox_ExcludeKeyNames
+            // 
+            this.textBox_ExcludeKeyNames.Location = new System.Drawing.Point(203, 65);
+            this.textBox_ExcludeKeyNames.Name = "textBox_ExcludeKeyNames";
+            this.textBox_ExcludeKeyNames.Size = new System.Drawing.Size(242, 20);
+            this.textBox_ExcludeKeyNames.TabIndex = 136;
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(6, 65);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(99, 13);
+            this.label6.TabIndex = 135;
+            this.label6.Text = "Exclude key names";
             // 
             // label20
             // 
@@ -282,7 +298,8 @@
             // 
             // button_Info
             // 
-            this.button_Info.Location = new System.Drawing.Point(465, 343);
+            this.button_Info.Image = global::RegMon.Properties.Resources.about;
+            this.button_Info.Location = new System.Drawing.Point(11, 387);
             this.button_Info.Name = "button_Info";
             this.button_Info.Size = new System.Drawing.Size(41, 20);
             this.button_Info.TabIndex = 92;
@@ -391,27 +408,11 @@
             this.textBox_ProcessName.TabIndex = 77;
             this.textBox_ProcessName.Text = "*";
             // 
-            // textBox_ExcludeKeyNames
-            // 
-            this.textBox_ExcludeKeyNames.Location = new System.Drawing.Point(203, 65);
-            this.textBox_ExcludeKeyNames.Name = "textBox_ExcludeKeyNames";
-            this.textBox_ExcludeKeyNames.Size = new System.Drawing.Size(242, 20);
-            this.textBox_ExcludeKeyNames.TabIndex = 136;
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(6, 65);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(99, 13);
-            this.label6.TabIndex = 135;
-            this.label6.Text = "Exclude key names";
-            // 
             // RegistryAccessControlForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(546, 541);
+            this.ClientSize = new System.Drawing.Size(546, 603);
             this.Controls.Add(this.groupBox_AccessControl);
             this.Name = "RegistryAccessControlForm";
             this.Text = "Registry Access Control Settings";

@@ -46,7 +46,7 @@ namespace AutoEncryptDemo
             {
                 dateTimePicker_ExpireDate.Value = DateTime.FromFileTime(DRMServer.dRMInfo.ExpireTime);
                 dateTimePicker_ExpireTime.Value = DateTime.FromFileTime(DRMServer.dRMInfo.ExpireTime);
-                textBox_authorizedProcessNames.Text = DRMServer.dRMInfo.AuthorizedProcessNames;
+                textBox_AuthorizedProcessNames.Text = DRMServer.dRMInfo.AuthorizedProcessNames;
                 textBox_UnauthorizedProcessNames.Text = DRMServer.dRMInfo.UnauthorizedProcessNames;
                 textBox_AuthorizedUserNames.Text = DRMServer.dRMInfo.AuthorizedUserNames;
                 textBox_UnauthorizedUserNames.Text = DRMServer.dRMInfo.UnauthorizedUserNames;
@@ -59,12 +59,12 @@ namespace AutoEncryptDemo
         }
       
         private void button_ApplySettings_Click(object sender, EventArgs e)
-        {
+        {           
             try
             {
                 DRMInfo dRMInfo = new DRMInfo();
                 DRMServer.embedDRMToFile = radioButton_EmbedDRM.Checked;
-                dRMInfo.AuthorizedProcessNames = textBox_authorizedProcessNames.Text.Trim().ToLower();
+                dRMInfo.AuthorizedProcessNames = textBox_AuthorizedProcessNames.Text.Trim().ToLower();
                 dRMInfo.UnauthorizedProcessNames = textBox_UnauthorizedProcessNames.Text.Trim().ToLower();
                 dRMInfo.AuthorizedUserNames = textBox_AuthorizedUserNames.Text.Trim().ToLower();
                 dRMInfo.UnauthorizedUserNames = textBox_UnauthorizedUserNames.Text.Trim().ToLower();
@@ -87,6 +87,15 @@ namespace AutoEncryptDemo
         private void button_GetComputerId_Click(object sender, EventArgs e)
         {
             textBox_ComputerId.Text = DRMServer.GetComputerId();
+        }
+
+        private void button_help_Click(object sender, EventArgs e)
+        {
+            MessageBoxHelper.PrepToCenterMessageBoxOnForm(this);
+            string helpInfo = "1.Embed DRM into the encrypted file: The Digital Rights Management (DRM) policies will be embedded in the header of the encrypted file.\r\n\r\n";
+            helpInfo += "2.DRM data stored on the server: Access rights can be granted or revoked anytime, from anywhere, through the server settings.\r\n";
+
+            MessageBox.Show(helpInfo, "DRM settings", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
     }
 }

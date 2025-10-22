@@ -13,7 +13,7 @@
 
 //Purchase a license key with the link: http://www.EaseFilter.com/Order.htm
 //Email us to request a trial key: info@EaseFilter.com //free email is not accepted.
-#define	registerKey "*******************************************************"
+#define	registerKey "****************************************************"
 
 #define MESSAGE_SEND_VERIFICATION_NUMBER	0xFF000001
 #define DATA_BUFFER_EX_VERIFICATION_NUMBER  0xABcdFE33
@@ -1257,10 +1257,6 @@ typedef enum _BooleanConfig
     /// if it is true it will set the userName and processName for the message_send_data_structure.
     /// </summary>
     ENABLE_SET_USER_PROCESS_NAME = 0x00200000,
-    /// <summary>
-    /// if it is true it will set the FILE_ATTRIBUTE_ENCRYPTED to the encrypted file.
-    /// </summary>
-    ENABLE_SET_FILE_ATTRIBUTE_ENCRYPTED = 0x00400000,
 
 } BooleanConfig;
 

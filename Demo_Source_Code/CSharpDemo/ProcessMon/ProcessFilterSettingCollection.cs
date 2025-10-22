@@ -16,6 +16,7 @@ namespace ProcessMon
     {
         public ProcessFilterSettingCollection()
         {
+            this.StartPosition = FormStartPosition.CenterParent;
             InitializeComponent();
             InitListView();
         }

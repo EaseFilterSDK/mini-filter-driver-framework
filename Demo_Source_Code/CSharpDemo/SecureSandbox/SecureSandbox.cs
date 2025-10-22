@@ -33,29 +33,15 @@ using EaseFilter.CommonObjects;
 
 namespace SecureSandbox
 {
+    
     public partial class SecureSandbox : Form
     {
-        /// <summary>
-        /// File filter is the access control setting for the specific files. 
-        /// 
-        /// for example: set file filter mask c:\test\*, you can set the access rights to the files in c:\test.
-        /// you also can add the specific process or user access rights to the files in c:\test
-        /// </summary>
+
+        //Dictionary<string, Sandbox> sandBoxList = new Dictionary<string, Sandbox>();
+        //Sandbox selectedSandbox = null;
         FileFilter selectedFileFilter = null;
-
-        /// <summary>
-        /// Process filter is the access control of the process, set the file access rights to this process.
-        /// 
-        /// for example: set the process filter mask: c:\test\*.exe, you can control the processes which were launched from c:\test, set the file access rights
-        /// to this process, not allow the process to change the files in c:\Windows or other sensitive files.
-        /// </summary>
         ProcessFilter selectedProcessFilter = null;
-
-        /// <summary>
-        /// Registry filter is the access control of the registry, allow the process to access or change the registry.
-        /// </summary>
         RegistryFilter selectedRegistryFilter = null;
-       
 
         EncryptEventHandler encryptEventHandler = new EncryptEventHandler();
         FilterControl filterControl = new FilterControl();    
@@ -153,18 +139,9 @@ namespace SecureSandbox
 
         private void SecureSandbox_FormClosed(object sender, FormClosedEventArgs e)
         {
-            MessageBoxHelper.PrepToCenterMessageBoxOnForm(this);
-            if (MessageBox.Show("Do you want to minimize to system tray?", "Close", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes)
-            {
-
-            }
-            else
-            {
-                FilterAPI.ResetConfigData();
-                GlobalConfig.Stop();
-                filterControl.StopFilter();
-                Application.Exit();
-            }
+            GlobalConfig.Stop();
+            filterControl.StopFilter();
+            Application.Exit();
         }
 
 
@@ -186,18 +163,20 @@ namespace SecureSandbox
 
         void SetSelectedFilterRule(FileFilter fileFilter)
         {
+
             selectedFileFilter = fileFilter;
             selectedProcessFilter = GlobalConfig.GetProcessFilter("", selectedFileFilter.IncludeFileFilterMask);
 
             if (null == selectedProcessFilter)
             {
-                selectedProcessFilter = new ProcessFilter("");
+                selectedProcessFilter = new ProcessFilter(fileFilter.IncludeFileFilterMask);
             }
 
             selectedRegistryFilter = GlobalConfig.GetRegistryFilter("", selectedFileFilter.IncludeFileFilterMask);
             if (null == selectedRegistryFilter)
             {
                 selectedRegistryFilter = new  RegistryFilter();
+                selectedRegistryFilter.ProcessNameFilterMask = fileFilter.IncludeFileFilterMask;
             }
 
         }
@@ -237,33 +216,33 @@ namespace SecureSandbox
 
         void InitNewFilterRule()
         {
-            selectedFileFilter = new FileFilter("*");
-            selectedProcessFilter = new ProcessFilter("*");
+            selectedFileFilter = new FileFilter(textBox_SandboxFolder.Text.Trim() + "\\*");
+            selectedProcessFilter = new ProcessFilter(selectedFileFilter.IncludeFileFilterMask);
             selectedRegistryFilter = new RegistryFilter();
 
-            textBox_SandboxFolder.Text = "c:\\newSandboxFolder";
-
             selectedFileFilter.IncludeFileFilterMask = textBox_SandboxFolder.Text.Trim() + "\\*";
-            selectedProcessFilter.ProcessNameFilterMask = textBox_SandboxFolder.Text.Trim() + "\\*";
-            selectedRegistryFilter.ProcessNameFilterMask = textBox_SandboxFolder.Text.Trim() + "\\*";
+            selectedProcessFilter.ProcessNameFilterMask = selectedFileFilter.IncludeFileFilterMask;
+            selectedRegistryFilter.ProcessNameFilterMask = selectedFileFilter.IncludeFileFilterMask;
+
+            //by default the sandbox folder doesn't allow being read/write by processes, if the processes want to access the sandbox, it needs to add process rights.
+            selectedFileFilter.AccessFlags = (FilterAPI.AccessFlag)(FilterAPI.ALLOW_MAX_RIGHT_ACCESS);
+            //Allow the notepad.exe to read the file in sandbox with max right.
+            //selectedFileFilter.AddProcessNameAccessRight("notepad.exe" ,((uint)FilterAPI.ALLOW_MAX_RIGHT_ACCESS));
 
             //by default allow the binaries inside the sandbox to read/write the registry                
-            selectedRegistryFilter.ControlFlag = FilterAPI.MAX_REGITRY_ACCESS_FLAG;
+            selectedRegistryFilter.ControlFlag = FilterAPI.MAX_REGISTRY_ACCESS_FLAG;
 
             selectedProcessFilter.ProcessId = selectedRegistryFilter.ProcessId = 0;          
-            //by default not allow the executable 
-            selectedProcessFilter.ControlFlag = (uint)FilterAPI.ProcessControlFlag.DENY_NEW_PROCESS_CREATION;
+            //allow the executable binary to launch with below setting.
+            //selectedProcessFilter.ControlFlag = (uint)FilterAPI.ProcessControlFlag.DENY_NEW_PROCESS_CREATION;
             //set the maximum access rights to the sandbox for all binaries inside the sandbox 
-            selectedProcessFilter.FileAccessRightString = textBox_SandboxFolder.Text + "|" + FilterAPI.ALLOW_MAX_RIGHT_ACCESS.ToString() + ";";
-            //allow the windows dll or exe to be read by the process, or it can't be loaded.
-            selectedProcessFilter.FileAccessRightString += "c:\\windows\\*|" + FilterAPI.ALLOW_FILE_READ_ACCESS + ";";
-            //No access rights to all other folders by default.
-            selectedProcessFilter.FileAccessRightString += "*|" + ((uint)FilterAPI.AccessFlag.LEAST_ACCESS_FLAG).ToString() + ";";
-            
-            //by default the sandbox folder doesn't allow being read/write by processes, if the processes want to access the sandbox, it needs to add process rights.
-            selectedFileFilter.AccessFlags = (FilterAPI.AccessFlag)(FilterAPI.ALLOW_MAX_RIGHT_ACCESS|(uint)FilterAPI.AccessFlag.ENABLE_FILE_ENCRYPTION_RULE);
-            //Not allow the explorer.exe to read the encrypted files, when you copy the encrypted files from exploer, the file can stay encrypted.
-            selectedFileFilter.ProcessNameAccessRightString = "explorer.exe|" + ((uint)FilterAPI.ALLOW_MAX_RIGHT_ACCESS &~(uint)(FilterAPI.AccessFlag.ALLOW_READ_ENCRYPTED_FILES)).ToString() + "||;";
+            //selectedProcessFilter.FileAccessRightList.Add(textBox_SandboxFolder.Text.Trim() + "\\*", FilterAPI.ALLOW_MAX_RIGHT_ACCESS);
+            ////allow the windows dll or exe to be read by the process, or it can't be loaded.
+            //selectedProcessFilter.FileAccessRightList.Add("c:\\windows\\*", FilterAPI.ALLOW_FILE_READ_ACCESS);
+            ////No access rights to all other folders by default.
+            //selectedProcessFilter.FileAccessRightList.Add("*",((uint)FilterAPI.AccessFlag.LEAST_ACCESS_FLAG));
+                       
+            GetSandboxSetting();
         }
 
         private void InitSandbox()
@@ -278,6 +257,8 @@ namespace SecureSandbox
                 {
                     textBox_SandboxFolder.Text = selectedFileFilter.IncludeFileFilterMask.Replace("\\*","");
                 }
+
+                textBox_AccessFlag.Text = ((uint)selectedFileFilter.AccessFlags).ToString();
 
                 uint fileAccessFlag = (uint)selectedFileFilter.AccessFlags;
                 uint processControlFlag = selectedProcessFilter.ControlFlag;
@@ -371,7 +352,7 @@ namespace SecureSandbox
             try
             {
                 FilterAPI.AccessFlag fileAccessFlag = selectedFileFilter.AccessFlags;
-                uint processRegistryControlFlag = FilterAPI.MAX_REGITRY_ACCESS_FLAG;
+                uint processRegistryControlFlag = FilterAPI.MAX_REGISTRY_ACCESS_FLAG;
 
                 if (textBox_SandboxFolder.Text.Trim().Length == 0)
                 {
@@ -411,6 +392,15 @@ namespace SecureSandbox
 
                 selectedRegistryFilter.ControlFlag = processRegistryControlFlag;
 
+                if(checkBox_AllowExecute.Checked)
+                {
+                    selectedProcessFilter.ControlFlag &= ~((uint)FilterAPI.ProcessControlFlag.DENY_NEW_PROCESS_CREATION);
+                }
+                else
+                {
+                    selectedProcessFilter.ControlFlag = ((uint)FilterAPI.ProcessControlFlag.DENY_NEW_PROCESS_CREATION);
+                }
+
                 if (checkBox_EnableEncryption.Checked)
                 {
                     fileAccessFlag |= FilterAPI.AccessFlag.ENABLE_FILE_ENCRYPTION_RULE;
@@ -434,24 +424,23 @@ namespace SecureSandbox
 
         private void button_AccessFlag_Click(object sender, EventArgs e)
         {
-            if (selectedProcessFilter.ProcessNameFilterMask != textBox_SandboxFolder.Text)
-            {
-                InitNewFilterRule();
-            }
-
-            OptionForm optionForm = new OptionForm(OptionForm.OptionType.Access_Flag, selectedFileFilter.AccessFlags.ToString());
+            uint accessFlag = (uint)selectedFileFilter.AccessFlags;
+            OptionForm optionForm = new OptionForm(OptionForm.OptionType.Access_Flag, textBox_AccessFlag.Text);
 
             if (optionForm.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                if (optionForm.AccessFlags > 0)
+                accessFlag = optionForm.AccessFlags;
+                if (accessFlag > 0)
                 {
-                    selectedFileFilter.AccessFlags = (FilterAPI.AccessFlag)optionForm.AccessFlags;
+                    textBox_AccessFlag.Text = accessFlag.ToString();
                 }
+
+                selectedFileFilter.AccessFlags = (FilterAPI.AccessFlag)accessFlag;
             }
 
             InitSandbox();
         }
-     
+
 
         private void button_SelectFolder_Click(object sender, EventArgs e)
         {
@@ -479,13 +468,6 @@ namespace SecureSandbox
                 return;
             }
 
-            if (selectedProcessFilter.ProcessNameFilterMask != textBox_SandboxFolder.Text)
-            {
-                InitNewFilterRule();
-            }
-
-            selectedProcessFilter.ProcessNameFilterMask = textBox_SandboxFolder.Text;          
-
             ProcessFileAccessRights processFileAccessRights = new ProcessFileAccessRights(selectedProcessFilter);
             processFileAccessRights.ShowDialog();
         }
@@ -507,9 +489,6 @@ namespace SecureSandbox
             Form_ProcessRights processRights = new Form_ProcessRights(ref selectedFileFilter);
             if (processRights.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-               selectedFileFilter = processRights.currentFileFilter;
-               GlobalConfig.AddFileFilter(selectedFileFilter);
-               InitListView();
             }
             
         }
@@ -590,6 +569,8 @@ namespace SecureSandbox
             {
                 selectedFileFilter.AccessFlags &= (FilterAPI.AccessFlag)(~FilterAPI.ALLOW_FILE_READ_ACCESS);
             }
+
+            textBox_AccessFlag.Text = selectedFileFilter.AccessFlags.ToString();
         }
 
         private void checkBox_AllowSandboxChange_CheckedChanged(object sender, EventArgs e)
@@ -602,6 +583,8 @@ namespace SecureSandbox
             {
                 selectedFileFilter.AccessFlags &= (FilterAPI.AccessFlag)~FilterAPI.ALLOW_FILE_CHANGE_ACCESS;
             }
+
+            textBox_AccessFlag.Text = selectedFileFilter.AccessFlags.ToString();
         }
 
         private void checkBox_AllowFolderBrowsing_CheckedChanged(object sender, EventArgs e)
@@ -614,6 +597,8 @@ namespace SecureSandbox
             {
                 selectedFileFilter.AccessFlags &= ~FilterAPI.AccessFlag.ALLOW_DIRECTORY_LIST_ACCESS;
             }
+
+            textBox_AccessFlag.Text = selectedFileFilter.AccessFlags.ToString();
         }
 
 
@@ -627,6 +612,8 @@ namespace SecureSandbox
             {
                 selectedFileFilter.AccessFlags &= ~FilterAPI.AccessFlag.ALLOW_READ_ENCRYPTED_FILES;
             }
+
+            textBox_AccessFlag.Text = selectedFileFilter.AccessFlags.ToString();
         }
 
         private void checkBox_EnableEncryption_CheckedChanged(object sender, EventArgs e)
@@ -639,6 +626,8 @@ namespace SecureSandbox
             {
                 selectedFileFilter.AccessFlags &= ~FilterAPI.AccessFlag.ENABLE_FILE_ENCRYPTION_RULE;
             }
+
+            textBox_AccessFlag.Text = selectedFileFilter.AccessFlags.ToString();
         }
 
         private void checkBox_AllowExecute_CheckedChanged(object sender, EventArgs e)
@@ -692,9 +681,6 @@ namespace SecureSandbox
             MessageBox.Show(information, "How to use sandbox?", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
-        private void toolStripButton_ApplyTrialKey_Click(object sender, EventArgs e)
-        {
-        }
-            
+     
     }
 }

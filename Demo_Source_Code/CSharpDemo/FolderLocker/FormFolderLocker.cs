@@ -116,11 +116,6 @@ namespace EaseFilter.FolderLocker
                 string folderName = fileFilter.IncludeFileFilterMask.Replace("\\*","");
                 uint accessFlags = (uint)fileFilter.AccessFlags;
 
-                if (!string.IsNullOrEmpty(GlobalConfig.ShareFolder) && folderName.StartsWith(GlobalConfig.ShareFolder))
-                {
-                    continue;
-                }
-
                 string[] listEntry = new string[listView_LockFolders.Columns.Count];
                 int index = 0;
                 listEntry[index++] = folderName;
@@ -338,10 +333,7 @@ namespace EaseFilter.FolderLocker
             toolStripButton_Stop.Enabled = false;
         }
 
-        private void toolStripButton_ApplyTrialKey_Click(object sender, EventArgs e)
-        {
-        }
-
+   
        
     }
 }

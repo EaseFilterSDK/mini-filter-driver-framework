@@ -76,7 +76,6 @@
             this.textBox_FileName.Name = "textBox_FileName";
             this.textBox_FileName.Size = new System.Drawing.Size(242, 20);
             this.textBox_FileName.TabIndex = 2;
-            this.textBox_FileName.Text = "c:\\test\\test.txt";
             // 
             // groupBox1
             // 
@@ -169,7 +168,6 @@
             this.textBox_TargetName.Name = "textBox_TargetName";
             this.textBox_TargetName.Size = new System.Drawing.Size(242, 20);
             this.textBox_TargetName.TabIndex = 72;
-            this.textBox_TargetName.Text = "c:\\test\\test.txt";
             // 
             // label6
             // 

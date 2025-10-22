@@ -10,8 +10,7 @@ namespace EaseFilter.FilterControl
         {
             if (messageSend.DataBufferLength > 0)
             {
-                TagData = new byte[messageSend.DataBufferLength];
-                Array.Copy(DataBuffer, TagData, messageSend.DataBufferLength);
+                TagData = DataBuffer;
             }
 
             if (messageSend.FilterCommand == (uint)FilterAPI.FilterCommand.FILTER_REPARSE_FILE_CREATE_REQUEST)

@@ -59,6 +59,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RegistryFilter.cs" />
     <Compile Include="ReparseFilter.cs" />
+    <Compile Include="StubFileFilter.cs" />
     <Compile Include="Utils.cs" />
     <Compile Include="WinDataStructures.cs" />
   </ItemGroup>

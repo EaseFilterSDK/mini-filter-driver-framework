@@ -49,7 +49,6 @@
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.getTagDataOfEncryptedFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.applyTrialKeyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.button_DRMInfo = new System.Windows.Forms.Button();
             this.button_DecryptInfo = new System.Windows.Forms.Button();
             this.button_AuthorizedProcessInfo = new System.Windows.Forms.Button();
@@ -213,8 +212,7 @@
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.getTagDataOfEncryptedFileToolStripMenuItem,
-            this.helpToolStripMenuItem,
-            this.applyTrialKeyToolStripMenuItem});
+            this.helpToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(402, 24);
@@ -234,13 +232,6 @@
             this.helpToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
             this.helpToolStripMenuItem.Text = "Help";
             this.helpToolStripMenuItem.Click += new System.EventHandler(this.helpToolStripMenuItem_Click);
-            // 
-            // applyTrialKeyToolStripMenuItem
-            // 
-            this.applyTrialKeyToolStripMenuItem.Name = "applyTrialKeyToolStripMenuItem";
-            this.applyTrialKeyToolStripMenuItem.Size = new System.Drawing.Size(94, 20);
-            this.applyTrialKeyToolStripMenuItem.Text = "Apply trial key";
-            this.applyTrialKeyToolStripMenuItem.Click += new System.EventHandler(this.applyTrialKeyToolStripMenuItem_Click);
             // 
             // button_DRMInfo
             // 
@@ -331,7 +322,6 @@
         private System.Windows.Forms.Button button_DRMSetting;
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem applyTrialKeyToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem getTagDataOfEncryptedFileToolStripMenuItem;
         private System.Windows.Forms.Button button_DRMInfo;
         private System.Windows.Forms.Button button_DecryptInfo;

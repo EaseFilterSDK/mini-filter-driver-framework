@@ -97,9 +97,6 @@ namespace AutoEncryptDemo
 
             //enable the encryption for the filter rule.
             fileFilter.EnableEncryption = true;
-            //It is optional to set the encrypted file attribute,if it was set,
-            //the encrypted attribute will be kept even it was copied out to another folder without the encryption.
-            fileFilter.BooleanConfig |= (uint)FilterAPI.BooleanConfig.ENABLE_SET_FILE_ATTRIBUTE_ENCRYPTED;
 
             //if we enable the encryption key from service, you can authorize the encryption or decryption for every file
             //in the callback function OnFilterRequestEncryptKey.
@@ -266,7 +263,7 @@ namespace AutoEncryptDemo
                     e.EncryptionKey = Utils.GetKeyByPassPhrase(GlobalConfig.MasterPassword, 32);
 
                     //the iv key has to be the same one when you create the new file.
-                    e.IV = Utils.GetIVByPassPhrase(GlobalConfig.MasterPassword); ;
+                    e.IV = Utils.GetIVByPassPhrase(GlobalConfig.MasterPassword); 
 
                     //if you want to block encrypted file being opened, you can return accessdenied status.
                     //e.ReturnStatus = NtStatus.Status.AccessDenied;
@@ -322,6 +319,8 @@ namespace AutoEncryptDemo
                 textBox_AuthorizedUsersForEncryptFolder.Enabled = false;
                 textBox_AuthorizedProcessesForDecryptFolder.Enabled = false;
                 button_DRMSetting.Enabled = true;
+
+
             }
             else
             {
@@ -401,7 +400,7 @@ namespace AutoEncryptDemo
 
         private void button_DecryptInfo_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("To setup the decryption folder, it won't encrypt the new file, it only decrypts the encrypted files.");
+            MessageBox.Show("Set up the encryption/decryption folder. Encrypted files can only be copied to this folder via Windows Explorer, as the explorer.exe process is excluded from the filter rule.");
         }
     }
 }

@@ -73,17 +73,10 @@ namespace AutoFileCryptTool
             }
 
             listView_AutoEncryptFolders.Items.Clear();
-            listView_EncryptOnReadFolders.Items.Clear();
-
             if (numberOfAutoEncryptFolders == 0)
             {
                 AddDefaultItemsToAutoFolderList();
 
-            }
-
-            if (numberOfEncryptOnReadFolders == 0)
-            {
-                AddDefaultItemsToEncryptOnReadList();
             }
 
             foreach (FileFilter fileFilter in GlobalConfig.FileFilters.Values)
@@ -100,7 +93,6 @@ namespace AutoFileCryptTool
 
                     ListViewItem item = new ListViewItem(folderName);
                     item.ImageIndex = 0;
-                    listView_EncryptOnReadFolders.Items.Add(item);
                 }
                 else
                 {
@@ -176,9 +168,6 @@ namespace AutoFileCryptTool
             autoEncrytFilter.EncryptionPassPhrase = passPhrase;
             //enable the encryption for the filter rule.
             autoEncrytFilter.EnableEncryption = true;
-            //It is optional to set the encrypted file attribute,if it was set,
-            //the encrypted attribute will be kept even it was copied out to another folder without the encryption.
-            autoEncrytFilter.BooleanConfig |= (uint)FilterAPI.BooleanConfig.ENABLE_SET_FILE_ATTRIBUTE_ENCRYPTED;
 
             BlackListForm blackListForm = new BlackListForm();
             if (blackListForm.ShowDialog() == System.Windows.Forms.DialogResult.OK)
@@ -321,12 +310,7 @@ namespace AutoFileCryptTool
                 byte[] iv = new byte[16];
                 uint ivSize = (uint)iv.Length;
 
-                if(checkBox_DecryptFileOnTheGo.Checked)
-                {
-                    iv = Utils.GetIVByPassPhrase(GlobalConfig.MasterPassword);
-                    key = Utils.GetKeyByPassPhrase(GlobalConfig.MasterPassword, 32);
-                }
-                else if (!FilterAPI.GetAESIV(fileName, ref ivSize, iv))
+               if (!FilterAPI.GetAESIV(fileName, ref ivSize, iv))
                 {
                     string lastError = "GetAESIV from encrypted file " + fileName + " failed with error:" + FilterAPI.GetLastErrorMessage();
                     ShowMessage(lastError, MessageBoxIcon.Error);
@@ -413,8 +397,6 @@ namespace AutoFileCryptTool
 
             button_Start.Enabled = false;
             button_Stop.Enabled = true;
-            button_StartService.Enabled = false;
-            button_StopService.Enabled = true;
 
         }
 
@@ -422,9 +404,6 @@ namespace AutoFileCryptTool
         {
             button_Start.Enabled = true;
             button_Stop.Enabled = false;
-            button_StartService.Enabled = true;
-            button_StopService.Enabled = false;
-
 
             filterControl.StopFilter();
         }
@@ -476,22 +455,6 @@ namespace AutoFileCryptTool
             {
                 string folderName = fdDiaglog.SelectedPath;
                 AddEncryptOnReadFolder(folderName);
-            }
-
-            InitializeFileCrypt();
-
-            string lastError = string.Empty;
-
-            SendConfigSettingsToFilter();
-        }
-
-
-        private void button_RemoveEncryptOnReadFolder_Click(object sender, EventArgs e)
-        {
-            foreach (ListViewItem item in listView_EncryptOnReadFolders.SelectedItems)
-            {
-                string folderName = item.Text + "\\*";
-                GlobalConfig.RemoveFileFilter(folderName);
             }
 
             InitializeFileCrypt();

@@ -587,29 +587,7 @@ namespace EaseFilter.FilterControl
                 }
             }
         }
-
-        /// <summary>
-        /// allow the process to read the encrypted file when it is true, or the file can't be read.
-        /// </summary>
-        public bool EnableReadEncryptedFileData
-        {
-            get
-            {
-                return ((accessFlags & (uint)FilterAPI.AccessFlag.ALLOW_READ_ENCRYPTED_FILES) > 0);
-            }
-
-            set
-            {
-                if (value)
-                {
-                    accessFlags |= (uint)FilterAPI.AccessFlag.ALLOW_READ_ENCRYPTED_FILES;
-                }
-                else
-                {
-                    accessFlags &= ~(uint)FilterAPI.AccessFlag.ALLOW_READ_ENCRYPTED_FILES;
-                }
-            }
-        }
+      
 
         /// <summary>
         /// allow the process to write the file when it is true, or the file can't be written.

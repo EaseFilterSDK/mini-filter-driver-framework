@@ -545,7 +545,7 @@ namespace EaseFilter.FilterControl
 
             try
             {
-                FilterAPI.MessageReplyData messageReply = (FilterAPI.MessageReplyData)Marshal.PtrToStructure(replyDataPtr, typeof(FilterAPI.MessageReplyData));
+                FilterAPI.MessageReplyData messageReply = (FilterAPI.MessageReplyData)Marshal.PtrToStructure(replyDataPtr, typeof(FilterAPI.MessageReplyData));              
                 if (messageSend.FilterCommand == (uint)FilterAPI.FilterCommand.FILTER_REQUEST_ENCRYPTION_IV_AND_KEY
                     || messageSend.FilterCommand == (uint)FilterAPI.FilterCommand.FILTER_REQUEST_ENCRYPTION_IV_AND_KEY_AND_TAGDATA)
                 {
@@ -555,6 +555,11 @@ namespace EaseFilter.FilterControl
                         || messageSend.FilterCommand == (uint)FilterAPI.FilterCommand.FILTER_REPARSE_FILE_OPEN_REQUEST)
                 {
                     retVal = ReparseFilterHandler(messageSend, ref messageReply);
+                }
+                else if (messageSend.FilterCommand == (uint)FilterAPI.FilterCommand.MESSAGE_TYPE_RESTORE_FILE_TO_CACHE
+                        || messageSend.FilterCommand == (uint)FilterAPI.FilterCommand.MESSAGE_TYPE_RESTORE_BLOCK_OR_FILE)
+                {
+                    return StubFileHandler(messageSend, replyDataPtr);
                 }
                 else
                 {
@@ -684,6 +689,8 @@ namespace EaseFilter.FilterControl
                 IsRemoteAccess = true;
                 RemoteIp = Encoding.Unicode.GetString(messageSend.RemoteIP);
             }
+
+            ReturnStatus = NtStatus.Status.Success;
 
         }
 
@@ -957,6 +964,14 @@ namespace EaseFilter.FilterControl
                 }
             }
 
+            if (((uint)FilterAPI.MessageType.PRE_CREATE == messageSend.MessageType))
+            {
+                if ((messageSend.Disposition & (uint)WinData.Disposition.FILE_OPEN) == 0 )
+                {
+                    isOpenWithCreateOrOverWriteAccess = true;
+                }
+            }
+
             if ((messageSend.InfoClass & (uint)FilterAPI.FILE_COPY_FLAG.CREATE_FLAG_FILE_SOURCE_OPEN_FOR_COPY) > 0)
             {
                 isFileCopySource = true;
@@ -981,6 +996,10 @@ namespace EaseFilter.FilterControl
         /// It indicates that the new file was created if it is true.
         /// </summary>
         public bool isNewFileCreated { get; set; }
+        /// <summary>
+        /// It indicates that the new file is going to be created if it is true.
+        /// </summary>
+        public bool isOpenWithCreateOrOverWriteAccess { get; set; }
         /// <summary>
         /// It indicates that this is file copy source file open.
         /// </summary>

@@ -79,16 +79,35 @@ namespace EaseFilter.CommonObjects
         static bool outputMessageToConsole = true;
         static bool enableNotification = false;
 
-        static string protectFolder = "c:\\EaseFilter\\protectFolder";
-        static string protectFolderWhiteList = "*";
-        static string protectFolderBlackList = "explorer.exe";
-        static string shareFolder = "c:\\EaseFilter\\shareFolder";
-        static string shareFolderWhiteList = "notepad.exe;wordpad.exe";
-        static string shareFolderBlackList = "explorer.exe";
-        static string drInfoFolder = "c:\\EaseFilter\\DRInfoFolder";
-        static string dropFolder = "c:\\EaseFilter\\dropFolder";
-        static bool storeSharedFileMetaDataInServer = false;
-        static string shareFileExt = ".psf";
+        static string autoEncryptFolder = AssemblyPath + "\\protectFolder";
+        static string authorizedProcessNames = "*";
+        static string unAuthorizedProcessNames = "explorer.exe";
+        static string authorizedUserNames = "*";
+        static string unAuthorizedUserNames = "";
+        static long shareFileExpireTime = DateTime.Now.AddDays(2).ToFileTimeUtc();
+        //the folder to drop the shared encrypted files
+        static string dropFolder = AssemblyPath + "\\dropFolder";
+        //the folder to store the local DRM data
+        static string drmFolder = AssemblyPath + "\\drmFolder";
+        //store the DRM data in server if it is true.
+        static bool isDRMDataInLocal = true;
+
+        /// <summary>
+        /// rehydrate the stub file on the first read if it is true.
+        /// </summary>
+        static bool rehydrateFileOnFirstRead = false;
+        /// <summary>
+        /// download the whole file to the cache folder, and return the cache file name to the filter driver.
+        /// </summary>
+        static bool returnCacheFileName = false;
+        /// <summary>
+        /// return the requested block of data if it is true.
+        /// </summary>
+        static bool returnBlockData = true;
+        //the folder to store the test source files
+        static string testSourceFolder = AssemblyPath + "\\testSourceFolder";
+        //the folder to store the test stub files
+        static string testStubFolder = AssemblyPath + "\\testStubFolder";
 
         static string configFileName = ConfigSetting.GetFilePath();
 
@@ -163,18 +182,23 @@ namespace EaseFilter.CommonObjects
                 excludedUsers = ConfigSetting.Get("excludedUsers", excludedUsers);
 
                 //setting for secure file sharing
-                protectFolder = ConfigSetting.Get("protectFolder", protectFolder);
-                protectFolderWhiteList = ConfigSetting.Get("protectFolderWhiteList", protectFolderWhiteList);
-                protectFolderBlackList = ConfigSetting.Get("protectFolderBlackList", protectFolderBlackList);
-                drInfoFolder = ConfigSetting.Get("drInfoFolder", drInfoFolder);
-                shareFolder = ConfigSetting.Get("shareFolder", shareFolder);
+                autoEncryptFolder = ConfigSetting.Get("autoEncryptFolder", autoEncryptFolder);
+                authorizedProcessNames = ConfigSetting.Get("authorizedProcessNames", authorizedProcessNames);
+                unAuthorizedProcessNames = ConfigSetting.Get("unAuthorizedProcessNames", unAuthorizedProcessNames);
+                authorizedUserNames = ConfigSetting.Get("authorizedUserNames", authorizedUserNames);
+                unAuthorizedUserNames = ConfigSetting.Get("unAuthorizedUserNames", unAuthorizedUserNames);
+                shareFileExpireTime = ConfigSetting.Get("shareFileExpireTime", shareFileExpireTime);
                 dropFolder = ConfigSetting.Get("dropFolder", dropFolder);
-                shareFolderWhiteList = ConfigSetting.Get("shareFolderWhiteList", shareFolderWhiteList);
-                shareFolderBlackList = ConfigSetting.Get("shareFolderBlackList", shareFolderBlackList);
-                storeSharedFileMetaDataInServer = ConfigSetting.Get("storeSharedFileMetaDataInServer", storeSharedFileMetaDataInServer);
-                shareFileExt = ConfigSetting.Get("shareFileExt", shareFileExt);
+                drmFolder = ConfigSetting.Get("drmFolder", drmFolder);
+                isDRMDataInLocal = ConfigSetting.Get("isDRMDataInLocal", isDRMDataInLocal);
 
                 volumeControlFlag = ConfigSetting.Get("volumeControlFlag", volumeControlFlag);
+
+                rehydrateFileOnFirstRead = ConfigSetting.Get("rehydrateFileOnFirstRead", rehydrateFileOnFirstRead);
+                returnCacheFileName = ConfigSetting.Get("returnCacheFileName", returnCacheFileName);
+                returnBlockData = ConfigSetting.Get("returnBlockData", returnBlockData);
+                testSourceFolder = ConfigSetting.Get("testSourceFolder", testSourceFolder);
+                testStubFolder = ConfigSetting.Get("testStubFolder", testStubFolder);
 
                 licenseKey = ConfigSetting.Get("licenseKey", licenseKey);
                 expireTime = ConfigSetting.Get("expireTime", expireTime);
@@ -518,7 +542,10 @@ namespace EaseFilter.CommonObjects
 
         public static string AccountName
         {
-            get { return accountName; }
+            get
+            { 
+                return accountName; 
+            }
             set
             {
                 accountName = value;
@@ -593,53 +620,63 @@ namespace EaseFilter.CommonObjects
             }
         }
 
-        public static string ProtectFolder
+        public static string AutoEncryptFolder
         {
-            get { return protectFolder; }
+            get { return autoEncryptFolder; }
             set
             {
-                protectFolder = value;
-                ConfigSetting.Set("protectFolder", value.ToString());
+                autoEncryptFolder = value;
+                ConfigSetting.Set("autoEncryptFolder", value.ToString());
             }
         }
 
-        public static string ProtectFolderWhiteList
+        public static string AuthorizedProcessNames
         {
-            get { return protectFolderWhiteList; }
+            get { return authorizedProcessNames; }
             set
             {
-                protectFolderWhiteList = value;
-                ConfigSetting.Set("protectFolderWhiteList", value.ToString());
+                authorizedProcessNames = value;
+                ConfigSetting.Set("authorizedProcessNames", value.ToString());
             }
         }
 
-        public static string ProtectFolderBlackList
+        public static string UnAuthorizedProcessNames
         {
-            get { return protectFolderBlackList; }
+            get { return unAuthorizedProcessNames; }
             set
             {
-                protectFolderBlackList = value;
-                ConfigSetting.Set("protectFolderBlackList", value.ToString());
+                unAuthorizedProcessNames = value;
+                ConfigSetting.Set("unAuthorizedProcessNames", value.ToString());
             }
         }
 
-        public static string DRInfoFolder
+        public static string AuthorizedUserNames
         {
-            get { return drInfoFolder; }
+            get { return authorizedUserNames; }
             set
             {
-                drInfoFolder = value;
-                ConfigSetting.Set("drInfoFolder", value.ToString());
+                authorizedUserNames = value;
+                ConfigSetting.Set("authorizedUserNames", value.ToString());
             }
         }
 
-        public static string ShareFolder
+        public static string UnAuthorizedUserNames
         {
-            get { return shareFolder; }
+            get { return unAuthorizedUserNames; }
             set
             {
-                shareFolder = value;
-                ConfigSetting.Set("shareFolder", value.ToString());
+                unAuthorizedUserNames = value;
+                ConfigSetting.Set("unAuthorizedUserNames", value.ToString());
+            }
+        }
+
+        public static long ShareFileExpireTime
+        {
+            get { return shareFileExpireTime; }
+            set
+            {
+                shareFileExpireTime = value;
+                ConfigSetting.Set("shareFileExpireTime", value.ToString());
             }
         }
 
@@ -657,43 +694,94 @@ namespace EaseFilter.CommonObjects
             }
         }
 
-        public static string ShareFolderWhiteList
+        /// <summary>
+        /// The folder to store the share file DRM data.
+        /// </summary>
+        public static string DRMFolder
         {
-            get { return shareFolderWhiteList; }
+            get { return drmFolder; }
             set
             {
-                shareFolderWhiteList = value;
-                ConfigSetting.Set("shareFolderWhiteList", value.ToString());
+                drmFolder = value;
+                ConfigSetting.Set("drmFolder", value.ToString());
             }
         }
 
-        public static string ShareFolderBlackList
+        /// <summary>
+        /// store the DRM data in server if it is true.
+        /// </summary>
+        public static bool IsDRMDataInLocal
         {
-            get { return shareFolderBlackList; }
+            get { return isDRMDataInLocal; }
             set
             {
-                shareFolderBlackList = value;
-                ConfigSetting.Set("shareFolderBlackList", value.ToString());
+                isDRMDataInLocal = value;
+                ConfigSetting.Set("isDRMDataInLocal", value.ToString());
             }
         }
 
-        public static bool StoreSharedFileMetaDataInServer
+        /// <summary>
+        /// if this flag is true, the stub file will be rehydrated on first read.
+        /// </summary>
+        public static bool RehydrateFileOnFirstRead
         {
-            get { return storeSharedFileMetaDataInServer; }
+            get { return rehydrateFileOnFirstRead; }
             set
             {
-                storeSharedFileMetaDataInServer = value;
-                ConfigSetting.Set("storeSharedFileMetaDataInServer", value.ToString());
+                rehydrateFileOnFirstRead = value;
+                ConfigSetting.Set("rehydrateFileOnFirstRead", value.ToString());
             }
         }
 
-        public static string ShareFileExt
+        /// <summary>
+        /// if this flag is true, the whole cache file name will be returned.
+        /// </summary>
+        public static bool ReturnCacheFileName
         {
-            get { return shareFileExt; }
+            get { return returnCacheFileName; }
             set
             {
-                shareFileExt = value;
-                ConfigSetting.Set("shareFileExt", value.ToString());
+                returnCacheFileName = value;
+                ConfigSetting.Set("returnCacheFileName", value.ToString());
+            }
+        }
+
+        /// <summary>
+        /// if this flag is true, the block of requested data will be returned.
+        /// </summary>
+        public static bool ReturnBlockData
+        {
+            get { return returnBlockData; }
+            set
+            {
+                returnBlockData = value;
+                ConfigSetting.Set("returnBlockData", value.ToString());
+            }
+        }
+
+        /// <summary>
+        /// The folder to store the test source files for stub file filter driver.
+        /// </summary>
+        public static string TestSourceFolder
+        {
+            get { return testSourceFolder; }
+            set
+            {
+                testSourceFolder = value;
+                ConfigSetting.Set("testSourceFolder", value.ToString());
+            }
+        }
+
+        /// <summary>
+        /// The folder to store the test stub files for stub file filter driver.
+        /// </summary>
+        public static string TestStubFolder
+        {
+            get { return testStubFolder; }
+            set
+            {
+                testStubFolder = value;
+                ConfigSetting.Set("testStubFolder", value.ToString());
             }
         }
 
@@ -811,7 +899,7 @@ namespace EaseFilter.CommonObjects
             if (registryFilters.ContainsKey(key))
             {
                 registryFilters.Remove(key);
-                ConfigSetting.RemoveRegistryFilterRule(registryFilter.ProcessId.ToString(), registryFilter.ProcessNameFilterMask);
+                ConfigSetting.RemoveRegistryFilter(registryFilter);
             }
 
             registryFilters.Add(key, registryFilter);
@@ -832,7 +920,7 @@ namespace EaseFilter.CommonObjects
             if (registryFilters.ContainsKey(key))
             {
                 registryFilters.Remove(key);
-                ConfigSetting.RemoveRegistryFilterRule(registryFilter.ProcessId.ToString(), registryFilter.ProcessNameFilterMask);
+                ConfigSetting.RemoveRegistryFilter(registryFilter);
             }
         }
 

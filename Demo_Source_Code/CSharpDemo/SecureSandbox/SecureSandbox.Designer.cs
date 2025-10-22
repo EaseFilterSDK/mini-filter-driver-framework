@@ -30,17 +30,19 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SecureSandbox));
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.button_help = new System.Windows.Forms.Button();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.toolStripButton_StartFilter = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripButton_Stop = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripButton_EventViewer = new System.Windows.Forms.ToolStripButton();
-            this.button_AddSandbox = new System.Windows.Forms.Button();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.button_help = new System.Windows.Forms.Button();
             this.button_SaveSandBox = new System.Windows.Forms.Button();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
+            this.label2 = new System.Windows.Forms.Label();
+            this.textBox_AccessFlag = new System.Windows.Forms.TextBox();
+            this.button_AccessFlag = new System.Windows.Forms.Button();
             this.checkBox_AllowFolderBrowsing = new System.Windows.Forms.CheckBox();
             this.button_ConfigProcessRights = new System.Windows.Forms.Button();
             this.checkBox_EnableEncryption = new System.Windows.Forms.CheckBox();
@@ -53,9 +55,9 @@
             this.checkBox_AllowChangeRegistry = new System.Windows.Forms.CheckBox();
             this.checkBox_AllowReadRegistry = new System.Windows.Forms.CheckBox();
             this.textBox_SandboxFolder = new System.Windows.Forms.TextBox();
+            this.button_DeleteSandbox = new System.Windows.Forms.Button();
             this.label5 = new System.Windows.Forms.Label();
             this.button_SelectFolder = new System.Windows.Forms.Button();
-            this.button_DeleteSandbox = new System.Windows.Forms.Button();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.listView_Sandbox = new System.Windows.Forms.ListView();
             this.groupBox1.SuspendLayout();
@@ -68,11 +70,8 @@
             // 
             // groupBox1
             // 
-            this.groupBox1.Controls.Add(this.button_help);
             this.groupBox1.Controls.Add(this.toolStrip1);
-            this.groupBox1.Controls.Add(this.button_AddSandbox);
             this.groupBox1.Controls.Add(this.groupBox3);
-            this.groupBox1.Controls.Add(this.button_DeleteSandbox);
             this.groupBox1.Controls.Add(this.groupBox2);
             this.groupBox1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox1.Location = new System.Drawing.Point(0, 0);
@@ -80,16 +79,6 @@
             this.groupBox1.Size = new System.Drawing.Size(544, 520);
             this.groupBox1.TabIndex = 4;
             this.groupBox1.TabStop = false;
-            // 
-            // button_help
-            // 
-            this.button_help.Image = ((System.Drawing.Image)(resources.GetObject("button_help.Image")));
-            this.button_help.Location = new System.Drawing.Point(485, 471);
-            this.button_help.Name = "button_help";
-            this.button_help.Size = new System.Drawing.Size(36, 33);
-            this.button_help.TabIndex = 96;
-            this.button_help.UseVisualStyleBackColor = true;
-            this.button_help.Click += new System.EventHandler(this.button_help_Click);
             // 
             // toolStrip1
             // 
@@ -142,44 +131,49 @@
             this.toolStripButton_EventViewer.Text = "Event viewer";
             this.toolStripButton_EventViewer.Click += new System.EventHandler(this.toolStripButton_EventViewer_Click);
             // 
-            // button_AddSandbox
-            // 
-            this.button_AddSandbox.Location = new System.Drawing.Point(20, 476);
-            this.button_AddSandbox.Name = "button_AddSandbox";
-            this.button_AddSandbox.Size = new System.Drawing.Size(94, 23);
-            this.button_AddSandbox.TabIndex = 94;
-            this.button_AddSandbox.Text = "Add Sandbox";
-            this.button_AddSandbox.UseVisualStyleBackColor = true;
-            this.button_AddSandbox.Click += new System.EventHandler(this.button_AddSandbox_Click);
-            // 
             // groupBox3
             // 
+            this.groupBox3.Controls.Add(this.button_help);
             this.groupBox3.Controls.Add(this.button_SaveSandBox);
             this.groupBox3.Controls.Add(this.groupBox5);
             this.groupBox3.Controls.Add(this.groupBox4);
             this.groupBox3.Controls.Add(this.textBox_SandboxFolder);
+            this.groupBox3.Controls.Add(this.button_DeleteSandbox);
             this.groupBox3.Controls.Add(this.label5);
             this.groupBox3.Controls.Add(this.button_SelectFolder);
             this.groupBox3.Location = new System.Drawing.Point(17, 53);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(507, 277);
+            this.groupBox3.Size = new System.Drawing.Size(507, 296);
             this.groupBox3.TabIndex = 57;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Sandbox Settings";
             // 
+            // button_help
+            // 
+            this.button_help.Image = global::SecureSandbox.Properties.Resources.about;
+            this.button_help.Location = new System.Drawing.Point(386, 268);
+            this.button_help.Name = "button_help";
+            this.button_help.Size = new System.Drawing.Size(36, 23);
+            this.button_help.TabIndex = 96;
+            this.button_help.UseVisualStyleBackColor = true;
+            this.button_help.Click += new System.EventHandler(this.button_help_Click);
+            // 
             // button_SaveSandBox
             // 
             this.button_SaveSandBox.BackColor = System.Drawing.Color.Gold;
-            this.button_SaveSandBox.Location = new System.Drawing.Point(363, 251);
+            this.button_SaveSandBox.Location = new System.Drawing.Point(21, 267);
             this.button_SaveSandBox.Name = "button_SaveSandBox";
             this.button_SaveSandBox.Size = new System.Drawing.Size(131, 26);
             this.button_SaveSandBox.TabIndex = 97;
-            this.button_SaveSandBox.Text = "Save Sandbox";
+            this.button_SaveSandBox.Text = "Add or save  sandbox";
             this.button_SaveSandBox.UseVisualStyleBackColor = false;
             this.button_SaveSandBox.Click += new System.EventHandler(this.button_SaveSandBox_Click);
             // 
             // groupBox5
             // 
+            this.groupBox5.Controls.Add(this.label2);
+            this.groupBox5.Controls.Add(this.textBox_AccessFlag);
+            this.groupBox5.Controls.Add(this.button_AccessFlag);
             this.groupBox5.Controls.Add(this.checkBox_AllowFolderBrowsing);
             this.groupBox5.Controls.Add(this.button_ConfigProcessRights);
             this.groupBox5.Controls.Add(this.checkBox_EnableEncryption);
@@ -188,17 +182,45 @@
             this.groupBox5.Controls.Add(this.checkBox_AllowSandboxChange);
             this.groupBox5.Location = new System.Drawing.Point(14, 144);
             this.groupBox5.Name = "groupBox5";
-            this.groupBox5.Size = new System.Drawing.Size(492, 101);
+            this.groupBox5.Size = new System.Drawing.Size(492, 118);
             this.groupBox5.TabIndex = 78;
             this.groupBox5.TabStop = false;
             this.groupBox5.Text = "The default file access rights of the sandbox to all processes";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(9, 22);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(97, 13);
+            this.label2.TabIndex = 82;
+            this.label2.Text = "Access control flag";
+            // 
+            // textBox_AccessFlag
+            // 
+            this.textBox_AccessFlag.Location = new System.Drawing.Point(181, 19);
+            this.textBox_AccessFlag.Name = "textBox_AccessFlag";
+            this.textBox_AccessFlag.ReadOnly = true;
+            this.textBox_AccessFlag.Size = new System.Drawing.Size(170, 20);
+            this.textBox_AccessFlag.TabIndex = 81;
+            this.textBox_AccessFlag.Text = "0";
+            // 
+            // button_AccessFlag
+            // 
+            this.button_AccessFlag.Location = new System.Drawing.Point(372, 19);
+            this.button_AccessFlag.Name = "button_AccessFlag";
+            this.button_AccessFlag.Size = new System.Drawing.Size(60, 20);
+            this.button_AccessFlag.TabIndex = 83;
+            this.button_AccessFlag.Text = "...";
+            this.button_AccessFlag.UseVisualStyleBackColor = true;
+            this.button_AccessFlag.Click += new System.EventHandler(this.button_AccessFlag_Click);
             // 
             // checkBox_AllowFolderBrowsing
             // 
             this.checkBox_AllowFolderBrowsing.AutoSize = true;
             this.checkBox_AllowFolderBrowsing.Checked = true;
             this.checkBox_AllowFolderBrowsing.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox_AllowFolderBrowsing.Location = new System.Drawing.Point(7, 76);
+            this.checkBox_AllowFolderBrowsing.Location = new System.Drawing.Point(7, 94);
             this.checkBox_AllowFolderBrowsing.Name = "checkBox_AllowFolderBrowsing";
             this.checkBox_AllowFolderBrowsing.Size = new System.Drawing.Size(125, 17);
             this.checkBox_AllowFolderBrowsing.TabIndex = 80;
@@ -209,7 +231,7 @@
             // button_ConfigProcessRights
             // 
             this.button_ConfigProcessRights.BackColor = System.Drawing.SystemColors.GradientActiveCaption;
-            this.button_ConfigProcessRights.Location = new System.Drawing.Point(372, 34);
+            this.button_ConfigProcessRights.Location = new System.Drawing.Point(372, 77);
             this.button_ConfigProcessRights.Name = "button_ConfigProcessRights";
             this.button_ConfigProcessRights.Size = new System.Drawing.Size(108, 23);
             this.button_ConfigProcessRights.TabIndex = 58;
@@ -222,7 +244,7 @@
             this.checkBox_EnableEncryption.AutoSize = true;
             this.checkBox_EnableEncryption.Checked = true;
             this.checkBox_EnableEncryption.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox_EnableEncryption.Location = new System.Drawing.Point(181, 34);
+            this.checkBox_EnableEncryption.Location = new System.Drawing.Point(181, 52);
             this.checkBox_EnableEncryption.Name = "checkBox_EnableEncryption";
             this.checkBox_EnableEncryption.Size = new System.Drawing.Size(111, 17);
             this.checkBox_EnableEncryption.TabIndex = 30;
@@ -235,7 +257,7 @@
             this.checkBox_AllowSandboxRead.AutoSize = true;
             this.checkBox_AllowSandboxRead.Checked = true;
             this.checkBox_AllowSandboxRead.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox_AllowSandboxRead.Location = new System.Drawing.Point(7, 34);
+            this.checkBox_AllowSandboxRead.Location = new System.Drawing.Point(7, 52);
             this.checkBox_AllowSandboxRead.Name = "checkBox_AllowSandboxRead";
             this.checkBox_AllowSandboxRead.Size = new System.Drawing.Size(120, 17);
             this.checkBox_AllowSandboxRead.TabIndex = 29;
@@ -248,7 +270,7 @@
             this.checkBox_AllowReadEncryptedFiles.AutoSize = true;
             this.checkBox_AllowReadEncryptedFiles.Checked = true;
             this.checkBox_AllowReadEncryptedFiles.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox_AllowReadEncryptedFiles.Location = new System.Drawing.Point(181, 59);
+            this.checkBox_AllowReadEncryptedFiles.Location = new System.Drawing.Point(181, 77);
             this.checkBox_AllowReadEncryptedFiles.Name = "checkBox_AllowReadEncryptedFiles";
             this.checkBox_AllowReadEncryptedFiles.Size = new System.Drawing.Size(170, 17);
             this.checkBox_AllowReadEncryptedFiles.TabIndex = 28;
@@ -261,7 +283,7 @@
             this.checkBox_AllowSandboxChange.AutoSize = true;
             this.checkBox_AllowSandboxChange.Checked = true;
             this.checkBox_AllowSandboxChange.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox_AllowSandboxChange.Location = new System.Drawing.Point(7, 54);
+            this.checkBox_AllowSandboxChange.Location = new System.Drawing.Point(7, 72);
             this.checkBox_AllowSandboxChange.Name = "checkBox_AllowSandboxChange";
             this.checkBox_AllowSandboxChange.Size = new System.Drawing.Size(141, 17);
             this.checkBox_AllowSandboxChange.TabIndex = 15;
@@ -296,6 +318,8 @@
             // checkBox_AllowExecute
             // 
             this.checkBox_AllowExecute.AutoSize = true;
+            this.checkBox_AllowExecute.Checked = true;
+            this.checkBox_AllowExecute.CheckState = System.Windows.Forms.CheckState.Checked;
             this.checkBox_AllowExecute.Location = new System.Drawing.Point(177, 28);
             this.checkBox_AllowExecute.Name = "checkBox_AllowExecute";
             this.checkBox_AllowExecute.Size = new System.Drawing.Size(242, 17);
@@ -334,6 +358,17 @@
             this.textBox_SandboxFolder.TabIndex = 37;
             this.textBox_SandboxFolder.Text = "c:\\MySandbox";
             // 
+            // button_DeleteSandbox
+            // 
+            this.button_DeleteSandbox.BackColor = System.Drawing.Color.Gold;
+            this.button_DeleteSandbox.Location = new System.Drawing.Point(195, 267);
+            this.button_DeleteSandbox.Name = "button_DeleteSandbox";
+            this.button_DeleteSandbox.Size = new System.Drawing.Size(131, 23);
+            this.button_DeleteSandbox.TabIndex = 52;
+            this.button_DeleteSandbox.Text = "Delete sandbox";
+            this.button_DeleteSandbox.UseVisualStyleBackColor = false;
+            this.button_DeleteSandbox.Click += new System.EventHandler(this.button_DeleteSandbox_Click);
+            // 
             // label5
             // 
             this.label5.AutoSize = true;
@@ -353,22 +388,12 @@
             this.button_SelectFolder.UseVisualStyleBackColor = true;
             this.button_SelectFolder.Click += new System.EventHandler(this.button_SelectFolder_Click);
             // 
-            // button_DeleteSandbox
-            // 
-            this.button_DeleteSandbox.Location = new System.Drawing.Point(319, 476);
-            this.button_DeleteSandbox.Name = "button_DeleteSandbox";
-            this.button_DeleteSandbox.Size = new System.Drawing.Size(131, 23);
-            this.button_DeleteSandbox.TabIndex = 52;
-            this.button_DeleteSandbox.Text = "Delete Sandbox";
-            this.button_DeleteSandbox.UseVisualStyleBackColor = true;
-            this.button_DeleteSandbox.Click += new System.EventHandler(this.button_DeleteSandbox_Click);
-            // 
             // groupBox2
             // 
             this.groupBox2.Controls.Add(this.listView_Sandbox);
-            this.groupBox2.Location = new System.Drawing.Point(17, 336);
+            this.groupBox2.Location = new System.Drawing.Point(17, 355);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(507, 116);
+            this.groupBox2.Size = new System.Drawing.Size(507, 97);
             this.groupBox2.TabIndex = 50;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Sandbox Collection";
@@ -380,7 +405,7 @@
             this.listView_Sandbox.HideSelection = false;
             this.listView_Sandbox.Location = new System.Drawing.Point(3, 16);
             this.listView_Sandbox.Name = "listView_Sandbox";
-            this.listView_Sandbox.Size = new System.Drawing.Size(501, 97);
+            this.listView_Sandbox.Size = new System.Drawing.Size(501, 78);
             this.listView_Sandbox.TabIndex = 1;
             this.listView_Sandbox.UseCompatibleStateImageBehavior = false;
             this.listView_Sandbox.View = System.Windows.Forms.View.Details;
@@ -432,7 +457,6 @@
         private System.Windows.Forms.CheckBox checkBox_AllowSandboxChange;
         private System.Windows.Forms.CheckBox checkBox_EnableEncryption;
         private System.Windows.Forms.Button button_ConfigProcessRights;
-        private System.Windows.Forms.Button button_AddSandbox;
         private System.Windows.Forms.CheckBox checkBox_AllowFolderBrowsing;
         private System.Windows.Forms.Button button_ProcessFileAccessRights;
         private System.Windows.Forms.ToolStrip toolStrip1;
@@ -443,6 +467,9 @@
         private System.Windows.Forms.ToolStripButton toolStripButton_EventViewer;
         private System.Windows.Forms.Button button_help;
         private System.Windows.Forms.Button button_SaveSandBox;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.TextBox textBox_AccessFlag;
+        private System.Windows.Forms.Button button_AccessFlag;
     }
 }
 

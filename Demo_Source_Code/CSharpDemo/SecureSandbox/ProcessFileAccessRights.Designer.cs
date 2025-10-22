@@ -58,7 +58,7 @@
             // button_ApplyAll
             // 
             this.button_ApplyAll.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.button_ApplyAll.Location = new System.Drawing.Point(406, 381);
+            this.button_ApplyAll.Location = new System.Drawing.Point(355, 381);
             this.button_ApplyAll.Name = "button_ApplyAll";
             this.button_ApplyAll.Size = new System.Drawing.Size(144, 23);
             this.button_ApplyAll.TabIndex = 85;
@@ -68,17 +68,18 @@
             // 
             // button_Add
             // 
-            this.button_Add.Location = new System.Drawing.Point(15, 381);
+            this.button_Add.BackColor = System.Drawing.Color.Gold;
+            this.button_Add.Location = new System.Drawing.Point(334, 183);
             this.button_Add.Name = "button_Add";
-            this.button_Add.Size = new System.Drawing.Size(122, 23);
+            this.button_Add.Size = new System.Drawing.Size(148, 23);
             this.button_Add.TabIndex = 84;
-            this.button_Add.Text = "Add file entry";
-            this.button_Add.UseVisualStyleBackColor = true;
+            this.button_Add.Text = "Add or save file entry";
+            this.button_Add.UseVisualStyleBackColor = false;
             this.button_Add.Click += new System.EventHandler(this.button_Add_Click);
             // 
             // button_Delete
             // 
-            this.button_Delete.Location = new System.Drawing.Point(197, 381);
+            this.button_Delete.Location = new System.Drawing.Point(33, 381);
             this.button_Delete.Name = "button_Delete";
             this.button_Delete.Size = new System.Drawing.Size(128, 23);
             this.button_Delete.TabIndex = 83;
@@ -100,6 +101,7 @@
             // 
             this.listView_ProcessFileAccessRights.Dock = System.Windows.Forms.DockStyle.Fill;
             this.listView_ProcessFileAccessRights.FullRowSelect = true;
+            this.listView_ProcessFileAccessRights.HideSelection = false;
             this.listView_ProcessFileAccessRights.Location = new System.Drawing.Point(3, 16);
             this.listView_ProcessFileAccessRights.Name = "listView_ProcessFileAccessRights";
             this.listView_ProcessFileAccessRights.Size = new System.Drawing.Size(529, 115);
@@ -111,6 +113,7 @@
             // groupBox_ProcessRights
             // 
             this.groupBox_ProcessRights.Controls.Add(this.button_SelectFolder);
+            this.groupBox_ProcessRights.Controls.Add(this.button_Add);
             this.groupBox_ProcessRights.Controls.Add(this.button_Info);
             this.groupBox_ProcessRights.Controls.Add(this.label1);
             this.groupBox_ProcessRights.Controls.Add(this.textBox_FileMask);
@@ -178,6 +181,7 @@
             this.label2.Size = new System.Drawing.Size(97, 13);
             this.label2.TabIndex = 32;
             this.label2.Text = "Access control flag";
+            this.label2.Click += new System.EventHandler(this.label2_Click);
             // 
             // textBox_AccessFlag
             // 
@@ -187,6 +191,7 @@
             this.textBox_AccessFlag.Size = new System.Drawing.Size(242, 20);
             this.textBox_AccessFlag.TabIndex = 31;
             this.textBox_AccessFlag.Text = "0";
+            this.textBox_AccessFlag.TextChanged += new System.EventHandler(this.textBox_AccessFlag_TextChanged);
             // 
             // button_AccessFlag
             // 
@@ -321,7 +326,6 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(562, 444);
             this.Controls.Add(this.button_ApplyAll);
-            this.Controls.Add(this.button_Add);
             this.Controls.Add(this.button_Delete);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.groupBox_ProcessRights);

@@ -1,0 +1,173 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "easefilter"
+description = 'High-level Pythonic API for EaseFilter'
+readme = "README.md"
+requires-python = ">=3.9"
+license = "licenseref-proprietary"
+keywords = []
+authors = [
+  { name = "EaseFilter", email = "info@easefilter.com" },
+]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: Implementation :: CPython",
+  "Programming Language :: Python :: Implementation :: PyPy",
+  "Operating System :: Microsoft :: Windows"
+]
+dependencies = [
+	"tomli >= 1.1.0 ; python_version < '3.11'",
+	"typing-extensions >= 4.12.2, < 5"
+]
+dynamic = ["version"]
+
+[project.urls]
+
+[project.scripts]
+easefilter-cli = "easefilter.cli.main:entrypoint"
+
+[tool.hatch.version]
+path = "easefilter/__about__.py"
+
+[tool.hatch.build.targets.sdist]
+[tool.hatch.build.targets.wheel]
+
+[tool.hatch.envs.default.scripts]
+cli = "python -m easefilter.cli.main {args}"
+
+[[tool.hatch.envs.test.matrix]]
+python = ["3.9", "3.10", "3.11", "3.12"]
+
+[tool.coverage.run]
+branch = true
+parallel = true
+omit = [
+  "easefilter/__about__.py",
+  "tests/*"
+]
+
+[tool.coverage.report]
+exclude_lines = [
+  "no cov",
+  "if __name__ == .__main__.:",
+  "if TYPE_CHECKING:",
+  "@(abc\\.)?abstractmethod",
+]
+
+[tool.hatch.envs.hatch-static-analysis]
+dependencies = [
+	"ruff==0.5.5",
+	"pyright==1.1.374",
+
+	# project dependencies for type-checking
+	"tomli >= 1.1.0 ; python_version < '3.11'",
+	"typing-extensions >= 4.12.2, < 5",
+	"pytest",
+]
+
+[tool.hatch.envs.hatch-static-analysis.scripts]
+config-path = "pyproject.toml"
+format-check = [
+  "ruff check {args:.}",
+]
+format-fix = [
+	"- ruff check --fix {args:.}",
+	"ruff format {args:.}",
+]
+lint-check = "- pyright {args:.}"
+lint-fix = "lint-check"
+
+[tool.ruff]
+# make it the same as black
+line-length = 88
+
+[tool.ruff.lint]
+explicit-preview-rules = true
+select = [ "ALL" ]
+ignore = [
+	"ANN101", # missing `self` type annotation (type-checker can infer this)
+
+	"COM812", # missing trailing comma (defer to formatter)
+	"ISC001", # string concatenation on one line (defer to formatter)
+
+	"D100", # missing docstring in public module
+	"D101", # missing docstring in public class
+	"D102", # missing docstring in public method
+	"D103", # missing docstring in public function
+	"D104", # missing docstring in public package
+	"D105", # missing docstring in magic method
+	"D106", # missing docstring in public nested class
+	"D107", # missing docstring in __init__
+
+	"E266", # too many leading `#` before block comment
+	"E501", # line too long
+
+	# c++ style names are used in places where appropriate. ignore these
+	"N801",
+	"N802",
+	"N803",
+	"N806",
+
+	"TD001", # line contains FIXME, XXX (FIX already flags this)
+	"TD002", # missing todo author
+	"TD003", # missing todo issue link
+]
+
+[tool.ruff.lint.per-file-ignores]
+"easefilter/filter_api.py" = [
+	"PLR0913", # too many arguments in function
+	"FBT001", # boolean positional arg
+	"FBT002", # boolean positional arg
+]
+# tests
+"tests/*" = [
+	"C901", # too complex
+	"PLR0912", # too many branches
+	"PLR0915", # too many statements
+	"PLR2004", # magic values
+	"S101", # asserts
+	"S602", # subprocess with shell=True
+	"S603", # check for untrusted input in subprocess call
+	"S607", # subprocess with partial executable path
+]
+
+"tests/test*" = [
+	"ANN001", # missing function argument type annotation
+	"ANN201", # missing public function return type annotation
+	"ANN202", # missing private function return type annotation
+	"S404", # subprocess module is insecure
+]
+
+"tests/conftest.py" = [
+	"ANN001", # missing type annotation for func arg
+	"ANN201", # missing public function return type annotation
+	"ANN202", # missing private function return type annotation
+]
+
+"easefilter/cli/main.py" = [
+	"T201" # `print` found
+]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.ruff.lint.mccabe]
+max-complexity = 20
+
+[tool.ruff.lint.flake8-pytest-style]
+fixture-parentheses = false # make PT001 behaviour consistent
+
+[tool.ruff.format]
+docstring-code-format = true
+
+[tool.pyright]
+pythonVersion="3.9"
+pythonPlatform="Windows"

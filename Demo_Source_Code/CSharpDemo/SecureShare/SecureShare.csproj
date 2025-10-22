@@ -98,13 +98,25 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="EncryptEventHandler.cs" />
-    <Compile Include="DRServer.cs" />
-    <Compile Include="SecureShareManager.cs">
+    <Compile Include="AccessLogForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="SecureShareManager.Designer.cs">
-      <DependentUpon>SecureShareManager.cs</DependentUpon>
+    <Compile Include="AccessLogForm.Designer.cs">
+      <DependentUpon>AccessLogForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DRMServer.cs" />
+    <Compile Include="LocalClient.cs" />
+    <Compile Include="ShareFileManager.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ShareFileManager.Designer.cs">
+      <DependentUpon>ShareFileManager.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SecureShareMainForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SecureShareMainForm.Designer.cs">
+      <DependentUpon>SecureShareMainForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -120,14 +132,14 @@
     <Compile Include="ShareFileForm.Designer.cs">
       <DependentUpon>ShareFileForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="ShareFileManagerInLocal.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ShareFileManagerInLocal.Designer.cs">
-      <DependentUpon>ShareFileManagerInLocal.cs</DependentUpon>
-    </Compile>
-    <EmbeddedResource Include="SecureShareManager.resx">
-      <DependentUpon>SecureShareManager.cs</DependentUpon>
+    <EmbeddedResource Include="AccessLogForm.resx">
+      <DependentUpon>AccessLogForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ShareFileManager.resx">
+      <DependentUpon>ShareFileManager.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SecureShareMainForm.resx">
+      <DependentUpon>SecureShareMainForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -144,9 +156,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ShareFileForm.resx">
       <DependentUpon>ShareFileForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ShareFileManagerInLocal.resx">
-      <DependentUpon>ShareFileManagerInLocal.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="app.config" />
     <None Include="app.manifest" />
@@ -171,6 +180,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Properties\about.png" />
     <Content Include="SecureShareManager.ico" />
   </ItemGroup>
   <ItemGroup>

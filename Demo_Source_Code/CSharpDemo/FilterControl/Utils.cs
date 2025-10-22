@@ -294,6 +294,36 @@ namespace EaseFilter.FilterControl
             return ret;
         }
 
+        // Return the OS name.
+        public static string GetOsName()
+        {
+            string version = Utils.WinMajorVersion().ToString() + '.' + Utils.WinMinorVersion().ToString();
+            int build = System.Environment.OSVersion.Version.Build;
+
+            string isWin11 = string.Empty;
+
+            if (build > 20000)
+            {
+                isWin11 = " is Win11";
+            }
+
+            return "version:" + version + ",build:" + build + "." + isWin11;
+
+            //switch (version)
+            //{
+            //    case "10.0": return "10/Server 2016 " + isWin11;
+            //    case "6.3": return "8.1/Server 2012 R2";
+            //    case "6.2": return "8/Server 2012";
+            //    case "6.1": return "7/Server 2008 R2";
+            //    case "6.0": return "Server 2008/Vista";
+            //    case "5.2": return "Server 2003 R2/Server 2003/XP 64-Bit Edition";
+            //    case "5.1": return "XP";
+            //    case "5.0": return "2000";
+            //}
+            //return "Unknown";
+        }
+
+
         public static uint WinMajorVersion()
         {
             dynamic major;

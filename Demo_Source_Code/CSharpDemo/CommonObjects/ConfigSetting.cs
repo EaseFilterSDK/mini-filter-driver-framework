@@ -126,7 +126,7 @@ namespace EaseFilter.CommonObjects
 
         public static void RemoveProcessFilter(ProcessFilter processFilter)
         {
-            processFilterRuleSection.Instances.Remove(processFilter.ProcessNameFilterMask + processFilter.ProcessId);
+            processFilterRuleSection.Instances.Remove(processFilter);
 
             if (processFilter.ProcessNameFilterMask.Length > 0)
             {
@@ -150,15 +150,15 @@ namespace EaseFilter.CommonObjects
 
         public static void AddRegistryFilter(RegistryFilter registryFilter)
         {
-            registryFilterRuleSection.Instances.Remove(registryFilter.ProcessId + registryFilter.ProcessNameFilterMask);
+            registryFilterRuleSection.Instances.Remove(registryFilter);
             registryFilterRuleSection.Instances.Add(registryFilter);
 
             return;
         }
 
-        public static void RemoveRegistryFilterRule(string processId,string processName)
+        public static void RemoveRegistryFilter(RegistryFilter registryFilter)
         {
-            registryFilterRuleSection.Instances.Remove(processId + processName );
+            registryFilterRuleSection.Instances.Remove(registryFilter);
 
             return;
         }

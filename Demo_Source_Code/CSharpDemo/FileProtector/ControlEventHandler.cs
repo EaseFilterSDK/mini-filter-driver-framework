@@ -515,7 +515,7 @@ namespace FileProtector
             //if (string.Compare(YourTestFileName, e.FileName, true) == 0)
             //{
             //test block the file delete here.
-            e.ReturnStatus = NtStatus.Status.AccessDenied;
+            //e.ReturnStatus = NtStatus.Status.AccessDenied;
             //}
         }
 

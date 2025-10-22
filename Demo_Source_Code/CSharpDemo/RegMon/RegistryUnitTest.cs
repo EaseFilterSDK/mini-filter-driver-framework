@@ -211,7 +211,7 @@ namespace RegMon
             string testValueKey = "DisplayName";
 
             //full registry access rights
-            uint accessFlag = FilterAPI.MAX_REGITRY_ACCESS_FLAG;
+            uint accessFlag = FilterAPI.MAX_REGISTRY_ACCESS_FLAG;
 
             bool testPassed = true;
 
@@ -266,7 +266,7 @@ namespace RegMon
                 //disable registry open key right test
                 filterControl.ClearFilters();
                 RegistryFilter regFilter = new RegistryFilter();
-                regFilter.ControlFlag = FilterAPI.MAX_REGITRY_ACCESS_FLAG & (uint)(~FilterAPI.RegControlFlag.REG_ALLOW_OPEN_KEY); ;
+                regFilter.ControlFlag = FilterAPI.MAX_REGISTRY_ACCESS_FLAG & (uint)(~FilterAPI.RegControlFlag.REG_ALLOW_OPEN_KEY); ;
                 regFilter.RegCallbackClass = 0;
                 regFilter.ProcessId = FilterAPI.GetCurrentProcessId();
 
@@ -297,7 +297,7 @@ namespace RegMon
                 //disable registry delete key right test
                 filterControl.ClearFilters();
                 RegistryFilter regFilter = new RegistryFilter();
-                regFilter.ControlFlag = FilterAPI.MAX_REGITRY_ACCESS_FLAG & (uint)(~(FilterAPI.RegControlFlag.REG_ALLOW_DELETE_VALUE_KEY | FilterAPI.RegControlFlag.REG_ALLOW_DELETE_KEY)); ;
+                regFilter.ControlFlag = FilterAPI.MAX_REGISTRY_ACCESS_FLAG & (uint)(~(FilterAPI.RegControlFlag.REG_ALLOW_DELETE_VALUE_KEY | FilterAPI.RegControlFlag.REG_ALLOW_DELETE_KEY)); ;
                 regFilter.RegCallbackClass = 0;
                 regFilter.ProcessId = FilterAPI.GetCurrentProcessId();
 
@@ -336,7 +336,7 @@ namespace RegMon
                 //test query value key callback, we will receive the callback registry query value key.
                 filterControl.ClearFilters();
                 RegistryFilter regFilter = new RegistryFilter();
-                regFilter.ControlFlag = FilterAPI.MAX_REGITRY_ACCESS_FLAG;
+                regFilter.ControlFlag = FilterAPI.MAX_REGISTRY_ACCESS_FLAG;
                 regFilter.RegCallbackClass = (uint)FilterAPI.RegCallbackClass.Reg_Post_Query_Value_Key;
                 regFilter.NotifyQueryValueKey += NotifyQueryValueKey;
                 regFilter.ProcessId = FilterAPI.GetCurrentProcessId();
@@ -377,7 +377,7 @@ namespace RegMon
             {
                 filterControl.ClearFilters();
                 RegistryFilter regFilter = new RegistryFilter();
-                regFilter.ControlFlag = FilterAPI.MAX_REGITRY_ACCESS_FLAG;
+                regFilter.ControlFlag = FilterAPI.MAX_REGISTRY_ACCESS_FLAG;
                 regFilter.RegCallbackClass = (uint)FilterAPI.RegCallbackClass.Reg_Pre_Create_Key | (uint)FilterAPI.RegCallbackClass.Reg_Pre_Create_KeyEx;
                 regFilter.OnPreCreateKey += OnPreCreateKey;
                 regFilter.OnPreCreateKeyEx += OnPreCreateKey;
@@ -408,7 +408,7 @@ namespace RegMon
             {
                 filterControl.ClearFilters();
                 RegistryFilter regFilter = new RegistryFilter();
-                regFilter.ControlFlag = FilterAPI.MAX_REGITRY_ACCESS_FLAG;
+                regFilter.ControlFlag = FilterAPI.MAX_REGISTRY_ACCESS_FLAG;
                 regFilter.RegCallbackClass = (uint)FilterAPI.RegCallbackClass.Reg_Pre_Query_Value_Key ;
                 regFilter.OnPreQueryValueKey += OnPreQueryValueKey;
 

@@ -6,6 +6,7 @@ What can yo do with EaseFilter SDK?
 3. The File Encryption Filter Driver allows you to encrypt or decrypt the files transparently.
 4. The Process Filter Driver allows you to get the notification when the process was created or terminated, prevent untrusted process from being launching.
 5. The Registry Filter Driver allows you to monitor the registry access, block the registry change by the unauthorized processes.
+6. The Stub File Filter Driver enables the virtualization of physical files by replacing them with lightweight stub files that represent the original content.
 
 How to use EaseFilter SDK?
 
@@ -70,4 +71,7 @@ This project demostrate how to create a sandbox folder, prevent the suspicious e
 
 14. ZeroTrustDemo.exe
 This project demostrate how to implement the zero trust solution with File Control, Encryption and Process Filter Driver SDK.
+
+14. StubFileDemo.exe
+This project demonstrates how to implement stub file virtualization and how to read and write stub files.
 

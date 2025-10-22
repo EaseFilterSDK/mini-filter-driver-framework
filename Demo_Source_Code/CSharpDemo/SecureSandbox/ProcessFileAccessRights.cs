@@ -25,6 +25,9 @@ namespace SecureSandbox
 
             StartPosition = FormStartPosition.CenterParent;
 
+            textBox_FileMask.Text = processFilter.ProcessNameFilterMask;
+            textBox_AccessFlag.Text = FilterAPI.ALLOW_MAX_RIGHT_ACCESS.ToString();
+
             currentProcessFilter = processFilter;
             foreach (KeyValuePair<string, uint> entry in processFilter.FileAccessRightList)
             {
@@ -371,12 +374,12 @@ namespace SecureSandbox
 
         private void button_ApplyAll_Click(object sender, EventArgs e)
         {
-            currentProcessFilter.FileAccessRightString = string.Empty;
-
             foreach (FileAccessRight fileAccessRight in processFileAccessRightsList.Values)
             {
-                currentProcessFilter.FileAccessRightString += fileAccessRight.FileNameMask + "|" + fileAccessRight.AccessFlag + ";";
+                currentProcessFilter.FileAccessRightList.Remove(fileAccessRight.FileNameMask);
+                currentProcessFilter.FileAccessRightList.Add(fileAccessRight.FileNameMask, fileAccessRight.AccessFlag);
             }
+
         }
 
         private void button_SelectFolder_Click(object sender, EventArgs e)
@@ -407,6 +410,16 @@ namespace SecureSandbox
                 textBox_AccessFlag.Text = currentFileAccessRight.AccessFlag.ToString();
                 SetCheckBoxValue();
             }
+        }
+
+        private void textBox_AccessFlag_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label2_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

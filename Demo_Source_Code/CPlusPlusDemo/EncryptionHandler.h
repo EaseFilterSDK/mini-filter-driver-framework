@@ -117,7 +117,7 @@ EncryptionHandler(
 		offset += strLen;*/
 
 		//if you want to setup the authorized user names, do it here
-		/*WCHAR* authorizedUserNames = L"domain/user1;domain/user2";
+		/*WCHAR* authorizedUserNames = L"domain\\user1;domain\\user2";
 		strLen = wcslen(authorizedUserNames) * sizeof(WCHAR);
 		pDRMdata->AESFlags |= Flags_Enabled_Check_UserName;
 		pDRMdata->LengthOfIncludeUserNames = strLen;

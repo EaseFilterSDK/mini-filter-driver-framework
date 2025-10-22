@@ -76,7 +76,11 @@
         /// set the status to AccessDenied if you want to block this IO.
         ULONG ReturnStatus;
         /// Set it to true, if the return data was modified. 
-        BOOL IsDataModified;     
+        BOOL IsDataModified; 
+        /// <summary>
+        /// It indicates that the new file was created if it is true.
+        /// </summary>
+        BOOL isNewFileCreated = FALSE;
 
         /// <summary>
         /// The file system type of the volume.
@@ -135,6 +139,14 @@
                 }
 
             }
+            else
+            {
+                if (DataBufferLength > 0)
+                {
+                    DataBuffer.resize(DataBufferLength);
+                    memcpy(DataBuffer.data(), messageSend->DataBuffer.RegData.Buffer, DataBufferLength);
+                }
+            }
 
             if (UserName.length() == 0)
             {
@@ -178,6 +190,16 @@
                         ProcessName.assign(L"UNKNOWN");
                     }
                 }
+            }
+
+            if (messageSend->CreateStatus == FILE_CREATED
+                || messageSend->CreateStatus == FILE_SUPERSEDED)
+            {
+                isNewFileCreated = true;
+            }
+            else
+            {
+                isNewFileCreated = false;
             }
 
             FileName.assign(messageSend->FileName);
@@ -302,11 +324,7 @@
 		 /// <summary>
         /// The file will be deleted on close when it was true.
         /// </summary>
-        BOOL isDeleteOnClose;
-        /// <summary>
-        /// It indicates that the new file was created if it is true.
-        /// </summary>
-        BOOL isNewFileCreated ;
+        BOOL isDeleteOnClose;     
         /// <summary>
         /// It indicates that this is file copy source file open.
         /// </summary>
@@ -1040,6 +1058,7 @@
 		ProcessEventArgs(PMESSAGE_SEND_DATA messageSend) : FileIOEventArgs(messageSend)
         {
             ImageFileName = messageSend->FileName;
+            ProcessName = messageSend->FileName;
 
             if (messageSend->DataBufferLength > 0)
             {
@@ -1064,7 +1083,7 @@
                         }
                     case FILTER_SEND_PROCESS_TERMINATION_INFO:
                     {
-                        Description = L"The process was terminated.";
+                        Description = ImageFileName  + L" process was terminated.";
                         break;
                     }
 					case FILTER_SEND_LOAD_IMAGE_NOTIFICATION:

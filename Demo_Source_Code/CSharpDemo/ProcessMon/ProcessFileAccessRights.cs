@@ -380,7 +380,7 @@ namespace ProcessMon
 
             foreach (FileAccessRight fileAccessRight in processFileAccessRightsList.Values)
             {
-                currentProcessFilter.FileAccessRightString += fileAccessRight.FileNameMask + "|" + fileAccessRight.AccessFlag + ";";
+                currentProcessFilter.FileAccessRightList.Add(fileAccessRight.FileNameMask,fileAccessRight.AccessFlag);
             }
         }
 

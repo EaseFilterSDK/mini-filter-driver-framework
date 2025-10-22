@@ -49,13 +49,13 @@
             this.textBox_AccessName = new System.Windows.Forms.TextBox();
             this.groupBox_UserName = new System.Windows.Forms.GroupBox();
             this.groupBox_TrustedProcess = new System.Windows.Forms.GroupBox();
+            this.button_GetSha256 = new System.Windows.Forms.Button();
+            this.button_GetCertificateName = new System.Windows.Forms.Button();
             this.button_Info = new System.Windows.Forms.Button();
             this.textBox_ImageSha256 = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.textBox_CertificatName = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
-            this.button_GetCertificateName = new System.Windows.Forms.Button();
-            this.button_GetSha256 = new System.Windows.Forms.Button();
             this.groupBox2.SuspendLayout();
             this.groupBox_UserName.SuspendLayout();
             this.groupBox_TrustedProcess.SuspendLayout();
@@ -318,9 +318,28 @@
             this.groupBox_TrustedProcess.TabIndex = 31;
             this.groupBox_TrustedProcess.TabStop = false;
             // 
+            // button_GetSha256
+            // 
+            this.button_GetSha256.Location = new System.Drawing.Point(448, 43);
+            this.button_GetSha256.Name = "button_GetSha256";
+            this.button_GetSha256.Size = new System.Drawing.Size(32, 23);
+            this.button_GetSha256.TabIndex = 79;
+            this.button_GetSha256.Text = "...";
+            this.button_GetSha256.UseVisualStyleBackColor = true;
+            this.button_GetSha256.Click += new System.EventHandler(this.button_GetSha256_Click);
+            // 
+            // button_GetCertificateName
+            // 
+            this.button_GetCertificateName.Location = new System.Drawing.Point(448, 12);
+            this.button_GetCertificateName.Name = "button_GetCertificateName";
+            this.button_GetCertificateName.Size = new System.Drawing.Size(32, 23);
+            this.button_GetCertificateName.TabIndex = 78;
+            this.button_GetCertificateName.Text = "...";
+            this.button_GetCertificateName.UseVisualStyleBackColor = true;
+            this.button_GetCertificateName.Click += new System.EventHandler(this.button_GetCertificateName_Click);
+            // 
             // button_Info
             // 
-            this.button_Info.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.button_Info.Image = global::EaseFilter.FolderLocker.Properties.Resources.about;
             this.button_Info.Location = new System.Drawing.Point(498, 12);
             this.button_Info.Name = "button_Info";
@@ -360,28 +379,6 @@
             this.label1.Size = new System.Drawing.Size(131, 13);
             this.label1.TabIndex = 28;
             this.label1.Text = "Certificate Name( optional)";
-            // 
-            // button_GetCertificateName
-            // 
-            this.button_GetCertificateName.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.button_GetCertificateName.Location = new System.Drawing.Point(448, 12);
-            this.button_GetCertificateName.Name = "button_GetCertificateName";
-            this.button_GetCertificateName.Size = new System.Drawing.Size(32, 23);
-            this.button_GetCertificateName.TabIndex = 78;
-            this.button_GetCertificateName.Text = "...";
-            this.button_GetCertificateName.UseVisualStyleBackColor = true;
-            this.button_GetCertificateName.Click += new System.EventHandler(this.button_GetCertificateName_Click);
-            // 
-            // button_GetSha256
-            // 
-            this.button_GetSha256.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.button_GetSha256.Location = new System.Drawing.Point(448, 43);
-            this.button_GetSha256.Name = "button_GetSha256";
-            this.button_GetSha256.Size = new System.Drawing.Size(32, 23);
-            this.button_GetSha256.TabIndex = 79;
-            this.button_GetSha256.Text = "...";
-            this.button_GetSha256.UseVisualStyleBackColor = true;
-            this.button_GetSha256.Click += new System.EventHandler(this.button_GetSha256_Click);
             // 
             // Form_AccessRights
             // 

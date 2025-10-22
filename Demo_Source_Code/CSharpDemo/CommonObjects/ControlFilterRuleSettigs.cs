@@ -37,8 +37,8 @@ namespace EaseFilter.CommonObjects
             InitializeComponent();
             fileFilter = _filterRule;
 
-            textBox_FileAccessFlags.Text = fileFilter.AccessFlags.ToString();        
-            textBox_ControlIO.Text = fileFilter.ControlFileIOEventFilter.ToString();
+            textBox_FileAccessFlags.Text = ((uint)fileFilter.AccessFlags).ToString();        
+            textBox_ControlIO.Text = ((uint)fileFilter.ControlFileIOEventFilter).ToString();
             checkBox_EnableProtectionInBootTime.Checked = fileFilter.IsResident;
             textBox_ProcessRights.Text = fileFilter.ProcessNameAccessRightString;
             textBox_ProcessIdRights.Text = fileFilter.ProcessIdAccessRightString;

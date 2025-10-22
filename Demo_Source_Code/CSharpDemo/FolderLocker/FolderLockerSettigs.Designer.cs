@@ -56,6 +56,7 @@ namespace EaseFilter.FolderLocker
             this.textBox_FolderName = new System.Windows.Forms.TextBox();
             this.button_BrowseFolder = new System.Windows.Forms.Button();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.checkBox_AllowDecryptFile = new System.Windows.Forms.CheckBox();
             this.groupBox1.SuspendLayout();
             this.groupBox_AccessControl.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -161,6 +162,7 @@ namespace EaseFilter.FolderLocker
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.checkBox_AllowDecryptFile);
             this.groupBox2.Controls.Add(this.checkBox_AllowCopyout);
             this.groupBox2.Controls.Add(this.checkBox_Encryption);
             this.groupBox2.Controls.Add(this.checkBox_HideFiles);
@@ -194,7 +196,7 @@ namespace EaseFilter.FolderLocker
             // checkBox_Encryption
             // 
             this.checkBox_Encryption.AutoSize = true;
-            this.checkBox_Encryption.Location = new System.Drawing.Point(346, 55);
+            this.checkBox_Encryption.Location = new System.Drawing.Point(7, 111);
             this.checkBox_Encryption.Name = "checkBox_Encryption";
             this.checkBox_Encryption.Size = new System.Drawing.Size(127, 17);
             this.checkBox_Encryption.TabIndex = 28;
@@ -292,7 +294,7 @@ namespace EaseFilter.FolderLocker
             // 
             // textBox_PassPhrase
             // 
-            this.textBox_PassPhrase.Location = new System.Drawing.Point(346, 100);
+            this.textBox_PassPhrase.Location = new System.Drawing.Point(191, 111);
             this.textBox_PassPhrase.Name = "textBox_PassPhrase";
             this.textBox_PassPhrase.PasswordChar = '●';
             this.textBox_PassPhrase.ReadOnly = true;
@@ -303,7 +305,7 @@ namespace EaseFilter.FolderLocker
             // label_PassPhrase
             // 
             this.label_PassPhrase.AutoSize = true;
-            this.label_PassPhrase.Location = new System.Drawing.Point(344, 76);
+            this.label_PassPhrase.Location = new System.Drawing.Point(188, 134);
             this.label_PassPhrase.Name = "label_PassPhrase";
             this.label_PassPhrase.Size = new System.Drawing.Size(88, 13);
             this.label_PassPhrase.TabIndex = 20;
@@ -335,6 +337,17 @@ namespace EaseFilter.FolderLocker
             this.button_BrowseFolder.Text = "...";
             this.button_BrowseFolder.UseVisualStyleBackColor = true;
             this.button_BrowseFolder.Click += new System.EventHandler(this.button_BrowseFolder_Click);
+            // 
+            // checkBox_AllowDecryptFile
+            // 
+            this.checkBox_AllowDecryptFile.AutoSize = true;
+            this.checkBox_AllowDecryptFile.Location = new System.Drawing.Point(346, 111);
+            this.checkBox_AllowDecryptFile.Name = "checkBox_AllowDecryptFile";
+            this.checkBox_AllowDecryptFile.Size = new System.Drawing.Size(141, 17);
+            this.checkBox_AllowDecryptFile.TabIndex = 37;
+            this.checkBox_AllowDecryptFile.Text = "Allow read encrypted file";
+            this.checkBox_AllowDecryptFile.UseVisualStyleBackColor = true;
+            this.checkBox_AllowDecryptFile.CheckedChanged += new System.EventHandler(this.checkBox_AllowDecryptFile_CheckedChanged);
             // 
             // FolderLockerSettigs
             // 
@@ -387,5 +400,6 @@ namespace EaseFilter.FolderLocker
         private System.Windows.Forms.Button button_AddUserRights;
         private System.Windows.Forms.ListView listView_AccessRights;
         private System.Windows.Forms.CheckBox checkBox_AllowCopyout;
+        private System.Windows.Forms.CheckBox checkBox_AllowDecryptFile;
     }
 }

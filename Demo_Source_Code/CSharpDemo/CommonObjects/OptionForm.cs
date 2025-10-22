@@ -645,7 +645,7 @@ namespace EaseFilter.CommonObjects
                         break;
                     case OptionType.ProccessId:
                         int pid = (int)item.Tag;
-                        processId += pid.ToString() + ";";
+                        processId += pid.ToString();
                         break;
 
                     case OptionType.Access_Flag:

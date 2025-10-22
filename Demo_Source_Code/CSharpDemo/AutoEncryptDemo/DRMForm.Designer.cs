@@ -32,7 +32,7 @@
             this.button_ApplySettings = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
             this.label10 = new System.Windows.Forms.Label();
-            this.textBox_authorizedProcessNames = new System.Windows.Forms.TextBox();
+            this.textBox_AuthorizedProcessNames = new System.Windows.Forms.TextBox();
             this.label12 = new System.Windows.Forms.Label();
             this.dateTimePicker_ExpireTime = new System.Windows.Forms.DateTimePicker();
             this.dateTimePicker_ExpireDate = new System.Windows.Forms.DateTimePicker();
@@ -50,6 +50,7 @@
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.radioButton_StoreDRMToServer = new System.Windows.Forms.RadioButton();
             this.radioButton_EmbedDRM = new System.Windows.Forms.RadioButton();
+            this.button_help = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
@@ -83,12 +84,12 @@
             this.label10.TabIndex = 53;
             this.label10.Text = "Authorized process names";
             // 
-            // textBox_authorizedProcessNames
+            // textBox_AuthorizedProcessNames
             // 
-            this.textBox_authorizedProcessNames.Location = new System.Drawing.Point(213, 134);
-            this.textBox_authorizedProcessNames.Name = "textBox_authorizedProcessNames";
-            this.textBox_authorizedProcessNames.Size = new System.Drawing.Size(242, 20);
-            this.textBox_authorizedProcessNames.TabIndex = 6;
+            this.textBox_AuthorizedProcessNames.Location = new System.Drawing.Point(213, 134);
+            this.textBox_AuthorizedProcessNames.Name = "textBox_AuthorizedProcessNames";
+            this.textBox_AuthorizedProcessNames.Size = new System.Drawing.Size(242, 20);
+            this.textBox_AuthorizedProcessNames.TabIndex = 6;
             // 
             // label12
             // 
@@ -194,7 +195,7 @@
             this.groupBox1.Controls.Add(this.dateTimePicker_ExpireDate);
             this.groupBox1.Controls.Add(this.dateTimePicker_ExpireTime);
             this.groupBox1.Controls.Add(this.label12);
-            this.groupBox1.Controls.Add(this.textBox_authorizedProcessNames);
+            this.groupBox1.Controls.Add(this.textBox_AuthorizedProcessNames);
             this.groupBox1.Controls.Add(this.label10);
             this.groupBox1.Controls.Add(this.label2);
             this.groupBox1.Location = new System.Drawing.Point(12, 2);
@@ -231,6 +232,7 @@
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.button_help);
             this.groupBox2.Controls.Add(this.radioButton_StoreDRMToServer);
             this.groupBox2.Controls.Add(this.radioButton_EmbedDRM);
             this.groupBox2.Location = new System.Drawing.Point(19, 19);
@@ -261,6 +263,16 @@
             this.radioButton_EmbedDRM.Text = "Embed DRM to encrypted file";
             this.radioButton_EmbedDRM.UseVisualStyleBackColor = true;
             // 
+            // button_help
+            // 
+            this.button_help.Image = global::AutoEncryptDemo.Properties.Resources.about;
+            this.button_help.Location = new System.Drawing.Point(381, 10);
+            this.button_help.Name = "button_help";
+            this.button_help.Size = new System.Drawing.Size(36, 23);
+            this.button_help.TabIndex = 78;
+            this.button_help.UseVisualStyleBackColor = true;
+            this.button_help.Click += new System.EventHandler(this.button_help_Click);
+            // 
             // DRMForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -287,7 +299,7 @@
         private System.Windows.Forms.Button button_ApplySettings;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label10;
-        private System.Windows.Forms.TextBox textBox_authorizedProcessNames;
+        private System.Windows.Forms.TextBox textBox_AuthorizedProcessNames;
         private System.Windows.Forms.Label label12;
         private System.Windows.Forms.DateTimePicker dateTimePicker_ExpireTime;
         private System.Windows.Forms.DateTimePicker dateTimePicker_ExpireDate;
@@ -305,5 +317,6 @@
         private System.Windows.Forms.RadioButton radioButton_StoreDRMToServer;
         private System.Windows.Forms.RadioButton radioButton_EmbedDRM;
         private System.Windows.Forms.Button button_GetComputerId;
+        private System.Windows.Forms.Button button_help;
     }
 }

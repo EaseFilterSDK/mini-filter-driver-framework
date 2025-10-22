@@ -66,9 +66,15 @@ namespace EaseFilter.CommonObjects
             BaseClear();
         }
 
-        public void Remove(RegistryFilterRule RegistryFilterRule)
+        public void Remove(RegistryFilterRule registryFilterRule)
         {
-            BaseRemove(RegistryFilterRule.ProcessId.ToString() + RegistryFilterRule.ProcessNameFilterMask);
+            BaseRemove(registryFilterRule.ProcessId.ToString() + registryFilterRule.ProcessNameFilterMask);
+        }
+
+        public void Remove(RegistryFilter registryFilter)
+        {
+            RegistryFilterRule registryFilterRule = new RegistryFilterRule(registryFilter);
+            BaseRemove(registryFilterRule.ProcessId.ToString() + registryFilterRule.ProcessNameFilterMask);
         }
 
         public void RemoveAt(int index)

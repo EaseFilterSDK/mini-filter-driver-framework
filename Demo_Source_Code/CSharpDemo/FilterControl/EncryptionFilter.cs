@@ -278,6 +278,8 @@ namespace EaseFilter.FilterControl
                 isNewCreatedFile = true;
             }
 
+            AccessFlags = FilterAPI.ALLOW_MAX_RIGHT_ACCESS;
+
             // this is encrypted file requests the encryption key, iv
             //messageSend.FilterCommand == (uint)FilterAPI.FilterCommand.FILTER_REQUEST_ENCRYPTION_IV_AND_KEY
         }

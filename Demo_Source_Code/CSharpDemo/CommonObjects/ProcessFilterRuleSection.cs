@@ -55,9 +55,9 @@ namespace EaseFilter.CommonObjects
             BaseAdd(processFilterRule);
         }
 
-        public void Add(ProcessFilter ProcessFilter)
+        public void Add(ProcessFilter processFilter)
         {
-            ProcessFilterRule processFilterRule = new ProcessFilterRule(ProcessFilter);
+            ProcessFilterRule processFilterRule = new ProcessFilterRule(processFilter);
             BaseAdd(processFilterRule);
         }
 
@@ -66,9 +66,15 @@ namespace EaseFilter.CommonObjects
             BaseClear();
         }
 
-        public void Remove(ProcessFilterRule ProcessFilterRule)
+        public void Remove(ProcessFilterRule processFilterRule)
         {
-            BaseRemove(ProcessFilterRule.ProcessNameFilterMask + ProcessFilterRule.ProcessId);
+            BaseRemove(processFilterRule.ProcessNameFilterMask + processFilterRule.ProcessId);
+        }
+
+        public void Remove(ProcessFilter processFilter)
+        {
+            ProcessFilterRule processFilterRule = new ProcessFilterRule(processFilter);
+            BaseRemove(processFilterRule.ProcessNameFilterMask + processFilterRule.ProcessId);
         }
 
         public void RemoveAt(int index)

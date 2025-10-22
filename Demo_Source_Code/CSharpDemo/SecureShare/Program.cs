@@ -32,7 +32,7 @@ namespace SecureShare
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new SecureShareManager());
+            Application.Run(new SecureShareMainForm());
 
         }
     }

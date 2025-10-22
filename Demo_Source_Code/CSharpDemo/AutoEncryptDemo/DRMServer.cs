@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using System.IO;
 using System.Text;
 using System.Runtime.InteropServices;
@@ -46,15 +46,15 @@ namespace AutoEncryptDemo
         /// <summary>
         /// the access flags of the shared file.
         /// </summary>
-        public uint AccessFlags;
+        public uint AccessFlags = FilterAPI.ALLOW_MAX_RIGHT_ACCESS;
         /// <summary>
         /// The file will be expired after the expire time in UTC format, and it can't be accessed.           
         /// </summary>
-        public long ExpireTime;
+        public long ExpireTime = DateTime.Now.AddDays(2).ToFileTimeUtc();
         /// <summary>
         /// The time in UTC format of the encrypted file was created.
         /// </summary>
-        public long CreationTime;
+        public long CreationTime = DateTime.Now.ToFileTimeUtc();
         /// <summary>
         /// the file name which was applied with policy.
         /// </summary>
@@ -134,7 +134,7 @@ namespace AutoEncryptDemo
         /// <summary>
         /// The defined DRM data, you can store the DRM data to your own remote server to control the encrypted file.
         /// </summary>
-        public static DRMInfo dRMInfo = null;
+        public static DRMInfo dRMInfo = new DRMInfo();
 
         static DRMData dRMData = new DRMData();
 
@@ -371,6 +371,43 @@ namespace AutoEncryptDemo
             }
         }
 
+        public static bool IsNameMatch(string Name, string NameMask, bool matchLastProcessName)
+        {
+            string name = Name.ToLower();
+            string[] nameMasks = NameMask.ToLower().Split(new char[] { ';' });
+
+            foreach (string nameMask in nameMasks)
+            {
+                if (nameMask.Length > 0)
+                {   
+                    if(matchLastProcessName)
+                    {
+                        if (name.ToLower().EndsWith(nameMask.ToLower()))
+                        {
+                            //name="c:\windows\notepad.exe" nameMask= "notepad.exe";
+                            return true;
+                        }
+                    }
+
+
+                    // Escape regex special characters except for * and ?
+                    string regexPattern = "^" + Regex.Escape(nameMask)
+                                               .Replace("\\*", ".*")
+                                               .Replace("\\?", ".") + "$";
+
+                    bool isMatch = Regex.IsMatch(Name, regexPattern, RegexOptions.IgnoreCase);
+
+                    if (isMatch)
+                    {
+                        return true;
+                    }
+                }
+
+            }
+
+            return false;
+        }
+
         public static bool GetEncryptedFileAccessPermission(EncryptEventArgs encryptArgs)
         {
             Boolean retVal = false;
@@ -424,7 +461,7 @@ namespace AutoEncryptDemo
 
                     if (!string.IsNullOrEmpty(dRMInfo.AuthorizedProcessNames))
                     {
-                        if (dRMInfo.AuthorizedProcessNames.IndexOf(processName.ToLower().Trim()) < 0)
+                        if (!IsNameMatch(processName, dRMInfo.AuthorizedProcessNames, true))
                         {
                             lastError = "the process " + processName + " is not in authorized process list.";
                             return false;
@@ -433,7 +470,7 @@ namespace AutoEncryptDemo
 
                     if (!string.IsNullOrEmpty(dRMInfo.UnauthorizedProcessNames))
                     {
-                        if (dRMInfo.UnauthorizedProcessNames.IndexOf(processName.ToLower().Trim()) >= 0)
+                        if (IsNameMatch(processName, dRMInfo.UnauthorizedProcessNames, true))
                         {
                             lastError = "the process " + processName + " is in unauthorized process list.";
                             return false;
@@ -442,7 +479,7 @@ namespace AutoEncryptDemo
 
                     if (!string.IsNullOrEmpty(dRMInfo.AuthorizedUserNames))
                     {
-                        if (dRMInfo.AuthorizedUserNames.IndexOf(userName.ToLower().Trim()) < 0)
+                        if (!IsNameMatch(userName, dRMInfo.AuthorizedUserNames,false))
                         {
                             lastError = "the user " + userName + " is not in authorized user list.";
                             return false;
@@ -451,7 +488,7 @@ namespace AutoEncryptDemo
 
                     if (!string.IsNullOrEmpty(dRMInfo.UnauthorizedUserNames))
                     {
-                        if (dRMInfo.UnauthorizedUserNames.IndexOf(userName.ToLower().Trim()) >= 0)
+                        if (IsNameMatch(userName, dRMInfo.UnauthorizedUserNames,false))
                         {
                             lastError = "the user " + userName + " is in unauthorized user list.";
                             return false;

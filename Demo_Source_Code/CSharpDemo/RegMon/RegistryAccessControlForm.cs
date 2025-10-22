@@ -28,10 +28,12 @@ namespace EaseFilter.CommonObjects
 
         public RegistryAccessControlForm()
         {
+            this.StartPosition = FormStartPosition.CenterParent;
+
             InitializeComponent();
 
             InitListView();
-           
+            
         }
 
         public void InitListView()
@@ -61,7 +63,7 @@ namespace EaseFilter.CommonObjects
             {
                 selectedFilterRule = new RegistryFilter();
 
-                selectedFilterRule.ControlFlag = FilterAPI.MAX_REGITRY_ACCESS_FLAG;
+                selectedFilterRule.ControlFlag = FilterAPI.MAX_REGISTRY_ACCESS_FLAG;
                 selectedFilterRule.RegCallbackClass = 93092006832128; //by default only register post callback class
                 selectedFilterRule.ProcessNameFilterMask = "*";
                 selectedFilterRule.RegistryKeyNameFilterMask = "*";

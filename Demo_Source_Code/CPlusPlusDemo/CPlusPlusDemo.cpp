@@ -80,6 +80,7 @@ Return Value
 	printf( "EaseFltCPPDemo d c:\\filterTest\\* notepad.exe;wordpade.xe  ----- encrypt file with DRM data embedding, authorized process notepad and wordpad.\r\n");
 	printf( "EaseFltCPPDemo e c:\\filterTest\\*  ----- encrypt filter driver with default settings.\r\n" );
 	printf( "EaseFltCPPDemo m c:\\filterTest\\*  ----- monitor filter driver with default settings.\r\n" );
+	printf( "EaseFltCPPDemo m c:\\filterTest\\*  0 ----- monitor filter driver with file change events only.\r\n");
 	printf( "EaseFltCPPDemo c c:\\filterTest\\*  ----- control filter driver with default settings.\r\n" );
 	printf( "EaseFltCPPDemo c c:\\filterTest\\*  0 33393264   ---control filter driver, prevent files from being changed.\r\n" );
 	printf( "EaseFltCPPDemo P *(processNameFilterMask) controlFlag ---process filter driver to monitor/control process activities.\r\n");
@@ -164,14 +165,68 @@ int _tmain(int argc, _TCHAR* argv[])
 			break;
 
 		}		
-
-		case 'c': filterType = FILE_SYSTEM_CONTROL; //start control filter		
 		case 'm':
 		{
 			//To monitor filter:
 			//you can register the file changed events to get the notification when the file was created, renamed, deleted, written and changed.
 			//you only can register the post I/O to get the notification after the I/O was processed by the file system.
 
+			if (!IsDriverServiceRunning())
+			{
+				ret = InstallDriver();
+				if (!ret)
+				{
+					PrintLastErrorMessage(L"InstallDriver failed.");
+					return 1;
+				}
+
+				PrintPassedMessage(L"Install filter driver succeeded!");
+			}
+
+
+			ULONGLONG allPostIO = POST_CREATE | POST_FASTIO_READ | POST_CACHE_READ | POST_NOCACHE_READ | POST_PAGING_IO_READ;
+			allPostIO |= POST_FASTIO_WRITE | POST_CACHE_WRITE | POST_NOCACHE_WRITE | POST_PAGING_IO_WRITE | POST_QUERY_INFORMATION;
+			allPostIO |= POST_SET_INFORMATION | POST_DIRECTORY | POST_QUERY_SECURITY | POST_SET_SECURITY | POST_CLEANUP | POST_CLOSE;
+
+			WCHAR* fileFilterMask = L"c:\\test\\*";
+			ULONGLONG ioCallbackClass = allPostIO;
+			ULONG accessFlag = ALLOW_MAX_RIGHT_ACCESS;
+
+			if (argc >= 3)
+			{
+				fileFilterMask = argv[2];
+			}
+
+			//To get the I/O callback registration class, you can check the IOCallbackClass for your reference.
+			if (argc >= 4)
+			{
+				ioCallbackClass = std::stoul(argv[3], nullptr, 16);
+			}
+
+			FileFilterRule fileFilterRule(fileFilterMask);
+			fileFilterRule.AccessFlag = accessFlag;
+			
+			fileFilterRule.BooleanConfig = ENABLE_MONITOR_EVENT_BUFFER;
+			fileFilterRule.FileChangeEventFilter = FILE_WAS_CREATED | FILE_WAS_WRITTEN | FILE_WAS_RENAMED | FILE_WAS_DELETED | FILE_WAS_READ;
+			fileFilterRule.MonitorFileIOEventFilter = ioCallbackClass;
+
+			filterControl->AddFileFilter(fileFilterRule);
+
+			if (!filterControl->StartFilter(filterType, threadCount, connectionTimeout, registerKey))
+			{
+				break;
+			}
+
+			_tprintf(_T("Start Monitor filter, fileFilterMask=%s  ioCallbackClass:0X%0X accessFlag:0X%0X \n\n Press any key to stop.\n"), fileFilterMask, ioCallbackClass, accessFlag);
+
+			getchar();
+
+			break;
+
+		}
+
+		case 'c': filterType = FILE_SYSTEM_CONTROL; //start control filter		
+		{
 			//To control Filter:
 			//You can allow or deny the file I/O by setting the access flags in the filter rule.
 			//You can register the pre-I/O to get the callback in user mode application before the I/O goes down to the file system,
@@ -192,12 +247,8 @@ int _tmain(int argc, _TCHAR* argv[])
 			}
 
 
-			ULONGLONG allPostIO = POST_CREATE|POST_FASTIO_READ|POST_CACHE_READ|POST_NOCACHE_READ|POST_PAGING_IO_READ;
-				allPostIO |= POST_FASTIO_WRITE|POST_CACHE_WRITE|POST_NOCACHE_WRITE|POST_PAGING_IO_WRITE|POST_QUERY_INFORMATION;
-				allPostIO |= POST_SET_INFORMATION|POST_DIRECTORY|POST_QUERY_SECURITY|POST_SET_SECURITY|POST_CLEANUP|POST_CLOSE;
-
 			WCHAR* fileFilterMask = L"c:\\test\\*";
-			ULONGLONG ioCallbackClass = allPostIO;
+			ULONGLONG ioCallbackClass = PRE_CREATE| PRE_RENAME_FILE| PRE_DELETE_FILE;
 			ULONG accessFlag = ALLOW_MAX_RIGHT_ACCESS;		
 
 			if (argc >= 3)
@@ -224,39 +275,35 @@ int _tmain(int argc, _TCHAR* argv[])
 
 			fileFilterRule.BooleanConfig = ENABLE_MONITOR_EVENT_BUFFER;
 			fileFilterRule.FileChangeEventFilter = FILE_WAS_CREATED|FILE_WAS_WRITTEN|FILE_WAS_RENAMED|FILE_WAS_DELETED|FILE_WAS_READ;
-			//fileFilterRule.MonitorFileIOEventFilter = ioCallbackClass;
 		
 			//you can filter the file I/O only opens with this option( file is going to be created.)
 			//fileFilterRule.FilterDisposition = FILE_CREATE | FILE_OPEN_IF | FILE_OVERWRITE | FILE_OVERWRITE_IF;
 
-			if( filterType == FILE_SYSTEM_CONTROL)
-			{
-				//if you want to hide the files, you need to enable this flag.
-				//fileFilterRule.AccessFlag |= ENABLE_HIDE_FILES_IN_DIRECTORY_BROWSING;
-				//hide the txt files from the directory.
-				//fileFilterRule.AddHiddenFileFilterMask(L"*.txt");
+			//if you want to hide the files, you need to enable this flag.
+			//fileFilterRule.AccessFlag |= ENABLE_HIDE_FILES_IN_DIRECTORY_BROWSING;
+			//hide the txt files from the directory.
+			//fileFilterRule.AddHiddenFileFilterMask(L"*.txt");
 
-				//if you want to reparse the file open, you need to enable this flag.
-				//fileFilterRule.AccessFlag |= ENABLE_REPARSE_FILE_OPEN;
-                //FilterMask = c:\test\*txt
-                //ReparseFilterMask = d:\reparse\*doc
-                //If you open file c:\test\MyTest.txt, it will reparse to the file d:\reparse\MyTest.doc.
-				//fileFilterRule.ReparseFileFilterMask= L" d:\\reparse\*doc";
+			//if you want to reparse the file open, you need to enable this flag.
+			//fileFilterRule.AccessFlag |= ENABLE_REPARSE_FILE_OPEN;
+            //FilterMask = c:\test\*txt
+            //ReparseFilterMask = d:\reparse\*doc
+            //If you open file c:\test\MyTest.txt, it will reparse to the file d:\reparse\MyTest.doc.
+			//fileFilterRule.ReparseFileFilterMask= L" d:\\reparse\*doc";
 
-				//get the control callback I/O request, you can block the I/O request in the pre-IO
-				fileFilterRule.ControlFileIOEventFilter = ioCallbackClass;
+			//get the control callback I/O request, you can block the I/O request in the pre-IO
+			fileFilterRule.ControlFileIOEventFilter = ioCallbackClass;
 
-				//You can allow/block the file rename/delete in the callback handler by register PRE_RENAME_FILE|PRE_DELETE_FILE.
-				/*ULONGLONG preIOCallbackClass = PRE_RENAME_FILE | PRE_DELETE_FILE;
-				fileFilterRule.ControlFileIOEventFilter = preIOCallbackClass;*/
+			//You can allow/block the file rename/delete in the callback handler by register PRE_RENAME_FILE|PRE_DELETE_FILE.
+			/*ULONGLONG preIOCallbackClass = PRE_RENAME_FILE | PRE_DELETE_FILE;
+			fileFilterRule.ControlFileIOEventFilter = preIOCallbackClass;*/
 
-				//disable the file being renamed, deleted and written access rights.
-				ULONG processAccessRights = accessFlag & (~(ALLOW_FILE_RENAME|ALLOW_FILE_DELETE|ALLOW_WRITE_ACCESS));
-				//set this new access rights to process cmd, cmd can't rename,delete or write to the file.
-				//this feature requires the process filter driver feature, it need to enable the process filter driver.
-				filterType |= FILE_SYSTEM_PROCESS;
-				fileFilterRule.AddAccessRightsToProcessName(L"cmd.exe", processAccessRights);
-			}
+			//disable the file being renamed, deleted and written access rights.
+			ULONG processAccessRights = accessFlag & (~(ALLOW_FILE_RENAME|ALLOW_FILE_DELETE|ALLOW_WRITE_ACCESS));
+			//set this new access rights to process cmd, cmd can't rename,delete or write to the file.
+			//this feature requires the process filter driver feature, it need to enable the process filter driver.
+			filterType |= FILE_SYSTEM_PROCESS;
+			fileFilterRule.AddAccessRightsToProcessName(L"cmd.exe", processAccessRights);
 
 			filterControl->AddFileFilter(fileFilterRule);
 
@@ -273,14 +320,7 @@ int _tmain(int argc, _TCHAR* argv[])
 				break;
 			}
 
-			if (op == 'm')
-			{
-				_tprintf(_T("Start Monitor filter, fileFilterMask=%s  ioCallbackClass:0X%0X accessFlag:0X%0X \n\n Press any key to stop.\n"), fileFilterMask, ioCallbackClass, accessFlag);
-			}
-			else
-			{
-				_tprintf(_T("Start control filter, fileFilterMask=%s  ioCallbackClass:0X%0X accessFlag:0X%0X \n\n Press any key to stop.\n"), fileFilterMask, ioCallbackClass, accessFlag);
-			}
+			_tprintf(_T("Start control filter, fileFilterMask=%s  ioCallbackClass:0X%0X accessFlag:0X%0X \n\n Press any key to stop.\n"), fileFilterMask, ioCallbackClass, accessFlag);
 			
 			//prevent the current process from being terminated.
 			//AddProtectedProcessId(GetCurrentProcessId());

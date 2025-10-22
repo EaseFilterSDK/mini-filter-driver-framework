@@ -34,26 +34,28 @@ namespace  SecureShare
 {
     public partial class ShareFileForm : Form
     {
+        /// <summary>
+        /// This is the existing DRMData to be modified.
+        /// </summary>
+        DRMData selectDRMData = null;
 
-        DRPolicy selectedDRPolicy = null;
-
-        public ShareFileForm(DRPolicy drPolicy)
+        public ShareFileForm(DRMData drmData)
         {
             InitializeComponent();
 
-            textBox_FileName.Text = drPolicy.FileName;
+            textBox_FileName.Text = drmData.FileName;
 
-            selectedDRPolicy = drPolicy;
+            selectDRMData = drmData;
             textBox_FileName.Enabled = false;
             textBox_TargetName.Enabled = false;
             button_OpenFile.Enabled = false;
 
-            dateTimePicker_ExpireDate.Value = DateTime.FromFileTime(drPolicy.ExpireTime);
-            dateTimePicker_ExpireTime.Value = DateTime.FromFileTime(drPolicy.ExpireTime);
-            textBox_authorizedProcessNames.Text = drPolicy.AuthorizedProcessNames;
-            textBox_UnauthorizedProcessNames.Text = drPolicy.UnauthorizedProcessNames;
-            textBox_AuthorizedUserNames.Text = drPolicy.AuthorizedUserNames;
-            textBox_UnauthorizedUserNames.Text = drPolicy.UnauthorizedUserNames;
+            dateTimePicker_ExpireDate.Value = DateTime.FromFileTime(drmData.ExpireTime);
+            dateTimePicker_ExpireTime.Value = DateTime.FromFileTime(drmData.ExpireTime);
+            textBox_authorizedProcessNames.Text = drmData.AuthorizedProcessNames;
+            textBox_UnauthorizedProcessNames.Text = drmData.UnauthorizedProcessNames;
+            textBox_AuthorizedUserNames.Text = drmData.AuthorizedUserNames;
+            textBox_UnauthorizedUserNames.Text = drmData.UnauthorizedUserNames;
 
             button_CreateFile.Text = "Apply change";
         }
@@ -61,41 +63,35 @@ namespace  SecureShare
         public ShareFileForm()
         {
             InitializeComponent();
-            dateTimePicker_ExpireDate.Value = DateTime.Now.AddDays(1);
+            dateTimePicker_ExpireDate.Value = DateTime.Now.AddDays(2);
             dateTimePicker_ExpireTime.Value = DateTime.Now;
 
             button_CreateFile.Text = "Create Share File";
         }
 
-        private DRPolicy GetDRSetting()
+        private void GetDRMData(ref DRMData drmData)
         {
-            DRPolicy drPolicy = new DRPolicy();
-
             try
             {
-                drPolicy.AuthorizedProcessNames = textBox_authorizedProcessNames.Text.Trim().ToLower();
-                drPolicy.UnauthorizedProcessNames = textBox_UnauthorizedProcessNames.Text.Trim().ToLower();
-                drPolicy.AuthorizedUserNames = textBox_AuthorizedUserNames.Text.Trim().ToLower();
-                drPolicy.UnauthorizedUserNames = textBox_UnauthorizedUserNames.Text.Trim().ToLower();
+                drmData.AuthorizedProcessNames = textBox_authorizedProcessNames.Text.Trim().ToLower();
+                drmData.UnauthorizedProcessNames = textBox_UnauthorizedProcessNames.Text.Trim().ToLower();
+                drmData.AuthorizedUserNames = textBox_AuthorizedUserNames.Text.Trim().ToLower();
+                drmData.UnauthorizedUserNames = textBox_UnauthorizedUserNames.Text.Trim().ToLower();
                 DateTime expireDate = dateTimePicker_ExpireDate.Value.Date + dateTimePicker_ExpireTime.Value.TimeOfDay;
-                drPolicy.FileName = Path.GetFileName(textBox_TargetName.Text);
-                drPolicy.ExpireTime = expireDate.ToFileTime();
+                drmData.FileName = Path.GetFileName(textBox_FileName.Text);
+                drmData.ExpireTime = expireDate.ToFileTime();
 
-                if (null != selectedDRPolicy)
-                {
-                    drPolicy.EncryptionIV = selectedDRPolicy.EncryptionIV;
-                }
             }
             catch (Exception ex)
             {
-                throw new Exception("Apply digital right failed with error:" + ex.Message);
+                throw new Exception("GetDRMData failed with error:" + ex.Message);
             }
 
-            return drPolicy;
+            return ;
         }
 
 
-        private bool CreateOrModifyShareEncryptFile()
+        private bool CreateShareEncryptFile()
         {
             string lastError = string.Empty;            
 
@@ -103,8 +99,11 @@ namespace  SecureShare
             string unauthorizedProcessNames = textBox_UnauthorizedProcessNames.Text.Trim();
             string authorizedUserNames = textBox_AuthorizedUserNames.Text.Trim();
             string unauthorizedUserNames = textBox_UnauthorizedUserNames.Text.Trim();
+            string authorizedComputerIds = string.Empty;
+            string authorizedIps = string.Empty;
             string fileName = textBox_FileName.Text.Trim();
             string targetFileName = textBox_TargetName.Text;
+            uint accessFlags = FilterAPI.ALLOW_MAX_RIGHT_ACCESS;
 
             try
             {
@@ -123,18 +122,31 @@ namespace  SecureShare
                     return false;
                 }
 
+                if(!File.Exists(fileName))
+                {
+                    MessageBoxHelper.PrepToCenterMessageBoxOnForm(this);
+                    MessageBox.Show("The file " + fileName + " doesn't exist.", "FileExist", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return false;
+                }
 
                 //here we generate the random unique IV and key, you can use your own key and iv
                 byte[] encryptionIV = Utils.GetRandomIV();
                 byte[] encryptionKey = Utils.GetRandomKey();
+                string encryptionIVStr = Utils.ByteArrayToHexStr(encryptionIV);
+                string encryptionKeyStr = Utils.ByteArrayToHexStr(encryptionKey);
 
-                string keyStr = string.Empty;
-                string ivStr = string.Empty;
-                string tagStr = Utils.ByteArrayToHexStr(encryptionIV);
+                bool retVal = DRMServer.AddDRMDataToServer(fileName, authorizedProcessNames, unauthorizedProcessNames, authorizedUserNames, unauthorizedUserNames, authorizedComputerIds
+                    ,authorizedIps, expireDateTime.ToFileTimeUtc(), encryptionIVStr, encryptionKeyStr, accessFlags, out lastError);
 
-                byte[] tagData = UnicodeEncoding.Unicode.GetBytes(tagStr);
+                if(!retVal)
+                {
+                    MessageBoxHelper.PrepToCenterMessageBoxOnForm(this);
+                    MessageBox.Show("Create share file failed, AddDRMDataToServer failed with error:" + lastError, "AddDRMDataToServer", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return false;
+                }
 
-                bool retVal = false;
+                string tagDataStr = GlobalConfig.AccountName + ";" + Environment.MachineName + ";" + encryptionIVStr;
+                byte[] tagData = ASCIIEncoding.ASCII.GetBytes(tagDataStr);
 
                 if (fileName.Equals(targetFileName, StringComparison.CurrentCulture))
                 {
@@ -159,7 +171,7 @@ namespace  SecureShare
                 }
                 else
                 {
-                    //set this flag to the encrypted file, require to get permission from user mode when the file open 
+                    //set this flag to the encrypted file, require to get permission from user mode when the share encrypted file was opened 
                     if (!FilterAPI.SetHeaderFlags(targetFileName, (uint)AESFlags.Flags_Request_IV_And_Key_From_User,FilterAPI.ALLOW_MAX_RIGHT_ACCESS))
                     {
                         MessageBoxHelper.PrepToCenterMessageBoxOnForm(this);
@@ -168,22 +180,72 @@ namespace  SecureShare
                         return false;
                     }
 
-                    if (!GlobalConfig.StoreSharedFileMetaDataInServer)
-                    {
-                        //add the permission meta data to a file and store it in the server, it will be used when the file open.
-                        if (!DRServer.AddDRInfoToFile(targetFileName, authorizedProcessNames, unauthorizedProcessNames, authorizedUserNames, unauthorizedUserNames
-                            , expireDateTime, encryptionIV, encryptionKey, FilterAPI.ALLOW_MAX_RIGHT_ACCESS.ToString()))
-                        {
-                            return false;
-                        }
-
-                    }
-                 
                     MessageBoxHelper.PrepToCenterMessageBoxOnForm(this);
-                    string message = "Create encrypted file " + targetFileName + " succeeded, you can distribute this encrypted file to your client.\r\n\r\nDownload this file to the share file drop folder in the client,";
-                    message += " then start the filter service there, now you can open the encrypted file if the process in client has the permission.";
+                    string message = "Create encrypted file " + targetFileName + " succeeded, you can share this encrypted file to your clients.\r\n\r\nPlease put this encrypted file to the share file drop folder in the client,";
+                    message += " you can read this encrypted file if you have the permission to read when the driver service is started.";
                     MessageBox.Show(message, "Share encrypted file", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
+
+                return true;
+
+            }
+            catch (Exception ex)
+            {
+                MessageBoxHelper.PrepToCenterMessageBoxOnForm(this);
+                MessageBox.Show("Create share file failed with error " + ex.Message, "Create share encrypted file", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                return false;
+            }
+        }
+
+        private bool ModifyShareEncryptFile()
+        {
+            string lastError = string.Empty;
+
+            string authorizedProcessNames = textBox_authorizedProcessNames.Text.Trim();
+            string unauthorizedProcessNames = textBox_UnauthorizedProcessNames.Text.Trim();
+            string authorizedUserNames = textBox_AuthorizedUserNames.Text.Trim();
+            string unauthorizedUserNames = textBox_UnauthorizedUserNames.Text.Trim();
+            string authorizedComputerIds = string.Empty;
+            string authorizedIps = string.Empty;
+            string fileName = textBox_FileName.Text.Trim();
+            string targetFileName = textBox_TargetName.Text;
+            uint accessFlags = FilterAPI.ALLOW_MAX_RIGHT_ACCESS;
+            string encryptionIVStr = selectDRMData.EncryptionIV;
+            string encryptionKeyStr = selectDRMData.EncryptionKey;            
+
+            try
+            {
+                if (fileName.Length == 0)
+                {
+                    MessageBoxHelper.PrepToCenterMessageBoxOnForm(this);
+                    MessageBox.Show("The file name can't be empty.", "Create share encrypted file", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return false;
+                }
+
+                DateTime expireDateTime = dateTimePicker_ExpireDate.Value.Date + dateTimePicker_ExpireTime.Value.TimeOfDay;
+                if (expireDateTime <= DateTime.Now)
+                {
+                    MessageBoxHelper.PrepToCenterMessageBoxOnForm(this);
+                    MessageBox.Show("The expire time can't be less than current time.", "Create share encrypted file", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return false;
+                }
+
+                bool retVal = DRMServer.ModifyDRMDataFromServer(fileName, authorizedProcessNames, unauthorizedProcessNames, authorizedUserNames, unauthorizedUserNames, authorizedComputerIds
+                    , authorizedIps, expireDateTime.ToFileTimeUtc(), encryptionIVStr, encryptionKeyStr, accessFlags, out lastError);
+
+                if (!retVal)
+                {
+                    MessageBoxHelper.PrepToCenterMessageBoxOnForm(this);
+                    MessageBox.Show("ModifyDRMDataFromServer failed with error:" + lastError, "ModifyDRMDataFromServer", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return false;
+                }
+
+                GetDRMData(ref selectDRMData);
+
+                MessageBoxHelper.PrepToCenterMessageBoxOnForm(this);
+                string message = "ModifyDRMDataFromServer " + targetFileName + " succeeded.";
+                MessageBox.Show(message, "ModifyDRMDataFromServer", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
                 return true;
 
@@ -215,10 +277,17 @@ namespace  SecureShare
             try
             {
                 string lastError = string.Empty;
-                if (CreateOrModifyShareEncryptFile())
+
+                if(null == selectDRMData)
                 {
-                    this.Close();
+                    CreateShareEncryptFile();
                 }
+                else 
+                {
+                    ModifyShareEncryptFile();
+                }
+
+                this.Close();
 
             }
             catch (Exception ex)

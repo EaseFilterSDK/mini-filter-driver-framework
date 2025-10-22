@@ -224,6 +224,15 @@ namespace EaseFilter.FolderLocker
             {
                 checkBox_AllowCopyout.Checked = false;
             }
+
+            if ((accessFlags & FilterAPI.AccessFlag.ALLOW_READ_ENCRYPTED_FILES) > 0)
+            {
+                checkBox_AllowDecryptFile.Checked = true;
+            }
+            else
+            {
+                checkBox_AllowDecryptFile.Checked = false;
+            }
         }
 
         private void button_SaveControlSettings_Click(object sender, EventArgs e)
@@ -373,6 +382,18 @@ namespace EaseFilter.FolderLocker
 
         }
 
+        private void checkBox_AllowDecryptFile_CheckedChanged(object sender, EventArgs e)
+        {
+            if (!checkBox_AllowDecryptFile.Checked)
+            {
+                accessFlags = accessFlags & (~FilterAPI.AccessFlag.ALLOW_READ_ENCRYPTED_FILES);
+            }
+            else
+            {
+                accessFlags = accessFlags | (FilterAPI.AccessFlag.ALLOW_READ_ENCRYPTED_FILES);
+            }
+        }
+
         private void checkBox_EnableEncryption_CheckedChanged(object sender, EventArgs e)
         {
             if (!isFormInitialized)
@@ -421,7 +442,7 @@ namespace EaseFilter.FolderLocker
 
         private void button_AddProcessRights_Click(object sender, EventArgs e)
         {
-            Form_AccessRights accessRightsForm = new Form_AccessRights(true, FilterAPI.ALLOW_MAX_RIGHT_ACCESS, "explorer.exe");
+            Form_AccessRights accessRightsForm = new Form_AccessRights(true, FilterAPI.ALLOW_MAX_RIGHT_ACCESS, "notepad.exe");
 
             if (accessRightsForm.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
@@ -477,7 +498,6 @@ namespace EaseFilter.FolderLocker
                 textBox_FolderName.Text = browseFolder.SelectedPath;
             }
         }
-
-     
+       
     }
 }

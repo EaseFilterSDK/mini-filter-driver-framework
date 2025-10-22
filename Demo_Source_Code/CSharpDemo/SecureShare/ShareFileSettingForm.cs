@@ -37,14 +37,23 @@ namespace  SecureShare
             StartPosition = FormStartPosition.CenterScreen;
             InitializeComponent();
 
-            this.textBox_DRFolder.Text = GlobalConfig.DRInfoFolder;
-            this.textBox_ShareFolder.Text = GlobalConfig.ShareFolder;
-            this.textBox_ShareFolderWhiteList.Text = GlobalConfig.ShareFolderWhiteList;
-            this.textBox_ShareFolderBlackList.Text = GlobalConfig.ShareFolderBlackList;
-            this.textBox_ProtectFolder.Text = GlobalConfig.ProtectFolder;
-            this.textBox_ProtectFolderWhiteList.Text = GlobalConfig.ProtectFolderWhiteList;
-            this.textBox_ProtectFolderBlackList.Text = GlobalConfig.ProtectFolderBlackList;
+            this.textBox_AutoEncryptFolder.Text = GlobalConfig.AutoEncryptFolder;
+            this.textBox_AuthorizedUserNames.Text = GlobalConfig.AuthorizedUserNames;
+            this.textBox_UnauthorizedUserNames.Text = GlobalConfig.UnAuthorizedUserNames;
+            this.textBox_ProtectFolderWhiteList.Text = GlobalConfig.AuthorizedProcessNames;
+            this.textBox_ProtectFolderBlackList.Text = GlobalConfig.UnAuthorizedProcessNames;
 
+            DateTime expireDateTime = DateTime.FromFileTimeUtc(GlobalConfig.ShareFileExpireTime);
+            if(expireDateTime < DateTime.Now)
+            {
+                expireDateTime = DateTime.Now.AddDays(2); 
+            }
+
+            dateTimePicker_ExpireTime.Value = dateTimePicker_ExpireDate.Value = expireDateTime;
+
+            this.textBox_SharedFileDropFolder.Text = GlobalConfig.DropFolder;
+            this.textBox_DRMFolder.Text = GlobalConfig.DRMFolder;
+            this.radioButton_DRMInLocal.Checked = GlobalConfig.IsDRMDataInLocal;
         }
 
         private void button_BrowseFolder_Click(object sender, EventArgs e)
@@ -52,50 +61,51 @@ namespace  SecureShare
             FolderBrowserDialog fbd = new FolderBrowserDialog();
             if (fbd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                textBox_ShareFolder.Text = fbd.SelectedPath;
+                textBox_SharedFileDropFolder.Text = fbd.SelectedPath;
+            }
+        }
+
+        private void button_DRMFolder_Click(object sender, EventArgs e)
+        {
+            FolderBrowserDialog fbd = new FolderBrowserDialog();
+            if (fbd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                textBox_DRMFolder.Text = fbd.SelectedPath;
             }
         }
 
         private void button_ApplySettings_Click(object sender, EventArgs e)
         {
-            if (textBox_ShareFolder.Text.Length == 0)
+            if (textBox_SharedFileDropFolder.Text.Length == 0)
             {
                 MessageBoxHelper.PrepToCenterMessageBoxOnForm(this);
                 MessageBox.Show("The share file folder name can't be empty.", "share file folder", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return ;
             }
 
-            if (textBox_DRFolder.Text.Length == 0)
+            GlobalConfig.AutoEncryptFolder = textBox_AutoEncryptFolder.Text;
+            GlobalConfig.AuthorizedProcessNames = textBox_ProtectFolderWhiteList.Text;
+            GlobalConfig.UnAuthorizedProcessNames = textBox_ProtectFolderBlackList.Text;
+            DateTime expireDateTime = dateTimePicker_ExpireDate.Value.Date + dateTimePicker_ExpireTime.Value.TimeOfDay;
+            GlobalConfig.ShareFileExpireTime = expireDateTime.ToFileTimeUtc();
+
+            GlobalConfig.DropFolder = textBox_SharedFileDropFolder.Text;
+            GlobalConfig.DRMFolder = textBox_DRMFolder.Text;
+            GlobalConfig.IsDRMDataInLocal = radioButton_DRMInLocal.Checked;
+
+            if (!Directory.Exists(GlobalConfig.DropFolder))
             {
-                MessageBoxHelper.PrepToCenterMessageBoxOnForm(this);
-                MessageBox.Show("The DR folder name can't be empty.", "share file folder", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
+                Directory.CreateDirectory(GlobalConfig.DropFolder);
             }
 
-            GlobalConfig.ProtectFolder = textBox_ProtectFolder.Text;
-            GlobalConfig.ProtectFolderWhiteList = textBox_ProtectFolderWhiteList.Text;
-            GlobalConfig.ProtectFolderBlackList = textBox_ProtectFolderBlackList.Text;
-
-            GlobalConfig.ShareFolder = textBox_ShareFolder.Text;
-            GlobalConfig.ShareFolderWhiteList = textBox_ShareFolderWhiteList.Text;
-            GlobalConfig.ShareFolderBlackList = textBox_ShareFolderBlackList.Text;
-
-            GlobalConfig.StoreSharedFileMetaDataInServer = false;
-            GlobalConfig.DRInfoFolder = textBox_DRFolder.Text;
-
-            if (!Directory.Exists(GlobalConfig.ShareFolder))
+            if (!Directory.Exists(GlobalConfig.AutoEncryptFolder))
             {
-                Directory.CreateDirectory(GlobalConfig.ShareFolder);
+                Directory.CreateDirectory(GlobalConfig.AutoEncryptFolder);
             }
 
-            if (!Directory.Exists(GlobalConfig.ProtectFolder))
+            if (!Directory.Exists(GlobalConfig.DRMFolder))
             {
-                Directory.CreateDirectory(GlobalConfig.ProtectFolder);
-            }
-
-            if (!Directory.Exists(GlobalConfig.DRInfoFolder))
-            {
-                Directory.CreateDirectory(GlobalConfig.DRInfoFolder);
+                Directory.CreateDirectory(GlobalConfig.DRMFolder);
             }
 
             GlobalConfig.SaveConfigSetting();
@@ -106,11 +116,16 @@ namespace  SecureShare
         private void button_help_Click(object sender, EventArgs e)
         {
             MessageBoxHelper.PrepToCenterMessageBoxOnForm(this);
-            string helpInfo = "1.Protected folder is a real time encryption and decryption folder, if you copy a file to this folder, it will be encrypted automatically with default 256 bits encryption key and a random unique iv, so don't copy the encrypted files this folder, or it will be encrypted again. if you want to copy the encrypted file out of this folder, you need to add the process name to unauhtorized process list, for example if you copy it with Windows explorer, then add explorer.exe to the black list.\r\n\r\n";
-            helpInfo += "2.Shared file drop folder, you can copy the encrypted share files to this folder, this folder won't encrypt the new created file, but it can decrypt the encrypted file automatically for the authorized processes.\r\n\r\n";
-            helpInfo += "3.When you create the encrypted file from share file manager, the meta data of the encrypted file will be stored in local or in server, if you store the meta data in server, you can grant or revoke access rights anytime anywhere.\r\n";
+            string helpInfo = "1.The Auto Encrypt Folder is a real-time encryption and decryption folder. When you copy a file into this folder, it is automatically encrypted using a newly generated encryption key and a unique random IV (initialization vector).\r\n";
+                helpInfo += "If you want to copy the encrypted file out of this folder, you must add the process name to the unauthorized process list.For example, if you're using Windows Explorer to copy the file, add explorer.exe to the unauthorizedProcessNames list.\r\n\r\n";
+
+            helpInfo += "2.Encrypted Shared File Drop Folder:\r\nYou can copy encrypted shared files into this folder.It will not encrypt newly created files, but it will automatically decrypt encrypted files for authorized processes.\r\n\r\n";
+            helpInfo += "3.The DRM data can be stored either on the server or locally. If the DRM data is stored on the server, you can grant or revoke access rights anytime and from anywhere.\r\n";
+            helpInfo +=  " It is more convenient for POC testing if the DRM data is stored locally.\r\n";
 
             MessageBox.Show(helpInfo, "How to set the configuration?", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
+
+      
     }
 }

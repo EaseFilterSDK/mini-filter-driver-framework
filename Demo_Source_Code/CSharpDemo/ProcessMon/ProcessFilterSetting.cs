@@ -157,7 +157,7 @@ namespace ProcessMon
                 //default file access rights setting for new process filter rule
 
                 //allow the windows dll or exe to be read by the process, or it can't be loaded.
-                selectedProcessFilter.FileAccessRightString = "c:\\test\\*|" + FilterAPI.ALLOW_FILE_READ_ACCESS + ";";
+                selectedProcessFilter.FileAccessRightList.Add("c:\\test\\*", FilterAPI.ALLOW_FILE_READ_ACCESS);
 
             }
 

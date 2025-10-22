@@ -211,6 +211,10 @@ namespace EaseFilter.FilterControl
             /// if it is true it will set the userName and processName for the message_send_data_structure.
             /// </summary>
             ENABLE_SET_USER_PROCESS_NAME = 0x00200000,
+            /// <summary>
+            /// if it is true it will append the header to the file as the meta data of the stub file.
+            /// </summary>
+            ENABLE_STUB_FILE_HEADER = 0x00800000,
 
 
         }
@@ -220,6 +224,38 @@ namespace EaseFilter.FilterControl
         /// </summary>
         public enum FilterCommand
         {
+            /// <summary>
+            /// request the read data back with block data or whole cache file name.
+            /// </summary>
+            MESSAGE_TYPE_RESTORE_BLOCK_OR_FILE = 0x00000001,
+            /// <summary>
+            /// request to download the data to the original folder.
+            /// </summary>
+            MESSAGE_TYPE_RESTORE_FILE_TO_ORIGINAL_FOLDER = 0x00000002,
+            /// <summary>
+            /// request the directory file list.
+            /// </summary>
+            MESSAGE_TYPE_GET_FILE_LIST = 0x00000004,
+            /// <summary>
+            /// request to download whole file to the cache folder.
+            /// </summary>
+            MESSAGE_TYPE_RESTORE_FILE_TO_CACHE = 0x00000008,
+            /// <summary>
+            /// send the notification event of the file changed.
+            /// </summary>
+            MESSAGE_TYPE_SEND_EVENT_NOTIFICATION = 0x00000010,
+            /// <summary>
+            /// send the notification event of the file was deleted.
+            /// </summary>
+            MESSAGE_TYPE_DELETE_FILE = 0x00000020,
+            /// <summary>
+            /// send the notification event of the file was renamed.
+            /// </summary>
+            MESSAGE_TYPE_RENAME_FILE = 0x00000040,
+            /// <summary>
+            /// send the file name of the message was stored.
+            /// </summary>
+            MESSAGE_TYPE_SEND_MESSAGE_FILENAME = 0x00000080,
             /// <summary>
             /// send the notification event of the file was changed.
             /// </summary>
@@ -1091,13 +1127,14 @@ namespace EaseFilter.FilterControl
             FILTER_DATA_BUFFER_IS_UPDATED = 0x00000004,     //only for pre create,to reparse the file open to the new file name.	
             BLOCK_DATA_WAS_RETURNED = 0x00000008,           //Set this flag if return read block databuffer to filter.
             CACHE_FILE_WAS_RETURNED = 0x00000010,           //Set this flag if the stub file was restored.
+            REHYDRATE_FILE_VIA_CACHE_FILE = 0x00000020,     //Set this flag if the whole cache file was downloaded and you want to rehydrate the file from the cache file.
         }    
 
         /// <summary>
         /// this is the data structure which will be returned back to the filter driver.
         /// </summary>
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
-        public struct MessageReplyData
+        public  struct MessageReplyData
         {
             public uint MessageId;
             public uint MessageType;
@@ -1106,6 +1143,7 @@ namespace EaseFilter.FilterControl
             public uint DataBufferLength;
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = 65536)]
             public byte[] DataBuffer;
+
         }
 
         /// <summary>
@@ -1561,7 +1599,7 @@ namespace EaseFilter.FilterControl
         /// <summary>
         /// The maximum registry access right flag
         /// </summary>
-        public const uint MAX_REGITRY_ACCESS_FLAG = 0xFFFFFFFF;
+        public const uint MAX_REGISTRY_ACCESS_FLAG = 0xFFFFFFFF;
 
         /// <summary>
         /// Allow read registry access right
@@ -2242,6 +2280,28 @@ namespace EaseFilter.FilterControl
             [MarshalAs(UnmanagedType.LPWStr)]string fileName,
             ref uint ivSize,
             byte[] ivBuffer);
+
+        /// <summary>
+        /// Create virtual stub file
+        /// </summary>
+        /// <returns></returns>
+        [DllImport("FilterAPI.dll", SetLastError = true)]
+        public static extern bool CreateVirtualStubFile(
+            [MarshalAs(UnmanagedType.LPWStr)] string fileName,
+            long virtualFileSize,
+            uint tagDataSize,
+            byte[] tagData);
+
+        /// <summary>
+        /// Get virtual stub file information
+        /// </summary>
+        /// <returns></returns>
+        [DllImport("FilterAPI.dll", SetLastError = true)]
+        public static extern bool GetVirtualStubFileInfo(
+            [MarshalAs(UnmanagedType.LPWStr)] string fileName,
+            ref long virtualFileSize,
+            ref uint tagDataSize,
+            byte[] tagData);
 
         /// <summary>
         /// Get the computerId 

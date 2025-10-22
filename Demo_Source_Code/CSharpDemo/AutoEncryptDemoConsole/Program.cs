@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 
-using EaseFilter.CommonObjects;
 using EaseFilter.FilterControl;
 
 namespace AutoEncryptDemoConsole
@@ -65,7 +64,6 @@ namespace AutoEncryptDemoConsole
                     isDRMEnabled = true;
                 }
 
-                licenseKey = GlobalConfig.LicenseKey;
 
                 if (!filterControl.StartFilter(filterType, serviceThreads, connectionTimeOut, licenseKey, ref lastError))
                 {
@@ -84,9 +82,6 @@ namespace AutoEncryptDemoConsole
 
                 //enabled the auto file encryption in the watch folder.
                 fileFilter.EnableEncryption = true;
-                //It is optional to set the encrypted file attribute,if it was set,
-                //the encrypted attribute will be kept even it was copied out to another folder without the encryption.
-                fileFilter.BooleanConfig |= (uint)FilterAPI.BooleanConfig.ENABLE_SET_FILE_ATTRIBUTE_ENCRYPTED;
 
                 if (isDRMEnabled)
                 {

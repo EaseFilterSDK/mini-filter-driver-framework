@@ -45,28 +45,6 @@
             listViewItem6});
         }
 
-        private void AddDefaultItemsToEncryptOnReadList()
-        {
-            System.Windows.Forms.ListViewItem listViewItem7 = new System.Windows.Forms.ListViewItem("");
-            System.Windows.Forms.ListViewItem listViewItem8 = new System.Windows.Forms.ListViewItem(new string[] {
-            "Encrypt Files On The Go"}, -1, System.Drawing.Color.DodgerBlue, System.Drawing.Color.Empty, new System.Drawing.Font("Arial Rounded MT Bold", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0))));
-            System.Windows.Forms.ListViewItem listViewItem9 = new System.Windows.Forms.ListViewItem(new string[] {
-            "The file is not encrypted in the local disk"}, -1, System.Drawing.Color.Orange, System.Drawing.Color.Empty, new System.Drawing.Font("Arial Rounded MT Bold", 9F));
-            System.Windows.Forms.ListViewItem listViewItem10 = new System.Windows.Forms.ListViewItem(new string[] {
-            "The file will be encrypted automatically when it was read"}, -1, System.Drawing.Color.Orange, System.Drawing.Color.Empty, new System.Drawing.Font("Arial Rounded MT Bold", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0))));
-            System.Windows.Forms.ListViewItem listViewItem11 = new System.Windows.Forms.ListViewItem(new string[] {
-            ""}, -1, System.Drawing.Color.Orange, System.Drawing.Color.Empty, new System.Drawing.Font("Arial Rounded MT Bold", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0))));
-            System.Windows.Forms.ListViewItem listViewItem12 = new System.Windows.Forms.ListViewItem(new string[] {
-            "To decrypt file, go to decrypt file manually and check Decrypt File On The Go"}, -1, System.Drawing.Color.Orange, System.Drawing.Color.Empty, new System.Drawing.Font("Arial Rounded MT Bold", 9F));
-            this.listView_EncryptOnReadFolders.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem7,
-            listViewItem8,
-            listViewItem9,
-            listViewItem10,
-            listViewItem11,
-            listViewItem12});
-        }
-
         /// <summary>
         /// Required method for Designer support - do not modify
         /// the contents of this method with the code editor.
@@ -97,14 +75,6 @@
             this.button_AddFolder = new System.Windows.Forms.Button();
             this.listView_AutoEncryptFolders = new System.Windows.Forms.ListView();
             this.tabControl1 = new System.Windows.Forms.TabControl();
-            this.tabPage_EncryptOnRead = new System.Windows.Forms.TabPage();
-            this.splitContainer2 = new System.Windows.Forms.SplitContainer();
-            this.groupBox4 = new System.Windows.Forms.GroupBox();
-            this.button_StopService = new System.Windows.Forms.Button();
-            this.button_StartService = new System.Windows.Forms.Button();
-            this.button_RemoveProtectFolder = new System.Windows.Forms.Button();
-            this.button_AddProtectFolder = new System.Windows.Forms.Button();
-            this.listView_EncryptOnReadFolders = new System.Windows.Forms.ListView();
             this.tabPage_DecryptFile = new System.Windows.Forms.TabPage();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.label17 = new System.Windows.Forms.Label();
@@ -125,7 +95,6 @@
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
-            this.checkBox_DecryptFileOnTheGo = new System.Windows.Forms.CheckBox();
             this.tabPage_EncryptFile.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.tabPage_Folder.SuspendLayout();
@@ -135,12 +104,6 @@
             this.splitContainer1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.tabControl1.SuspendLayout();
-            this.tabPage_EncryptOnRead.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).BeginInit();
-            this.splitContainer2.Panel1.SuspendLayout();
-            this.splitContainer2.Panel2.SuspendLayout();
-            this.splitContainer2.SuspendLayout();
-            this.groupBox4.SuspendLayout();
             this.tabPage_DecryptFile.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.SuspendLayout();
@@ -366,7 +329,6 @@
             // tabControl1
             // 
             this.tabControl1.Controls.Add(this.tabPage_Folder);
-            this.tabControl1.Controls.Add(this.tabPage_EncryptOnRead);
             this.tabControl1.Controls.Add(this.tabPage_EncryptFile);
             this.tabControl1.Controls.Add(this.tabPage_DecryptFile);
             this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -375,101 +337,6 @@
             this.tabControl1.SelectedIndex = 0;
             this.tabControl1.Size = new System.Drawing.Size(556, 281);
             this.tabControl1.TabIndex = 0;
-            // 
-            // tabPage_EncryptOnRead
-            // 
-            this.tabPage_EncryptOnRead.Controls.Add(this.splitContainer2);
-            this.tabPage_EncryptOnRead.Location = new System.Drawing.Point(4, 22);
-            this.tabPage_EncryptOnRead.Name = "tabPage_EncryptOnRead";
-            this.tabPage_EncryptOnRead.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage_EncryptOnRead.Size = new System.Drawing.Size(548, 255);
-            this.tabPage_EncryptOnRead.TabIndex = 4;
-            this.tabPage_EncryptOnRead.Text = "Encrypt File On The Go";
-            this.tabPage_EncryptOnRead.UseVisualStyleBackColor = true;
-            // 
-            // splitContainer2
-            // 
-            this.splitContainer2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitContainer2.Location = new System.Drawing.Point(3, 3);
-            this.splitContainer2.Name = "splitContainer2";
-            // 
-            // splitContainer2.Panel1
-            // 
-            this.splitContainer2.Panel1.Controls.Add(this.groupBox4);
-            // 
-            // splitContainer2.Panel2
-            // 
-            this.splitContainer2.Panel2.Controls.Add(this.listView_EncryptOnReadFolders);
-            this.splitContainer2.Size = new System.Drawing.Size(542, 249);
-            this.splitContainer2.SplitterDistance = 114;
-            this.splitContainer2.TabIndex = 1;
-            // 
-            // groupBox4
-            // 
-            this.groupBox4.Controls.Add(this.button_StopService);
-            this.groupBox4.Controls.Add(this.button_StartService);
-            this.groupBox4.Controls.Add(this.button_RemoveProtectFolder);
-            this.groupBox4.Controls.Add(this.button_AddProtectFolder);
-            this.groupBox4.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.groupBox4.Location = new System.Drawing.Point(0, 0);
-            this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(114, 249);
-            this.groupBox4.TabIndex = 2;
-            this.groupBox4.TabStop = false;
-            // 
-            // button_StopService
-            // 
-            this.button_StopService.Location = new System.Drawing.Point(5, 192);
-            this.button_StopService.Name = "button_StopService";
-            this.button_StopService.Size = new System.Drawing.Size(103, 23);
-            this.button_StopService.TabIndex = 3;
-            this.button_StopService.Text = "Stop Service";
-            this.button_StopService.UseVisualStyleBackColor = true;
-            this.button_StopService.Click += new System.EventHandler(this.button_StopService_Click);
-            // 
-            // button_StartService
-            // 
-            this.button_StartService.Location = new System.Drawing.Point(6, 163);
-            this.button_StartService.Name = "button_StartService";
-            this.button_StartService.Size = new System.Drawing.Size(102, 23);
-            this.button_StartService.TabIndex = 2;
-            this.button_StartService.Text = "Start Service";
-            this.button_StartService.UseVisualStyleBackColor = true;
-            this.button_StartService.Click += new System.EventHandler(this.button_StartService_Click);
-            // 
-            // button_RemoveProtectFolder
-            // 
-            this.button_RemoveProtectFolder.Location = new System.Drawing.Point(5, 48);
-            this.button_RemoveProtectFolder.Name = "button_RemoveProtectFolder";
-            this.button_RemoveProtectFolder.Size = new System.Drawing.Size(103, 23);
-            this.button_RemoveProtectFolder.TabIndex = 1;
-            this.button_RemoveProtectFolder.Text = "Remove folder";
-            this.button_RemoveProtectFolder.UseVisualStyleBackColor = true;
-            this.button_RemoveProtectFolder.Click += new System.EventHandler(this.button_RemoveEncryptOnReadFolder_Click);
-            // 
-            // button_AddProtectFolder
-            // 
-            this.button_AddProtectFolder.Location = new System.Drawing.Point(6, 19);
-            this.button_AddProtectFolder.Name = "button_AddProtectFolder";
-            this.button_AddProtectFolder.Size = new System.Drawing.Size(102, 23);
-            this.button_AddProtectFolder.TabIndex = 0;
-            this.button_AddProtectFolder.Text = "Add folder";
-            this.button_AddProtectFolder.UseVisualStyleBackColor = true;
-            this.button_AddProtectFolder.Click += new System.EventHandler(this.button_AddEncryptOnReadFolder_Click);
-            // 
-            // listView_EncryptOnReadFolders
-            // 
-            this.listView_EncryptOnReadFolders.AllowDrop = true;
-            this.listView_EncryptOnReadFolders.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.listView_EncryptOnReadFolders.FullRowSelect = true;
-            this.listView_EncryptOnReadFolders.HideSelection = false;
-            this.listView_EncryptOnReadFolders.Location = new System.Drawing.Point(0, 0);
-            this.listView_EncryptOnReadFolders.Name = "listView_EncryptOnReadFolders";
-            this.listView_EncryptOnReadFolders.Size = new System.Drawing.Size(424, 249);
-            this.listView_EncryptOnReadFolders.SmallImageList = this.imageList1;
-            this.listView_EncryptOnReadFolders.TabIndex = 0;
-            this.listView_EncryptOnReadFolders.UseCompatibleStateImageBehavior = false;
-            this.listView_EncryptOnReadFolders.View = System.Windows.Forms.View.List;
             // 
             // tabPage_DecryptFile
             // 
@@ -485,7 +352,6 @@
             // 
             // groupBox3
             // 
-            this.groupBox3.Controls.Add(this.checkBox_DecryptFileOnTheGo);
             this.groupBox3.Controls.Add(this.label17);
             this.groupBox3.Controls.Add(this.textBox_PassPhraseDecrypt);
             this.groupBox3.Controls.Add(this.label14);
@@ -654,16 +520,6 @@
             this.label4.Size = new System.Drawing.Size(257, 13);
             this.label4.TabIndex = 9;
             // 
-            // checkBox_DecryptFileOnTheGo
-            // 
-            this.checkBox_DecryptFileOnTheGo.AutoSize = true;
-            this.checkBox_DecryptFileOnTheGo.Location = new System.Drawing.Point(140, 165);
-            this.checkBox_DecryptFileOnTheGo.Name = "checkBox_DecryptFileOnTheGo";
-            this.checkBox_DecryptFileOnTheGo.Size = new System.Drawing.Size(138, 17);
-            this.checkBox_DecryptFileOnTheGo.TabIndex = 20;
-            this.checkBox_DecryptFileOnTheGo.Text = "Decrypt File On The Go";
-            this.checkBox_DecryptFileOnTheGo.UseVisualStyleBackColor = true;
-            // 
             // Form_FileCrypt
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -684,12 +540,6 @@
             this.splitContainer1.ResumeLayout(false);
             this.groupBox1.ResumeLayout(false);
             this.tabControl1.ResumeLayout(false);
-            this.tabPage_EncryptOnRead.ResumeLayout(false);
-            this.splitContainer2.Panel1.ResumeLayout(false);
-            this.splitContainer2.Panel2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
-            this.splitContainer2.ResumeLayout(false);
-            this.groupBox4.ResumeLayout(false);
             this.tabPage_DecryptFile.ResumeLayout(false);
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
@@ -736,20 +586,11 @@
         private System.Windows.Forms.Label label16;
         private System.Windows.Forms.Button button_BrowseFileToDecrypt;
         private System.Windows.Forms.Button button_StartToDecrypt;
-        private System.Windows.Forms.TabPage tabPage_EncryptOnRead;
-        private System.Windows.Forms.SplitContainer splitContainer2;
-        private System.Windows.Forms.GroupBox groupBox4;
-        private System.Windows.Forms.Button button_StopService;
-        private System.Windows.Forms.Button button_StartService;
-        private System.Windows.Forms.Button button_RemoveProtectFolder;
-        private System.Windows.Forms.Button button_AddProtectFolder;
-        private System.Windows.Forms.ListView listView_EncryptOnReadFolders;
         private System.Windows.Forms.Label label12;
         private System.Windows.Forms.TextBox textBox_PassPhraseEncrypt;
         private System.Windows.Forms.Label label17;
         private System.Windows.Forms.TextBox textBox_PassPhraseDecrypt;
         private System.Windows.Forms.Button button_Help;
-        private System.Windows.Forms.CheckBox checkBox_DecryptFileOnTheGo;
     }
 }
 

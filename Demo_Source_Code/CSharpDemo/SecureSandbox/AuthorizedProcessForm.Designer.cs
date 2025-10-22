@@ -93,10 +93,10 @@
             // 
             // button_info
             // 
-            this.button_info.Image = ((System.Drawing.Image)(resources.GetObject("button_info.Image")));
-            this.button_info.Location = new System.Drawing.Point(422, 25);
+            this.button_info.Image = global::SecureSandbox.Properties.Resources.about;
+            this.button_info.Location = new System.Drawing.Point(422, 28);
             this.button_info.Name = "button_info";
-            this.button_info.Size = new System.Drawing.Size(60, 33);
+            this.button_info.Size = new System.Drawing.Size(60, 24);
             this.button_info.TabIndex = 97;
             this.button_info.UseVisualStyleBackColor = true;
             this.button_info.Click += new System.EventHandler(this.button_info_Click);
@@ -106,7 +106,7 @@
             this.label3.AutoSize = true;
             this.label3.Location = new System.Drawing.Point(12, 65);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(64, 15);
+            this.label3.Size = new System.Drawing.Size(57, 13);
             this.label3.TabIndex = 42;
             this.label3.Text = "Process Id";
             // 
@@ -123,7 +123,7 @@
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(12, 32);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(88, 15);
+            this.label1.Size = new System.Drawing.Size(76, 13);
             this.label1.TabIndex = 39;
             this.label1.Text = "Process Name";
             // 
@@ -151,7 +151,7 @@
             this.checkBox_AllowReadEncryptedFiles.CheckState = System.Windows.Forms.CheckState.Checked;
             this.checkBox_AllowReadEncryptedFiles.Location = new System.Drawing.Point(151, 205);
             this.checkBox_AllowReadEncryptedFiles.Name = "checkBox_AllowReadEncryptedFiles";
-            this.checkBox_AllowReadEncryptedFiles.Size = new System.Drawing.Size(195, 19);
+            this.checkBox_AllowReadEncryptedFiles.Size = new System.Drawing.Size(170, 17);
             this.checkBox_AllowReadEncryptedFiles.TabIndex = 37;
             this.checkBox_AllowReadEncryptedFiles.Text = "Allow encrypted file being read";
             this.checkBox_AllowReadEncryptedFiles.UseVisualStyleBackColor = true;
@@ -164,7 +164,7 @@
             this.checkBox_AllowCopyout.CheckState = System.Windows.Forms.CheckState.Checked;
             this.checkBox_AllowCopyout.Location = new System.Drawing.Point(336, 205);
             this.checkBox_AllowCopyout.Name = "checkBox_AllowCopyout";
-            this.checkBox_AllowCopyout.Size = new System.Drawing.Size(177, 19);
+            this.checkBox_AllowCopyout.Size = new System.Drawing.Size(154, 17);
             this.checkBox_AllowCopyout.TabIndex = 35;
             this.checkBox_AllowCopyout.Text = "Allow files being copied out";
             this.checkBox_AllowCopyout.UseVisualStyleBackColor = true;
@@ -177,7 +177,7 @@
             this.checkBox_AllowSaveAs.CheckState = System.Windows.Forms.CheckState.Checked;
             this.checkBox_AllowSaveAs.Location = new System.Drawing.Point(336, 182);
             this.checkBox_AllowSaveAs.Name = "checkBox_AllowSaveAs";
-            this.checkBox_AllowSaveAs.Size = new System.Drawing.Size(162, 19);
+            this.checkBox_AllowSaveAs.Size = new System.Drawing.Size(142, 17);
             this.checkBox_AllowSaveAs.TabIndex = 34;
             this.checkBox_AllowSaveAs.Text = "Allow file being saved as";
             this.checkBox_AllowSaveAs.UseVisualStyleBackColor = true;
@@ -188,7 +188,7 @@
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(10, 103);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(114, 15);
+            this.label2.Size = new System.Drawing.Size(101, 13);
             this.label2.TabIndex = 32;
             this.label2.Text = "Access Control Flag";
             // 
@@ -218,7 +218,7 @@
             this.checkBox_SetSecurity.CheckState = System.Windows.Forms.CheckState.Checked;
             this.checkBox_SetSecurity.Location = new System.Drawing.Point(336, 159);
             this.checkBox_SetSecurity.Name = "checkBox_SetSecurity";
-            this.checkBox_SetSecurity.Size = new System.Drawing.Size(156, 19);
+            this.checkBox_SetSecurity.Size = new System.Drawing.Size(137, 17);
             this.checkBox_SetSecurity.TabIndex = 29;
             this.checkBox_SetSecurity.Text = "Allow changing security";
             this.checkBox_SetSecurity.UseVisualStyleBackColor = true;
@@ -231,7 +231,7 @@
             this.checkBox_QueryInfo.CheckState = System.Windows.Forms.CheckState.Checked;
             this.checkBox_QueryInfo.Location = new System.Drawing.Point(152, 137);
             this.checkBox_QueryInfo.Name = "checkBox_QueryInfo";
-            this.checkBox_QueryInfo.Size = new System.Drawing.Size(173, 19);
+            this.checkBox_QueryInfo.Size = new System.Drawing.Size(148, 17);
             this.checkBox_QueryInfo.TabIndex = 24;
             this.checkBox_QueryInfo.Text = "Allow querying information";
             this.checkBox_QueryInfo.UseVisualStyleBackColor = true;
@@ -244,7 +244,7 @@
             this.checkBox_Read.CheckState = System.Windows.Forms.CheckState.Checked;
             this.checkBox_Read.Location = new System.Drawing.Point(12, 137);
             this.checkBox_Read.Name = "checkBox_Read";
-            this.checkBox_Read.Size = new System.Drawing.Size(122, 19);
+            this.checkBox_Read.Size = new System.Drawing.Size(105, 17);
             this.checkBox_Read.TabIndex = 26;
             this.checkBox_Read.Text = "Allow reading file";
             this.checkBox_Read.UseVisualStyleBackColor = true;
@@ -257,7 +257,7 @@
             this.checkBox_QuerySecurity.CheckState = System.Windows.Forms.CheckState.Checked;
             this.checkBox_QuerySecurity.Location = new System.Drawing.Point(336, 137);
             this.checkBox_QuerySecurity.Name = "checkBox_QuerySecurity";
-            this.checkBox_QuerySecurity.Size = new System.Drawing.Size(152, 19);
+            this.checkBox_QuerySecurity.Size = new System.Drawing.Size(133, 17);
             this.checkBox_QuerySecurity.TabIndex = 25;
             this.checkBox_QuerySecurity.Text = "Allow querying security";
             this.checkBox_QuerySecurity.UseVisualStyleBackColor = true;
@@ -270,7 +270,7 @@
             this.checkBox_SetInfo.CheckState = System.Windows.Forms.CheckState.Checked;
             this.checkBox_SetInfo.Location = new System.Drawing.Point(152, 159);
             this.checkBox_SetInfo.Name = "checkBox_SetInfo";
-            this.checkBox_SetInfo.Size = new System.Drawing.Size(177, 19);
+            this.checkBox_SetInfo.Size = new System.Drawing.Size(152, 17);
             this.checkBox_SetInfo.TabIndex = 28;
             this.checkBox_SetInfo.Text = "Allow changing information";
             this.checkBox_SetInfo.UseVisualStyleBackColor = true;
@@ -283,7 +283,7 @@
             this.checkBox_Write.CheckState = System.Windows.Forms.CheckState.Checked;
             this.checkBox_Write.Location = new System.Drawing.Point(12, 160);
             this.checkBox_Write.Name = "checkBox_Write";
-            this.checkBox_Write.Size = new System.Drawing.Size(116, 19);
+            this.checkBox_Write.Size = new System.Drawing.Size(100, 17);
             this.checkBox_Write.TabIndex = 15;
             this.checkBox_Write.Text = "Allow writing file";
             this.checkBox_Write.UseVisualStyleBackColor = true;
@@ -296,7 +296,7 @@
             this.checkBox_AllowDelete.CheckState = System.Windows.Forms.CheckState.Checked;
             this.checkBox_AllowDelete.Location = new System.Drawing.Point(12, 205);
             this.checkBox_AllowDelete.Name = "checkBox_AllowDelete";
-            this.checkBox_AllowDelete.Size = new System.Drawing.Size(124, 19);
+            this.checkBox_AllowDelete.Size = new System.Drawing.Size(107, 17);
             this.checkBox_AllowDelete.TabIndex = 17;
             this.checkBox_AllowDelete.Text = "Allow deleting file";
             this.checkBox_AllowDelete.UseVisualStyleBackColor = true;
@@ -309,7 +309,7 @@
             this.checkBox_AllowRename.CheckState = System.Windows.Forms.CheckState.Checked;
             this.checkBox_AllowRename.Location = new System.Drawing.Point(152, 182);
             this.checkBox_AllowRename.Name = "checkBox_AllowRename";
-            this.checkBox_AllowRename.Size = new System.Drawing.Size(133, 19);
+            this.checkBox_AllowRename.Size = new System.Drawing.Size(113, 17);
             this.checkBox_AllowRename.TabIndex = 16;
             this.checkBox_AllowRename.Text = "Allow renaming file";
             this.checkBox_AllowRename.UseVisualStyleBackColor = true;
@@ -322,7 +322,7 @@
             this.checkBox_Creation.CheckState = System.Windows.Forms.CheckState.Checked;
             this.checkBox_Creation.Location = new System.Drawing.Point(12, 182);
             this.checkBox_Creation.Name = "checkBox_Creation";
-            this.checkBox_Creation.Size = new System.Drawing.Size(150, 19);
+            this.checkBox_Creation.Size = new System.Drawing.Size(131, 17);
             this.checkBox_Creation.TabIndex = 22;
             this.checkBox_Creation.Text = "Allow creating new file";
             this.checkBox_Creation.UseVisualStyleBackColor = true;
@@ -342,6 +342,7 @@
             // 
             this.listView_ProcessRights.Dock = System.Windows.Forms.DockStyle.Fill;
             this.listView_ProcessRights.FullRowSelect = true;
+            this.listView_ProcessRights.HideSelection = false;
             this.listView_ProcessRights.Location = new System.Drawing.Point(3, 16);
             this.listView_ProcessRights.Name = "listView_ProcessRights";
             this.listView_ProcessRights.Size = new System.Drawing.Size(517, 86);
