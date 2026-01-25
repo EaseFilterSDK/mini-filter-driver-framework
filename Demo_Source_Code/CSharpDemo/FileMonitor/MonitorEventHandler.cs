@@ -423,6 +423,14 @@ namespace FileMonitor
             //do your job here.
         }
         /// <summary>
+        /// Fires this event after the file was memory mapped.
+        /// </summary>
+        public void OnFileMemoryMapped(object sender, FileIOEventArgs e)
+        {
+            DisplayEventMessage(e);
+            //do your job here.
+        }
+        /// <summary>
         /// Fires this event after the read IO was returned.
         /// </summary>
         public void OnFileRead(object sender, FileReadEventArgs e)

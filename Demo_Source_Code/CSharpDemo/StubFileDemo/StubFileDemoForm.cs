@@ -159,8 +159,7 @@ namespace  StubFileDemo
         }
 
         private void toolStripButton_ApplyTrialKey_Click(object sender, EventArgs e)
-        {
-            
+        {          
         }
 
         static public void CreateTestFiles()
@@ -252,10 +251,7 @@ namespace  StubFileDemo
                         {
                             EventManager.WriteMessage(100, "createTestStubFile", EventLevel.Error, "Create stub file:" + stubFileName + " failed.\n" + FilterAPI.GetLastErrorMessage());
                             continue;
-                        }
-
-                        FileInfo stubInfo = new FileInfo(stubFileName);
-                        stubInfo.Attributes |= FileAttributes.Offline;
+                        }                      
 
                     }
                     catch (Exception ex)

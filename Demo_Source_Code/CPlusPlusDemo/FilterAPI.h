@@ -13,7 +13,7 @@
 
 //Purchase a license key with the link: http://www.EaseFilter.com/Order.htm
 //Email us to request a trial key: info@EaseFilter.com //free email is not accepted.
-#define	registerKey "****************************************************"
+#define	registerKey "CEAF31-EB6929-563C18-6EC8B3-0F860D-21C6F3-4253E5-49DB"
 
 #define MESSAGE_SEND_VERIFICATION_NUMBER	0xFF000001
 #define DATA_BUFFER_EX_VERIFICATION_NUMBER  0xABcdFE33
@@ -339,12 +339,6 @@ typedef enum _FilterCommand
     /// request the reparse file open.
     /// </summary>
     FILTER_REPARSE_FILE_OPEN_REQUEST = 0x00010023,
-
-}FilterCommand;
-
-//the IO name of the IO operation.
-typedef enum _IOName
-{
     /// <summary>
     /// Fires this event before the file create IO was going down to the file system.
     /// </summary>
@@ -517,8 +511,16 @@ typedef enum _IOName
     /// Fires this event after the file close IO was returned from the file system.
     /// </summary>
     IOPostFileClose = 0x0002002a,
+    /// <summary>
+    /// Fires this event before the file was mapped to memory.
+    /// </summary>
+    IOPreAcquireSection = 0x0002002b,
+    /// <summary>
+    /// Fires this event after the file was naooed to memory.
+    /// </summary>
+    IOPostAcquireSection = 0x0002002c,
 
-}IOName;
+}FilterCommand;
 
 /// <summary>
 /// The volume control flag.
@@ -853,6 +855,10 @@ POST_SET_INFORMATION = 0x00200000,
 #define PRE_DELETE_FILE  (ULONGLONG)0x0100000000000000
 #define POST_DELETE_FILE  (ULONGLONG)0x0200000000000000
 
+//this the IRP_MJ_ACQUIRE_FOR_SECTION_SYNCHRONIZATION creating the memory mapping section
+#define PRE_ACQUIRE_FOR_SECTION  (ULONGLONG)0x0400000000000000
+#define POST_ACQUIRE_FOR_SECTION  (ULONGLONG)0x0800000000000000
+
 //this the IRP_MJ_DIRECTORY_CONTROL to query the file directory information.
 PRE_DIRECTORY = 0x00400000,
 POST_DIRECTORY = 0x00800000,
@@ -972,13 +978,14 @@ typedef enum _AccessFlag
     /// </summary>
     ALLOW_READ_ENCRYPTED_FILES = 0x00200000,
     /// <summary>
-    /// Allow the application to create a new file after it opened the protected file.
+    /// If the flag is turned off, the application will be blocked from creating a new file after opening a protected file. 
+    /// This feature is enabled only when the filter rule’s boolean configuration ENABLE_BLOCK_SAVE_AS_FLAG is enabled.
     /// </summary>
     ALLOW_ALL_SAVE_AS = 0x00400000,
     /// <summary>
-    /// Allow copy protected files out of the protected folder if ALLOW_ALL_SAVE_AS is enabled.
+    ///If the flag is turned off, copy-and-paste from Windows Explorer will be blocked. This applies only to Windows 11 or later versions.
     /// </summary>
-    ALLOW_COPY_PROTECTED_FILES_OUT = 0x00800000,
+    ALLOW_COPY_AND_PASTE = 0x00800000,
     /// <summary>
     /// Allow the file to be executed.
     /// </summary>
@@ -1240,9 +1247,8 @@ typedef enum _BooleanConfig
     /// </summary>
     ENABLE_SIGNAL_WRITE_ENCRYPT_INFO_EVENT = 0x00020000,
     /// <summary>
-    ///enable this feature when accessFlag "ALLOW_SAVE_AS" or "ALLOW_COPY_PROTECTED_FILES_OUT" was disabled.
-    ///by default we don't enable this feature, because of the drawback of these two flags were disabled 
-    ///which will block all new file creation of the process which was read the protected files.
+    /// If the AccessFlag "SAVE_AS" flag is turned off, the application will be blocked from creating a new file after opening a protected file 
+    /// when the filter rule’s boolean configuration ENABLE_BLOCK_SAVE_AS_FLAG is enabled.
     /// </summary>
     ENABLE_BLOCK_SAVE_AS_FLAG = 0x00040000,
     /// <summary>
@@ -1257,6 +1263,10 @@ typedef enum _BooleanConfig
     /// if it is true it will set the userName and processName for the message_send_data_structure.
     /// </summary>
     ENABLE_SET_USER_PROCESS_NAME = 0x00200000,
+   /// <summary>
+   /// if it is true it will append the header to the file as the meta data of the stub file.
+   /// </summary>
+   ENABLE_STUB_FILE_HEADER = 0x00800000,
 
 } BooleanConfig;
 
@@ -2506,5 +2516,21 @@ GetSignerInfo(WCHAR * processName, WCHAR * issuerName, PULONG sizeofIssuerName, 
 extern "C" __declspec(dllexport)
 BOOL
 SetMaxWaitingRequestCount(ULONG maxWaitingRequestCount);
+
+extern "C" __declspec(dllexport)
+BOOL
+CreateVirtualStubFile(
+    LPCTSTR		fileName,
+    LONGLONG	virtualFileSize,
+    ULONG		tagDataLength,
+    BYTE * tagData);
+
+extern "C" __declspec(dllexport)
+BOOL
+GetVirtualStubFileInfo(
+    LPCTSTR		fileName,
+    PLONGLONG	virtualFileSize,
+    PULONG		tagDataLength,
+    BYTE * tagData);
 
 #endif//__SHARE_TYPE_H__

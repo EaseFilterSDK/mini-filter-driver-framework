@@ -96,6 +96,10 @@ namespace EaseFilter.FilterControl
         /// </summary>
         OnDeleteFile = 0x0200000000000000,
         /// <summary>
+        /// Fires this event after the file memory section was created.
+        /// </summary>
+        OnAcquireSection = 0x0800000000000000,
+        /// <summary>
         /// Fires this event after the set file info IO was returned if 
         /// the information class is not 'SetFileSize','SetFileBasicInfo'
         /// ,'SetFileStandardInfo','SetFileNetworkInfo'.
@@ -153,6 +157,10 @@ namespace EaseFilter.FilterControl
         /// Fires this event after the read IO was returned.
         /// </summary>
         public event EventHandler<FileReadEventArgs> OnFileRead;
+        /// <summary>
+        /// Fires this event after the file was memory mapped.
+        /// </summary>
+        public event EventHandler<FileIOEventArgs> OnFileMemoryMapped;
         /// <summary>
         /// Fires this event after the write IO was returned.
         /// </summary>
@@ -355,6 +363,16 @@ namespace EaseFilter.FilterControl
                         {
                             OnDeleteFile(this, fileCreateEventArgs);
                         }
+                    }
+                }
+                else if(messageSend.FilterCommand == (uint)FilterAPI.FilterCommand.IOPostAcquireSection)
+                {
+                    if (null != OnFileMemoryMapped)
+                    {
+                        FileMemoryMappedEventArgs fileMemoryMappingEventArgs = new FileMemoryMappedEventArgs(messageSend);
+                        fileMemoryMappingEventArgs.EventName = "OnFileMemoryMapped";
+
+                        OnFileMemoryMapped(this, fileMemoryMappingEventArgs);
                     }
                 }
                 else if (messageSend.MessageType == (uint)FilterAPI.MessageType.PRE_CACHE_READ

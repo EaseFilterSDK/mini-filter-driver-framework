@@ -87,10 +87,13 @@ namespace FileProtector
             this.toolStripButton_LoadMessage = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripButton_UnitTest = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripButton_Video = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripButton_Help = new System.Windows.Forms.ToolStripButton();
             this.listView_Info = new FileProtector.FastListView();
-            this.toolStripButton_ApplyTrialKey = new System.Windows.Forms.ToolStripButton();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -122,41 +125,41 @@ namespace FileProtector
             this.decryptFileWithOffsetToolStripMenuItem,
             this.getEncryptedFileIVTagToolStripMenuItem});
             this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
-            this.toolsToolStripMenuItem.Size = new System.Drawing.Size(47, 20);
+            this.toolsToolStripMenuItem.Size = new System.Drawing.Size(46, 20);
             this.toolsToolStripMenuItem.Text = "Tools";
             // 
             // encryptFileWithToolStripMenuItem
             // 
             this.encryptFileWithToolStripMenuItem.Name = "encryptFileWithToolStripMenuItem";
-            this.encryptFileWithToolStripMenuItem.Size = new System.Drawing.Size(223, 22);
+            this.encryptFileWithToolStripMenuItem.Size = new System.Drawing.Size(222, 22);
             this.encryptFileWithToolStripMenuItem.Text = "Encrypt file with API";
             this.encryptFileWithToolStripMenuItem.Click += new System.EventHandler(this.encryptFileWithToolStripMenuItem_Click);
             // 
             // decryptFileToolStripMenuItem
             // 
             this.decryptFileToolStripMenuItem.Name = "decryptFileToolStripMenuItem";
-            this.decryptFileToolStripMenuItem.Size = new System.Drawing.Size(223, 22);
+            this.decryptFileToolStripMenuItem.Size = new System.Drawing.Size(222, 22);
             this.decryptFileToolStripMenuItem.Text = "Decrypt file with API";
             this.decryptFileToolStripMenuItem.Click += new System.EventHandler(this.decryptFileToolStripMenuItem_Click);
             // 
             // decryptFileWithOffsetToolStripMenuItem
             // 
             this.decryptFileWithOffsetToolStripMenuItem.Name = "decryptFileWithOffsetToolStripMenuItem";
-            this.decryptFileWithOffsetToolStripMenuItem.Size = new System.Drawing.Size(223, 22);
+            this.decryptFileWithOffsetToolStripMenuItem.Size = new System.Drawing.Size(222, 22);
             this.decryptFileWithOffsetToolStripMenuItem.Text = "Decrypt file with offset";
             this.decryptFileWithOffsetToolStripMenuItem.Click += new System.EventHandler(this.decryptFileWithOffsetToolStripMenuItem_Click);
             // 
             // getEncryptedFileIVTagToolStripMenuItem
             // 
             this.getEncryptedFileIVTagToolStripMenuItem.Name = "getEncryptedFileIVTagToolStripMenuItem";
-            this.getEncryptedFileIVTagToolStripMenuItem.Size = new System.Drawing.Size(223, 22);
+            this.getEncryptedFileIVTagToolStripMenuItem.Size = new System.Drawing.Size(222, 22);
             this.getEncryptedFileIVTagToolStripMenuItem.Text = "Check Encrypt File Tag Data ";
             this.getEncryptedFileIVTagToolStripMenuItem.Click += new System.EventHandler(this.getEncryptedFileTagdataToolStripMenuItem_Click);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(38, 20);
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
@@ -172,9 +175,12 @@ namespace FileProtector
             this.toolStripButton_LoadMessage,
             this.toolStripSeparator4,
             this.toolStripButton1,
+            this.toolStripSeparator6,
             this.toolStripButton_UnitTest,
-            this.toolStripButton_Help,
-            this.toolStripButton_ApplyTrialKey});
+            this.toolStripSeparator5,
+            this.toolStripButton_Video,
+            this.toolStripSeparator7,
+            this.toolStripButton_Help});
             this.toolStrip1.Location = new System.Drawing.Point(0, 24);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.Size = new System.Drawing.Size(974, 25);
@@ -246,14 +252,38 @@ namespace FileProtector
             this.toolStripButton1.Text = "Event viewer";
             this.toolStripButton1.Click += new System.EventHandler(this.toolStripDisplayEvent_Click);
             // 
+            // toolStripSeparator6
+            // 
+            this.toolStripSeparator6.Name = "toolStripSeparator6";
+            this.toolStripSeparator6.Size = new System.Drawing.Size(6, 25);
+            // 
             // toolStripButton_UnitTest
             // 
             this.toolStripButton_UnitTest.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton_UnitTest.Image")));
             this.toolStripButton_UnitTest.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton_UnitTest.Name = "toolStripButton_UnitTest";
-            this.toolStripButton_UnitTest.Size = new System.Drawing.Size(125, 22);
+            this.toolStripButton_UnitTest.Size = new System.Drawing.Size(124, 22);
             this.toolStripButton_UnitTest.Text = "Protector Unit Test";
             this.toolStripButton_UnitTest.Click += new System.EventHandler(this.toolStripButton_UnitTest_Click);
+            // 
+            // toolStripSeparator5
+            // 
+            this.toolStripSeparator5.Name = "toolStripSeparator5";
+            this.toolStripSeparator5.Size = new System.Drawing.Size(6, 25);
+            // 
+            // toolStripButton_Video
+            // 
+            this.toolStripButton_Video.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton_Video.Image")));
+            this.toolStripButton_Video.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButton_Video.Name = "toolStripButton_Video";
+            this.toolStripButton_Video.Size = new System.Drawing.Size(89, 22);
+            this.toolStripButton_Video.Text = "VideoDemo";
+            this.toolStripButton_Video.Click += new System.EventHandler(this.toolStripButton_Video_Click);
+            // 
+            // toolStripSeparator7
+            // 
+            this.toolStripSeparator7.Name = "toolStripSeparator7";
+            this.toolStripSeparator7.Size = new System.Drawing.Size(6, 25);
             // 
             // toolStripButton_Help
             // 
@@ -268,6 +298,7 @@ namespace FileProtector
             // 
             this.listView_Info.Dock = System.Windows.Forms.DockStyle.Fill;
             this.listView_Info.FullRowSelect = true;
+            this.listView_Info.HideSelection = false;
             this.listView_Info.HoverSelection = true;
             this.listView_Info.LabelEdit = true;
             this.listView_Info.Location = new System.Drawing.Point(0, 49);
@@ -277,7 +308,6 @@ namespace FileProtector
             this.listView_Info.TabIndex = 2;
             this.listView_Info.UseCompatibleStateImageBehavior = false;
             this.listView_Info.View = System.Windows.Forms.View.Details;
-          
             // 
             // ProtectorForm
             // 
@@ -324,7 +354,10 @@ namespace FileProtector
         private System.Windows.Forms.ToolStripButton toolStripButton_UnitTest;
         private System.Windows.Forms.ToolStripButton toolStripButton_Help;
         private ToolStripMenuItem decryptFileWithOffsetToolStripMenuItem;
-        private ToolStripButton toolStripButton_ApplyTrialKey;
+        private ToolStripSeparator toolStripSeparator6;
+        private ToolStripSeparator toolStripSeparator5;
+        private ToolStripButton toolStripButton_Video;
+        private ToolStripSeparator toolStripSeparator7;
     }
 }
 

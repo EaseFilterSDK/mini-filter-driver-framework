@@ -101,7 +101,8 @@ namespace FileMonitor
                 //add the event handler for the file filter.
                 fileFilter.OnFileOpen += monitorEventHandler.OnFileOpen;
                 fileFilter.OnNewFileCreate += monitorEventHandler.OnFileCreate;
-                fileFilter.OnDeleteFile += monitorEventHandler.OnDeleteFile;                
+                fileFilter.OnDeleteFile += monitorEventHandler.OnDeleteFile;
+                fileFilter.OnFileMemoryMapped += monitorEventHandler.OnFileMemoryMapped;
                 fileFilter.OnFileRead += monitorEventHandler.OnFileRead;
                 fileFilter.OnFileWrite += monitorEventHandler.OnFileWrite;
                                 
@@ -244,11 +245,13 @@ namespace FileMonitor
         private void toolStripButton_Help_Click(object sender, EventArgs e)
         {
             System.Diagnostics.Process.Start("https://blog.easefilter.com/file-monitor-demo-step-by-step/");
-        }
+        }      
 
-        private void toolStripButton_ApplyTrialKey_Click(object sender, EventArgs e)
+        private void toolStripButton_VideoDemo_Click(object sender, EventArgs e)
         {
+            System.Diagnostics.Process.Start("https://youtu.be/HJRGFn9uDns?si=gUjudEM_BK6XxBP1");
         }
 
+            
     }
 }

@@ -447,7 +447,7 @@ namespace EaseFilter.CommonObjects
                 fileFilter.ControlFileIOEventFilter = (ControlFileIOEvents)RegisterControlFileIOEvents;
                 fileFilter.MonitorFileIOEventFilter = (MonitorFileIOEvents)RegisterMonitorFileIOEvents;
 
-                if ((fileFilter.AccessFlags & FilterAPI.AccessFlag.ALLOW_COPY_PROTECTED_FILES_OUT) > 0)
+                if ((fileFilter.AccessFlags & FilterAPI.AccessFlag.ALLOW_ALL_SAVE_AS) == 0)
                 {
                     fileFilter.EnableBlockSaveAs = true;
                 }

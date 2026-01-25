@@ -153,6 +153,14 @@ namespace EaseFilter.FilterControl
         /// </summary>
         OnPostDeleteFile = 0x0200000000000000,
         /// <summary>
+        /// Fires this event before the file memory section was created.
+        /// </summary>
+        OnPreAcquireSection = 0x0400000000000000,
+        /// <summary>
+        /// Fires this event after the file memory section was created.
+        /// </summary>
+        OnPostAcquireSection = 0x0800000000000000,
+        /// <summary>
         /// Fires this event before the set file info IO was going down to the file system
         /// if the information class is not 'SetFileSize','SetFileBasicInfo'
         /// ,'SetFileStandardInfo','SetFileNetworkInfo'.
@@ -774,7 +782,8 @@ namespace EaseFilter.FilterControl
         }
 
         /// <summary>
-        /// allow the file being copied when it is true, or the file copy will be blocked.
+        /// If the flag is turned off, the application will be blocked from creating a new file after opening a protected file. 
+        /// This feature is enabled only when the filter rule’s boolean configuration ENABLE_BLOCK_SAVE_AS_FLAG is enabled.
         /// </summary>
         public bool EnableFileBeingCopied
         {
@@ -797,24 +806,24 @@ namespace EaseFilter.FilterControl
         }
 
         /// <summary>
-        /// allow the file being copied out from the current folder when it is true, or the file copy will be blocked.
+        /// /If the flag is turned off, copy-and-paste from Windows Explorer will be blocked. This applies only to Windows 11 or later versions.
         /// </summary>
-        public bool EnableFileBeingCopiedOutOfFolder
+        public bool EnableFileBeingCopiedAndPasted
         {
             get
             {
-                return ((accessFlags & (uint)FilterAPI.AccessFlag.ALLOW_COPY_PROTECTED_FILES_OUT) > 0);
+                return ((accessFlags & (uint)FilterAPI.AccessFlag.ALLOW_COPY_AND_PASTE) > 0);
             }
 
             set
             {
                 if (value)
                 {
-                    accessFlags |= (uint)FilterAPI.AccessFlag.ALLOW_COPY_PROTECTED_FILES_OUT;
+                    accessFlags |= (uint)FilterAPI.AccessFlag.ALLOW_COPY_AND_PASTE;
                 }
                 else
                 {
-                    accessFlags &= ~(uint)FilterAPI.AccessFlag.ALLOW_COPY_PROTECTED_FILES_OUT;
+                    accessFlags &= ~(uint)FilterAPI.AccessFlag.ALLOW_COPY_AND_PASTE;
                 }
 
             }
@@ -881,6 +890,15 @@ namespace EaseFilter.FilterControl
         /// you will get the status of the create to know if the file was created or opened sucessfully.
         /// </summary>
         public event EventHandler<FileCreateEventArgs> OnPostCreateFile;
+        /// <summary>
+        /// Fires this event before the file was memory mapped,
+        /// you can block the file memory mapping here.
+        /// </summary>
+        public event EventHandler<FileIOEventArgs> OnPreFileMemoryMapped;
+        /// <summary>
+        /// Fires this event after the file was memory mapped,
+        /// </summary>
+        public event EventHandler<FileIOEventArgs> OnPostFileMemoryMapped;
         /// <summary>
         /// Fires this event before the data of the file was read,
         /// you can block the read request, or return your own read data here.
@@ -1137,6 +1155,32 @@ namespace EaseFilter.FilterControl
                     }
 
                     messageReply.ReturnStatus = (uint)fileCreateEventArgs.ReturnStatus;
+                }
+                else if (messageSend.FilterCommand == (uint)FilterAPI.FilterCommand.IOPreAcquireSection)
+                {
+                    FileMemoryMappedEventArgs fileMemoryMappingEventArgs = new FileMemoryMappedEventArgs(messageSend);
+                    fileMemoryMappingEventArgs.EventName = "OnPreFileMemoryMapped";
+
+                    if (null != OnPreFileMemoryMapped)
+                    {
+                        OnPreFileMemoryMapped(this, fileMemoryMappingEventArgs);
+                        messageReply.ReturnStatus = (uint)fileMemoryMappingEventArgs.ReturnStatus;
+                        if (fileMemoryMappingEventArgs.ReturnStatus != NtStatus.Status.Success)
+                        {
+                            //block the file memory mapping
+                            messageReply.FilterStatus = (uint)FilterAPI.FilterStatus.FILTER_COMPLETE_PRE_OPERATION;
+                        }
+                    }
+                }
+                else if (messageSend.FilterCommand == (uint)FilterAPI.FilterCommand.IOPostAcquireSection)
+                {
+                    FileMemoryMappedEventArgs fileMemoryMappingEventArgs = new FileMemoryMappedEventArgs(messageSend);
+                    fileMemoryMappingEventArgs.EventName = "OnPostFileMemoryMapped";
+
+                    if (null != OnPostFileMemoryMapped)
+                    {
+                        OnPostFileMemoryMapped(this, fileMemoryMappingEventArgs);
+                    }
                 }
                 else if (messageSend.MessageType == (uint)FilterAPI.MessageType.PRE_CACHE_READ
                       || messageSend.MessageType == (uint)FilterAPI.MessageType.PRE_FASTIO_READ

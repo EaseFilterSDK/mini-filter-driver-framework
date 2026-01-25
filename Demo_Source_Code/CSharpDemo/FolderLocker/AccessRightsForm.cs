@@ -180,13 +180,13 @@ namespace EaseFilter.FolderLocker
                 checkBox_AllowSaveAs.Checked = false;
             }
 
-            if ((accessFlags & (uint)FilterAPI.AccessFlag.ALLOW_COPY_PROTECTED_FILES_OUT) > 0)
+            if ((accessFlags & (uint)FilterAPI.AccessFlag.ALLOW_COPY_AND_PASTE) > 0)
             {
-                checkBox_AllowCopyout.Checked = true;
+                checkBox_AllowCopyPaste.Checked = true;
             }
             else
             {
-                checkBox_AllowCopyout.Checked = false;
+                checkBox_AllowCopyPaste.Checked = false;
             }
 
             if ((accessFlags & (uint)FilterAPI.AccessFlag.ALLOW_READ_ENCRYPTED_FILES) > 0)
@@ -356,13 +356,13 @@ namespace EaseFilter.FolderLocker
 
         private void checkBox_AllowCopyout_CheckedChanged(object sender, EventArgs e)
         {
-            if (checkBox_AllowCopyout.Checked)
+            if (checkBox_AllowCopyPaste.Checked)
             {
-                accessFlags |= (uint)FilterAPI.AccessFlag.ALLOW_COPY_PROTECTED_FILES_OUT;
+                accessFlags |= (uint)FilterAPI.AccessFlag.ALLOW_COPY_AND_PASTE;
             }
             else
             {
-                accessFlags &= ~(uint)FilterAPI.AccessFlag.ALLOW_COPY_PROTECTED_FILES_OUT;
+                accessFlags &= ~(uint)FilterAPI.AccessFlag.ALLOW_COPY_AND_PASTE;
             }
 
         }

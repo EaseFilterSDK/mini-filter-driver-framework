@@ -131,34 +131,7 @@ namespace  SecureShare
         {
         }
 
-       
-        public static ServiceReference1.SecureShareSoapClient GetServiceClient(ref string lastError)
-        {
-            string serverURI = "http://www.easefilter.com/SecureShare.asmx";
-            ServiceReference1.SecureShareSoapClient client = null;
-
-            string licenseKey = GlobalConfig.LicenseKey;
-
-            try
-            {
-                BasicHttpBinding binding = new BasicHttpBinding();
-                binding.OpenTimeout = new TimeSpan(0, 0, 10);
-                binding.CloseTimeout = new TimeSpan(0, 0, 10);
-                binding.SendTimeout = new TimeSpan(0, 0, 10);
-                binding.ReceiveTimeout = new TimeSpan(0, 0, 10);
-
-                EndpointAddress endpoint = new EndpointAddress(new Uri(serverURI));
-
-                client = new ServiceReference1.SecureShareSoapClient(binding, endpoint);
-            }
-            catch (Exception ex)
-            {
-                lastError = "Connecting to server failed with error " + ex.Message;
-            }
-
-            return client;
-        }
-
+   
         static public string EncodeTo64(string toEncode)
         {
             byte[] toEncodeAsBytes = System.Text.ASCIIEncoding.ASCII.GetBytes(toEncode);
@@ -253,7 +226,7 @@ namespace  SecureShare
             string computerName = Environment.MachineName;
             lastError = string.Empty;
 
-            //tagdata format: GlobalConfig.AccountName + ";" + RegisterForm.GetUniqueComputerId().ToString() + ";" + encryptionIV;
+            //tagdata format: GlobalConfig.AccountName + ";" + FilterAPI.GetComputerId().ToString() + ";" + encryptionIV;
             string tagDataStr = ASCIIEncoding.ASCII.GetString(e.EncryptionTag);
             string[] accountInfo = tagDataStr.Split(new char[] { ';' });
 
@@ -317,17 +290,7 @@ namespace  SecureShare
                 {
                     retVal = LocalClient.GetFilePermission(clientInfo, out drmInfo, out lastError);
                 }
-                else
-                {
-                    ServiceReference1.SecureShareSoapClient client = GetServiceClient(ref lastError);
-
-                    if (null == client)
-                    {
-                        return false;
-                    }
-
-                    retVal = client.GetFilePermission(clientInfo, out drmInfo, out lastError);
-                }
+             
 
                 if (retVal)
                 {
@@ -412,7 +375,7 @@ namespace  SecureShare
                 DRMData dRM = new DRMData();
 
                 dRM.EmailAccount = GlobalConfig.AccountName;
-                dRM.ComputerId = RegisterForm.GetUniqueComputerId().ToString();
+                dRM.ComputerId = FilterAPI.GetComputerId().ToString();
                 dRM.FileName = fileName;
                 dRM.EncryptionKey = encryptKey;
                 dRM.EncryptionIV = encryptIV;
@@ -427,18 +390,8 @@ namespace  SecureShare
                 dRM.CreationTime = DateTime.Now.ToFileTime();
                 string drmInfo = EncodeDRMData(dRM);
 
-                if(GlobalConfig.IsDRMDataInLocal)
-                {
-                    return LocalClient.AddDRMDataToServer(drmInfo, out lastError);
-                }
+                return LocalClient.AddDRMDataToServer(drmInfo, out lastError);
 
-                ServiceReference1.SecureShareSoapClient client = GetServiceClient(ref lastError);
-                if (null == client)
-                {
-                    return false;
-                }
-
-                return client.AddDRMDataToServer(drmInfo, out lastError);
 
             }
             catch (Exception ex)
@@ -470,7 +423,7 @@ namespace  SecureShare
                 DRMData dRM = new DRMData();
 
                 dRM.EmailAccount = GlobalConfig.AccountName;
-                dRM.ComputerId = RegisterForm.GetUniqueComputerId().ToString();
+                dRM.ComputerId = FilterAPI.GetComputerId().ToString();
                 dRM.FileName = fileName;
                 dRM.EncryptionKey = encryptKey;
                 dRM.EncryptionIV = encryptIV;
@@ -485,18 +438,8 @@ namespace  SecureShare
                 dRM.CreationTime = DateTime.Now.ToFileTime();
                 string encrypteDRMData = EncodeDRMData(dRM);
 
-                if (GlobalConfig.IsDRMDataInLocal)
-                {
-                    return LocalClient.ModifyDRMDataFromServer(encrypteDRMData, out lastError);
-                }
+                return LocalClient.ModifyDRMDataFromServer(encrypteDRMData, out lastError);
 
-                ServiceReference1.SecureShareSoapClient client = GetServiceClient(ref lastError);
-                if (null == client)
-                {
-                    return false;
-                }
-
-                return client.ModifyDRMDataFromServer(encrypteDRMData, out lastError);
 
             }
             catch (Exception ex)
@@ -516,21 +459,10 @@ namespace  SecureShare
             {
 
                 string emailAccount = GlobalConfig.AccountName;
-                string computerId = RegisterForm.GetUniqueComputerId().ToString();
+                string computerId = FilterAPI.GetComputerId().ToString();
                 string clientInfo = emailAccount + ";" + computerId + ";" + encryptIV;
 
-                if (GlobalConfig.IsDRMDataInLocal)
-                {
-                    return LocalClient.DeleteDRMDataFromServer(clientInfo, out lastError);
-                }
-
-                ServiceReference1.SecureShareSoapClient client = GetServiceClient(ref lastError);
-                if (null == client)
-                {
-                    return false;
-                }
-
-                return client.DeleteDRMDataFromServer(clientInfo, out lastError);
+                 return LocalClient.DeleteDRMDataFromServer(clientInfo, out lastError);
 
             }
             catch (Exception ex)
@@ -547,25 +479,12 @@ namespace  SecureShare
 
             try
             {
-                string computerId = RegisterForm.GetUniqueComputerId().ToString();
+                string computerId = FilterAPI.GetComputerId().ToString();
                 string clientInfo = emailAccount + ";" + computerId;
                 bool retVal = false;
 
-                if (GlobalConfig.IsDRMDataInLocal)
-                {
-                    retVal = LocalClient.GetSharedFileList(clientInfo, out sharedFileList, out lastError);
-                }
-                else
-                {
-                    ServiceReference1.SecureShareSoapClient client = GetServiceClient(ref lastError);
-                    if (null == client)
-                    {
-                        return false;
-                    }
-
-                    retVal = client.GetSharedFileList(clientInfo, out sharedFileList, out lastError);
-                }
-
+                retVal = LocalClient.GetSharedFileList(clientInfo, out sharedFileList, out lastError);
+                
                 if (retVal)
                 {
                     listView_SharedFiles.Items.Clear();
@@ -629,26 +548,13 @@ namespace  SecureShare
 
             try
             {                
-                string computerId = RegisterForm.GetUniqueComputerId().ToString();
+                string computerId = FilterAPI.GetComputerId().ToString();
                 string emailAccount = GlobalConfig.AccountName;
                 string clientInfo = emailAccount + ";" + computerId;
                 string accessLogHex = string.Empty;
                 bool retVal = false;
 
-                if (GlobalConfig.IsDRMDataInLocal)
-                {
-                    retVal = LocalClient.GetAccessLog(clientInfo, out accessLogHex, out lastError);
-                }
-                else
-                {
-                    ServiceReference1.SecureShareSoapClient client = GetServiceClient(ref lastError);
-                    if (null == client)
-                    {
-                        return false;
-                    }
-
-                    retVal = client.GetAccessLog(clientInfo, out accessLogHex, out lastError);
-                }
+                retVal = LocalClient.GetAccessLog(clientInfo, out accessLogHex, out lastError);
 
                 if (retVal)
                 {

@@ -40,7 +40,8 @@ namespace EaseFilter.FolderLocker
             this.listView_AccessRights = new System.Windows.Forms.ListView();
             this.button_SaveSettings = new System.Windows.Forms.Button();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.checkBox_AllowCopyout = new System.Windows.Forms.CheckBox();
+            this.checkBox_AllowDecryptFile = new System.Windows.Forms.CheckBox();
+            this.checkBox_AllowCopyPaste = new System.Windows.Forms.CheckBox();
             this.checkBox_Encryption = new System.Windows.Forms.CheckBox();
             this.checkBox_HideFiles = new System.Windows.Forms.CheckBox();
             this.checkBox_AllowRead = new System.Windows.Forms.CheckBox();
@@ -56,7 +57,6 @@ namespace EaseFilter.FolderLocker
             this.textBox_FolderName = new System.Windows.Forms.TextBox();
             this.button_BrowseFolder = new System.Windows.Forms.Button();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.checkBox_AllowDecryptFile = new System.Windows.Forms.CheckBox();
             this.groupBox1.SuspendLayout();
             this.groupBox_AccessControl.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -69,7 +69,7 @@ namespace EaseFilter.FolderLocker
             this.groupBox1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox1.Location = new System.Drawing.Point(0, 0);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(554, 499);
+            this.groupBox1.Size = new System.Drawing.Size(554, 495);
             this.groupBox1.TabIndex = 12;
             this.groupBox1.TabStop = false;
             // 
@@ -87,14 +87,14 @@ namespace EaseFilter.FolderLocker
             this.groupBox_AccessControl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox_AccessControl.Location = new System.Drawing.Point(3, 16);
             this.groupBox_AccessControl.Name = "groupBox_AccessControl";
-            this.groupBox_AccessControl.Size = new System.Drawing.Size(548, 480);
+            this.groupBox_AccessControl.Size = new System.Drawing.Size(548, 476);
             this.groupBox_AccessControl.TabIndex = 24;
             this.groupBox_AccessControl.TabStop = false;
             // 
             // button_RemoveRights
             // 
             this.button_RemoveRights.Location = new System.Drawing.Point(248, 422);
-            this.button_RemoveRights.Margin = new System.Windows.Forms.Padding(2);
+            this.button_RemoveRights.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.button_RemoveRights.Name = "button_RemoveRights";
             this.button_RemoveRights.Size = new System.Drawing.Size(131, 22);
             this.button_RemoveRights.TabIndex = 89;
@@ -105,7 +105,7 @@ namespace EaseFilter.FolderLocker
             // button_AddProcessRights
             // 
             this.button_AddProcessRights.Location = new System.Drawing.Point(121, 422);
-            this.button_AddProcessRights.Margin = new System.Windows.Forms.Padding(2);
+            this.button_AddProcessRights.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.button_AddProcessRights.Name = "button_AddProcessRights";
             this.button_AddProcessRights.Size = new System.Drawing.Size(110, 22);
             this.button_AddProcessRights.TabIndex = 88;
@@ -116,7 +116,7 @@ namespace EaseFilter.FolderLocker
             // button_AddUserRights
             // 
             this.button_AddUserRights.Location = new System.Drawing.Point(9, 422);
-            this.button_AddUserRights.Margin = new System.Windows.Forms.Padding(2);
+            this.button_AddUserRights.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.button_AddUserRights.Name = "button_AddUserRights";
             this.button_AddUserRights.Size = new System.Drawing.Size(96, 22);
             this.button_AddUserRights.TabIndex = 87;
@@ -152,7 +152,7 @@ namespace EaseFilter.FolderLocker
             // 
             this.button_SaveSettings.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.button_SaveSettings.Location = new System.Drawing.Point(402, 422);
-            this.button_SaveSettings.Margin = new System.Windows.Forms.Padding(2);
+            this.button_SaveSettings.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.button_SaveSettings.Name = "button_SaveSettings";
             this.button_SaveSettings.Size = new System.Drawing.Size(118, 22);
             this.button_SaveSettings.TabIndex = 85;
@@ -163,7 +163,7 @@ namespace EaseFilter.FolderLocker
             // groupBox2
             // 
             this.groupBox2.Controls.Add(this.checkBox_AllowDecryptFile);
-            this.groupBox2.Controls.Add(this.checkBox_AllowCopyout);
+            this.groupBox2.Controls.Add(this.checkBox_AllowCopyPaste);
             this.groupBox2.Controls.Add(this.checkBox_Encryption);
             this.groupBox2.Controls.Add(this.checkBox_HideFiles);
             this.groupBox2.Controls.Add(this.checkBox_AllowRead);
@@ -182,16 +182,27 @@ namespace EaseFilter.FolderLocker
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Folder Access Control Settings";
             // 
-            // checkBox_AllowCopyout
+            // checkBox_AllowDecryptFile
             // 
-            this.checkBox_AllowCopyout.AutoSize = true;
-            this.checkBox_AllowCopyout.Location = new System.Drawing.Point(7, 68);
-            this.checkBox_AllowCopyout.Name = "checkBox_AllowCopyout";
-            this.checkBox_AllowCopyout.Size = new System.Drawing.Size(154, 17);
-            this.checkBox_AllowCopyout.TabIndex = 36;
-            this.checkBox_AllowCopyout.Text = "Allow files being copied out";
-            this.checkBox_AllowCopyout.UseVisualStyleBackColor = true;
-            this.checkBox_AllowCopyout.CheckedChanged += new System.EventHandler(this.checkBox_AllowCopyout_CheckedChanged_1);
+            this.checkBox_AllowDecryptFile.AutoSize = true;
+            this.checkBox_AllowDecryptFile.Location = new System.Drawing.Point(346, 111);
+            this.checkBox_AllowDecryptFile.Name = "checkBox_AllowDecryptFile";
+            this.checkBox_AllowDecryptFile.Size = new System.Drawing.Size(141, 17);
+            this.checkBox_AllowDecryptFile.TabIndex = 37;
+            this.checkBox_AllowDecryptFile.Text = "Allow read encrypted file";
+            this.checkBox_AllowDecryptFile.UseVisualStyleBackColor = true;
+            this.checkBox_AllowDecryptFile.CheckedChanged += new System.EventHandler(this.checkBox_AllowDecryptFile_CheckedChanged);
+            // 
+            // checkBox_AllowCopyPaste
+            // 
+            this.checkBox_AllowCopyPaste.AutoSize = true;
+            this.checkBox_AllowCopyPaste.Location = new System.Drawing.Point(7, 68);
+            this.checkBox_AllowCopyPaste.Name = "checkBox_AllowCopyPaste";
+            this.checkBox_AllowCopyPaste.Size = new System.Drawing.Size(122, 17);
+            this.checkBox_AllowCopyPaste.TabIndex = 36;
+            this.checkBox_AllowCopyPaste.Text = "Allow file copy paste";
+            this.checkBox_AllowCopyPaste.UseVisualStyleBackColor = true;
+            this.checkBox_AllowCopyPaste.CheckedChanged += new System.EventHandler(this.checkBox_AllowCopyout_CheckedChanged_1);
             // 
             // checkBox_Encryption
             // 
@@ -338,25 +349,14 @@ namespace EaseFilter.FolderLocker
             this.button_BrowseFolder.UseVisualStyleBackColor = true;
             this.button_BrowseFolder.Click += new System.EventHandler(this.button_BrowseFolder_Click);
             // 
-            // checkBox_AllowDecryptFile
-            // 
-            this.checkBox_AllowDecryptFile.AutoSize = true;
-            this.checkBox_AllowDecryptFile.Location = new System.Drawing.Point(346, 111);
-            this.checkBox_AllowDecryptFile.Name = "checkBox_AllowDecryptFile";
-            this.checkBox_AllowDecryptFile.Size = new System.Drawing.Size(141, 17);
-            this.checkBox_AllowDecryptFile.TabIndex = 37;
-            this.checkBox_AllowDecryptFile.Text = "Allow read encrypted file";
-            this.checkBox_AllowDecryptFile.UseVisualStyleBackColor = true;
-            this.checkBox_AllowDecryptFile.CheckedChanged += new System.EventHandler(this.checkBox_AllowDecryptFile_CheckedChanged);
-            // 
             // FolderLockerSettigs
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(554, 499);
+            this.ClientSize = new System.Drawing.Size(554, 495);
             this.Controls.Add(this.groupBox1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Margin = new System.Windows.Forms.Padding(2);
+            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "FolderLockerSettigs";
@@ -399,7 +399,7 @@ namespace EaseFilter.FolderLocker
         private System.Windows.Forms.Button button_AddProcessRights;
         private System.Windows.Forms.Button button_AddUserRights;
         private System.Windows.Forms.ListView listView_AccessRights;
-        private System.Windows.Forms.CheckBox checkBox_AllowCopyout;
+        private System.Windows.Forms.CheckBox checkBox_AllowCopyPaste;
         private System.Windows.Forms.CheckBox checkBox_AllowDecryptFile;
     }
 }

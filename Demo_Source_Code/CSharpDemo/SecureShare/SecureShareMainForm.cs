@@ -124,7 +124,7 @@ namespace  SecureShare
 
                     if (retVal)
                     {
-                        string tagDataStr = GlobalConfig.AccountName + ";" + RegisterForm.GetUniqueComputerId().ToString() + ";" + encryptionIVStr;
+                        string tagDataStr = GlobalConfig.AccountName + ";" + FilterAPI.GetComputerId().ToString() + ";" + encryptionIVStr;
                         byte[] tagData = ASCIIEncoding.ASCII.GetBytes(tagDataStr);
                         e.EncryptionTag = tagData;
 
@@ -387,10 +387,6 @@ namespace  SecureShare
 
         private void toolStripButton_ApplyTrialKey_Click(object sender, EventArgs e)
         {
-            RegisterForm webForm = new RegisterForm();
-            webForm.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-
-            System.Threading.Tasks.Task.Factory.StartNew(() => { webForm.ShowDialog(); });
         }
 
         private void toolStripButton_ClearMessage_Click(object sender, EventArgs e)

@@ -38,7 +38,7 @@ namespace EaseFilter.CommonObjects
             fileFilter = _filterRule;
 
             textBox_FileAccessFlags.Text = ((uint)fileFilter.AccessFlags).ToString();        
-            textBox_ControlIO.Text = ((uint)fileFilter.ControlFileIOEventFilter).ToString();
+            textBox_ControlIO.Text = ((ulong)fileFilter.ControlFileIOEventFilter).ToString();
             checkBox_EnableProtectionInBootTime.Checked = fileFilter.IsResident;
             textBox_ProcessRights.Text = fileFilter.ProcessNameAccessRightString;
             textBox_ProcessIdRights.Text = fileFilter.ProcessIdAccessRightString;
@@ -174,13 +174,13 @@ namespace EaseFilter.CommonObjects
                 checkBox_AllowEncryptNewFile.Checked = false;
             }
 
-            if ((accessFlags & (uint)FilterAPI.AccessFlag.ALLOW_COPY_PROTECTED_FILES_OUT) > 0)
+            if ((accessFlags & (uint)FilterAPI.AccessFlag.ALLOW_COPY_AND_PASTE) > 0)
             {
-                checkBox_AllowCopyOut.Checked = true;
+                checkBox_AllowCopyPaste.Checked = true;
             }
             else
             {
-                checkBox_AllowCopyOut.Checked = false;
+                checkBox_AllowCopyPaste.Checked = false;
             }
 
             if ((accessFlags & (uint)FilterAPI.AccessFlag.ALLOW_READ_ENCRYPTED_FILES) > 0)
@@ -463,13 +463,13 @@ namespace EaseFilter.CommonObjects
         {
             uint accessFlags = uint.Parse(textBox_FileAccessFlags.Text);
 
-            if (!checkBox_AllowCopyOut.Checked)
+            if (!checkBox_AllowCopyPaste.Checked)
             {
-                accessFlags = accessFlags & ((uint)~FilterAPI.AccessFlag.ALLOW_COPY_PROTECTED_FILES_OUT);
+                accessFlags = accessFlags & ((uint)~FilterAPI.AccessFlag.ALLOW_COPY_AND_PASTE);
             }
             else
             {
-                accessFlags = accessFlags | ((uint)FilterAPI.AccessFlag.ALLOW_COPY_PROTECTED_FILES_OUT);
+                accessFlags = accessFlags | ((uint)FilterAPI.AccessFlag.ALLOW_COPY_AND_PASTE);
             }
 
             textBox_FileAccessFlags.Text = accessFlags.ToString();

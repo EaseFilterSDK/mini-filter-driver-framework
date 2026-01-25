@@ -40,7 +40,7 @@
             this.button_InfoEncryptNewFile = new System.Windows.Forms.Button();
             this.button_InfoCopyout = new System.Windows.Forms.Button();
             this.checkBox_AllowReadEncryptedFiles = new System.Windows.Forms.CheckBox();
-            this.checkBox_AllowCopyout = new System.Windows.Forms.CheckBox();
+            this.checkBox_AllowCopyPaste = new System.Windows.Forms.CheckBox();
             this.checkBox_AllowEncryptNewFile = new System.Windows.Forms.CheckBox();
             this.checkBox_SetSecurity = new System.Windows.Forms.CheckBox();
             this.checkBox_QueryInfo = new System.Windows.Forms.CheckBox();
@@ -137,7 +137,7 @@
             this.groupBox_AccessRights.Controls.Add(this.button_InfoCopyout);
             this.groupBox_AccessRights.Controls.Add(this.button_Add);
             this.groupBox_AccessRights.Controls.Add(this.checkBox_AllowReadEncryptedFiles);
-            this.groupBox_AccessRights.Controls.Add(this.checkBox_AllowCopyout);
+            this.groupBox_AccessRights.Controls.Add(this.checkBox_AllowCopyPaste);
             this.groupBox_AccessRights.Controls.Add(this.checkBox_AllowEncryptNewFile);
             this.groupBox_AccessRights.Controls.Add(this.checkBox_SetSecurity);
             this.groupBox_AccessRights.Controls.Add(this.checkBox_QueryInfo);
@@ -219,18 +219,18 @@
             this.checkBox_AllowReadEncryptedFiles.UseVisualStyleBackColor = true;
             this.checkBox_AllowReadEncryptedFiles.CheckedChanged += new System.EventHandler(this.checkBox_AllowReadEncryptedFiles_CheckedChanged);
             // 
-            // checkBox_AllowCopyout
+            // checkBox_AllowCopyPaste
             // 
-            this.checkBox_AllowCopyout.AutoSize = true;
-            this.checkBox_AllowCopyout.Checked = true;
-            this.checkBox_AllowCopyout.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox_AllowCopyout.Location = new System.Drawing.Point(320, 78);
-            this.checkBox_AllowCopyout.Name = "checkBox_AllowCopyout";
-            this.checkBox_AllowCopyout.Size = new System.Drawing.Size(154, 17);
-            this.checkBox_AllowCopyout.TabIndex = 48;
-            this.checkBox_AllowCopyout.Text = "Allow files being copied out";
-            this.checkBox_AllowCopyout.UseVisualStyleBackColor = true;
-            this.checkBox_AllowCopyout.CheckedChanged += new System.EventHandler(this.checkBox_AllowCopyout_CheckedChanged);
+            this.checkBox_AllowCopyPaste.AutoSize = true;
+            this.checkBox_AllowCopyPaste.Checked = true;
+            this.checkBox_AllowCopyPaste.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBox_AllowCopyPaste.Location = new System.Drawing.Point(320, 78);
+            this.checkBox_AllowCopyPaste.Name = "checkBox_AllowCopyPaste";
+            this.checkBox_AllowCopyPaste.Size = new System.Drawing.Size(122, 17);
+            this.checkBox_AllowCopyPaste.TabIndex = 48;
+            this.checkBox_AllowCopyPaste.Text = "Allow file copy paste";
+            this.checkBox_AllowCopyPaste.UseVisualStyleBackColor = true;
+            this.checkBox_AllowCopyPaste.CheckedChanged += new System.EventHandler(this.checkBox_AllowCopyPaste_CheckedChanged);
             // 
             // checkBox_AllowEncryptNewFile
             // 
@@ -546,14 +546,14 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(590, 467);
+            this.ClientSize = new System.Drawing.Size(604, 510);
             this.Controls.Add(this.groupBox_SignedProcess);
             this.Controls.Add(this.groupBox_ProcessSha256);
             this.Controls.Add(this.groupBox_ProcessId);
             this.Controls.Add(this.groupBox_UserName);
             this.Controls.Add(this.groupBox_AccessRights);
             this.Controls.Add(this.groupBox_ProcessName);
-            this.Margin = new System.Windows.Forms.Padding(2);
+            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.Name = "Form_AccessRights";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Add Access Rights";
@@ -591,7 +591,7 @@
         private System.Windows.Forms.TextBox textBox_ProcessId;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.CheckBox checkBox_AllowReadEncryptedFiles;
-        private System.Windows.Forms.CheckBox checkBox_AllowCopyout;
+        private System.Windows.Forms.CheckBox checkBox_AllowCopyPaste;
         private System.Windows.Forms.CheckBox checkBox_AllowEncryptNewFile;
         private System.Windows.Forms.CheckBox checkBox_SetSecurity;
         private System.Windows.Forms.CheckBox checkBox_QueryInfo;

@@ -51,6 +51,9 @@ namespace SecureSandbox
 
             StartPosition = FormStartPosition.CenterParent;
 
+            textBox_ProcessName.Text = "notepad.exe";
+            textBox_AccessFlag.Text = FilterAPI.ALLOW_MAX_RIGHT_ACCESS.ToString();
+
             foreach (KeyValuePair<string, ProcessRightInfo> entry in fileFilter.TrustedProcessAccessRightList)
             {
                 string processName = entry.Value.processNameFilterMask;
@@ -220,13 +223,13 @@ namespace SecureSandbox
                 checkBox_AllowSaveAs.Checked = false;
             }
 
-            if ((accessFlags & (uint)FilterAPI.AccessFlag.ALLOW_COPY_PROTECTED_FILES_OUT) > 0)
+            if ((accessFlags & (uint)FilterAPI.AccessFlag.ALLOW_COPY_AND_PASTE) > 0)
             {
-                checkBox_AllowCopyout.Checked = true;
+                checkBox_AllowCopyPaste.Checked = true;
             }
             else
             {
-                checkBox_AllowCopyout.Checked = false;
+                checkBox_AllowCopyPaste.Checked = false;
             }
 
             if ((accessFlags & (uint)FilterAPI.AccessFlag.ALLOW_READ_ENCRYPTED_FILES) > 0)
@@ -413,13 +416,13 @@ namespace SecureSandbox
         private void checkBox_AllowCopyout_CheckedChanged(object sender, EventArgs e)
         {
             uint accessFlags = uint.Parse(textBox_AccessFlag.Text.Trim());
-            if (checkBox_AllowCopyout.Checked)
+            if (checkBox_AllowCopyPaste.Checked)
             {
-                accessFlags |= (uint)FilterAPI.AccessFlag.ALLOW_COPY_PROTECTED_FILES_OUT;
+                accessFlags |= (uint)FilterAPI.AccessFlag.ALLOW_COPY_AND_PASTE;
             }
             else
             {
-                accessFlags &= ~(uint)FilterAPI.AccessFlag.ALLOW_COPY_PROTECTED_FILES_OUT;
+                accessFlags &= ~(uint)FilterAPI.AccessFlag.ALLOW_COPY_AND_PASTE;
             }
 
             textBox_AccessFlag.Text = accessFlags.ToString();

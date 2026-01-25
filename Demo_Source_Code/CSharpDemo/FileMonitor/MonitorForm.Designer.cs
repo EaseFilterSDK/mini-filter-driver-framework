@@ -82,7 +82,11 @@ namespace FileMonitor
             this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripButton_UnitTest = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripButton_VideoDemo = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripButton_Help = new System.Windows.Forms.ToolStripButton();
+            this.listView_Info = new FileMonitor.FastListView();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -126,6 +130,9 @@ namespace FileMonitor
             this.toolStripButton1,
             this.toolStripSeparator5,
             this.toolStripButton_UnitTest,
+            this.toolStripSeparator6,
+            this.toolStripButton_VideoDemo,
+            this.toolStripSeparator7,
             this.toolStripButton_Help});
             this.toolStrip1.Location = new System.Drawing.Point(0, 24);
             this.toolStrip1.Name = "toolStrip1";
@@ -212,6 +219,25 @@ namespace FileMonitor
             this.toolStripButton_UnitTest.Text = "MonitorUnitTest";
             this.toolStripButton_UnitTest.Click += new System.EventHandler(this.toolStripButton_UnitTest_Click);
             // 
+            // toolStripSeparator6
+            // 
+            this.toolStripSeparator6.Name = "toolStripSeparator6";
+            this.toolStripSeparator6.Size = new System.Drawing.Size(6, 25);
+            // 
+            // toolStripButton_VideoDemo
+            // 
+            this.toolStripButton_VideoDemo.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton_VideoDemo.Image")));
+            this.toolStripButton_VideoDemo.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButton_VideoDemo.Name = "toolStripButton_VideoDemo";
+            this.toolStripButton_VideoDemo.Size = new System.Drawing.Size(92, 22);
+            this.toolStripButton_VideoDemo.Text = "Video Demo";
+            this.toolStripButton_VideoDemo.Click += new System.EventHandler(this.toolStripButton_VideoDemo_Click);
+            // 
+            // toolStripSeparator7
+            // 
+            this.toolStripSeparator7.Name = "toolStripSeparator7";
+            this.toolStripSeparator7.Size = new System.Drawing.Size(6, 25);
+            // 
             // toolStripButton_Help
             // 
             this.toolStripButton_Help.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton_Help.Image")));
@@ -221,11 +247,27 @@ namespace FileMonitor
             this.toolStripButton_Help.Text = "Help";
             this.toolStripButton_Help.Click += new System.EventHandler(this.toolStripButton_Help_Click);
             // 
+            // listView_Info
+            // 
+            this.listView_Info.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.listView_Info.FullRowSelect = true;
+            this.listView_Info.HideSelection = false;
+            this.listView_Info.HoverSelection = true;
+            this.listView_Info.LabelEdit = true;
+            this.listView_Info.Location = new System.Drawing.Point(0, 49);
+            this.listView_Info.Name = "listView_Info";
+            this.listView_Info.ShowItemToolTips = true;
+            this.listView_Info.Size = new System.Drawing.Size(974, 457);
+            this.listView_Info.TabIndex = 2;
+            this.listView_Info.UseCompatibleStateImageBehavior = false;
+            this.listView_Info.View = System.Windows.Forms.View.Details;
+            // 
             // MonitorForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(974, 506);
+            this.Controls.Add(this.listView_Info);
             this.Controls.Add(this.toolStrip1);
             this.Controls.Add(this.menuStrip1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -261,6 +303,9 @@ namespace FileMonitor
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
         private System.Windows.Forms.ToolStripButton toolStripButton_UnitTest;
         private System.Windows.Forms.ToolStripButton toolStripButton_Help;
+        private ToolStripSeparator toolStripSeparator6;
+        private ToolStripButton toolStripButton_VideoDemo;
+        private ToolStripSeparator toolStripSeparator7;
     }
 }
 

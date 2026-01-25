@@ -30,7 +30,7 @@ namespace AutoEncryptDemo
         }
 
         private void button_Start_Click(object sender, EventArgs e)
-        {           
+        {
 
             //Purchase a license key with the link: http://www.easefilter.com/Order.htm
             //Email us to request a trial key: info@easefilter.com //free email is not accepted.        
@@ -255,9 +255,12 @@ namespace AutoEncryptDemo
                     
                     if (!DRMServer.GetEncryptedFileAccessPermission(e))
                     {
-                        //here didn't get the permission for the encrypted file open, it will return the raw encrypted data.
+                        //Without open permission, the encrypted file is returned as raw encrypted data.
                         e.ReturnStatus = NtStatus.Status.FileIsEncrypted;
-                    }
+
+                        //Return the following status code to prevent the encrypted file from being opened.
+                        //e.ReturnStatus = NtStatus.Status.AccessDenied;
+                    }                  
 
                     //The encryption key must be the same one which you created the new encrypted file.
                     e.EncryptionKey = Utils.GetKeyByPassPhrase(GlobalConfig.MasterPassword, 32);
@@ -356,14 +359,7 @@ namespace AutoEncryptDemo
             System.Diagnostics.Process.Start("https://www.easefilter.com/kb/auto-file-drm-encryption-tool.htm");
         }
 
-        private void applyTrialKeyToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            RegisterForm webForm = new RegisterForm();
-            webForm.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-
-            System.Threading.Tasks.Task.Factory.StartNew(() => { webForm.ShowDialog(); });
-        }
-
+     
         private void getTagDataOfEncryptedFileToolStripMenuItem_Click(object sender, EventArgs e)
         {
             InputForm inputForm = new InputForm("Input file name", "Plase input file name", "");

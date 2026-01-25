@@ -145,9 +145,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <WCFMetadata Include="Service References\" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\CommonObjects\CommonObjects.csproj">
       <Project>{34CB783E-DDA2-4CE3-80BC-37B25AA33E5F}</Project>
       <Name>CommonObjects</Name>

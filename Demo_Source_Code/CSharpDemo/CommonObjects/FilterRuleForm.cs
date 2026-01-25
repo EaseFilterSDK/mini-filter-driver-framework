@@ -67,7 +67,7 @@ namespace EaseFilter.CommonObjects
             textBox_IncludeProcessNames.Text = fileFilter.IncludeProcessNameString;
             textBox_ExcludeUserNames.Text = fileFilter.ExcludeUserNameString;
             textBox_IncludeUserNames.Text = fileFilter.IncludeUserNameString;
-            textBox_MonitorIO.Text = fileFilter.MonitorFileIOEventFilter.ToString();
+            textBox_MonitorIO.Text = ((ulong)fileFilter.MonitorFileIOEventFilter).ToString();
             textBox_FilterDesiredAccess.Text = fileFilter.FilterDesiredAccess.ToString();
             textBox_FilterDisposition.Text = fileFilter.FilterDisposition.ToString();
             textBox_FilterCreateOptions.Text = fileFilter.FilterCreateOptions.ToString();

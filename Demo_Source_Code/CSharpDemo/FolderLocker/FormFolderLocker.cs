@@ -124,7 +124,7 @@ namespace EaseFilter.FolderLocker
                 listEntry[index++] = ((accessFlags & (uint)FilterAPI.AccessFlag.ALLOW_FILE_DELETE) > 0).ToString();
                 listEntry[index++] = ((accessFlags & (uint)FilterAPI.AccessFlag.ALLOW_FILE_RENAME) > 0).ToString();
                 listEntry[index++] = ((accessFlags & (uint)FilterAPI.AccessFlag.ENABLE_FILE_ENCRYPTION_RULE) >0 ).ToString();
-                listEntry[index++] = ((accessFlags & (uint)FilterAPI.AccessFlag.ALLOW_COPY_PROTECTED_FILES_OUT) > 0).ToString();
+                listEntry[index++] = ((accessFlags & (uint)FilterAPI.AccessFlag.ALLOW_COPY_AND_PASTE) > 0).ToString();
                 listEntry[index++] = ((accessFlags & (uint)FilterAPI.AccessFlag.ENABLE_HIDE_FILES_IN_DIRECTORY_BROWSING) == 0).ToString();
 
                 ListViewItem item = new ListViewItem(listEntry, 0);
@@ -333,7 +333,11 @@ namespace EaseFilter.FolderLocker
             toolStripButton_Stop.Enabled = false;
         }
 
-   
+        private void toolStripButton_ApplyTrialKey_Click(object sender, EventArgs e)
+        {
+          
+        }
+
        
     }
 }

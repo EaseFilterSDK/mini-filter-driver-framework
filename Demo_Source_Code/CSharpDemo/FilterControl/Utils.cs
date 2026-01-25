@@ -297,17 +297,25 @@ namespace EaseFilter.FilterControl
         // Return the OS name.
         public static string GetOsName()
         {
-            string version = Utils.WinMajorVersion().ToString() + '.' + Utils.WinMinorVersion().ToString();
-            int build = System.Environment.OSVersion.Version.Build;
+            string version = Environment.OSVersion.ToString();
 
-            string isWin11 = string.Empty;
-
-            if (build > 20000)
+            try
             {
-                isWin11 = " is Win11";
+                version = Utils.WinMajorVersion().ToString() + '.' + Utils.WinMinorVersion().ToString();
+
+                dynamic productType;
+                if (TryGeRegistryKey(@"SYSTEM\CurrentControlSet\Control\ProductOptions", "ProductType", out productType))
+                {
+                    version += "." + productType;
+                }
+            }
+            catch (Exception ex)
+            {
+                version = Environment.OSVersion.ToString();
             }
 
-            return "version:" + version + ",build:" + build + "." + isWin11;
+
+            return "version:" + version;
 
             //switch (version)
             //{
@@ -324,26 +332,42 @@ namespace EaseFilter.FilterControl
         }
 
 
-        public static uint WinMajorVersion()
+        public static string WinMajorVersion()
         {
+            string versionStr = "";
+
             dynamic major;
             // The 'CurrentMajorVersionNumber' string value in the CurrentVersion key is new for Windows 10, 
             // and will most likely (hopefully) be there for some time before MS decides to change this - again...
             if (TryGeRegistryKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion", "CurrentMajorVersionNumber", out major))
             {
-                return (uint)major;
+                versionStr = major.ToString();
+                dynamic build;
+                if (TryGeRegistryKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion", "CurrentBuildNumber", out build))
+                {
+                    versionStr +=  "." + build;
+                    dynamic display;
+                    if (TryGeRegistryKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion", "DisplayVersion", out display))
+                    {
+                        versionStr +=  "." + display; 
+
+                    }
+
+                }
+               
+                return versionStr;
             }
 
             // When the 'CurrentMajorVersionNumber' value is not present we fallback to reading the previous key used for this: 'CurrentVersion'
             dynamic version;
             if (!TryGeRegistryKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion", "CurrentVersion", out version))
-                return 0;
+                return "No";
 
             var versionParts = ((string)version).Split('.');
-            if (versionParts.Length != 2) return 0;
+            if (versionParts.Length != 2) return "No";
 
             uint majorAsUInt;
-            return uint.TryParse(versionParts[0], out majorAsUInt) ? majorAsUInt : 0;
+            return (uint.TryParse(versionParts[0], out majorAsUInt) ? majorAsUInt : 0).ToString();
         }
 
         /// <summary>
@@ -397,8 +421,6 @@ namespace EaseFilter.FilterControl
             string targetName = Path.Combine(localPath, "FilterAPI.DLL");
 
             bool is64BitOperatingSystem = Environment.Is64BitOperatingSystem;
-            uint winMajorVersion = WinMajorVersion();
-            uint winMinorVersion = WinMinorVersion();
 
             string sourceFolder = localPath;
 

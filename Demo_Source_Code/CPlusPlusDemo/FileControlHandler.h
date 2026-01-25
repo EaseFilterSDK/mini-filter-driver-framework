@@ -99,6 +99,30 @@ FileControlHandler(
 		delete fileCreateEventArgs;
 
 	}
+	else if (messageSend->FilterCommand == IOPreAcquireSection)
+	{
+		FileIOEventArgs* fileMappingEventArgs = new FileIOEventArgs(messageSend);
+
+		fileMappingEventArgs->EventName = L"OnPreFileMapped";
+		DisplayFileIOMessage(fileMappingEventArgs);
+
+		//you can block the file memory mapping here.
+		//messageReply->FilterStatus = FILTER_COMPLETE_PRE_OPERATION;
+		//messageReply->ReturnStatus = STATUS_ACCESS_DENIED;
+
+		delete fileMappingEventArgs;
+
+	}
+	else if (messageSend->FilterCommand == IOPostAcquireSection)
+	{
+		FileIOEventArgs* fileMappingEventArgs = new FileIOEventArgs(messageSend);
+
+		fileMappingEventArgs->EventName = L"OnPostFileMapped";
+		DisplayFileIOMessage(fileMappingEventArgs);
+
+		delete fileMappingEventArgs;
+
+	}
 	else if (messageSend->MessageType == PRE_CACHE_READ
 			|| messageSend->MessageType == PRE_FASTIO_READ
 			|| messageSend->MessageType == PRE_NOCACHE_READ

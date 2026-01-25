@@ -92,6 +92,7 @@ namespace FileProtector
                 fileFilter.OnFileOpen += monitorEventHandler.OnFileOpen;
                 fileFilter.OnNewFileCreate += monitorEventHandler.OnNewFileCreate;
                 fileFilter.OnDeleteFile += monitorEventHandler.OnDeleteFile;
+                fileFilter.OnFileMemoryMapped += monitorEventHandler.OnFileMemoryMapped;
                 fileFilter.OnFileRead += monitorEventHandler.OnFileRead;
                 fileFilter.OnFileWrite += monitorEventHandler.OnFileWrite;
                 fileFilter.OnQueryFileBasicInfo += monitorEventHandler.OnQueryFileBasicInfo;
@@ -116,6 +117,7 @@ namespace FileProtector
                 //add the control pre-event handler for the control file filter.
                 fileFilter.OnPreCreateFile += controlEventHandler.OnPreCreateFile;
                 fileFilter.OnPreDeleteFile += controlEventHandler.OnPreDeleteFile;
+                fileFilter.OnPreFileMemoryMapped += controlEventHandler.OnPreFileMemoryMapped;
                 fileFilter.OnPreFileRead += controlEventHandler.OnPreFileRead;
                 fileFilter.OnPreFileWrite += controlEventHandler.OnPreFileWrite;
                 fileFilter.OnPreQueryFileBasicInfo += controlEventHandler.OnPreQueryFileBasicInfo;
@@ -137,6 +139,7 @@ namespace FileProtector
                 //add the control post-event handler for the control file filter.
                 fileFilter.OnPostCreateFile += controlEventHandler.OnPostCreateFile;
                 fileFilter.OnPostDeleteFile += controlEventHandler.OnPostDeleteFile;
+                fileFilter.OnPostFileMemoryMapped += controlEventHandler.OnPostFileMemoryMapped;
                 fileFilter.OnPostFileRead += controlEventHandler.OnPostFileRead;
                 fileFilter.OnPostFileWrite += controlEventHandler.OnPostFileWrite;
                 fileFilter.OnPostQueryFileBasicInfo += controlEventHandler.OnPostQueryFileBasicInfo;
@@ -349,11 +352,13 @@ namespace FileProtector
         private void toolStripButton_Help_Click(object sender, EventArgs e)
         {
             System.Diagnostics.Process.Start("https://blog.easefilter.com/file-protector-demo-step-by-step/");
+        }      
+
+        private void toolStripButton_Video_Click(object sender, EventArgs e)
+        {
+            System.Diagnostics.Process.Start("https://youtu.be/__owEKeiL7A?si=WopqsAWV_eoaQM39");
         }
 
-        private void toolStripButton_ApplyTrialKey_Click(object sender, EventArgs e)
-        {
-        }
-       
+  
     }
 }

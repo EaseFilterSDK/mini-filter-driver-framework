@@ -69,7 +69,7 @@
             this.checkBox_EnableHidenFile = new System.Windows.Forms.CheckBox();
             this.checkBox_AllowReadEncryptedFiles = new System.Windows.Forms.CheckBox();
             this.checkBox_AllowEncryptNewFile = new System.Windows.Forms.CheckBox();
-            this.checkBox_AllowCopyOut = new System.Windows.Forms.CheckBox();
+            this.checkBox_AllowCopyPaste = new System.Windows.Forms.CheckBox();
             this.checkBox_AllowSetSecurity = new System.Windows.Forms.CheckBox();
             this.checkBox_AllowFileWriting = new System.Windows.Forms.CheckBox();
             this.checkBox_EnableProtectionInBootTime = new System.Windows.Forms.CheckBox();
@@ -98,7 +98,7 @@
             this.groupBox1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox1.Location = new System.Drawing.Point(0, 0);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(573, 573);
+            this.groupBox1.Size = new System.Drawing.Size(609, 589);
             this.groupBox1.TabIndex = 12;
             this.groupBox1.TabStop = false;
             // 
@@ -115,7 +115,7 @@
             this.groupBox_AccessControl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox_AccessControl.Location = new System.Drawing.Point(3, 16);
             this.groupBox_AccessControl.Name = "groupBox_AccessControl";
-            this.groupBox_AccessControl.Size = new System.Drawing.Size(567, 554);
+            this.groupBox_AccessControl.Size = new System.Drawing.Size(603, 570);
             this.groupBox_AccessControl.TabIndex = 24;
             this.groupBox_AccessControl.TabStop = false;
             // 
@@ -314,7 +314,7 @@
             // 
             this.button_SaveControlSettings.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.button_SaveControlSettings.Location = new System.Drawing.Point(390, 527);
-            this.button_SaveControlSettings.Margin = new System.Windows.Forms.Padding(2);
+            this.button_SaveControlSettings.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.button_SaveControlSettings.Name = "button_SaveControlSettings";
             this.button_SaveControlSettings.Size = new System.Drawing.Size(130, 22);
             this.button_SaveControlSettings.TabIndex = 85;
@@ -342,7 +342,7 @@
             this.groupBox2.Controls.Add(this.checkBox_EnableHidenFile);
             this.groupBox2.Controls.Add(this.checkBox_AllowReadEncryptedFiles);
             this.groupBox2.Controls.Add(this.checkBox_AllowEncryptNewFile);
-            this.groupBox2.Controls.Add(this.checkBox_AllowCopyOut);
+            this.groupBox2.Controls.Add(this.checkBox_AllowCopyPaste);
             this.groupBox2.Controls.Add(this.checkBox_AllowSetSecurity);
             this.groupBox2.Controls.Add(this.checkBox_AllowFileWriting);
             this.groupBox2.Controls.Add(this.checkBox_EnableProtectionInBootTime);
@@ -484,9 +484,9 @@
             this.radioButton_EncryptFileWithTagData.AutoSize = true;
             this.radioButton_EncryptFileWithTagData.Location = new System.Drawing.Point(158, 138);
             this.radioButton_EncryptFileWithTagData.Name = "radioButton_EncryptFileWithTagData";
-            this.radioButton_EncryptFileWithTagData.Size = new System.Drawing.Size(343, 17);
+            this.radioButton_EncryptFileWithTagData.Size = new System.Drawing.Size(241, 17);
             this.radioButton_EncryptFileWithTagData.TabIndex = 93;
-            this.radioButton_EncryptFileWithTagData.Text = "Encrypt file with unique encryption key, iv and tag data from service";
+            this.radioButton_EncryptFileWithTagData.Text = "Encrypt file with custom DRM data embedded";
             this.radioButton_EncryptFileWithTagData.UseVisualStyleBackColor = true;
             // 
             // radioButton_EncryptFileWithSameKey
@@ -545,16 +545,16 @@
             this.checkBox_AllowEncryptNewFile.UseVisualStyleBackColor = true;
             this.checkBox_AllowEncryptNewFile.CheckedChanged += new System.EventHandler(this.checkBox_AllowEncryptNewFile_CheckedChanged);
             // 
-            // checkBox_AllowCopyOut
+            // checkBox_AllowCopyPaste
             // 
-            this.checkBox_AllowCopyOut.AutoSize = true;
-            this.checkBox_AllowCopyOut.Location = new System.Drawing.Point(349, 23);
-            this.checkBox_AllowCopyOut.Name = "checkBox_AllowCopyOut";
-            this.checkBox_AllowCopyOut.Size = new System.Drawing.Size(154, 17);
-            this.checkBox_AllowCopyOut.TabIndex = 27;
-            this.checkBox_AllowCopyOut.Text = "Allow files being copied out";
-            this.checkBox_AllowCopyOut.UseVisualStyleBackColor = true;
-            this.checkBox_AllowCopyOut.CheckedChanged += new System.EventHandler(this.checkBox_AllowCopyOut_CheckedChanged);
+            this.checkBox_AllowCopyPaste.AutoSize = true;
+            this.checkBox_AllowCopyPaste.Location = new System.Drawing.Point(349, 23);
+            this.checkBox_AllowCopyPaste.Name = "checkBox_AllowCopyPaste";
+            this.checkBox_AllowCopyPaste.Size = new System.Drawing.Size(122, 17);
+            this.checkBox_AllowCopyPaste.TabIndex = 27;
+            this.checkBox_AllowCopyPaste.Text = "Allow file copy paste";
+            this.checkBox_AllowCopyPaste.UseVisualStyleBackColor = true;
+            this.checkBox_AllowCopyPaste.CheckedChanged += new System.EventHandler(this.checkBox_AllowCopyOut_CheckedChanged);
             // 
             // checkBox_AllowSetSecurity
             // 
@@ -710,9 +710,9 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(573, 573);
+            this.ClientSize = new System.Drawing.Size(609, 589);
             this.Controls.Add(this.groupBox1);
-            this.Margin = new System.Windows.Forms.Padding(2);
+            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.Name = "ControlFilterRuleSettigs";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Access Control Settings of The Filter Rule";
@@ -760,7 +760,7 @@
         private System.Windows.Forms.CheckBox checkBox_Encryption;
         private System.Windows.Forms.Button button_SaveControlSettings;
         private System.Windows.Forms.CheckBox checkBox_AllowEncryptNewFile;
-        private System.Windows.Forms.CheckBox checkBox_AllowCopyOut;
+        private System.Windows.Forms.CheckBox checkBox_AllowCopyPaste;
         private System.Windows.Forms.CheckBox checkBox_AllowReadEncryptedFiles;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox textBox_ProcessIdRights;
