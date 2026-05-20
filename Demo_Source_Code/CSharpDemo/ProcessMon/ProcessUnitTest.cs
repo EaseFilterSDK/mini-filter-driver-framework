@@ -339,7 +339,8 @@ namespace ProcessMon
             string message = "Process Filter Driver Unit Test.";
             AppendUnitTestResult(message, Color.Black);
 
-            if (!filterControl.StartFilter(GlobalConfig.filterType, GlobalConfig.FilterConnectionThreads, GlobalConfig.ConnectionTimeOut, licenseKey, ref lastError))
+            if (!filterControl.StartFilter(GlobalConfig.filterType, GlobalConfig.FilterConnectionThreads,
+                    GlobalConfig.CreateConnectionPerThread, GlobalConfig.ProcessMessageInRoundRobin, GlobalConfig.ConnectionTimeOut, licenseKey, ref lastError));
             {
                 MessageBox.Show(lastError, "StartFilter", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;

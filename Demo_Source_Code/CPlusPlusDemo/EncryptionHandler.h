@@ -100,7 +100,7 @@ EncryptionHandler(
 		//if you want to setup the authorized process names, do it here
 		//test authorized process names
 		WCHAR* authorizedProcessNames =  GetAuthorizedProcess();
-		ULONG strLen = wcslen(authorizedProcessNames) * sizeof(WCHAR);
+		ULONG strLen = (ULONG)wcslen(authorizedProcessNames) * sizeof(WCHAR);
 		pDRMdata->AESFlags |= Flags_Enabled_Check_ProcessName;
 		pDRMdata->LengthOfIncludeProcessNames = strLen;
 		pDRMdata->OffsetOfIncludeProcessNames = offset;

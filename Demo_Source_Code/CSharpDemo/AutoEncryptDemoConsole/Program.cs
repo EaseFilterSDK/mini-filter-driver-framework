@@ -24,8 +24,8 @@ namespace AutoEncryptDemoConsole
         static void Main(string[] args)
         {
             string lastError = string.Empty;
-            //Purchase a license key with the link: http://www.easefilter.com/Order.htm
-            //Email us to request a trial key: info@easefilter.com //free email is not accepted.
+            //To request a trial or production license key, please contact info@easefilter.com
+            //Requests from free email domains are not accepted
             string licenseKey = "****************************************************";            
 
             FilterAPI.FilterType filterType = FilterAPI.FilterType.CONTROL_FILTER | FilterAPI.FilterType.ENCRYPTION_FILTER | FilterAPI.FilterType.PROCESS_FILTER | FilterAPI.FilterType.MONITOR_FILTER;

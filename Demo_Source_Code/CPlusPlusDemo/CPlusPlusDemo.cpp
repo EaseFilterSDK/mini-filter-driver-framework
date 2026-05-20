@@ -70,6 +70,7 @@ Return Value
 	printf("		e ----- Start encryption filter driver test.\n");
 	printf( "		p ----- Start process filter driver test.\n" );
 	printf( "		r ----- Start registry filter driver test.\n" );
+	printf("		s ----- Start stub file filter driver test.\n");
 	printf( "\n		[FilterFolder]---- the folder mask which will be monitored.\n" );
 	printf( "		[IoRegistration]---- register the callback I/O requests.\n" );
 	printf( "		[AccessFlag]---- the I/O access control flag.\n" );
@@ -85,7 +86,7 @@ Return Value
 	printf( "EaseFltCPPDemo c c:\\filterTest\\*  0 33393264   ---control filter driver, prevent files from being changed.\r\n" );
 	printf( "EaseFltCPPDemo P *(processNameFilterMask) controlFlag ---process filter driver to monitor/control process activities.\r\n");
 	printf( "EaseFltCPPDemo r *(processNameFilterMask) *(keyNameFilterMask)  controlFlag ---registry filter driver to monitor/control registry activities.\r\n");
-	
+	printf(" EaseFltCPPDemo s c:\\stubFile  ----- create test stub file in folder c:\\stubFile.\r\n");
 }
 
 
@@ -212,12 +213,13 @@ int _tmain(int argc, _TCHAR* argv[])
 
 			filterControl->AddFileFilter(fileFilterRule);
 
-			if (!filterControl->StartFilter(filterType, threadCount, connectionTimeout, registerKey))
+			if (!filterControl->StartFilterService(filterType, threadCount, connectionTimeout, registerKey))
 			{
 				break;
 			}
 
-			_tprintf(_T("Start Monitor filter, fileFilterMask=%s  ioCallbackClass:0X%0X accessFlag:0X%0X \n\n Press any key to stop.\n"), fileFilterMask, ioCallbackClass, accessFlag);
+			_tprintf(_T("Start Monitor filter, fileFilterMask=%s  ioCallbackClass: %llx accessFlag: %x \n\n Press any key to stop.\n")
+				,fileFilterMask, ioCallbackClass, accessFlag);
 
 			getchar();
 
@@ -315,12 +317,13 @@ int _tmain(int argc, _TCHAR* argv[])
 			//set global boolean config
 			filterControl->globalBooleanConfig |= ENABLE_SEND_DENIED_EVENT;
 
-			if (!filterControl->StartFilter(filterType, threadCount, connectionTimeout, registerKey))
+			if (!filterControl->StartFilterService(filterType, threadCount, connectionTimeout, registerKey))
 			{
 				break;
 			}
 
-			_tprintf(_T("Start control filter, fileFilterMask=%s  ioCallbackClass:0X%0X accessFlag:0X%0X \n\n Press any key to stop.\n"), fileFilterMask, ioCallbackClass, accessFlag);
+			_tprintf(_T("Start control filter, fileFilterMask=%s  ioCallbackClass: %llx accessFlag: %x \n\n Press any key to stop.\n")
+				, fileFilterMask, ioCallbackClass, accessFlag);
 			
 			//prevent the current process from being terminated.
 			//AddProtectedProcessId(GetCurrentProcessId());
@@ -369,15 +372,11 @@ int _tmain(int argc, _TCHAR* argv[])
 
 			//if we enable the encryption key from service, you can authorize the decryption for every file
 			//in the callback function OnFilterRequestEncryptKey, with this flag enabled.
-			fileFilterRule.BooleanConfig |= REQUEST_ENCRYPT_KEY_IV_AND_TAGDATA_FROM_SERVICE;
-
-			//Add the FILE_ATTRIBUTE_ENCRYPTED to the encrypted file. The attribute will be kept if you copy&paste to another folder
-			//even the file was not encrypted anymore by Windows explorer.
-			//fileFilterRule.BooleanConfig |= ENABLE_SET_FILE_ATTRIBUTE_ENCRYPTED;
+			fileFilterRule.BooleanConfig |= REQUEST_ENCRYPT_KEY_IV_AND_TAGDATA_FROM_SERVICE;			
 
 			filterControl->AddFileFilter(fileFilterRule);
 			
-			if (!filterControl->StartFilter(filterType, threadCount, connectionTimeout, registerKey))
+			if (!filterControl->StartFilterService(filterType, threadCount, connectionTimeout, registerKey))
 			{
 				break;
 			}			
@@ -455,7 +454,7 @@ int _tmain(int argc, _TCHAR* argv[])
 
 			filterControl->AddFileFilter(fileFilterRule);
 
-			if (!filterControl->StartFilter(filterType, threadCount, connectionTimeout, registerKey))
+			if (!filterControl->StartFilterService(filterType, threadCount, connectionTimeout, registerKey))
 			{
 				break;
 			}
@@ -501,7 +500,7 @@ int _tmain(int argc, _TCHAR* argv[])
 
 			filterControl->AddFileFilter(fileFilterRule);
 
-			if (!filterControl->StartFilter(filterType, threadCount, connectionTimeout, registerKey))
+			if (!filterControl->StartFilterService(filterType, threadCount, connectionTimeout, registerKey))
 			{
 				break;
 			}
@@ -556,7 +555,7 @@ int _tmain(int argc, _TCHAR* argv[])
 			ULONG accessFlag = ALLOW_MAX_RIGHT_ACCESS & ~(ALLOW_OPEN_WITH_CREATE_OR_OVERWRITE_ACCESS | ALLOW_WRITE_ACCESS | ALLOW_FILE_RENAME | ALLOW_FILE_DELETE);
 			processFilterRule.AddFileAccessRightsToProcess(L"c:\\test\\*", accessFlag);
 
-			if (!filterControl->StartFilter(filterType, threadCount, connectionTimeout, registerKey))
+			if (!filterControl->StartFilterService(filterType, threadCount, connectionTimeout, registerKey))
 			{
 				break;
 			}
@@ -616,7 +615,7 @@ int _tmain(int argc, _TCHAR* argv[])
 
 			filterControl->AddRegistryFilter(registryFilterRule);
 
-			if (!filterControl->StartFilter(filterType, threadCount, connectionTimeout, registerKey))
+			if (!filterControl->StartFilterService(filterType, threadCount, connectionTimeout, registerKey))
 			{
 				break;
 			}
@@ -624,6 +623,69 @@ int _tmain(int argc, _TCHAR* argv[])
 			_tprintf(_T("Start Registry filter, processNameFilterMask=%s keyNameFilterMask=%s controlFlag:0X%0X \n\n Press any key to stop.\n")
 				,processNameFilterMask, keyNameFilterMask, controlFlag);
 								
+			getchar();
+
+			break;
+
+		}
+		case 's':  //stub file filter driver test
+		{
+
+			UnInstallDriver();
+			Sleep(2000);
+
+			ret = InstallDriver();
+			if (!ret)
+			{
+				PrintLastErrorMessage(L"InstallDriver failed.");
+				return 1;
+			}
+
+			_tprintf(_T("Start stub file filter driver test. press any key to stop.\n\n"));
+
+			filterType = FILE_SYSTEM_HSM;
+
+			WCHAR* stubFolder = L"c:\test";
+			WCHAR testStubFileFolder[MAX_PATH];
+
+			if (argc >= 3)
+			{
+				stubFolder = argv[2];
+				wcscat_s(testStubFileFolder, MAX_PATH, stubFolder);
+			}
+			else
+			{
+				if (!GetCurrentDirectory(MAX_PATH, testStubFileFolder))
+				{
+					wprintf(L"Get current directory failed.");
+					return 1;
+				}
+
+				wcscat_s(testStubFileFolder, MAX_PATH, L"\\testStubFiles");
+				stubFolder = testStubFileFolder;
+			}
+
+			CreateTestFiles(stubFolder);
+
+			ULONG accessFlag = ALLOW_MAX_RIGHT_ACCESS;
+
+			wcscat_s(testStubFileFolder, MAX_PATH, L"\\*");
+			stubFolder = testStubFileFolder;
+
+			FileFilterRule fileFilterRule(stubFolder);
+			fileFilterRule.AccessFlag = accessFlag;
+			fileFilterRule.BooleanConfig = ENABLE_STUB_FILE_HEADER;
+
+			filterControl->AddFileFilter(fileFilterRule);
+
+			if (!filterControl->StartFilterService(filterType, threadCount, connectionTimeout, registerKey))
+			{
+				break;
+			}
+
+			_tprintf(_T("\n\nStart stub file filter for test stub folder %ws,\r\nYou can open the stub file for test.\
+				.\r\n Press any key to stop the filter driver.\n"), stubFolder);
+
 			getchar();
 
 			break;
@@ -638,7 +700,7 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	}
 
-	filterControl->StopFilter();
+	filterControl->StopFilterService();
 	delete filterControl;
 		
 	return 0;

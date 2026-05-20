@@ -11,9 +11,11 @@
 #ifndef __SHARE_TYPE_H__
 #define __SHARE_TYPE_H__
 
-//Purchase a license key with the link: http://www.EaseFilter.com/Order.htm
-//Email us to request a trial key: info@EaseFilter.com //free email is not accepted.
-#define	registerKey "CEAF31-EB6929-563C18-6EC8B3-0F860D-21C6F3-4253E5-49DB"
+#include "WinDataStructures.h"
+
+//To request a trial or production license key, please contact info@easefilter.com
+//Requests from free email domains are not accepted
+#define	registerKey "************************************************************"
 
 #define MESSAGE_SEND_VERIFICATION_NUMBER	0xFF000001
 #define DATA_BUFFER_EX_VERIFICATION_NUMBER  0xABcdFE33
@@ -144,7 +146,6 @@ typedef struct _AES_TAG_CONTROL_DATA
 #pragma pack(pop)
 
 //---------------------------------------------------------------------------------------
-
 typedef enum _FilterType
 {
     /// <summary>
@@ -339,6 +340,9 @@ typedef enum _FilterCommand
     /// request the reparse file open.
     /// </summary>
     FILTER_REPARSE_FILE_OPEN_REQUEST = 0x00010023,
+
+    //the IO name of the IO operation.
+
     /// <summary>
     /// Fires this event before the file create IO was going down to the file system.
     /// </summary>
@@ -522,6 +526,7 @@ typedef enum _FilterCommand
 
 }FilterCommand;
 
+
 /// <summary>
 /// The volume control flag.
 /// </summary>
@@ -553,38 +558,6 @@ typedef enum  _VolumeControlFlag
     BLOCK_USB_WRITE = 0x00000020,
 
 }VolumeControlFlag;
-//
-//the structure of the attached volume information
-typedef struct _VOLUME_INFO
-{
-    /// <summary>
-    /// The length of the volume name.
-    /// </summary>
-    ULONG VolumeNameLength;
-    /// <summary>
-    /// The volume name buffer.
-    /// </summary>
-    WCHAR VolumeName[MAX_FILE_NAME_LENGTH];
-    /// <summary>
-    /// The length of the volume dos file name.
-    /// </summary>
-    ULONG VolumeDosNameLength;
-    /// <summary>
-    /// The volume dos file name buffer.
-    /// </summary>
-    WCHAR VolumeDosName[MAX_FILE_NAME_LENGTH];
-    /// <summary>
-    ///the volume file system type.
-    /// </summary>
-    ULONG VolumeFilesystemType;
-    /// <summary>
-    ///the Characteristics of the attached device object if existed. 
-    /// </summary>
-    ULONG DeviceCharacteristics;
-
-
-} VOLUME_INFO, * PVOLUME_INFO;
-
 
 
 /// <summary>
@@ -991,9 +964,9 @@ typedef enum _AccessFlag
     /// </summary>
     ALLOW_FILE_MEMORY_MAPPED = 0x01000000,
     /// <summary>
-    /// if the encryption filter rule is enabled, it will encrypt unencrypted data on read when the flag value is 0.
+    /// this flag is reserved for future use.
     /// </summary>
-    DISABLE_ENCRYPT_DATA_ON_READ = 0x02000000,
+    RESERVE_FLAG = 0x02000000,
     /// <summary>
     /// prevent the protected files from being copying out to the USB when the flag value is 0.
     /// </summary>
@@ -1013,8 +986,8 @@ typedef enum _AccessFlag
 
 typedef enum _ConnectionPortType
 {
-    ClientMessagePort = 0,
-    ClientControlPort = 1,
+    ClientMessagePort = 100000,
+    ClientControlPort = 200000,
 
 } ConnectionPortType;
 
@@ -1077,6 +1050,13 @@ typedef enum _ControlType
 
 } ControlType;
 
+typedef enum _CONNECTION_FLAGS
+{
+    CREATE_CONNECTION_PER_THREADS = 0x00000001,
+    SEND_MESSAGE_IN_ROUND_ROBIN = 0x00000002,
+
+} CONNECTION_FLAGS;
+
 // the user mode app sends the integer data to filter driver, this is the index of the integer data.
 typedef enum _DataControlId
 {
@@ -1098,6 +1078,8 @@ typedef enum _DataControlId
     MAX_SERVICE_THEAD_COUNT,     //the maximum thread count of the service. 
     MAX_WAITING_REQUEST_COUNT,	 //the maximum number of the waiting requests can be put into the communication queue.
     MAX_ENCRYPT_WRITE_BUFFER_SIZE_ID, //enable the small encryption write to cache first, then write to disk.
+    SEND_READ_WRITE_BUFFER_SIZE_ID, //set the number of read/write data to user mode service.
+    FILTER_CONNECTION_FLAGS, //set the filter connection flags.
 
     MAX_DATA_CONTROL_ID,
 
@@ -1263,10 +1245,14 @@ typedef enum _BooleanConfig
     /// if it is true it will set the userName and processName for the message_send_data_structure.
     /// </summary>
     ENABLE_SET_USER_PROCESS_NAME = 0x00200000,
-   /// <summary>
-   /// if it is true it will append the header to the file as the meta data of the stub file.
-   /// </summary>
-   ENABLE_STUB_FILE_HEADER = 0x00800000,
+    /// <summary>
+    /// if it is true it will set the FILE_ATTRIBUTE_ENCRYPTED to the encrypted file, IT IS NOT SUPPORTED.
+    /// </summary>
+    ENABLE_SET_FILE_ATTRIBUTE_ENCRYPTED = 0x00400000,
+    /// <summary>
+    /// if it is true it will append the header to the file as the meta data of the stub file.
+    /// </summary>
+    ENABLE_STUB_FILE_HEADER = 0x00800000,
 
 } BooleanConfig;
 
@@ -1321,6 +1307,45 @@ typedef enum _FILE_COPY_FLAG
 
 } FILE_COPY_FLAG;
 
+//
+//the structure of the attached volume information
+typedef struct _VOLUME_INFO
+{
+    /// <summary>
+    /// The length of the volume name.
+    /// </summary>
+    ULONG VolumeNameLength;
+    /// <summary>
+    /// The volume name buffer.
+    /// </summary>
+    WCHAR VolumeName[MAX_FILE_NAME_LENGTH];
+    /// <summary>
+    /// The length of the volume dos file name.
+    /// </summary>
+    ULONG VolumeDosNameLength;
+    /// <summary>
+    /// The volume dos file name buffer.
+    /// </summary>
+    WCHAR VolumeDosName[MAX_FILE_NAME_LENGTH];
+    /// <summary>
+    /// The length of the volume hardware Id.
+    /// </summary>
+    ULONG HardwareIdLength;
+    /// <summary>
+    /// The hardware Id name.
+    /// </summary>
+    WCHAR HardwareId[MAX_FILE_NAME_LENGTH];
+    /// <summary>
+    ///the volume file system type.
+    /// </summary>
+    FLT_FILESYSTEM_TYPE VolumeFilesystemType;
+    /// <summary>
+    ///the Characteristics of the attached device object if existed. 
+    /// </summary>
+    ULONG DeviceCharacteristics;
+
+
+} VOLUME_INFO, * PVOLUME_INFO;
 
 //
 //the structure of the new creating process	information
@@ -1490,6 +1515,7 @@ typedef struct _MESSAGE_SEND_DATA
     ///the data buffer length.
     /// </summary>
     ULONG DataBufferLength;
+
     union {
         /// <summary>
         /// this structure was used by the registry filter driver callback
@@ -1538,7 +1564,7 @@ typedef struct _MESSAGE_SEND_DATA
             /// <summary>
             /// The file system type of the volume.
             /// </summary>
-            ULONG FileSystemType;
+            FLT_FILESYSTEM_TYPE FileSystemType;
             /// <summary>
             ///the serial number of the volume.
             /// </summary>
@@ -1683,22 +1709,34 @@ typedef BOOL(__stdcall* Proto_Message_Callback)(
 
 typedef VOID(__stdcall* Proto_Disconnect_Callback)();
 
+
 /// <summary>
-/// Create the filter driver connection with callback settings
+///Start the filter driver service.
 /// </summary>
-/// <param name="threadCount">the number of working threads waitting for the callback message</param>
-/// <param name="filterCallback">the callback function</param>
-/// <param name="disconnectCallback">the disconnect callback function</param>
+/// <param name="licenseKey">A valid license key required to authorize and start the filter driver service.</param>
+/// <param name="threadCount">The number of worker threads waiting for callback messages.</param>        
+/// <param name="createConnectionPerThread">If true, a unique filter connection is created for each thread. If false, a single shared connection is used.</param>
+/// <param name="processMessageInRoundRobin">Only applicable if createConnectionPerThread is true.
+/// If true, messages are distributed across connections in a round-robin fashion.If false, messages from the same Thread ID are pinned to the same connection.</param>
+/// <param name="messageCallback">The primary callback function for processing filter messages.</param>
+/// <param name="disconnectCallback">The callback function invoked when the service disconnects.</param>
+/// <returns>Returns BOOL: TRUE if the service started successfully; FALSE otherwise.</returns>
 extern "C" __declspec(dllexport)
 BOOL
-RegisterMessageCallback(
-    ULONG ThreadCount,
-    Proto_Message_Callback MessageCallback,
-    Proto_Disconnect_Callback DisconnectCallback);
+StartFilter(
+    CHAR * licenseKey,
+    ULONG threadCount,
+    BOOLEAN	createConnectionPerThread,
+    BOOLEAN processMessageInRoundRobin,
+    Proto_Message_Callback messageCallback,
+    Proto_Disconnect_Callback disconnectCallback);
 
+/// <summary>
+/// Stops the filter driver from intercepting I/O requests. This effectively puts the driver into a passive state without uninstalling it from the system.
+/// </summary>
 extern "C" __declspec(dllexport)
 VOID
-Disconnect();
+StopFilter();
 
 extern "C" __declspec(dllexport)
 BOOL

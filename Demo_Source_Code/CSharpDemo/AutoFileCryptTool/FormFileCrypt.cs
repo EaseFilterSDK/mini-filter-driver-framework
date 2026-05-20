@@ -58,18 +58,10 @@ namespace AutoFileCryptTool
         private void InitializeFileCrypt()
         {
             int numberOfAutoEncryptFolders = 0;
-            int numberOfEncryptOnReadFolders = 0;
 
             foreach (FileFilter fileFilter in GlobalConfig.FileFilters.Values)
             {
-                if ( (fileFilter.AccessFlags & FilterAPI.AccessFlag.DISABLE_ENCRYPT_DATA_ON_READ) == 0  )
-                {
-                    numberOfEncryptOnReadFolders++;
-                }
-                else
-                {
-                    numberOfAutoEncryptFolders++;
-                }
+                numberOfAutoEncryptFolders++;
             }
 
             listView_AutoEncryptFolders.Items.Clear();
@@ -81,31 +73,15 @@ namespace AutoFileCryptTool
 
             foreach (FileFilter fileFilter in GlobalConfig.FileFilters.Values)
             {
-              
-                if ((fileFilter.AccessFlags & FilterAPI.AccessFlag.DISABLE_ENCRYPT_DATA_ON_READ) == 0)
+                string folderName = fileFilter.IncludeFileFilterMask;
+                if (folderName.EndsWith("\\*"))
                 {
-
-                    string folderName = fileFilter.IncludeFileFilterMask;
-                    if (folderName.EndsWith("\\*"))
-                    {
-                        folderName = folderName.Substring(0, folderName.Length - 2);
-                    }
-
-                    ListViewItem item = new ListViewItem(folderName);
-                    item.ImageIndex = 0;
+                    folderName = folderName.Substring(0, folderName.Length - 2);
                 }
-                else
-                {
-                    string folderName = fileFilter.IncludeFileFilterMask;
-                    if (folderName.EndsWith("\\*"))
-                    {
-                        folderName = folderName.Substring(0, folderName.Length - 2);
-                    }
 
-                    ListViewItem item = new ListViewItem(folderName);
-                    item.ImageIndex = 0;
-                    listView_AutoEncryptFolders.Items.Add(item);
-                }
+                ListViewItem item = new ListViewItem(folderName);
+                item.ImageIndex = 0;
+                listView_AutoEncryptFolders.Items.Add(item);
             }
 
             GlobalConfig.SaveConfigSetting();
@@ -366,8 +342,8 @@ namespace AutoFileCryptTool
         void StartService()
         {
 
-            //Purchase a license key with the link: http://www.easefilter.com/Order.htm
-            //Email us to request a trial key: info@easefilter.com //free email is not accepted.        
+            //To request a trial or production license key, please contact info@easefilter.com
+            //Requests from free email domains are not accepted        
             string licenseKey = GlobalConfig.LicenseKey;
 
             GlobalConfig.filterType = FilterAPI.FilterType.CONTROL_FILTER | FilterAPI.FilterType.ENCRYPTION_FILTER | FilterAPI.FilterType.PROCESS_FILTER;
@@ -418,51 +394,6 @@ namespace AutoFileCryptTool
             StopService();
         }
 
-        /// <summary>
-        /// The files in protected folder will be automatically encrypted when it was uploaded or copied out
-        /// by the blacklist processes, the files were not encrypted in the local disk.
-        /// </summary>
-        /// <param name="folderName"></param>
-        /// <returns></returns>
-        private bool AddEncryptOnReadFolder(string folderName)
-        {
-
-            FileFilter encryptOnReadFilter = new FileFilter(folderName + "\\*");
-
-            //enable encryption filter rule.
-            FilterAPI.AccessFlag accessFlag = (FilterAPI.AccessFlag)FilterAPI.ALLOW_MAX_RIGHT_ACCESS | FilterAPI.AccessFlag.ENABLE_FILE_ENCRYPTION_RULE;
-            //disable new created file encryption, the file on disk won't be encrypted.
-            accessFlag &= ~FilterAPI.AccessFlag.ALLOW_ENCRYPT_NEW_FILE; 
-            //the file data will be encrypted when it was read.
-            accessFlag &= ~FilterAPI.AccessFlag.DISABLE_ENCRYPT_DATA_ON_READ;
-
-            encryptOnReadFilter.AccessFlags = accessFlag;
-            encryptOnReadFilter.EncryptionKey = Utils.GetKeyByPassPhrase(GlobalConfig.MasterPassword, 32);
-            encryptOnReadFilter.EncryptionIV = Utils.GetIVByPassPhrase(GlobalConfig.MasterPassword);
-
-            GlobalConfig.AddFileFilter(encryptOnReadFilter);
-
-            GlobalConfig.SaveConfigSetting();
-
-            return true;
-        }
-
-
-        private void button_AddEncryptOnReadFolder_Click(object sender, EventArgs e)
-        {
-            FolderBrowserDialog fdDiaglog = new FolderBrowserDialog();
-            if (fdDiaglog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-            {
-                string folderName = fdDiaglog.SelectedPath;
-                AddEncryptOnReadFolder(folderName);
-            }
-
-            InitializeFileCrypt();
-
-            string lastError = string.Empty;
-
-            SendConfigSettingsToFilter();
-        }
 
         private void button_SetupDropFolder_Click(object sender, EventArgs e)
         {

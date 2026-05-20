@@ -45,7 +45,6 @@
             this.checkBox_SetSecurity = new System.Windows.Forms.CheckBox();
             this.checkBox_QueryInfo = new System.Windows.Forms.CheckBox();
             this.checkBox_Read = new System.Windows.Forms.CheckBox();
-            this.checkBox_EnableEncryptionOnRead = new System.Windows.Forms.CheckBox();
             this.checkBox_SetInfo = new System.Windows.Forms.CheckBox();
             this.checkBox_Write = new System.Windows.Forms.CheckBox();
             this.checkBox_AllowDelete = new System.Windows.Forms.CheckBox();
@@ -81,9 +80,10 @@
             // button_Add
             // 
             this.button_Add.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.button_Add.Location = new System.Drawing.Point(436, 201);
+            this.button_Add.Location = new System.Drawing.Point(654, 309);
+            this.button_Add.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.button_Add.Name = "button_Add";
-            this.button_Add.Size = new System.Drawing.Size(75, 23);
+            this.button_Add.Size = new System.Drawing.Size(112, 35);
             this.button_Add.TabIndex = 25;
             this.button_Add.Text = "Apply";
             this.button_Add.UseVisualStyleBackColor = true;
@@ -94,9 +94,11 @@
             this.groupBox_ProcessName.Controls.Add(this.button_InfoProcessName);
             this.groupBox_ProcessName.Controls.Add(this.textBox_ProcessName);
             this.groupBox_ProcessName.Controls.Add(this.label_AccessFlags);
-            this.groupBox_ProcessName.Location = new System.Drawing.Point(25, 19);
+            this.groupBox_ProcessName.Location = new System.Drawing.Point(38, 29);
+            this.groupBox_ProcessName.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.groupBox_ProcessName.Name = "groupBox_ProcessName";
-            this.groupBox_ProcessName.Size = new System.Drawing.Size(535, 48);
+            this.groupBox_ProcessName.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.groupBox_ProcessName.Size = new System.Drawing.Size(802, 74);
             this.groupBox_ProcessName.TabIndex = 26;
             this.groupBox_ProcessName.TabStop = false;
             this.groupBox_ProcessName.Visible = false;
@@ -104,25 +106,28 @@
             // button_InfoProcessName
             // 
             this.button_InfoProcessName.Image = global::EaseFilter.CommonObjects.Properties.Resources.about;
-            this.button_InfoProcessName.Location = new System.Drawing.Point(461, 16);
+            this.button_InfoProcessName.Location = new System.Drawing.Point(692, 25);
+            this.button_InfoProcessName.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.button_InfoProcessName.Name = "button_InfoProcessName";
-            this.button_InfoProcessName.Size = new System.Drawing.Size(41, 20);
+            this.button_InfoProcessName.Size = new System.Drawing.Size(62, 31);
             this.button_InfoProcessName.TabIndex = 114;
             this.button_InfoProcessName.UseVisualStyleBackColor = true;
             this.button_InfoProcessName.Click += new System.EventHandler(this.button_InfoProcessName_Click);
             // 
             // textBox_ProcessName
             // 
-            this.textBox_ProcessName.Location = new System.Drawing.Point(149, 16);
+            this.textBox_ProcessName.Location = new System.Drawing.Point(224, 25);
+            this.textBox_ProcessName.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.textBox_ProcessName.Name = "textBox_ProcessName";
-            this.textBox_ProcessName.Size = new System.Drawing.Size(298, 20);
+            this.textBox_ProcessName.Size = new System.Drawing.Size(445, 20);
             this.textBox_ProcessName.TabIndex = 27;
             this.textBox_ProcessName.Text = "notepad.exe";
             // 
             // label_AccessFlags
             // 
             this.label_AccessFlags.AutoSize = true;
-            this.label_AccessFlags.Location = new System.Drawing.Point(9, 19);
+            this.label_AccessFlags.Location = new System.Drawing.Point(14, 29);
+            this.label_AccessFlags.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label_AccessFlags.Name = "label_AccessFlags";
             this.label_AccessFlags.Size = new System.Drawing.Size(124, 13);
             this.label_AccessFlags.TabIndex = 28;
@@ -142,7 +147,6 @@
             this.groupBox_AccessRights.Controls.Add(this.checkBox_SetSecurity);
             this.groupBox_AccessRights.Controls.Add(this.checkBox_QueryInfo);
             this.groupBox_AccessRights.Controls.Add(this.checkBox_Read);
-            this.groupBox_AccessRights.Controls.Add(this.checkBox_EnableEncryptionOnRead);
             this.groupBox_AccessRights.Controls.Add(this.checkBox_SetInfo);
             this.groupBox_AccessRights.Controls.Add(this.checkBox_Write);
             this.groupBox_AccessRights.Controls.Add(this.checkBox_AllowDelete);
@@ -151,27 +155,32 @@
             this.groupBox_AccessRights.Controls.Add(this.label2);
             this.groupBox_AccessRights.Controls.Add(this.textBox_FileAccessFlags);
             this.groupBox_AccessRights.Controls.Add(this.button_FileAccessFlags);
-            this.groupBox_AccessRights.Location = new System.Drawing.Point(25, 231);
+            this.groupBox_AccessRights.Location = new System.Drawing.Point(38, 355);
+            this.groupBox_AccessRights.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.groupBox_AccessRights.Name = "groupBox_AccessRights";
-            this.groupBox_AccessRights.Size = new System.Drawing.Size(535, 234);
+            this.groupBox_AccessRights.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.groupBox_AccessRights.Size = new System.Drawing.Size(802, 360);
             this.groupBox_AccessRights.TabIndex = 76;
             this.groupBox_AccessRights.TabStop = false;
             this.groupBox_AccessRights.Text = "File Acess Rights";
             // 
             // groupBox1
             // 
-            this.groupBox1.Location = new System.Drawing.Point(9, 170);
+            this.groupBox1.Location = new System.Drawing.Point(14, 262);
+            this.groupBox1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(516, 10);
+            this.groupBox1.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.groupBox1.Size = new System.Drawing.Size(774, 15);
             this.groupBox1.TabIndex = 124;
             this.groupBox1.TabStop = false;
             // 
             // button_InfoEncryptOnRead
             // 
             this.button_InfoEncryptOnRead.Image = global::EaseFilter.CommonObjects.Properties.Resources.about;
-            this.button_InfoEncryptOnRead.Location = new System.Drawing.Point(501, 147);
+            this.button_InfoEncryptOnRead.Location = new System.Drawing.Point(752, 226);
+            this.button_InfoEncryptOnRead.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.button_InfoEncryptOnRead.Name = "button_InfoEncryptOnRead";
-            this.button_InfoEncryptOnRead.Size = new System.Drawing.Size(28, 20);
+            this.button_InfoEncryptOnRead.Size = new System.Drawing.Size(42, 31);
             this.button_InfoEncryptOnRead.TabIndex = 120;
             this.button_InfoEncryptOnRead.UseVisualStyleBackColor = true;
             this.button_InfoEncryptOnRead.Click += new System.EventHandler(this.button_InfoEncryptOnRead_Click);
@@ -179,9 +188,10 @@
             // button_InfoDecryptFile
             // 
             this.button_InfoDecryptFile.Image = global::EaseFilter.CommonObjects.Properties.Resources.about;
-            this.button_InfoDecryptFile.Location = new System.Drawing.Point(501, 124);
+            this.button_InfoDecryptFile.Location = new System.Drawing.Point(752, 191);
+            this.button_InfoDecryptFile.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.button_InfoDecryptFile.Name = "button_InfoDecryptFile";
-            this.button_InfoDecryptFile.Size = new System.Drawing.Size(28, 20);
+            this.button_InfoDecryptFile.Size = new System.Drawing.Size(42, 31);
             this.button_InfoDecryptFile.TabIndex = 121;
             this.button_InfoDecryptFile.UseVisualStyleBackColor = true;
             this.button_InfoDecryptFile.Click += new System.EventHandler(this.button_InfoDecryptFile_Click);
@@ -189,9 +199,10 @@
             // button_InfoEncryptNewFile
             // 
             this.button_InfoEncryptNewFile.Image = global::EaseFilter.CommonObjects.Properties.Resources.about;
-            this.button_InfoEncryptNewFile.Location = new System.Drawing.Point(501, 98);
+            this.button_InfoEncryptNewFile.Location = new System.Drawing.Point(752, 151);
+            this.button_InfoEncryptNewFile.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.button_InfoEncryptNewFile.Name = "button_InfoEncryptNewFile";
-            this.button_InfoEncryptNewFile.Size = new System.Drawing.Size(28, 20);
+            this.button_InfoEncryptNewFile.Size = new System.Drawing.Size(42, 31);
             this.button_InfoEncryptNewFile.TabIndex = 122;
             this.button_InfoEncryptNewFile.UseVisualStyleBackColor = true;
             this.button_InfoEncryptNewFile.Click += new System.EventHandler(this.button_InfoEncryptNewFile_Click);
@@ -199,9 +210,10 @@
             // button_InfoCopyout
             // 
             this.button_InfoCopyout.Image = global::EaseFilter.CommonObjects.Properties.Resources.about;
-            this.button_InfoCopyout.Location = new System.Drawing.Point(501, 75);
+            this.button_InfoCopyout.Location = new System.Drawing.Point(752, 115);
+            this.button_InfoCopyout.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.button_InfoCopyout.Name = "button_InfoCopyout";
-            this.button_InfoCopyout.Size = new System.Drawing.Size(28, 20);
+            this.button_InfoCopyout.Size = new System.Drawing.Size(42, 31);
             this.button_InfoCopyout.TabIndex = 123;
             this.button_InfoCopyout.UseVisualStyleBackColor = true;
             this.button_InfoCopyout.Click += new System.EventHandler(this.button_InfoCopyout_Click);
@@ -211,9 +223,10 @@
             this.checkBox_AllowReadEncryptedFiles.AutoSize = true;
             this.checkBox_AllowReadEncryptedFiles.Checked = true;
             this.checkBox_AllowReadEncryptedFiles.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox_AllowReadEncryptedFiles.Location = new System.Drawing.Point(320, 124);
+            this.checkBox_AllowReadEncryptedFiles.Location = new System.Drawing.Point(480, 191);
+            this.checkBox_AllowReadEncryptedFiles.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.checkBox_AllowReadEncryptedFiles.Name = "checkBox_AllowReadEncryptedFiles";
-            this.checkBox_AllowReadEncryptedFiles.Size = new System.Drawing.Size(177, 17);
+            this.checkBox_AllowReadEncryptedFiles.Size = new System.Drawing.Size(184, 21);
             this.checkBox_AllowReadEncryptedFiles.TabIndex = 49;
             this.checkBox_AllowReadEncryptedFiles.Text = "Enable encrypted file decryption";
             this.checkBox_AllowReadEncryptedFiles.UseVisualStyleBackColor = true;
@@ -224,9 +237,10 @@
             this.checkBox_AllowCopyPaste.AutoSize = true;
             this.checkBox_AllowCopyPaste.Checked = true;
             this.checkBox_AllowCopyPaste.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox_AllowCopyPaste.Location = new System.Drawing.Point(320, 78);
+            this.checkBox_AllowCopyPaste.Location = new System.Drawing.Point(480, 120);
+            this.checkBox_AllowCopyPaste.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.checkBox_AllowCopyPaste.Name = "checkBox_AllowCopyPaste";
-            this.checkBox_AllowCopyPaste.Size = new System.Drawing.Size(122, 17);
+            this.checkBox_AllowCopyPaste.Size = new System.Drawing.Size(129, 21);
             this.checkBox_AllowCopyPaste.TabIndex = 48;
             this.checkBox_AllowCopyPaste.Text = "Allow file copy paste";
             this.checkBox_AllowCopyPaste.UseVisualStyleBackColor = true;
@@ -237,9 +251,10 @@
             this.checkBox_AllowEncryptNewFile.AutoSize = true;
             this.checkBox_AllowEncryptNewFile.Checked = true;
             this.checkBox_AllowEncryptNewFile.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox_AllowEncryptNewFile.Location = new System.Drawing.Point(320, 101);
+            this.checkBox_AllowEncryptNewFile.Location = new System.Drawing.Point(480, 155);
+            this.checkBox_AllowEncryptNewFile.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.checkBox_AllowEncryptNewFile.Name = "checkBox_AllowEncryptNewFile";
-            this.checkBox_AllowEncryptNewFile.Size = new System.Drawing.Size(150, 17);
+            this.checkBox_AllowEncryptNewFile.Size = new System.Drawing.Size(157, 21);
             this.checkBox_AllowEncryptNewFile.TabIndex = 47;
             this.checkBox_AllowEncryptNewFile.Text = "Enable new file encryption";
             this.checkBox_AllowEncryptNewFile.UseVisualStyleBackColor = true;
@@ -250,9 +265,10 @@
             this.checkBox_SetSecurity.AutoSize = true;
             this.checkBox_SetSecurity.Checked = true;
             this.checkBox_SetSecurity.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox_SetSecurity.Location = new System.Drawing.Point(149, 146);
+            this.checkBox_SetSecurity.Location = new System.Drawing.Point(224, 225);
+            this.checkBox_SetSecurity.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.checkBox_SetSecurity.Name = "checkBox_SetSecurity";
-            this.checkBox_SetSecurity.Size = new System.Drawing.Size(137, 17);
+            this.checkBox_SetSecurity.Size = new System.Drawing.Size(144, 21);
             this.checkBox_SetSecurity.TabIndex = 46;
             this.checkBox_SetSecurity.Text = "Allow security changing";
             this.checkBox_SetSecurity.UseVisualStyleBackColor = true;
@@ -263,9 +279,10 @@
             this.checkBox_QueryInfo.AutoSize = true;
             this.checkBox_QueryInfo.Checked = true;
             this.checkBox_QueryInfo.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox_QueryInfo.Location = new System.Drawing.Point(149, 100);
+            this.checkBox_QueryInfo.Location = new System.Drawing.Point(224, 154);
+            this.checkBox_QueryInfo.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.checkBox_QueryInfo.Name = "checkBox_QueryInfo";
-            this.checkBox_QueryInfo.Size = new System.Drawing.Size(130, 17);
+            this.checkBox_QueryInfo.Size = new System.Drawing.Size(137, 21);
             this.checkBox_QueryInfo.TabIndex = 42;
             this.checkBox_QueryInfo.Text = "Allow file info querying";
             this.checkBox_QueryInfo.UseVisualStyleBackColor = true;
@@ -276,35 +293,24 @@
             this.checkBox_Read.AutoSize = true;
             this.checkBox_Read.Checked = true;
             this.checkBox_Read.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox_Read.Location = new System.Drawing.Point(9, 78);
+            this.checkBox_Read.Location = new System.Drawing.Point(14, 120);
+            this.checkBox_Read.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.checkBox_Read.Name = "checkBox_Read";
-            this.checkBox_Read.Size = new System.Drawing.Size(105, 17);
+            this.checkBox_Read.Size = new System.Drawing.Size(112, 21);
             this.checkBox_Read.TabIndex = 44;
             this.checkBox_Read.Text = "Allow file reading";
             this.checkBox_Read.UseVisualStyleBackColor = true;
             this.checkBox_Read.CheckedChanged += new System.EventHandler(this.checkBox_Read_CheckedChanged);
-            // 
-            // checkBox_EnableEncryptionOnRead
-            // 
-            this.checkBox_EnableEncryptionOnRead.AutoSize = true;
-            this.checkBox_EnableEncryptionOnRead.Checked = true;
-            this.checkBox_EnableEncryptionOnRead.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox_EnableEncryptionOnRead.Location = new System.Drawing.Point(320, 147);
-            this.checkBox_EnableEncryptionOnRead.Name = "checkBox_EnableEncryptionOnRead";
-            this.checkBox_EnableEncryptionOnRead.Size = new System.Drawing.Size(159, 17);
-            this.checkBox_EnableEncryptionOnRead.TabIndex = 43;
-            this.checkBox_EnableEncryptionOnRead.Text = "Enable encryption on the go";
-            this.checkBox_EnableEncryptionOnRead.UseVisualStyleBackColor = true;
-            this.checkBox_EnableEncryptionOnRead.CheckedChanged += new System.EventHandler(this.checkBox_EncryptionOnRead_CheckedChanged);
             // 
             // checkBox_SetInfo
             // 
             this.checkBox_SetInfo.AutoSize = true;
             this.checkBox_SetInfo.Checked = true;
             this.checkBox_SetInfo.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox_SetInfo.Location = new System.Drawing.Point(149, 123);
+            this.checkBox_SetInfo.Location = new System.Drawing.Point(224, 189);
+            this.checkBox_SetInfo.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.checkBox_SetInfo.Name = "checkBox_SetInfo";
-            this.checkBox_SetInfo.Size = new System.Drawing.Size(134, 17);
+            this.checkBox_SetInfo.Size = new System.Drawing.Size(141, 21);
             this.checkBox_SetInfo.TabIndex = 45;
             this.checkBox_SetInfo.Text = "Allow file info changing";
             this.checkBox_SetInfo.UseVisualStyleBackColor = true;
@@ -315,9 +321,10 @@
             this.checkBox_Write.AutoSize = true;
             this.checkBox_Write.Checked = true;
             this.checkBox_Write.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox_Write.Location = new System.Drawing.Point(9, 101);
+            this.checkBox_Write.Location = new System.Drawing.Point(14, 155);
+            this.checkBox_Write.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.checkBox_Write.Name = "checkBox_Write";
-            this.checkBox_Write.Size = new System.Drawing.Size(100, 17);
+            this.checkBox_Write.Size = new System.Drawing.Size(107, 21);
             this.checkBox_Write.TabIndex = 38;
             this.checkBox_Write.Text = "Allow file writing";
             this.checkBox_Write.UseVisualStyleBackColor = true;
@@ -328,9 +335,10 @@
             this.checkBox_AllowDelete.AutoSize = true;
             this.checkBox_AllowDelete.Checked = true;
             this.checkBox_AllowDelete.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox_AllowDelete.Location = new System.Drawing.Point(9, 123);
+            this.checkBox_AllowDelete.Location = new System.Drawing.Point(14, 189);
+            this.checkBox_AllowDelete.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.checkBox_AllowDelete.Name = "checkBox_AllowDelete";
-            this.checkBox_AllowDelete.Size = new System.Drawing.Size(107, 17);
+            this.checkBox_AllowDelete.Size = new System.Drawing.Size(114, 21);
             this.checkBox_AllowDelete.TabIndex = 40;
             this.checkBox_AllowDelete.Text = "Allow file deletion";
             this.checkBox_AllowDelete.UseVisualStyleBackColor = true;
@@ -341,9 +349,10 @@
             this.checkBox_AllowRename.AutoSize = true;
             this.checkBox_AllowRename.Checked = true;
             this.checkBox_AllowRename.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox_AllowRename.Location = new System.Drawing.Point(149, 77);
+            this.checkBox_AllowRename.Location = new System.Drawing.Point(224, 118);
+            this.checkBox_AllowRename.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.checkBox_AllowRename.Name = "checkBox_AllowRename";
-            this.checkBox_AllowRename.Size = new System.Drawing.Size(113, 17);
+            this.checkBox_AllowRename.Size = new System.Drawing.Size(120, 21);
             this.checkBox_AllowRename.TabIndex = 39;
             this.checkBox_AllowRename.Text = "Allow file renaming";
             this.checkBox_AllowRename.UseVisualStyleBackColor = true;
@@ -354,9 +363,10 @@
             this.checkBox_Creation.AutoSize = true;
             this.checkBox_Creation.Checked = true;
             this.checkBox_Creation.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox_Creation.Location = new System.Drawing.Point(9, 146);
+            this.checkBox_Creation.Location = new System.Drawing.Point(14, 225);
+            this.checkBox_Creation.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.checkBox_Creation.Name = "checkBox_Creation";
-            this.checkBox_Creation.Size = new System.Drawing.Size(131, 17);
+            this.checkBox_Creation.Size = new System.Drawing.Size(138, 21);
             this.checkBox_Creation.TabIndex = 41;
             this.checkBox_Creation.Text = "Allow new file creation";
             this.checkBox_Creation.UseVisualStyleBackColor = true;
@@ -365,7 +375,8 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(9, 35);
+            this.label2.Location = new System.Drawing.Point(14, 54);
+            this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(106, 13);
             this.label2.TabIndex = 32;
@@ -373,17 +384,19 @@
             // 
             // textBox_FileAccessFlags
             // 
-            this.textBox_FileAccessFlags.Location = new System.Drawing.Point(149, 35);
+            this.textBox_FileAccessFlags.Location = new System.Drawing.Point(224, 54);
+            this.textBox_FileAccessFlags.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.textBox_FileAccessFlags.Name = "textBox_FileAccessFlags";
-            this.textBox_FileAccessFlags.Size = new System.Drawing.Size(298, 20);
+            this.textBox_FileAccessFlags.Size = new System.Drawing.Size(445, 20);
             this.textBox_FileAccessFlags.TabIndex = 31;
             this.textBox_FileAccessFlags.Text = "0";
             // 
             // button_FileAccessFlags
             // 
-            this.button_FileAccessFlags.Location = new System.Drawing.Point(461, 35);
+            this.button_FileAccessFlags.Location = new System.Drawing.Point(692, 54);
+            this.button_FileAccessFlags.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.button_FileAccessFlags.Name = "button_FileAccessFlags";
-            this.button_FileAccessFlags.Size = new System.Drawing.Size(50, 20);
+            this.button_FileAccessFlags.Size = new System.Drawing.Size(75, 31);
             this.button_FileAccessFlags.TabIndex = 33;
             this.button_FileAccessFlags.Text = "...";
             this.button_FileAccessFlags.UseVisualStyleBackColor = true;
@@ -394,9 +407,11 @@
             this.groupBox_UserName.Controls.Add(this.button_InfoUserName);
             this.groupBox_UserName.Controls.Add(this.textBox_UserName);
             this.groupBox_UserName.Controls.Add(this.label1);
-            this.groupBox_UserName.Location = new System.Drawing.Point(25, 171);
+            this.groupBox_UserName.Location = new System.Drawing.Point(38, 263);
+            this.groupBox_UserName.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.groupBox_UserName.Name = "groupBox_UserName";
-            this.groupBox_UserName.Size = new System.Drawing.Size(535, 46);
+            this.groupBox_UserName.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.groupBox_UserName.Size = new System.Drawing.Size(802, 71);
             this.groupBox_UserName.TabIndex = 30;
             this.groupBox_UserName.TabStop = false;
             this.groupBox_UserName.Visible = false;
@@ -404,25 +419,28 @@
             // button_InfoUserName
             // 
             this.button_InfoUserName.Image = global::EaseFilter.CommonObjects.Properties.Resources.about;
-            this.button_InfoUserName.Location = new System.Drawing.Point(461, 16);
+            this.button_InfoUserName.Location = new System.Drawing.Point(692, 25);
+            this.button_InfoUserName.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.button_InfoUserName.Name = "button_InfoUserName";
-            this.button_InfoUserName.Size = new System.Drawing.Size(41, 20);
+            this.button_InfoUserName.Size = new System.Drawing.Size(62, 31);
             this.button_InfoUserName.TabIndex = 115;
             this.button_InfoUserName.UseVisualStyleBackColor = true;
             this.button_InfoUserName.Click += new System.EventHandler(this.button_InfoUserName_Click);
             // 
             // textBox_UserName
             // 
-            this.textBox_UserName.Location = new System.Drawing.Point(149, 16);
+            this.textBox_UserName.Location = new System.Drawing.Point(224, 25);
+            this.textBox_UserName.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.textBox_UserName.Name = "textBox_UserName";
-            this.textBox_UserName.Size = new System.Drawing.Size(298, 20);
+            this.textBox_UserName.Size = new System.Drawing.Size(445, 20);
             this.textBox_UserName.TabIndex = 27;
             this.textBox_UserName.Text = "domain1\\user1";
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(9, 18);
+            this.label1.Location = new System.Drawing.Point(14, 28);
+            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(61, 13);
             this.label1.TabIndex = 28;
@@ -433,18 +451,21 @@
             this.groupBox_ProcessId.Controls.Add(this.button_ProcessId);
             this.groupBox_ProcessId.Controls.Add(this.textBox_ProcessId);
             this.groupBox_ProcessId.Controls.Add(this.label3);
-            this.groupBox_ProcessId.Location = new System.Drawing.Point(25, 136);
+            this.groupBox_ProcessId.Location = new System.Drawing.Point(38, 209);
+            this.groupBox_ProcessId.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.groupBox_ProcessId.Name = "groupBox_ProcessId";
-            this.groupBox_ProcessId.Size = new System.Drawing.Size(535, 48);
+            this.groupBox_ProcessId.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.groupBox_ProcessId.Size = new System.Drawing.Size(802, 74);
             this.groupBox_ProcessId.TabIndex = 29;
             this.groupBox_ProcessId.TabStop = false;
             this.groupBox_ProcessId.Visible = false;
             // 
             // button_ProcessId
             // 
-            this.button_ProcessId.Location = new System.Drawing.Point(461, 15);
+            this.button_ProcessId.Location = new System.Drawing.Point(692, 23);
+            this.button_ProcessId.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.button_ProcessId.Name = "button_ProcessId";
-            this.button_ProcessId.Size = new System.Drawing.Size(50, 20);
+            this.button_ProcessId.Size = new System.Drawing.Size(75, 31);
             this.button_ProcessId.TabIndex = 38;
             this.button_ProcessId.Text = "...";
             this.button_ProcessId.UseVisualStyleBackColor = true;
@@ -452,15 +473,17 @@
             // 
             // textBox_ProcessId
             // 
-            this.textBox_ProcessId.Location = new System.Drawing.Point(149, 16);
+            this.textBox_ProcessId.Location = new System.Drawing.Point(224, 25);
+            this.textBox_ProcessId.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.textBox_ProcessId.Name = "textBox_ProcessId";
-            this.textBox_ProcessId.Size = new System.Drawing.Size(298, 20);
+            this.textBox_ProcessId.Size = new System.Drawing.Size(445, 20);
             this.textBox_ProcessId.TabIndex = 27;
             // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(9, 19);
+            this.label3.Location = new System.Drawing.Point(14, 29);
+            this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(57, 13);
             this.label3.TabIndex = 28;
@@ -471,18 +494,21 @@
             this.groupBox_ProcessSha256.Controls.Add(this.button_GetProcessSha256);
             this.groupBox_ProcessSha256.Controls.Add(this.textBox_ProcessSha256Hash);
             this.groupBox_ProcessSha256.Controls.Add(this.label4);
-            this.groupBox_ProcessSha256.Location = new System.Drawing.Point(25, 98);
+            this.groupBox_ProcessSha256.Location = new System.Drawing.Point(38, 151);
+            this.groupBox_ProcessSha256.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.groupBox_ProcessSha256.Name = "groupBox_ProcessSha256";
-            this.groupBox_ProcessSha256.Size = new System.Drawing.Size(535, 48);
+            this.groupBox_ProcessSha256.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.groupBox_ProcessSha256.Size = new System.Drawing.Size(802, 74);
             this.groupBox_ProcessSha256.TabIndex = 39;
             this.groupBox_ProcessSha256.TabStop = false;
             this.groupBox_ProcessSha256.Visible = false;
             // 
             // button_GetProcessSha256
             // 
-            this.button_GetProcessSha256.Location = new System.Drawing.Point(461, 15);
+            this.button_GetProcessSha256.Location = new System.Drawing.Point(692, 23);
+            this.button_GetProcessSha256.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.button_GetProcessSha256.Name = "button_GetProcessSha256";
-            this.button_GetProcessSha256.Size = new System.Drawing.Size(50, 20);
+            this.button_GetProcessSha256.Size = new System.Drawing.Size(75, 31);
             this.button_GetProcessSha256.TabIndex = 38;
             this.button_GetProcessSha256.Text = "...";
             this.button_GetProcessSha256.UseVisualStyleBackColor = true;
@@ -490,15 +516,17 @@
             // 
             // textBox_ProcessSha256Hash
             // 
-            this.textBox_ProcessSha256Hash.Location = new System.Drawing.Point(149, 16);
+            this.textBox_ProcessSha256Hash.Location = new System.Drawing.Point(224, 25);
+            this.textBox_ProcessSha256Hash.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.textBox_ProcessSha256Hash.Name = "textBox_ProcessSha256Hash";
-            this.textBox_ProcessSha256Hash.Size = new System.Drawing.Size(298, 20);
+            this.textBox_ProcessSha256Hash.Size = new System.Drawing.Size(445, 20);
             this.textBox_ProcessSha256Hash.TabIndex = 27;
             // 
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(9, 19);
+            this.label4.Location = new System.Drawing.Point(14, 29);
+            this.label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(133, 13);
             this.label4.TabIndex = 28;
@@ -509,18 +537,21 @@
             this.groupBox_SignedProcess.Controls.Add(this.button_GetCertificateName);
             this.groupBox_SignedProcess.Controls.Add(this.textBox_ProcessCertificateName);
             this.groupBox_SignedProcess.Controls.Add(this.label5);
-            this.groupBox_SignedProcess.Location = new System.Drawing.Point(25, 61);
+            this.groupBox_SignedProcess.Location = new System.Drawing.Point(38, 94);
+            this.groupBox_SignedProcess.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.groupBox_SignedProcess.Name = "groupBox_SignedProcess";
-            this.groupBox_SignedProcess.Size = new System.Drawing.Size(535, 48);
+            this.groupBox_SignedProcess.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.groupBox_SignedProcess.Size = new System.Drawing.Size(802, 74);
             this.groupBox_SignedProcess.TabIndex = 125;
             this.groupBox_SignedProcess.TabStop = false;
             this.groupBox_SignedProcess.Visible = false;
             // 
             // button_GetCertificateName
             // 
-            this.button_GetCertificateName.Location = new System.Drawing.Point(461, 12);
+            this.button_GetCertificateName.Location = new System.Drawing.Point(692, 18);
+            this.button_GetCertificateName.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.button_GetCertificateName.Name = "button_GetCertificateName";
-            this.button_GetCertificateName.Size = new System.Drawing.Size(50, 20);
+            this.button_GetCertificateName.Size = new System.Drawing.Size(75, 31);
             this.button_GetCertificateName.TabIndex = 40;
             this.button_GetCertificateName.Text = "...";
             this.button_GetCertificateName.UseVisualStyleBackColor = true;
@@ -528,15 +559,17 @@
             // 
             // textBox_ProcessCertificateName
             // 
-            this.textBox_ProcessCertificateName.Location = new System.Drawing.Point(149, 12);
+            this.textBox_ProcessCertificateName.Location = new System.Drawing.Point(224, 18);
+            this.textBox_ProcessCertificateName.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.textBox_ProcessCertificateName.Name = "textBox_ProcessCertificateName";
-            this.textBox_ProcessCertificateName.Size = new System.Drawing.Size(298, 20);
+            this.textBox_ProcessCertificateName.Size = new System.Drawing.Size(445, 20);
             this.textBox_ProcessCertificateName.TabIndex = 39;
             // 
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(9, 16);
+            this.label5.Location = new System.Drawing.Point(14, 25);
+            this.label5.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(130, 13);
             this.label5.TabIndex = 29;
@@ -544,16 +577,15 @@
             // 
             // Form_AccessRights
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(604, 510);
+            this.ClientSize = new System.Drawing.Size(906, 785);
             this.Controls.Add(this.groupBox_SignedProcess);
             this.Controls.Add(this.groupBox_ProcessSha256);
             this.Controls.Add(this.groupBox_ProcessId);
             this.Controls.Add(this.groupBox_UserName);
             this.Controls.Add(this.groupBox_AccessRights);
             this.Controls.Add(this.groupBox_ProcessName);
-            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.Name = "Form_AccessRights";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Add Access Rights";
@@ -596,7 +628,6 @@
         private System.Windows.Forms.CheckBox checkBox_SetSecurity;
         private System.Windows.Forms.CheckBox checkBox_QueryInfo;
         private System.Windows.Forms.CheckBox checkBox_Read;
-        private System.Windows.Forms.CheckBox checkBox_EnableEncryptionOnRead;
         private System.Windows.Forms.CheckBox checkBox_SetInfo;
         private System.Windows.Forms.CheckBox checkBox_Write;
         private System.Windows.Forms.CheckBox checkBox_AllowDelete;

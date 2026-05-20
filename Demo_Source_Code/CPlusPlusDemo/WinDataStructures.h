@@ -17,7 +17,7 @@
 //for Disposition,ShareAccess,DesiredAccess,CreateOptions Please reference Winddows API CreateFile
 //http://msdn.microsoft.com/en-us/library/aa363858%28v=vs.85%29.aspx
 
-typedef enum Disposition 
+typedef enum _Disposition 
 {
     FILE_SUPERSEDE = 0,
     FILE_OPEN,
@@ -25,9 +25,9 @@ typedef enum Disposition
     FILE_OPEN_IF,
     FILE_OVERWRITE,
     FILE_OVERWRITE_IF,
-};
+}Disposition;
 
-typedef enum ShareAccess 
+typedef enum _ShareAccess 
 {
     SHARE_READ = 1,
     SHARE_WRITE = 2,
@@ -36,9 +36,9 @@ typedef enum ShareAccess
     SHARE_READ_DELETE = 5,
     SHARE_WRITE_DELETE = 6,
     SHARE_READ_WRITE_DELETE = 7,
-};
+}ShareAccess;
 
-typedef enum CreateOptions 
+typedef enum _CreateOptions 
 {
     FILE_DIRECTORY_FILE = 0x00000001,
     FILE_WRITE_THROUGH = 0x00000002,
@@ -62,10 +62,10 @@ typedef enum CreateOptions
     FILE_OPEN_REPARSE_POINT = 0x00200000,
     FILE_OPEN_NO_RECALL = 0x00400000,
     FILE_OPEN_FOR_FREE_SPACE_QUERY = 0x00800000,
-};
+}CreateOptions;
 
 //this is the status for post create request.
-typedef enum CreateStatus
+typedef enum _CreateStatus
 {
     FILE_SUPERSEDED = 0x00000000,
     FILE_OPENED = 0x00000001,
@@ -73,7 +73,7 @@ typedef enum CreateStatus
     FILE_OVERWRITTEN = 0x00000003,
     FILE_EXISTS = 0x00000004,
     FILE_DOES_NOT_EXIST = 0x00000005,
-};
+}CreateStatus;
 
 //
 // Define the file information class values

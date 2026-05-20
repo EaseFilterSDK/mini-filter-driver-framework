@@ -437,6 +437,9 @@ namespace FileMonitor
         {
             DisplayEventMessage(e);
             //do your job here.
+
+            //if you want to read the data buffer, make sure you 
+            //set EnableSendReadOrWriteBuffer to true in FileFilterRule.
         }
         /// <summary>
         /// Fires this event after the write IO was returned.
@@ -445,6 +448,9 @@ namespace FileMonitor
         {
             DisplayEventMessage(e);
             //do your job here.
+
+            //if you want to read the data buffer, make sure you 
+            //set EnableSendReadOrWriteBuffer to true in FileFilterRule.
         }
         /// <summary>
         /// Fires this event after the query file size IO was returned.

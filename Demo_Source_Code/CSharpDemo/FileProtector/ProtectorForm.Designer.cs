@@ -100,20 +100,22 @@ namespace FileProtector
             // 
             // menuStrip1
             // 
+            this.menuStrip1.GripMargin = new System.Windows.Forms.Padding(2, 2, 0, 2);
+            this.menuStrip1.ImageScalingSize = new System.Drawing.Size(24, 24);
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.optionsToolStripMenuItem,
             this.toolsToolStripMenuItem,
             this.exitToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(974, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(1461, 33);
             this.menuStrip1.TabIndex = 0;
             this.menuStrip1.Text = "menuStrip1";
             // 
             // optionsToolStripMenuItem
             // 
             this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
-            this.optionsToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
+            this.optionsToolStripMenuItem.Size = new System.Drawing.Size(92, 29);
             this.optionsToolStripMenuItem.Text = "Settings";
             this.optionsToolStripMenuItem.Click += new System.EventHandler(this.settingsToolStripMenuItem_Click);
             // 
@@ -125,46 +127,47 @@ namespace FileProtector
             this.decryptFileWithOffsetToolStripMenuItem,
             this.getEncryptedFileIVTagToolStripMenuItem});
             this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
-            this.toolsToolStripMenuItem.Size = new System.Drawing.Size(46, 20);
+            this.toolsToolStripMenuItem.Size = new System.Drawing.Size(69, 29);
             this.toolsToolStripMenuItem.Text = "Tools";
             // 
             // encryptFileWithToolStripMenuItem
             // 
             this.encryptFileWithToolStripMenuItem.Name = "encryptFileWithToolStripMenuItem";
-            this.encryptFileWithToolStripMenuItem.Size = new System.Drawing.Size(222, 22);
+            this.encryptFileWithToolStripMenuItem.Size = new System.Drawing.Size(335, 34);
             this.encryptFileWithToolStripMenuItem.Text = "Encrypt file with API";
             this.encryptFileWithToolStripMenuItem.Click += new System.EventHandler(this.encryptFileWithToolStripMenuItem_Click);
             // 
             // decryptFileToolStripMenuItem
             // 
             this.decryptFileToolStripMenuItem.Name = "decryptFileToolStripMenuItem";
-            this.decryptFileToolStripMenuItem.Size = new System.Drawing.Size(222, 22);
+            this.decryptFileToolStripMenuItem.Size = new System.Drawing.Size(335, 34);
             this.decryptFileToolStripMenuItem.Text = "Decrypt file with API";
             this.decryptFileToolStripMenuItem.Click += new System.EventHandler(this.decryptFileToolStripMenuItem_Click);
             // 
             // decryptFileWithOffsetToolStripMenuItem
             // 
             this.decryptFileWithOffsetToolStripMenuItem.Name = "decryptFileWithOffsetToolStripMenuItem";
-            this.decryptFileWithOffsetToolStripMenuItem.Size = new System.Drawing.Size(222, 22);
+            this.decryptFileWithOffsetToolStripMenuItem.Size = new System.Drawing.Size(335, 34);
             this.decryptFileWithOffsetToolStripMenuItem.Text = "Decrypt file with offset";
             this.decryptFileWithOffsetToolStripMenuItem.Click += new System.EventHandler(this.decryptFileWithOffsetToolStripMenuItem_Click);
             // 
             // getEncryptedFileIVTagToolStripMenuItem
             // 
             this.getEncryptedFileIVTagToolStripMenuItem.Name = "getEncryptedFileIVTagToolStripMenuItem";
-            this.getEncryptedFileIVTagToolStripMenuItem.Size = new System.Drawing.Size(222, 22);
+            this.getEncryptedFileIVTagToolStripMenuItem.Size = new System.Drawing.Size(335, 34);
             this.getEncryptedFileIVTagToolStripMenuItem.Text = "Check Encrypt File Tag Data ";
             this.getEncryptedFileIVTagToolStripMenuItem.Click += new System.EventHandler(this.getEncryptedFileTagdataToolStripMenuItem_Click);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(38, 20);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(55, 29);
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
             // toolStrip1
             // 
+            this.toolStrip1.ImageScalingSize = new System.Drawing.Size(24, 24);
             this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripButton_StartFilter,
             this.toolStripSeparator1,
@@ -181,9 +184,10 @@ namespace FileProtector
             this.toolStripButton_Video,
             this.toolStripSeparator7,
             this.toolStripButton_Help});
-            this.toolStrip1.Location = new System.Drawing.Point(0, 24);
+            this.toolStrip1.Location = new System.Drawing.Point(0, 33);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(974, 25);
+            this.toolStrip1.Padding = new System.Windows.Forms.Padding(0, 0, 3, 0);
+            this.toolStrip1.Size = new System.Drawing.Size(1461, 34);
             this.toolStrip1.TabIndex = 1;
             this.toolStrip1.Text = "toolStrip1";
             // 
@@ -192,105 +196,105 @@ namespace FileProtector
             this.toolStripButton_StartFilter.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton_StartFilter.Image")));
             this.toolStripButton_StartFilter.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton_StartFilter.Name = "toolStripButton_StartFilter";
-            this.toolStripButton_StartFilter.Size = new System.Drawing.Size(103, 22);
+            this.toolStripButton_StartFilter.Size = new System.Drawing.Size(155, 29);
             this.toolStripButton_StartFilter.Text = "Start protector";
             this.toolStripButton_StartFilter.Click += new System.EventHandler(this.toolStripButton_StartFilter_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 25);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 34);
             // 
             // toolStripButton_Stop
             // 
             this.toolStripButton_Stop.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton_Stop.Image")));
             this.toolStripButton_Stop.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton_Stop.Name = "toolStripButton_Stop";
-            this.toolStripButton_Stop.Size = new System.Drawing.Size(103, 22);
+            this.toolStripButton_Stop.Size = new System.Drawing.Size(156, 29);
             this.toolStripButton_Stop.Text = "Stop protector";
             this.toolStripButton_Stop.Click += new System.EventHandler(this.toolStripButton_Stop_Click);
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 25);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 34);
             // 
             // toolStripButton_ClearMessage
             // 
             this.toolStripButton_ClearMessage.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton_ClearMessage.Image")));
             this.toolStripButton_ClearMessage.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton_ClearMessage.Name = "toolStripButton_ClearMessage";
-            this.toolStripButton_ClearMessage.Size = new System.Drawing.Size(108, 22);
+            this.toolStripButton_ClearMessage.Size = new System.Drawing.Size(162, 29);
             this.toolStripButton_ClearMessage.Text = "Clear messages";
             this.toolStripButton_ClearMessage.Click += new System.EventHandler(this.toolStripButton_ClearMessage_Click);
             // 
             // toolStripSeparator3
             // 
             this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(6, 25);
+            this.toolStripSeparator3.Size = new System.Drawing.Size(6, 34);
             // 
             // toolStripButton_LoadMessage
             // 
             this.toolStripButton_LoadMessage.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton_LoadMessage.Image")));
             this.toolStripButton_LoadMessage.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton_LoadMessage.Name = "toolStripButton_LoadMessage";
-            this.toolStripButton_LoadMessage.Size = new System.Drawing.Size(107, 22);
+            this.toolStripButton_LoadMessage.Size = new System.Drawing.Size(162, 29);
             this.toolStripButton_LoadMessage.Text = "Load messages";
             this.toolStripButton_LoadMessage.Click += new System.EventHandler(this.toolStripButton_LoadMessage_Click);
             // 
             // toolStripSeparator4
             // 
             this.toolStripSeparator4.Name = "toolStripSeparator4";
-            this.toolStripSeparator4.Size = new System.Drawing.Size(6, 25);
+            this.toolStripSeparator4.Size = new System.Drawing.Size(6, 34);
             // 
             // toolStripButton1
             // 
             this.toolStripButton1.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton1.Image")));
             this.toolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton1.Name = "toolStripButton1";
-            this.toolStripButton1.Size = new System.Drawing.Size(93, 22);
+            this.toolStripButton1.Size = new System.Drawing.Size(138, 29);
             this.toolStripButton1.Text = "Event viewer";
             this.toolStripButton1.Click += new System.EventHandler(this.toolStripDisplayEvent_Click);
             // 
             // toolStripSeparator6
             // 
             this.toolStripSeparator6.Name = "toolStripSeparator6";
-            this.toolStripSeparator6.Size = new System.Drawing.Size(6, 25);
+            this.toolStripSeparator6.Size = new System.Drawing.Size(6, 34);
             // 
             // toolStripButton_UnitTest
             // 
             this.toolStripButton_UnitTest.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton_UnitTest.Image")));
             this.toolStripButton_UnitTest.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton_UnitTest.Name = "toolStripButton_UnitTest";
-            this.toolStripButton_UnitTest.Size = new System.Drawing.Size(124, 22);
+            this.toolStripButton_UnitTest.Size = new System.Drawing.Size(185, 29);
             this.toolStripButton_UnitTest.Text = "Protector Unit Test";
             this.toolStripButton_UnitTest.Click += new System.EventHandler(this.toolStripButton_UnitTest_Click);
             // 
             // toolStripSeparator5
             // 
             this.toolStripSeparator5.Name = "toolStripSeparator5";
-            this.toolStripSeparator5.Size = new System.Drawing.Size(6, 25);
+            this.toolStripSeparator5.Size = new System.Drawing.Size(6, 34);
             // 
             // toolStripButton_Video
             // 
             this.toolStripButton_Video.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton_Video.Image")));
             this.toolStripButton_Video.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton_Video.Name = "toolStripButton_Video";
-            this.toolStripButton_Video.Size = new System.Drawing.Size(89, 22);
+            this.toolStripButton_Video.Size = new System.Drawing.Size(135, 29);
             this.toolStripButton_Video.Text = "VideoDemo";
             this.toolStripButton_Video.Click += new System.EventHandler(this.toolStripButton_Video_Click);
             // 
             // toolStripSeparator7
             // 
             this.toolStripSeparator7.Name = "toolStripSeparator7";
-            this.toolStripSeparator7.Size = new System.Drawing.Size(6, 25);
+            this.toolStripSeparator7.Size = new System.Drawing.Size(6, 34);
             // 
             // toolStripButton_Help
             // 
             this.toolStripButton_Help.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton_Help.Image")));
             this.toolStripButton_Help.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton_Help.Name = "toolStripButton_Help";
-            this.toolStripButton_Help.Size = new System.Drawing.Size(52, 22);
+            this.toolStripButton_Help.Size = new System.Drawing.Size(77, 29);
             this.toolStripButton_Help.Text = "Help";
             this.toolStripButton_Help.Click += new System.EventHandler(this.toolStripButton_Help_Click);
             // 
@@ -301,24 +305,26 @@ namespace FileProtector
             this.listView_Info.HideSelection = false;
             this.listView_Info.HoverSelection = true;
             this.listView_Info.LabelEdit = true;
-            this.listView_Info.Location = new System.Drawing.Point(0, 49);
+            this.listView_Info.Location = new System.Drawing.Point(0, 67);
+            this.listView_Info.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.listView_Info.Name = "listView_Info";
             this.listView_Info.ShowItemToolTips = true;
-            this.listView_Info.Size = new System.Drawing.Size(974, 457);
+            this.listView_Info.Size = new System.Drawing.Size(1461, 711);
             this.listView_Info.TabIndex = 2;
             this.listView_Info.UseCompatibleStateImageBehavior = false;
             this.listView_Info.View = System.Windows.Forms.View.Details;
             // 
             // ProtectorForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(974, 506);
+            this.ClientSize = new System.Drawing.Size(1461, 778);
             this.Controls.Add(this.listView_Info);
             this.Controls.Add(this.toolStrip1);
             this.Controls.Add(this.menuStrip1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
+            this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.Name = "ProtectorForm";
             this.Text = "EaseFilter File Protector";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.ProtectorForm_FormClosed);

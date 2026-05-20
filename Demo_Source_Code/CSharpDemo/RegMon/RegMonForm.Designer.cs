@@ -114,15 +114,7 @@
             this.toolStripButton_UnitTest.Size = new System.Drawing.Size(118, 22);
             this.toolStripButton_UnitTest.Text = "Registry Unit Test";
             this.toolStripButton_UnitTest.Click += new System.EventHandler(this.toolStripButton_UnitTest_Click);
-            // 
-            // toolStripButton_ApplyTrialKey
-            // 
-            this.toolStripButton_ApplyTrialKey.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton_ApplyTrialKey.Image")));
-            this.toolStripButton_ApplyTrialKey.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButton_ApplyTrialKey.Name = "toolStripButton_ApplyTrialKey";
-            this.toolStripButton_ApplyTrialKey.Size = new System.Drawing.Size(102, 22);
-            this.toolStripButton_ApplyTrialKey.Text = "Apply trial key";
-            this.toolStripButton_ApplyTrialKey.Click += new System.EventHandler(this.toolStripButton_ApplyTrialKey_Click);
+          
             // 
             // listView_Info
             // 

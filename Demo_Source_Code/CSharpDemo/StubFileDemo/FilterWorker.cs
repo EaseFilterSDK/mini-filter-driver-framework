@@ -15,8 +15,8 @@ namespace  StubFileDemo
 
         public static bool StartService(ref string lastError)
         {
-            //Purchase a license key with the link: http://www.easefilter.com/Order.htm
-            //Email us to request a trial key: info@easefilter.com //free email is not accepted.
+            //To request a trial or production license key, please contact info@easefilter.com
+            //Requests from free email domains are not accepted
             string licenseKey = GlobalConfig.LicenseKey;
 
             FilterAPI.FilterType filterType = FilterAPI.FilterType.HSM_FILTER;

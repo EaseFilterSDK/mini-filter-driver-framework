@@ -71,12 +71,18 @@
             this.textBox_ConnectionThreads = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.button_ApplyOptions = new System.Windows.Forms.Button();
+            this.checkBox_SendMessageInRoundRobin = new System.Windows.Forms.CheckBox();
+            this.checkBox_CreateConnectionPerThread = new System.Windows.Forms.CheckBox();
+            this.button_ConnectionFlagsInfo = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.button_ConnectionFlagsInfo);
+            this.groupBox1.Controls.Add(this.checkBox_CreateConnectionPerThread);
+            this.groupBox1.Controls.Add(this.checkBox_SendMessageInRoundRobin);
             this.groupBox1.Controls.Add(this.button_InfoBlockUSBRead);
             this.groupBox1.Controls.Add(this.button_InfoBlockUSBWrite);
             this.groupBox1.Controls.Add(this.checkBox_BlockUSBWrite);
@@ -125,7 +131,7 @@
             // button_InfoBlockUSBRead
             // 
             this.button_InfoBlockUSBRead.Image = global::EaseFilter.CommonObjects.Properties.Resources.about;
-            this.button_InfoBlockUSBRead.Location = new System.Drawing.Point(206, 300);
+            this.button_InfoBlockUSBRead.Location = new System.Drawing.Point(200, 300);
             this.button_InfoBlockUSBRead.Name = "button_InfoBlockUSBRead";
             this.button_InfoBlockUSBRead.Size = new System.Drawing.Size(26, 20);
             this.button_InfoBlockUSBRead.TabIndex = 131;
@@ -145,7 +151,7 @@
             // checkBox_BlockUSBWrite
             // 
             this.checkBox_BlockUSBWrite.AutoSize = true;
-            this.checkBox_BlockUSBWrite.Location = new System.Drawing.Point(341, 300);
+            this.checkBox_BlockUSBWrite.Location = new System.Drawing.Point(335, 300);
             this.checkBox_BlockUSBWrite.Name = "checkBox_BlockUSBWrite";
             this.checkBox_BlockUSBWrite.Size = new System.Drawing.Size(115, 17);
             this.checkBox_BlockUSBWrite.TabIndex = 129;
@@ -165,7 +171,7 @@
             // button_InfoGetVolumeInfo
             // 
             this.button_InfoGetVolumeInfo.Image = global::EaseFilter.CommonObjects.Properties.Resources.about;
-            this.button_InfoGetVolumeInfo.Location = new System.Drawing.Point(206, 248);
+            this.button_InfoGetVolumeInfo.Location = new System.Drawing.Point(200, 248);
             this.button_InfoGetVolumeInfo.Name = "button_InfoGetVolumeInfo";
             this.button_InfoGetVolumeInfo.Size = new System.Drawing.Size(26, 20);
             this.button_InfoGetVolumeInfo.TabIndex = 127;
@@ -175,7 +181,7 @@
             // button_InfoNewVolumeInfo
             // 
             this.button_InfoNewVolumeInfo.Image = global::EaseFilter.CommonObjects.Properties.Resources.about;
-            this.button_InfoNewVolumeInfo.Location = new System.Drawing.Point(206, 274);
+            this.button_InfoNewVolumeInfo.Location = new System.Drawing.Point(200, 274);
             this.button_InfoNewVolumeInfo.Name = "button_InfoNewVolumeInfo";
             this.button_InfoNewVolumeInfo.Size = new System.Drawing.Size(26, 20);
             this.button_InfoNewVolumeInfo.TabIndex = 126;
@@ -185,7 +191,7 @@
             // button_InfoHideDirIO
             // 
             this.button_InfoHideDirIO.Image = global::EaseFilter.CommonObjects.Properties.Resources.about;
-            this.button_InfoHideDirIO.Location = new System.Drawing.Point(207, 219);
+            this.button_InfoHideDirIO.Location = new System.Drawing.Point(201, 219);
             this.button_InfoHideDirIO.Name = "button_InfoHideDirIO";
             this.button_InfoHideDirIO.Size = new System.Drawing.Size(26, 20);
             this.button_InfoHideDirIO.TabIndex = 125;
@@ -215,7 +221,7 @@
             // button_InfoConnectionThreads
             // 
             this.button_InfoConnectionThreads.Image = global::EaseFilter.CommonObjects.Properties.Resources.about;
-            this.button_InfoConnectionThreads.Location = new System.Drawing.Point(550, 60);
+            this.button_InfoConnectionThreads.Location = new System.Drawing.Point(550, 51);
             this.button_InfoConnectionThreads.Name = "button_InfoConnectionThreads";
             this.button_InfoConnectionThreads.Size = new System.Drawing.Size(28, 20);
             this.button_InfoConnectionThreads.TabIndex = 122;
@@ -225,7 +231,7 @@
             // button_InfoConnectionTimeout
             // 
             this.button_InfoConnectionTimeout.Image = global::EaseFilter.CommonObjects.Properties.Resources.about;
-            this.button_InfoConnectionTimeout.Location = new System.Drawing.Point(550, 99);
+            this.button_InfoConnectionTimeout.Location = new System.Drawing.Point(550, 107);
             this.button_InfoConnectionTimeout.Name = "button_InfoConnectionTimeout";
             this.button_InfoConnectionTimeout.Size = new System.Drawing.Size(28, 20);
             this.button_InfoConnectionTimeout.TabIndex = 121;
@@ -275,7 +281,7 @@
             // checkBox_CallbackVolumeDetached
             // 
             this.checkBox_CallbackVolumeDetached.AutoSize = true;
-            this.checkBox_CallbackVolumeDetached.Location = new System.Drawing.Point(341, 247);
+            this.checkBox_CallbackVolumeDetached.Location = new System.Drawing.Point(335, 247);
             this.checkBox_CallbackVolumeDetached.Name = "checkBox_CallbackVolumeDetached";
             this.checkBox_CallbackVolumeDetached.Size = new System.Drawing.Size(189, 17);
             this.checkBox_CallbackVolumeDetached.TabIndex = 72;
@@ -295,7 +301,7 @@
             // checkBox_BlockFormatting
             // 
             this.checkBox_BlockFormatting.AutoSize = true;
-            this.checkBox_BlockFormatting.Location = new System.Drawing.Point(341, 275);
+            this.checkBox_BlockFormatting.Location = new System.Drawing.Point(335, 275);
             this.checkBox_BlockFormatting.Name = "checkBox_BlockFormatting";
             this.checkBox_BlockFormatting.Size = new System.Drawing.Size(167, 17);
             this.checkBox_BlockFormatting.TabIndex = 70;
@@ -315,7 +321,7 @@
             // checkBox_SendBuffer
             // 
             this.checkBox_SendBuffer.AutoSize = true;
-            this.checkBox_SendBuffer.Location = new System.Drawing.Point(341, 219);
+            this.checkBox_SendBuffer.Location = new System.Drawing.Point(335, 219);
             this.checkBox_SendBuffer.Name = "checkBox_SendBuffer";
             this.checkBox_SendBuffer.Size = new System.Drawing.Size(166, 17);
             this.checkBox_SendBuffer.TabIndex = 68;
@@ -339,7 +345,7 @@
             this.checkBox_OutputMessageToConsole.AutoSize = true;
             this.checkBox_OutputMessageToConsole.Checked = true;
             this.checkBox_OutputMessageToConsole.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox_OutputMessageToConsole.Location = new System.Drawing.Point(398, 135);
+            this.checkBox_OutputMessageToConsole.Location = new System.Drawing.Point(392, 135);
             this.checkBox_OutputMessageToConsole.Name = "checkBox_OutputMessageToConsole";
             this.checkBox_OutputMessageToConsole.Size = new System.Drawing.Size(155, 17);
             this.checkBox_OutputMessageToConsole.TabIndex = 63;
@@ -350,7 +356,7 @@
             // 
             this.label12.AutoSize = true;
             this.label12.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label12.Location = new System.Drawing.Point(204, 155);
+            this.label12.Location = new System.Drawing.Point(198, 155);
             this.label12.Name = "label12";
             this.label12.Size = new System.Drawing.Size(233, 12);
             this.label12.TabIndex = 61;
@@ -368,7 +374,7 @@
             // 
             // textBox_ProtectedPID
             // 
-            this.textBox_ProtectedPID.Location = new System.Drawing.Point(207, 21);
+            this.textBox_ProtectedPID.Location = new System.Drawing.Point(201, 21);
             this.textBox_ProtectedPID.Name = "textBox_ProtectedPID";
             this.textBox_ProtectedPID.ReadOnly = true;
             this.textBox_ProtectedPID.Size = new System.Drawing.Size(324, 20);
@@ -438,7 +444,7 @@
             // checkBox_TransactionLog
             // 
             this.checkBox_TransactionLog.AutoSize = true;
-            this.checkBox_TransactionLog.Location = new System.Drawing.Point(398, 187);
+            this.checkBox_TransactionLog.Location = new System.Drawing.Point(392, 187);
             this.checkBox_TransactionLog.Name = "checkBox_TransactionLog";
             this.checkBox_TransactionLog.Size = new System.Drawing.Size(143, 17);
             this.checkBox_TransactionLog.TabIndex = 44;
@@ -447,7 +453,7 @@
             // 
             // textBox_TransactionLog
             // 
-            this.textBox_TransactionLog.Location = new System.Drawing.Point(206, 185);
+            this.textBox_TransactionLog.Location = new System.Drawing.Point(200, 185);
             this.textBox_TransactionLog.Name = "textBox_TransactionLog";
             this.textBox_TransactionLog.Size = new System.Drawing.Size(164, 20);
             this.textBox_TransactionLog.TabIndex = 43;
@@ -464,7 +470,7 @@
             // 
             // textBox_MaximumFilterMessage
             // 
-            this.textBox_MaximumFilterMessage.Location = new System.Drawing.Point(206, 133);
+            this.textBox_MaximumFilterMessage.Location = new System.Drawing.Point(200, 133);
             this.textBox_MaximumFilterMessage.Name = "textBox_MaximumFilterMessage";
             this.textBox_MaximumFilterMessage.Size = new System.Drawing.Size(164, 20);
             this.textBox_MaximumFilterMessage.TabIndex = 41;
@@ -481,7 +487,7 @@
             // 
             // textBox_ConnectionTimeout
             // 
-            this.textBox_ConnectionTimeout.Location = new System.Drawing.Point(206, 100);
+            this.textBox_ConnectionTimeout.Location = new System.Drawing.Point(200, 108);
             this.textBox_ConnectionTimeout.Name = "textBox_ConnectionTimeout";
             this.textBox_ConnectionTimeout.Size = new System.Drawing.Size(325, 20);
             this.textBox_ConnectionTimeout.TabIndex = 37;
@@ -489,7 +495,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(10, 100);
+            this.label5.Location = new System.Drawing.Point(10, 108);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(151, 13);
             this.label5.TabIndex = 36;
@@ -497,7 +503,7 @@
             // 
             // textBox_ConnectionThreads
             // 
-            this.textBox_ConnectionThreads.Location = new System.Drawing.Point(207, 61);
+            this.textBox_ConnectionThreads.Location = new System.Drawing.Point(201, 52);
             this.textBox_ConnectionThreads.Name = "textBox_ConnectionThreads";
             this.textBox_ConnectionThreads.Size = new System.Drawing.Size(324, 20);
             this.textBox_ConnectionThreads.TabIndex = 33;
@@ -505,7 +511,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(10, 60);
+            this.label1.Location = new System.Drawing.Point(10, 51);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(145, 13);
             this.label1.TabIndex = 32;
@@ -521,6 +527,40 @@
             this.button_ApplyOptions.Text = "Apply Settings";
             this.button_ApplyOptions.UseVisualStyleBackColor = true;
             this.button_ApplyOptions.Click += new System.EventHandler(this.button_ApplyOptions_Click);
+            // 
+            // checkBox_SendMessageInRoundRobin
+            // 
+            this.checkBox_SendMessageInRoundRobin.AutoSize = true;
+            this.checkBox_SendMessageInRoundRobin.Checked = true;
+            this.checkBox_SendMessageInRoundRobin.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBox_SendMessageInRoundRobin.Location = new System.Drawing.Point(392, 85);
+            this.checkBox_SendMessageInRoundRobin.Name = "checkBox_SendMessageInRoundRobin";
+            this.checkBox_SendMessageInRoundRobin.Size = new System.Drawing.Size(163, 17);
+            this.checkBox_SendMessageInRoundRobin.TabIndex = 132;
+            this.checkBox_SendMessageInRoundRobin.Text = "Send message in round robin";
+            this.checkBox_SendMessageInRoundRobin.UseVisualStyleBackColor = true;
+            // 
+            // checkBox_CreateConnectionPerThread
+            // 
+            this.checkBox_CreateConnectionPerThread.AutoSize = true;
+            this.checkBox_CreateConnectionPerThread.Checked = true;
+            this.checkBox_CreateConnectionPerThread.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBox_CreateConnectionPerThread.Location = new System.Drawing.Point(201, 85);
+            this.checkBox_CreateConnectionPerThread.Name = "checkBox_CreateConnectionPerThread";
+            this.checkBox_CreateConnectionPerThread.Size = new System.Drawing.Size(164, 17);
+            this.checkBox_CreateConnectionPerThread.TabIndex = 133;
+            this.checkBox_CreateConnectionPerThread.Text = "Create connection per thread";
+            this.checkBox_CreateConnectionPerThread.UseVisualStyleBackColor = true;
+            // 
+            // button_ConnectionFlagsInfo
+            // 
+            this.button_ConnectionFlagsInfo.Image = global::EaseFilter.CommonObjects.Properties.Resources.about;
+            this.button_ConnectionFlagsInfo.Location = new System.Drawing.Point(550, 81);
+            this.button_ConnectionFlagsInfo.Name = "button_ConnectionFlagsInfo";
+            this.button_ConnectionFlagsInfo.Size = new System.Drawing.Size(28, 20);
+            this.button_ConnectionFlagsInfo.TabIndex = 134;
+            this.button_ConnectionFlagsInfo.UseVisualStyleBackColor = true;
+            this.button_ConnectionFlagsInfo.Click += new System.EventHandler(this.button_ConnectionFlagsInfo_Click);
             // 
             // SettingsForm
             // 
@@ -583,5 +623,8 @@
         private System.Windows.Forms.Button button_InfoBlockUSBWrite;
         private System.Windows.Forms.CheckBox checkBox_BlockUSBWrite;
         private System.Windows.Forms.CheckBox checkBox_BlockUSBRead;
+        private System.Windows.Forms.CheckBox checkBox_CreateConnectionPerThread;
+        private System.Windows.Forms.CheckBox checkBox_SendMessageInRoundRobin;
+        private System.Windows.Forms.Button button_ConnectionFlagsInfo;
     }
 }

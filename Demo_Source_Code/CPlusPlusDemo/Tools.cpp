@@ -292,7 +292,7 @@ PrintErrorMessage(
 					    MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
 					    (LPTSTR) &lpMsgBuf, 0, NULL );
 
-		swprintf_s( errorMessage, MAX_ERROR_MESSAGE_SIZE, L"%ws,errorCode:0x%0x,%ws\n", message,errorCode,lpMsgBuf);        
+		swprintf_s( errorMessage, MAX_ERROR_MESSAGE_SIZE, L"%ws,errorCode:0x%0x,%ws\n", message,errorCode,(WCHAR*)lpMsgBuf);        
 
 	   }
 	   else

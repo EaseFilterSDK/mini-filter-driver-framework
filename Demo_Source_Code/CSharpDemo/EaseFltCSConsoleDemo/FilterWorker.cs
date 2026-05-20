@@ -203,8 +203,8 @@ namespace EaseFltCSConsoleDemo
 
         public static bool StartService(out string lastError)
         {
-            //Purchase a license key with the link: http://www.easefilter.com/Order.htm
-            //Email us to request a trial key: info@easefilter.com //free email is not accepted.
+            //To request a trial or production license key, please contact info@easefilter.com
+            //Requests from free email domains are not accepted
             string licenseKey = GlobalConfig.LicenseKey;// "*************************";
             bool ret = false;
                 
@@ -212,7 +212,8 @@ namespace EaseFltCSConsoleDemo
 
             try
             {
-                ret = filterControl.StartFilter(GlobalConfig.filterType, GlobalConfig.FilterConnectionThreads, GlobalConfig.ConnectionTimeOut, licenseKey, ref lastError);
+                ret = filterControl.StartFilter(GlobalConfig.filterType, GlobalConfig.FilterConnectionThreads,
+                    GlobalConfig.CreateConnectionPerThread, GlobalConfig.ProcessMessageInRoundRobin, GlobalConfig.ConnectionTimeOut, licenseKey, ref lastError);
                 if (!ret)
                 {
                     return ret;

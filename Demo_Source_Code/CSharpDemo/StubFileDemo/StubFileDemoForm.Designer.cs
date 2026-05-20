@@ -51,20 +51,22 @@
             // 
             // menuStrip1
             // 
+            this.menuStrip1.GripMargin = new System.Windows.Forms.Padding(2, 2, 0, 2);
+            this.menuStrip1.ImageScalingSize = new System.Drawing.Size(24, 24);
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.optionsToolStripMenuItem,
             this.toolsToolStripMenuItem,
             this.exitToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(974, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(1461, 35);
             this.menuStrip1.TabIndex = 0;
             this.menuStrip1.Text = "menuStrip1";
             // 
             // optionsToolStripMenuItem
             // 
             this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
-            this.optionsToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
+            this.optionsToolStripMenuItem.Size = new System.Drawing.Size(92, 29);
             this.optionsToolStripMenuItem.Text = "Settings";
             this.optionsToolStripMenuItem.Click += new System.EventHandler(this.settingsToolStripMenuItem_Click);
             // 
@@ -74,32 +76,33 @@
             this.uninstallDriverToolStripMenuItem,
             this.installDriverToolStripMenuItem});
             this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
-            this.toolsToolStripMenuItem.Size = new System.Drawing.Size(46, 20);
+            this.toolsToolStripMenuItem.Size = new System.Drawing.Size(69, 29);
             this.toolsToolStripMenuItem.Text = "Tools";
             // 
             // uninstallDriverToolStripMenuItem
             // 
             this.uninstallDriverToolStripMenuItem.Name = "uninstallDriverToolStripMenuItem";
-            this.uninstallDriverToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
+            this.uninstallDriverToolStripMenuItem.Size = new System.Drawing.Size(231, 34);
             this.uninstallDriverToolStripMenuItem.Text = "Uninstall driver";
             this.uninstallDriverToolStripMenuItem.Click += new System.EventHandler(this.uninstallDriverToolStripMenuItem_Click);
             // 
             // installDriverToolStripMenuItem
             // 
             this.installDriverToolStripMenuItem.Name = "installDriverToolStripMenuItem";
-            this.installDriverToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
+            this.installDriverToolStripMenuItem.Size = new System.Drawing.Size(231, 34);
             this.installDriverToolStripMenuItem.Text = "Install driver";
             this.installDriverToolStripMenuItem.Click += new System.EventHandler(this.installDriverToolStripMenuItem_Click);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(38, 20);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(55, 29);
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
             // toolStrip1
             // 
+            this.toolStrip1.ImageScalingSize = new System.Drawing.Size(24, 24);
             this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripButton_StartFilter,
             this.toolStripSeparator1,
@@ -109,9 +112,10 @@
             this.toolStripSeparator3,
             this.toolStripButton1,
             this.toolStripButton_Help});
-            this.toolStrip1.Location = new System.Drawing.Point(0, 24);
+            this.toolStrip1.Location = new System.Drawing.Point(0, 35);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(974, 25);
+            this.toolStrip1.Padding = new System.Windows.Forms.Padding(0, 0, 3, 0);
+            this.toolStrip1.Size = new System.Drawing.Size(1461, 34);
             this.toolStrip1.TabIndex = 1;
             this.toolStrip1.Text = "toolStrip1";
             // 
@@ -120,49 +124,49 @@
             this.toolStripButton_StartFilter.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton_StartFilter.Image")));
             this.toolStripButton_StartFilter.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton_StartFilter.Name = "toolStripButton_StartFilter";
-            this.toolStripButton_StartFilter.Size = new System.Drawing.Size(117, 22);
+            this.toolStripButton_StartFilter.Size = new System.Drawing.Size(174, 29);
             this.toolStripButton_StartFilter.Text = "Start filter service";
             this.toolStripButton_StartFilter.Click += new System.EventHandler(this.toolStripButton_StartFilter_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 25);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 34);
             // 
             // toolStripButton_Stop
             // 
             this.toolStripButton_Stop.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton_Stop.Image")));
             this.toolStripButton_Stop.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton_Stop.Name = "toolStripButton_Stop";
-            this.toolStripButton_Stop.Size = new System.Drawing.Size(117, 22);
+            this.toolStripButton_Stop.Size = new System.Drawing.Size(175, 29);
             this.toolStripButton_Stop.Text = "Stop filter service";
             this.toolStripButton_Stop.Click += new System.EventHandler(this.toolStripButton_Stop_Click);
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 25);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 34);
             // 
             // toolStripButton_ClearMessage
             // 
             this.toolStripButton_ClearMessage.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton_ClearMessage.Image")));
             this.toolStripButton_ClearMessage.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton_ClearMessage.Name = "toolStripButton_ClearMessage";
-            this.toolStripButton_ClearMessage.Size = new System.Drawing.Size(108, 22);
+            this.toolStripButton_ClearMessage.Size = new System.Drawing.Size(162, 29);
             this.toolStripButton_ClearMessage.Text = "Clear messages";
             this.toolStripButton_ClearMessage.Click += new System.EventHandler(this.toolStripButton_ClearMessage_Click);
             // 
             // toolStripSeparator3
             // 
             this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(6, 25);
+            this.toolStripSeparator3.Size = new System.Drawing.Size(6, 34);
             // 
             // toolStripButton1
             // 
             this.toolStripButton1.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton1.Image")));
             this.toolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton1.Name = "toolStripButton1";
-            this.toolStripButton1.Size = new System.Drawing.Size(93, 22);
+            this.toolStripButton1.Size = new System.Drawing.Size(138, 29);
             this.toolStripButton1.Text = "Event viewer";
             this.toolStripButton1.Click += new System.EventHandler(this.toolStripButton1_Click);
             // 
@@ -171,7 +175,7 @@
             this.toolStripButton_Help.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton_Help.Image")));
             this.toolStripButton_Help.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton_Help.Name = "toolStripButton_Help";
-            this.toolStripButton_Help.Size = new System.Drawing.Size(52, 22);
+            this.toolStripButton_Help.Size = new System.Drawing.Size(77, 29);
             this.toolStripButton_Help.Text = "Help";
             this.toolStripButton_Help.Click += new System.EventHandler(this.toolStripButton_Help_Click);
             // 
@@ -182,24 +186,26 @@
             this.listView_Info.HideSelection = false;
             this.listView_Info.HoverSelection = true;
             this.listView_Info.LabelEdit = true;
-            this.listView_Info.Location = new System.Drawing.Point(0, 49);
+            this.listView_Info.Location = new System.Drawing.Point(0, 69);
+            this.listView_Info.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.listView_Info.Name = "listView_Info";
             this.listView_Info.ShowItemToolTips = true;
-            this.listView_Info.Size = new System.Drawing.Size(974, 457);
+            this.listView_Info.Size = new System.Drawing.Size(1461, 709);
             this.listView_Info.TabIndex = 2;
             this.listView_Info.UseCompatibleStateImageBehavior = false;
             this.listView_Info.View = System.Windows.Forms.View.Details;
             // 
             // StubFileDemoForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(974, 506);
+            this.ClientSize = new System.Drawing.Size(1461, 778);
             this.Controls.Add(this.listView_Info);
             this.Controls.Add(this.toolStrip1);
             this.Controls.Add(this.menuStrip1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
+            this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.Name = "StubFileDemoForm";
             this.Text = "Stub File Filter Driver SDK Demo";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.demoForm_FormClosed);

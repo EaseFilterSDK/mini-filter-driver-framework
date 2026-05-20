@@ -26,13 +26,14 @@
 #include "ProcessFilterHandler.h"
 #include "RegistryFilterHandler.h"
 #include "ReparseFilterHandler.h"
+#include "StubFileHandler.h"
 #include "FilterControl.h"
 
 FilterControl* FilterControl::instance = NULL;
 
 
 BOOL 
-FilterControl::StartFilter(int _filterType, int _filterConnectionThreads, int _connectionTimeout, CHAR* _licenseKey)
+FilterControl::StartFilterService(int _filterType, int _filterConnectionThreads, int _connectionTimeout, CHAR* _licenseKey, BOOL createConnectionPerThread, BOOL processMessageInRoundRobin)
 {
 	BOOL retVal = false;
 
@@ -61,7 +62,12 @@ FilterControl::StartFilter(int _filterType, int _filterConnectionThreads, int _c
 		return false;
 	}
 
-	if(!RegisterMessageCallback(filterConnectionThreads,MessageCallback,DisconnectCallback))
+	if(!StartFilter(&*licenseKey.begin(),
+                    filterConnectionThreads,
+                    createConnectionPerThread,
+                    processMessageInRoundRobin,
+                    MessageCallback,
+                    DisconnectCallback))
 	{
 		PrintLastErrorMessage( L"RegisterMessageCallback failed.");
 		return false;
@@ -89,12 +95,12 @@ FilterControl::StartFilter(int _filterType, int _filterConnectionThreads, int _c
 /// <summary>
 /// Stop the filter driver service.
 /// </summary>
-void FilterControl::StopFilter()
+void FilterControl::StopFilterService()
 {
 	if (isFilterStarted)
 	{
 		printf("Stop Filter Service.\n");
-		Disconnect();
+		StopFilter();
 		isFilterStarted = false;
 	}
 
@@ -605,6 +611,11 @@ __try
         || messageSend->FilterCommand == FILTER_REPARSE_FILE_OPEN_REQUEST)
     {
         ret = ReparseFilterHandler(messageSend, messageReply);
+    }
+    else if (messageSend->FilterCommand == MESSAGE_TYPE_RESTORE_BLOCK_OR_FILE
+        || messageSend->FilterCommand == MESSAGE_TYPE_RESTORE_FILE_TO_CACHE)
+    {
+        ret = StubFileFilterHandler(messageSend, messageReply);
     }
 	else
 	{

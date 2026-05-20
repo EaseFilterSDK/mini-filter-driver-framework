@@ -18,16 +18,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Text;
-using System.Runtime.InteropServices;
-using System.Security.Principal;
 using System.IO;
-using System.Configuration;
-using System.Collections;
-using System.Xml;
-using System.Text.RegularExpressions;
 using System.Threading;
 using System.Reflection;
 using System.Diagnostics;
@@ -57,6 +48,8 @@ namespace EaseFilter.CommonObjects
 
         static int filterConnectionThreads = 5;
         static int connectionTimeOut = 10; //seconds
+        static bool createConnectionPerThread = true;
+        static bool processMessageInRoundRobin = true;
         
         static List<uint> includePidList = new List<uint>();
         static List<uint> excludePidList = new List<uint>();
@@ -159,6 +152,9 @@ namespace EaseFilter.CommonObjects
 
                 booleanConfig =(FilterAPI.BooleanConfig)ConfigSetting.Get("booleanConfig", (uint)booleanConfig);
                 filterConnectionThreads = ConfigSetting.Get("filterConnectionThreads", filterConnectionThreads);
+                connectionTimeOut = ConfigSetting.Get("connectionTimeOut", connectionTimeOut);
+                createConnectionPerThread = ConfigSetting.Get("createConnectionPerThread", createConnectionPerThread);
+                processMessageInRoundRobin = ConfigSetting.Get("processMessageInRoundRobin", processMessageInRoundRobin);
                 requestIORegistration = ConfigSetting.Get("requestIORegistration", requestIORegistration);
                 displayEvents = ConfigSetting.Get("displayEvents", displayEvents);
                 filterMessageLogName = ConfigSetting.Get("filterMessageLogName", filterMessageLogName);
@@ -253,6 +249,59 @@ namespace EaseFilter.CommonObjects
             }
 
             return ret;
+        }
+
+        /// <summary>
+        /// The number of threads to process message callback
+        /// </summary>
+        public static int FilterConnectionThreads
+        {
+            get { return filterConnectionThreads; }
+            set
+            {
+                filterConnectionThreads = value;
+                ConfigSetting.Set("filterConnectionThreads", value.ToString());
+            }
+        }
+
+        /// <summary>
+        /// Specifies the timeout, in seconds, for the filter connection callback.
+        /// </summary>
+        public static int ConnectionTimeOut
+        {
+            get { return connectionTimeOut; }
+            set
+            {
+                connectionTimeOut = value;
+                ConfigSetting.Set("connectionTimeOut", value.ToString());
+            }
+        }
+
+        /// <summary>
+        /// If it is true, a filter connection will be created for each thread. Otherwise, only one connection will be created for sending messages.
+        /// </summary>
+        public static bool CreateConnectionPerThread
+        {
+            get { return createConnectionPerThread; }
+            set
+            {
+                createConnectionPerThread = value;
+                ConfigSetting.Set("createConnectionPerThread", value.ToString());
+            }
+        }
+
+        /// <summary>
+        /// If createConnectionPerThread is false, this setting has no effect.If processMessageInRoundRobin is true,
+        ///  the messages will be sent to the connections in a round - robin manner. Otherwise, messages from the same thread ID will be sent to the same connection.
+        /// </summary>
+        public static bool ProcessMessageInRoundRobin
+        {
+            get { return processMessageInRoundRobin; }
+            set
+            {
+                processMessageInRoundRobin = value;
+                ConfigSetting.Set("processMessageInRoundRobin", value.ToString());
+            }
         }
 
 
@@ -409,18 +458,7 @@ namespace EaseFilter.CommonObjects
                 eventLogName = value;
             }
         }
-
-
-        public static int FilterConnectionThreads
-        {
-            get { return filterConnectionThreads; }
-            set
-            { 
-                filterConnectionThreads = value;
-                ConfigSetting.Set("filterConnectionThreads", value.ToString());
-            }
-        }
-
+      
         public static uint RequestIORegistration
         {
             get { return requestIORegistration; }
@@ -520,16 +558,6 @@ namespace EaseFilter.CommonObjects
         }
 
 
-        public static int ConnectionTimeOut
-        {
-            get { return connectionTimeOut; }
-            set 
-            {
-                connectionTimeOut = value;
-                ConfigSetting.Set("connectionTimeOut", value.ToString());
-            }
-        }
-
         public static bool EnableDefaultIVKey
         {
             get { return enableDefaultIVKey; }
@@ -557,8 +585,8 @@ namespace EaseFilter.CommonObjects
         {
             get
             {
-                //Purchase a license key with the link: http://www.easefilter.com/Order.htm
-                //Email us to request a trial key: info@easefilter.com //free email is not accepted.
+                //To request a trial or production license key, please contact info@easefilter.com
+                //Email us to request a trial key: support@easefilter.com //free email is not accepted.
 
                 //for demo code.
                 if (string.IsNullOrEmpty(licenseKey))

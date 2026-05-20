@@ -62,6 +62,8 @@ namespace EaseFilter.CommonObjects
                 checkBox_OutputMessageToConsole.Checked = GlobalConfig.OutputMessageToConsole;
                 checkBox_DisableDir.Checked =  GlobalConfig.DisableDirIO;
 
+                checkBox_SendMessageInRoundRobin.Checked = GlobalConfig.ProcessMessageInRoundRobin;
+                checkBox_CreateConnectionPerThread.Checked = GlobalConfig.CreateConnectionPerThread;
                 textBox_ConnectionThreads.Text = GlobalConfig.FilterConnectionThreads.ToString();
                 textBox_ConnectionTimeout.Text = GlobalConfig.ConnectionTimeOut.ToString();
 
@@ -323,6 +325,8 @@ namespace EaseFilter.CommonObjects
                 }
 
                 GlobalConfig.FilterConnectionThreads = int.Parse(textBox_ConnectionThreads.Text);
+                GlobalConfig.CreateConnectionPerThread = checkBox_CreateConnectionPerThread.Checked;
+                GlobalConfig.ProcessMessageInRoundRobin = checkBox_SendMessageInRoundRobin.Checked;
                 GlobalConfig.ConnectionTimeOut = int.Parse(textBox_ConnectionTimeout.Text);
 
                 List<uint> protectPids = new List<uint>();
@@ -458,7 +462,12 @@ namespace EaseFilter.CommonObjects
             MessageBox.Show("Block the read data from the USB disk.");
         }
 
-             
-     
+        private void button_ConnectionFlagsInfo_Click(object sender, EventArgs e)
+        {
+            string info = "if createConnectionPerThread is true, a filter connection will be created for each thread. Otherwise, only one connection will be created for sending messages.\n";
+            info += "If createConnectionPerThread is false, processMessageInRoundRobin setting has no effect.If createConnectionPerThread and processMessageInRoundRobin are true,\n";
+            info += "the messages will be sent to the connections in a round - robin manner. Otherwise, messages from the same thread ID will be sent to the same connection.\n";
+            MessageBox.Show(info);
+        }
     }
 }

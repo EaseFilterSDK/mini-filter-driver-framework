@@ -52,6 +52,8 @@
             this.toolStripButton_ModifyFolder = new System.Windows.Forms.ToolStripButton();
             this.listView_AccessRights = new System.Windows.Forms.ListView();
             this.tabControl1 = new System.Windows.Forms.TabControl();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripButton_VideoDemo = new System.Windows.Forms.ToolStripButton();
             this.tabPage_Help.SuspendLayout();
             this.tabPage_Folder.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -196,7 +198,9 @@
             this.toolStripSeparator5,
             this.toolStripButton_RemoveFolder,
             this.toolStripSeparator4,
-            this.toolStripButton_ModifyFolder});
+            this.toolStripButton_ModifyFolder,
+            this.toolStripSeparator2,
+            this.toolStripButton_VideoDemo});
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.Size = new System.Drawing.Size(695, 25);
@@ -292,6 +296,20 @@
             this.tabControl1.Size = new System.Drawing.Size(707, 347);
             this.tabControl1.TabIndex = 0;
             // 
+            // toolStripSeparator2
+            // 
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 25);
+            // 
+            // toolStripButton_VideoDemo
+            // 
+            this.toolStripButton_VideoDemo.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton_VideoDemo.Image")));
+            this.toolStripButton_VideoDemo.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButton_VideoDemo.Name = "toolStripButton_VideoDemo";
+            this.toolStripButton_VideoDemo.Size = new System.Drawing.Size(92, 22);
+            this.toolStripButton_VideoDemo.Text = "Video Demo";
+            this.toolStripButton_VideoDemo.Click += new System.EventHandler(this.toolStripButton_VideoDemo_Click);
+            // 
             // Form_FolderLocker
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -345,6 +363,8 @@
         private System.Windows.Forms.TabControl tabControl1;
         private System.Windows.Forms.ToolStripButton toolStripButton_StartFilter;
         private System.Windows.Forms.ToolStripButton toolStripButton_Stop;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
+        private System.Windows.Forms.ToolStripButton toolStripButton_VideoDemo;
     }
 }
 

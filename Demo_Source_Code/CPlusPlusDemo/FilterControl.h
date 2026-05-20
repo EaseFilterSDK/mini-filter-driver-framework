@@ -81,6 +81,10 @@
         /// It indicates that the new file was created if it is true.
         /// </summary>
         BOOL isNewFileCreated = FALSE;
+        /// The read/write offset.
+        LONGLONG offset;
+        /// The read/write length.
+        ULONG length;
 
         /// <summary>
         /// The file system type of the volume.
@@ -221,6 +225,9 @@
             DesiredAccess = messageSend->DesiredAccess;
             Disposition = messageSend->Disposition;
             ShareAccess = messageSend->ShareAccess;
+
+            offset = messageSend->Offset;
+            length = messageSend->Length;
 
             IsRemoteAccess = false;
             RemoteIp.assign(L"");
@@ -515,6 +522,33 @@
                 /// </summary>
                 /// <param name="messageSend"></param>
                 isReparseFile = TRUE;
+            }
+
+        }
+    };
+
+    class StubFileEventArgs : public FileIOEventArgs
+    {
+    public:
+
+        /// <summary>
+        /// The length of the tag data buffer
+        /// </summary>
+        ULONG tagDataLength = 0;
+        /// <summary>
+        /// The tag data of the encrypted file's header
+        /// </summary>
+        std::vector<UCHAR> tagData;
+
+        StubFileEventArgs(PMESSAGE_SEND_DATA messageSend) : FileIOEventArgs(messageSend)
+        {
+            if (messageSend->DataBufferLength > 0)
+            {
+                tagDataLength = messageSend->DataBufferLength;
+                tagData.resize(tagDataLength + 2);
+                memset(tagData.data(), 0, tagDataLength + 2);
+                memcpy(tagData.data(), DataBuffer.data(), tagDataLength);
+
             }
 
         }
@@ -1320,9 +1354,9 @@ public:
 		return instance;
 	}
 
-	BOOL StartFilter(int _filterType, int _filterConnectionThreads, int _connectionTimeout, CHAR* _licenseKey);
+	BOOL StartFilterService(int _filterType, int _filterConnectionThreads, int _connectionTimeout, CHAR* _licenseKey, BOOL createConnectionPerThread = TRUE, BOOL processMessageInRoundRobin = TRUE );
 
-	void StopFilter();
+	void StopFilterService();
 
 	BOOL ClearConfigData(); 
 

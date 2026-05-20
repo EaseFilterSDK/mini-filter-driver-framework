@@ -94,8 +94,8 @@ namespace FileProtector
         private static string globalExcludeFilterRuleTestFolder = unitTestFolder + "\\excludeFilterRuleFolder";
         private static string globalExcludeFilterRuleTestFile = unitTestFolder + "\\excludeFilterRuleFolder\\excludeFilterRuleTestFile.txt";
 
-        //Purchase a license key with the link: http://www.easefilter.com/Order.htm
-        //Email us to request a trial key: info@easefilter.com //free email is not accepted.
+        //To request a trial or production license key, please contact info@easefilter.com
+        //Requests from free email domains are not accepted
         public static string licenseKey = "******************************************";
 
         public FileProtectorUnitTest()

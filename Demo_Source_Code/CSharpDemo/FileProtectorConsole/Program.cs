@@ -10,8 +10,8 @@ namespace FileProtectorConsole
         static void Main(string[] args)
         {
             string lastError = string.Empty;
-            //Purchase a license key with the link: http://www.easefilter.com/Order.htm
-            //Email us to request a trial key: info@easefilter.com //free email is not accepted.
+            //To request a trial or production license key, please contact info@easefilter.com
+            //Requests from free email domains are not accepted
             string licenseKey = "*************************************************************";
 
             FilterAPI.FilterType filterType = FilterAPI.FilterType.MONITOR_FILTER|FilterAPI.FilterType.CONTROL_FILTER|FilterAPI.FilterType.PROCESS_FILTER;
@@ -21,7 +21,7 @@ namespace FileProtectorConsole
 
             try
             {
-                if (!filterControl.StartFilter(filterType, serviceThreads, connectionTimeOut, licenseKey, ref lastError))
+                if (!filterControl.StartFilter(filterType, serviceThreads, true, true, connectionTimeOut, licenseKey, ref lastError))
                 {
                     Console.WriteLine("Start Filter Service failed with error:" + lastError);
                     return;
@@ -37,6 +37,9 @@ namespace FileProtectorConsole
 
                 //create a file protector filter rule, every filter rule must have the unique watch path. 
                 FileFilter fileProtectorFilter = new FileFilter(watchPath);
+
+                fileProtectorFilter.EnableMonitorEventBuffer = true;
+
 
                 //configure the access right for the protected folder
 

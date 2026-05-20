@@ -128,30 +128,6 @@ namespace EaseFilter.FilterControl
         }
 
         /// <summary>
-        /// This feature is to encrypt the data on the read when the encryption was enabled, encrypt new file was disabled.
-        /// the file won't be encrypted in the local disk, i.e. encrypt the file before it was sent out of your folder.
-        /// </summary>
-        public bool EnableEncryptionOnTheGo
-        {
-            get
-            {
-                return ((accessFlags & (uint)FilterAPI.AccessFlag.DISABLE_ENCRYPT_DATA_ON_READ) > 0);
-            }
-
-            set
-            {
-                if (value)
-                {
-                    accessFlags &= ~(uint)FilterAPI.AccessFlag.DISABLE_ENCRYPT_DATA_ON_READ;
-                }
-                else
-                {
-                    accessFlags |= (uint)FilterAPI.AccessFlag.DISABLE_ENCRYPT_DATA_ON_READ;
-                }
-            }
-        }
-
-        /// <summary>
         /// if the encryption feature was enabled and this value is true, every new encrypted file 
         /// requires the encryption key, iv and tag data from the user mode service.
         /// </summary>

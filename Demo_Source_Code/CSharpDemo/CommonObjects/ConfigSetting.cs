@@ -172,7 +172,15 @@ namespace EaseFilter.CommonObjects
         {
             try
             {
-                return bool.Parse(config.AppSettings.Settings[name].Value);
+                bool result = value;
+                if( bool.TryParse(config.AppSettings.Settings[name].Value,out result))
+                {
+                    return result;
+                }
+                else
+                {
+                    return value;
+                }
             }
             catch
             {
@@ -185,12 +193,21 @@ namespace EaseFilter.CommonObjects
         {
             try
             {
-                return byte.Parse(config.AppSettings.Settings[name].Value);
+                byte result = value;
+                if (byte.TryParse(config.AppSettings.Settings[name].Value, out result))
+                {
+                    return result;
+                }
+                else
+                {
+                    return value;
+                }
             }
             catch
             {
                 return value;
             }
+         
         }
 
 
@@ -198,7 +215,15 @@ namespace EaseFilter.CommonObjects
         {
             try
             {
-                return sbyte.Parse(config.AppSettings.Settings[name].Value);
+                sbyte result = value;
+                if (sbyte.TryParse(config.AppSettings.Settings[name].Value, out result))
+                {
+                    return result;
+                }
+                else
+                {
+                    return value;
+                }
             }
             catch
             {
@@ -211,7 +236,15 @@ namespace EaseFilter.CommonObjects
         {
             try
             {
-                return char.Parse(config.AppSettings.Settings[name].Value);
+                char result = value;
+                if (char.TryParse(config.AppSettings.Settings[name].Value, out result))
+                {
+                    return result;
+                }
+                else
+                {
+                    return value;
+                }
             }
             catch
             {
@@ -224,7 +257,15 @@ namespace EaseFilter.CommonObjects
         {
             try
             {
-                return decimal.Parse(config.AppSettings.Settings[name].Value);
+                decimal result = value;
+                if (decimal.TryParse(config.AppSettings.Settings[name].Value, out result))
+                {
+                    return result;
+                }
+                else
+                {
+                    return value;
+                }
             }
             catch
             {
@@ -237,7 +278,15 @@ namespace EaseFilter.CommonObjects
         {
             try
             {
-                return double.Parse(config.AppSettings.Settings[name].Value);
+                double result = value;
+                if (double.TryParse(config.AppSettings.Settings[name].Value, out result))
+                {
+                    return result;
+                }
+                else
+                {
+                    return value;
+                }
             }
             catch
             {
@@ -249,7 +298,15 @@ namespace EaseFilter.CommonObjects
         {
             try
             {
-                return float.Parse(config.AppSettings.Settings[name].Value);
+                float result = value;
+                if (float.TryParse(config.AppSettings.Settings[name].Value, out result))
+                {
+                    return result;
+                }
+                else
+                {
+                    return value;
+                }
             }
             catch
             {
@@ -262,7 +319,15 @@ namespace EaseFilter.CommonObjects
         {
             try
             {
-                return int.Parse(config.AppSettings.Settings[name].Value);
+                int result = value;
+                if (int.TryParse(config.AppSettings.Settings[name].Value, out result))
+                {
+                    return result;
+                }
+                else
+                {
+                    return value;
+                }
             }
             catch
             {
@@ -274,7 +339,15 @@ namespace EaseFilter.CommonObjects
         {
             try
             {
-                return uint.Parse(config.AppSettings.Settings[name].Value);
+                uint result = value;
+                if (uint.TryParse(config.AppSettings.Settings[name].Value, out result))
+                {
+                    return result;
+                }
+                else
+                {
+                    return value;
+                }
             }
             catch
             {
@@ -287,7 +360,15 @@ namespace EaseFilter.CommonObjects
         {
             try
             {
-                return long.Parse(config.AppSettings.Settings[name].Value);
+                long result = value;
+                if (long.TryParse(config.AppSettings.Settings[name].Value, out result))
+                {
+                    return result;
+                }
+                else
+                {
+                    return value;
+                }
             }
             catch
             {
@@ -300,7 +381,15 @@ namespace EaseFilter.CommonObjects
         {
             try
             {
-                return ulong.Parse(config.AppSettings.Settings[name].Value);
+                ulong result = value;
+                if (ulong.TryParse(config.AppSettings.Settings[name].Value, out result))
+                {
+                    return result;
+                }
+                else
+                {
+                    return value;
+                }
             }
             catch
             {
@@ -313,7 +402,15 @@ namespace EaseFilter.CommonObjects
         {
             try
             {
-                return short.Parse(config.AppSettings.Settings[name].Value);
+                short result = value;
+                if (short.TryParse(config.AppSettings.Settings[name].Value, out result))
+                {
+                    return result;
+                }
+                else
+                {
+                    return value;
+                }
             }
             catch
             {
@@ -326,7 +423,15 @@ namespace EaseFilter.CommonObjects
         {
             try
             {
-                return ushort.Parse(config.AppSettings.Settings[name].Value);
+                ushort result = value;
+                if (ushort.TryParse(config.AppSettings.Settings[name].Value, out result))
+                {
+                    return result;
+                }
+                else
+                {
+                    return value;
+                }
             }
             catch
             {

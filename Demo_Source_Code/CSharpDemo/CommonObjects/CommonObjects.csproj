@@ -147,6 +147,10 @@
     <None Include="Resources\about.png" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\ActivateLicense\ActivateLicense.csproj">
+      <Project>{5a359ed5-1321-47fe-9a9a-9e9baea14067}</Project>
+      <Name>ActivateLicense</Name>
+    </ProjectReference>
     <ProjectReference Include="..\FilterControl\FilterControl.csproj">
       <Project>{21540012-a296-45ce-8d35-3ea5a07b32a6}</Project>
       <Name>FilterControl</Name>

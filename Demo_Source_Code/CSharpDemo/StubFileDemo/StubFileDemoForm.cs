@@ -156,11 +156,7 @@ namespace  StubFileDemo
         private void toolStripButton_Help_Click(object sender, EventArgs e)
         {
             System.Diagnostics.Process.Start("https://www.easefilter.com/cloud/stub-file-demo.htm");
-        }
-
-        private void toolStripButton_ApplyTrialKey_Click(object sender, EventArgs e)
-        {          
-        }
+        }     
 
         static public void CreateTestFiles()
         {

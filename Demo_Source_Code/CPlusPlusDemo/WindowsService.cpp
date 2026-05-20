@@ -217,7 +217,7 @@ DWORD WINAPI ServiceWorkerThread (LPVOID lpParam)
 			fileFilterRule.MonitorFileIOEventFilter = ioCallbackClass;
 
 			filterControl->AddFileFilter(fileFilterRule);
-			filterControl->StartFilter(filterType,threadCount,connectionTimeout,registerKey);
+			filterControl->StartFilterService(filterType,threadCount,connectionTimeout,registerKey);
 
 			//prevent the current process from being terminated.
 			//AddProtectedProcessId(GetCurrentProcessId());
@@ -229,7 +229,7 @@ DWORD WINAPI ServiceWorkerThread (LPVOID lpParam)
 			
     }
 
-	filterControl->StopFilter();
+	filterControl->StopFilterService();
 	delete filterControl;	
 
     OutputDebugString(_T("EaseFilter Service: ServiceWorkerThread: Exit"));

@@ -25,6 +25,11 @@ The provided demos include:
 > [!NOTE]
 > Administrator permissions are required to run EaseFilter.
 
+> [!NOTE]
+> The `EaseFlt.sys` and `FilterAPI.dll` files are part of the EaseFilter SDK,
+> and are needed for this demo to run. By default, Maven will copy these from
+> `../../Bin/x64`; change `pom.xml` to set the directory somewhere else.
+
 - [Install Java.](https://learn.microsoft.com/en-us/java/openjdk/install)
 
 - [Install Maven.](https://maven.apache.org/install.html)

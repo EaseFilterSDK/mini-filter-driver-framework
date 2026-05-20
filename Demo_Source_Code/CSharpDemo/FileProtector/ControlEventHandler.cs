@@ -121,6 +121,9 @@ namespace FileProtector
             //    //test block the file read here.
             //    e.ReturnStatus = NtStatus.Status.AccessDenied;
             //}
+
+            //if you want to read or modify the data buffer, make sure you 
+            //set EnableSendReadOrWriteBuffer to true in FileFilterRule.
         }
 
         /// <summary>
@@ -130,6 +133,9 @@ namespace FileProtector
         {
             DisplayEventMessage(e);
             //do your job here.
+
+            //if you want to read or modify the data buffer, make sure you 
+            //set EnableSendReadOrWriteBuffer to true in FileFilterRule.
         }
 
         /// <summary>
@@ -139,6 +145,9 @@ namespace FileProtector
         {
             DisplayEventMessage(e);
             //do your job here.
+
+            //if you want to read or modify the data buffer, make sure you 
+            //set EnableSendReadOrWriteBuffer to true in FileFilterRule.
 
             //if (string.Compare(YourTestFileName, e.FileName, true) == 0)
             //{
@@ -154,6 +163,9 @@ namespace FileProtector
         {
             DisplayEventMessage(e);
             //do your job here.
+
+            //if you want to read or modify the data buffer, make sure you 
+            //set EnableSendReadOrWriteBuffer to true in FileFilterRule.
         }
 
         /// <summary>

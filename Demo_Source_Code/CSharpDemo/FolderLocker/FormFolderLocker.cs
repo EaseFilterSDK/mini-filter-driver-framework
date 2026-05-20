@@ -305,8 +305,8 @@ namespace EaseFilter.FolderLocker
 
         private void toolStripButton_StartFilter_Click(object sender, EventArgs e)
         {
-            //Purchase a license key with the link: http://www.easefilter.com/Order.htm
-            //Email us to request a trial key: info@easefilter.com //free email is not accepted.        
+            //To request a trial or production license key, please contact info@easefilter.com
+            //Requests from free email domains are not accepted        
             string licenseKey = GlobalConfig.LicenseKey;
 
             string lastError = string.Empty;
@@ -333,11 +333,10 @@ namespace EaseFilter.FolderLocker
             toolStripButton_Stop.Enabled = false;
         }
 
-        private void toolStripButton_ApplyTrialKey_Click(object sender, EventArgs e)
+  
+        private void toolStripButton_VideoDemo_Click(object sender, EventArgs e)
         {
-          
+            System.Diagnostics.Process.Start("https://youtu.be/amjtJDMeUig?si=Jjz8bI9pL6Ol5cB4");
         }
-
-       
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 
 using EaseFilter.FilterControl;
 
@@ -11,9 +12,9 @@ namespace FileMonitorConsole
         static void Main(string[] args)
         {
             string lastError = string.Empty;
-            //Purchase a license key with the link: http://www.easefilter.com/Order.htm
-            //Email us to request a trial key: info@easefilter.com //free email is not accepted.
-            string licenseKey =  "****************************************************";
+            //To request a trial or production license key, please contact info@easefilter.com
+            //Requests from free email domains are not accepted
+            string licenseKey = "***********************************************";
             
             FilterAPI.FilterType filterType = FilterAPI.FilterType.MONITOR_FILTER;
             int serviceThreads = 5;
@@ -21,7 +22,7 @@ namespace FileMonitorConsole
 
             try
             {
-                if (!filterControl.StartFilter(filterType, serviceThreads, connectionTimeOut, licenseKey, ref lastError))
+                if (!filterControl.StartFilter(filterType, serviceThreads, true, true, connectionTimeOut, licenseKey, ref lastError))
                 {
                     Console.WriteLine("Start Filter Service failed with error:" + lastError);
                     return;
@@ -45,10 +46,11 @@ namespace FileMonitorConsole
                 fileFilter.NotifyFileWasChanged += NotifyFileChanged;
 
                 //Filter the monitor file IO events
-                fileFilter.MonitorFileIOEventFilter = MonitorFileIOEvents.OnFileCreate | MonitorFileIOEvents.OnFileRead;
+                fileFilter.MonitorFileIOEventFilter = MonitorFileIOEvents.OnFileCreate | MonitorFileIOEvents.OnFileRead | MonitorFileIOEvents.OnFileWrite;
                 fileFilter.OnFileOpen += OnFileCreate;
                 fileFilter.OnFileRead += OnFileRead;
-               
+                fileFilter.OnFileWrite += OnFileWrite;
+
                 fileFilter.EnableSendReadOrWriteBuffer = true;
 
                 filterControl.AddFilter(fileFilter);
@@ -96,7 +98,34 @@ namespace FileMonitorConsole
         /// </summary>
         static void OnFileRead(object sender, FileReadEventArgs e)
         {
-            Console.WriteLine("FileReadEventArgs:" + e.FileName + ",userName:" + e.UserName + ",processName:" + e.ProcessName + "\r\n" + e.Description);
+            if (e.DataBufferLength > 0)
+            {
+                Console.WriteLine("OnFileRead userName:" + e.UserName + ",\r\nprocessName:"
+                    + e.ProcessName + "\r\nDataLength:" + e.DataBufferLength.ToString() + ",bufferLength:" + e.DataBuffer.Length + "\r\nData:"+ Encoding.ASCII.GetString(e.DataBuffer));
+            }
+            else
+            {
+                Console.WriteLine("OnFileRead userName:" + e.UserName + ",\r\nprocessName:"
+                    + e.ProcessName + "\r\nDataLength is 0");
+            }
+        }
+
+        /// <summary>
+        /// Fires this event when the file was read.
+        /// </summary>
+        static void OnFileWrite(object sender, FileWriteEventArgs e)
+        {
+            if (e.DataBufferLength > 0)
+            {
+                Console.WriteLine("OnFileWrite userName:" + e.UserName + ",\r\nprocessName:"
+                    + e.ProcessName + "\r\nDataLength:" + e.DataBufferLength.ToString() + ",bufferLength:" + e.DataBuffer.Length + "\r\nData:" + Encoding.ASCII.GetString(e.DataBuffer));
+            }
+            else
+            {
+                Console.WriteLine("OnFileWrite userName:" + e.UserName + ",\r\nprocessName:"
+                    + e.ProcessName + "\r\nDataLength is 0");
+            }
+
         }
     }
 }

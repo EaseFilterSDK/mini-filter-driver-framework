@@ -174,13 +174,14 @@ namespace RegMon
         {
             try
             {
-                //Purchase a license key with the link: http://www.easefilter.com/Order.htm
-                //Email us to request a trial key: info@easefilter.com //free email is not accepted.        
+                //To request a trial or production license key, please contact info@easefilter.com
+                //Requests from free email domains are not accepted        
                 string licenseKey = GlobalConfig.LicenseKey;
 
                 string lastError = string.Empty;
 
-                bool ret = filterControl.StartFilter(GlobalConfig.filterType, GlobalConfig.FilterConnectionThreads, GlobalConfig.ConnectionTimeOut, licenseKey, ref lastError);
+                bool ret = filterControl.StartFilter(GlobalConfig.filterType, GlobalConfig.FilterConnectionThreads,
+                    GlobalConfig.CreateConnectionPerThread, GlobalConfig.ProcessMessageInRoundRobin, GlobalConfig.ConnectionTimeOut, licenseKey, ref lastError);
                 if (!ret)
                 {
                     MessageBoxHelper.PrepToCenterMessageBoxOnForm(this);
@@ -229,13 +230,11 @@ namespace RegMon
         {
             Close();
         }
-      
-
-        private void toolStripButton_ApplyTrialKey_Click(object sender, EventArgs e)
-        {
            
-        }
 
-    
+        private void toolStripButton_VideoDemo_Click(object sender, EventArgs e)
+        {
+            System.Diagnostics.Process.Start("https://youtu.be/yf7Yn-d-IIM?si=OBSmp51wN_tFO63n");
+        }
     }
 }

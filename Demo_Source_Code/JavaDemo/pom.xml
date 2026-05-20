@@ -68,7 +68,7 @@
                             <outputDirectory>${project.build.directory}</outputDirectory>
                             <resources>
                                 <resource>
-                                    <directory>src/main/resources</directory>
+                                    <directory>../../Bin/x64</directory>
                                     <includes>
                                         <include>**/EaseFlt.sys</include>
                                         <include>**/FilterAPI.dll</include>

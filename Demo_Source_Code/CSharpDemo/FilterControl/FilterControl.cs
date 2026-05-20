@@ -134,12 +134,37 @@ namespace EaseFilter.FilterControl
         /// <summary>
         /// Start the filter driver service.
         /// </summary>
-        /// <param name="filterConnectionThreads"></param>
-        /// <param name="connectionTimeout"></param>
-        /// <param name="licenseKey"></param>
-        /// <param name="lastError"></param>
+        /// <param name="filterType">The combination of the filter type to set</param>
+        /// <param name="filterConnectionThreads">the number of working threads to process callback message</param>
+        /// <param name="connectionTimeout">Specifies the timeout, in seconds, for the filter connection callback.</param>
+        /// <param name="licenseKey">The license key to start the filter driver</param>
+        /// <param name="lastError">the return error message if the return is false</param>
         /// <returns></returns>
         public bool StartFilter(FilterAPI.FilterType _filterType, int _filterConnectionThreads, int _connectionTimeout, string _licenseKey, ref string lastError)
+        {
+            return StartFilter(_filterType, _filterConnectionThreads, false, false, _connectionTimeout, _licenseKey, ref lastError);
+        }
+
+
+
+        /// <summary>
+        /// Start the filter driver service.
+        /// </summary>
+        /// <param name="filterType">The combination of the filter type to set</param>
+        /// <param name="threadCount">The number of worker threads waiting for callback messages.</param>        
+        /// <param name="createConnectionPerThread">If true, a unique filter connection is created for each thread. If false, a single shared connection is used.</param>
+        /// <param name="processMessageInRoundRobin">Only applicable if createConnectionPerThread is true.
+        /// <param name="connectionTimeout">Specifies the timeout, in seconds, for the filter connection callback.</param>
+        /// <param name="licenseKey">The license key to start the filter driver</param>
+        /// <param name="lastError">the return error message if the return is false</param>
+        /// <returns></returns>
+        public bool StartFilter(FilterAPI.FilterType _filterType, 
+            int threadCount, 
+            bool createConnectionPerThread, 
+            bool processMessageInRoundRobin, 
+            int _connectionTimeout, 
+            string _licenseKey, 
+            ref string lastError)
         {
 
             bool ret = true;
@@ -149,7 +174,7 @@ namespace EaseFilter.FilterControl
             try
             {
                 filterType = _filterType;
-                filterConnectionThreads = _filterConnectionThreads;
+                filterConnectionThreads = threadCount;
                 connectionTimeout = _connectionTimeout;
                 licenseKey = _licenseKey;
 
@@ -178,20 +203,13 @@ namespace EaseFilter.FilterControl
 
                 if (!isFilterStarted)
                 {
-
-                    if (!FilterAPI.SetRegistrationKey(licenseKey))
-                    {
-                        lastError = "Set license key failed with error:" + FilterAPI.GetLastErrorMessage();
-                        return false;
-                    }
-
                     gchFilter = GCHandle.Alloc(filterCallback);
-                    IntPtr filterCallbackPtr = Marshal.GetFunctionPointerForDelegate(filterCallback);
+                    IntPtr messageCallbackPtr = Marshal.GetFunctionPointerForDelegate(filterCallback);
 
                     gchDisconnect = GCHandle.Alloc(disconnectCallback);
                     IntPtr disconnectCallbackPtr = Marshal.GetFunctionPointerForDelegate(disconnectCallback);
 
-                    isFilterStarted = FilterAPI.RegisterMessageCallback(filterConnectionThreads, filterCallbackPtr, disconnectCallbackPtr);
+                    isFilterStarted = FilterAPI.StartFilter(licenseKey,filterConnectionThreads, createConnectionPerThread,processMessageInRoundRobin, messageCallbackPtr, disconnectCallbackPtr);
                     if (!isFilterStarted)
                     {
                         lastError = "Connect to the filter driver failed with error:" + FilterAPI.GetLastErrorMessage();
@@ -236,7 +254,7 @@ namespace EaseFilter.FilterControl
         {
             if (isFilterStarted)
             {
-                FilterAPI.Disconnect();
+                FilterAPI.StopFilter();
                 gchFilter.Free();
                 gchDisconnect.Free();
                 isFilterStarted = false;

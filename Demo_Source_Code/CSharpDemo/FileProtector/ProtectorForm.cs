@@ -202,13 +202,14 @@ namespace FileProtector
         {
             try
             {
-                //Purchase a license key with the link: http://www.easefilter.com/Order.htm
-                //Email us to request a trial key: info@easefilter.com //free email is not accepted.        
+                //To request a trial or production license key, please contact info@easefilter.com
+                //Requests from free email domains are not accepted        
                 string licenseKey = GlobalConfig.LicenseKey;
 
                 string lastError = string.Empty;
 
-                bool ret = filterControl.StartFilter(GlobalConfig.filterType, GlobalConfig.FilterConnectionThreads, GlobalConfig.ConnectionTimeOut, licenseKey, ref lastError);
+                bool ret = filterControl.StartFilter(GlobalConfig.filterType, GlobalConfig.FilterConnectionThreads,
+                    GlobalConfig.CreateConnectionPerThread, GlobalConfig.ProcessMessageInRoundRobin, GlobalConfig.ConnectionTimeOut, licenseKey, ref lastError);
                 if (!ret)
                 {
                     MessageBoxHelper.PrepToCenterMessageBoxOnForm(this);
@@ -358,7 +359,6 @@ namespace FileProtector
         {
             System.Diagnostics.Process.Start("https://youtu.be/__owEKeiL7A?si=WopqsAWV_eoaQM39");
         }
-
-  
+      
     }
 }
