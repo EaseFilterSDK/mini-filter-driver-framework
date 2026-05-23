@@ -11,7 +11,7 @@ namespace FileProtectorConsole
         {
             string lastError = string.Empty;
             //To request a trial or production license key, please contact info@easefilter.com
-            //Requests from free email domains are not accepted
+            //Requests from free email domains are not accepted.
             string licenseKey = "*************************************************************";
 
             FilterAPI.FilterType filterType = FilterAPI.FilterType.MONITOR_FILTER|FilterAPI.FilterType.CONTROL_FILTER|FilterAPI.FilterType.PROCESS_FILTER;
@@ -73,7 +73,7 @@ namespace FileProtectorConsole
 
                 fileProtectorFilter.OnPreCreateFile += OnPreCreateFile;
                 fileProtectorFilter.OnPreDeleteFile += OnPreDeleteFile;
-                fileProtectorFilter.OnPreDeleteFile += OnPreMoveOrRenameFile;
+                fileProtectorFilter.OnPreMoveOrRenameFile += OnPreMoveOrRenameFile;
 
                 filterControl.AddFilter(fileProtectorFilter);
 
