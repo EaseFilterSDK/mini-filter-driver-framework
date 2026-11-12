@@ -1,5 +1,12 @@
 # [mini-filter-driver-framework](https://www.easefilter.com/Forums_Files/Comprehensive-file-security-sdk.htm)
-A mini filter driver development framework allows you to develop minit filter driver with different features.
+
+[![Platform](https://img.shields.io/badge/Platform-Windows-blue.svg)]()
+[![Language](https://img.shields.io/badge/Language-C%23%20%7C%20C++%20%7C%20Python%20%7C%20Rust%20%7C%20Java-success.svg)]()
+[![License](https://img.shields.io/badge/License-Commercial-orange.svg)]()
+
+Welcome to the EaseFilter File System Filter Driver Framework. This comprehensive software development kit (SDK) provides a complete, modular environment for building active file system filters for Windows applications without having to manage all the complexities of kernel-level file I/O and WDK development.
+
+![Mini Filter Driver framework](https://www.easefilter.com/images/mini-filter-driver-framework.jpg)
 
 ## Windows File System Filter Driver
 A file system filter driver intercepts requests targeted at a file system or another file system filter driver. By intercepting the request before it reaches its intended target, the filter driver can extend or replace functionality provided by the original target of the request. File system filtering services are available through the filter manager in Windows. The Filter Manager provides a framework for developing File Systems and File System Filter Drivers without having to manage all the complexities of file I/O. The Filter Manager simplifies the development of third-party filter drivers and solves many of the problems with the existing legacy filter driver model, such as the ability to control load order through an assigned altitude. A filter driver developed to the Filter Manager model is called a minifilter. Every minifilter driver has an assigned altitude, which is a unique identifier that determines where the minifilter is loaded relative to other minifilters in the I/O stack. Altitudes are allocated and managed by Microsoft.
