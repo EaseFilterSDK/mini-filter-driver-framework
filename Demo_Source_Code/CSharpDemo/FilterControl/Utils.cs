@@ -40,7 +40,7 @@ namespace EaseFilter.FilterControl
 
         [DllImport("FilterAPI.dll", SetLastError = true)]
         private static extern bool CreateFileAPI(
-             [MarshalAs(UnmanagedType.LPWStr)]string fileName,
+             [MarshalAs(UnmanagedType.LPWStr)] string fileName,
               uint dwDesiredAccess,
               uint dwShareMode,
               uint dwCreationDisposition,
@@ -51,7 +51,7 @@ namespace EaseFilter.FilterControl
         {
             Decryption = 0,
             Encryption,
-        }      
+        }
 
         public static string AESEncryptDecryptStr(string inStr, EncryptType encryptType)
         {
@@ -282,7 +282,7 @@ namespace EaseFilter.FilterControl
                             return true;
                         }
                     }
-                 
+
                 }
 
             }
@@ -345,16 +345,16 @@ namespace EaseFilter.FilterControl
                 dynamic build;
                 if (TryGeRegistryKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion", "CurrentBuildNumber", out build))
                 {
-                    versionStr +=  "." + build;
+                    versionStr += "." + build;
                     dynamic display;
                     if (TryGeRegistryKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion", "DisplayVersion", out display))
                     {
-                        versionStr +=  "." + display; 
+                        versionStr += "." + display;
 
                     }
 
                 }
-               
+
                 return versionStr;
             }
 
@@ -421,19 +421,37 @@ namespace EaseFilter.FilterControl
             string targetName = Path.Combine(localPath, "FilterAPI.DLL");
 
             bool is64BitOperatingSystem = Environment.Is64BitOperatingSystem;
-
-            string sourceFolder = localPath;
+            bool isWindows11 = false;
 
             try
             {
+                dynamic buildS;
+                if (TryGeRegistryKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion", "CurrentBuildNumber", out buildS))
+                {
+                    int build = 0;
+                    if (int.TryParse((string)buildS, out build))
+                    {
+                        if (build >= 22000)
+                        {
+                            isWindows11 = true;
+                        }
+                    }
+                }
+
+                string sourceFolder = Path.Combine(localPath, "bin");
+
+                if (isWindows11)
+                {
+                    sourceFolder = Path.Combine(sourceFolder, "win11");
+                }
 
                 if (is64BitOperatingSystem)
                 {
-                    sourceFolder = Path.Combine(localPath, "Bin\\x64");
+                    sourceFolder = Path.Combine(sourceFolder, "x64");
                 }
                 else
                 {
-                    sourceFolder = Path.Combine(localPath, "Bin\\win32");
+                    sourceFolder = Path.Combine(sourceFolder, "x86");
                 }
 
                 string sourceFile = Path.Combine(sourceFolder, "FilterAPI.DLL");
@@ -523,7 +541,7 @@ namespace EaseFilter.FilterControl
         /// </summary>
         /// <param name="pwStr"></param>
         /// <returns></returns>
-        public static byte[] GetKeyByPassPhrase(string pwStr,int keySize)
+        public static byte[] GetKeyByPassPhrase(string pwStr, int keySize)
         {
             byte[] saltBytes = new byte[] { 1, 2, 3, 4, 5, 6, 7, 8 };
             byte[] passwordBytes = Encoding.UTF8.GetBytes(pwStr);
